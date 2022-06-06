@@ -1,16 +1,16 @@
 module.exports = {
   title: 'Massdriver Docs',
-  tagline: 'The tagline of my site',
+  tagline: 'Effortless DevOps',
   url: 'https://docs.massdriver.cloud',
   baseUrl: '/',
   favicon: 'img/favicon.ico',
-  organizationName: 'massdriver-cloud', // Usually your GitHub org/user name.
-  projectName: 'docs', // Usually your repo name.
+  organizationName: 'massdriver-cloud',
+  projectName: 'docs',
   themeConfig: {
     navbar: {
-      title: 'My Site',
+      title: 'Massdriver',
       logo: {
-        alt: 'My Site Logo',
+        alt: 'Jimmy @ Massdriver',
         src: 'img/logo.svg',
       },
       links: [
@@ -56,7 +56,7 @@ module.exports = {
             },
             {
               label: 'Twitter',
-              href: 'https://twitter.com/docusaurus',
+              href: 'https://twitter.com/massdriver',
             },
           ],
         },
