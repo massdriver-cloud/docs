@@ -15,10 +15,15 @@ module.exports = {
       },
       items: [
         {
+          to: "/swapi", // adjust the location depending on your baseURL (see configuration)
+          label: "GraphQL Schema", // change the label with yours
+          position: "left",
+        },
+        {
           href: 'https://github.com/massdriver-cloud',
           label: 'GitHub',
           position: 'right',
-        },
+        }
       ],
     },
     footer: {
@@ -71,6 +76,17 @@ module.exports = {
       copyright: `Copyright © ${new Date().getFullYear()} Massdriver, Inc.`,
     },
   },
+  plugins: [
+    [
+      "@edno/docusaurus2-graphql-doc-generator",
+      {
+        schema: "./schema/md.graphql",
+        rootPath: "./docs", // docs will be generated under './docs/swapi' (rootPath/baseURL)
+        baseURL: "swapi",
+        homepage: "./docs/swapi.md",
+      },
+    ],
+  ],
   presets: [
     [
       '@docusaurus/preset-classic',

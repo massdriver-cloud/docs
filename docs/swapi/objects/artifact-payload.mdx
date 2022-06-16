@@ -1,0 +1,37 @@
+---
+id: artifact-payload
+title: ArtifactPayload
+hide_table_of_contents: false
+---
+
+
+No description
+
+```graphql
+type ArtifactPayload {
+  successful: Boolean!
+  messages: [ValidationMessage]
+  result: Artifact
+}
+```
+
+
+### Fields
+
+#### [`successful`](#) ([`Boolean!`](/swapi/scalars/boolean))
+
+Indicates if the mutation completed successfully or not.
+
+
+#### [`messages`](#) ([`[ValidationMessage]`](/swapi/objects/validation-message))
+
+A list of failed validations. May be blank or null if mutation succeeded.
+
+
+#### [`result`](#) ([`Artifact`](/swapi/objects/artifact))
+
+The object created/updated/deleted by the mutation. May be null if mutation failed.
+
+
+
+

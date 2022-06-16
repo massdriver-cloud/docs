@@ -1,0 +1,37 @@
+---
+id: architecture-link
+title: ArchitectureLink
+hide_table_of_contents: false
+---
+
+
+A link between two manifests in an architecture
+
+```graphql
+type ArchitectureLink {
+  role: String!
+  srcField: String!
+  destField: String!
+}
+```
+
+
+### Fields
+
+#### [`role`](#) ([`String!`](/swapi/scalars/string))
+
+The role in the architecture to link to
+
+
+#### [`srcField`](#) ([`String!`](/swapi/scalars/string))
+
+The field to link to on the upstream (dependee) manifest.
+
+
+#### [`destField`](#) ([`String!`](/swapi/scalars/string))
+
+The field to link to on this manifest.
+
+
+
+

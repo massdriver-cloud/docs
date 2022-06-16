@@ -11,7 +11,9 @@
   "dependencies": {
     "@docusaurus/core": "^2.0.0-beta.21",
     "@docusaurus/preset-classic": "^2.0.0-beta.21",
+    "@edno/docusaurus2-graphql-doc-generator": "^1.10.2",
     "classnames": "^2.2.6",
+    "graphql": "^16.5.0",
     "react": "^16.8.4",
     "react-dom": "^16.8.4"
   },

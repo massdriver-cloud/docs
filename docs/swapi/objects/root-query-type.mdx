@@ -1,0 +1,358 @@
+---
+id: root-query-type
+title: RootQueryType
+hide_table_of_contents: false
+---
+
+
+No description
+
+```graphql
+type RootQueryType {
+  me: Account
+  apiKeys(
+  organizationId: ID!
+): [ApiKey]
+  architectures(
+  organizationId: ID!
+): [Architecture]
+  filterArtifactsByType(
+  organizationId: ID!
+  type: String!
+): [Artifact]
+  artifact(
+  organizationId: ID!
+  id: ID!
+): Artifact
+  artifacts(
+  organizationId: ID!
+  input: ArtifactsInput
+): [Artifact]
+  artifactDefinitions(
+  organizationId: ID!
+  input: ArtifactDefinitionInput
+): [ArtifactDefinition]
+  defaultableTargetConnectionGroups(
+  organizationId: ID!
+): [DefaultableTargetConnectionGroup]
+  containerRepositoryCredentialArtifactDefinitions(
+  organizationId: ID!
+): [ArtifactDefinition]
+  compareTargets(
+  organizationId: ID!
+  fromTargetId: ID!
+  toTargetId: ID!
+): Changeset
+  compareDeployments(
+  organizationId: ID!
+  fromDeploymentId: ID!
+  toDeploymentId: ID!
+): Changeset
+  billingSubscription(
+  organizationId: ID!
+): BillingSubscription
+  bundles(
+  organizationId: ID!
+): [Bundle]
+  containerRepositories(
+  organizationId: ID!
+): [ContainerRepository]
+  deployments(
+  organizationId: ID!
+  manifestId: ID!
+  targetId: ID!
+): [Deployment]
+  supportedLocations(
+  organizationId: ID!
+  cloudService: String!
+): LocationList
+  manifest(
+  organizationId: ID!
+  id: ID!
+): Manifest
+  package(
+  organizationId: ID!
+  manifestId: ID!
+  targetId: ID!
+): Package
+  projects(
+  organizationId: ID!
+): [Project]
+  project(
+  organizationId: ID!
+  id: ID!
+): Project
+  target(
+  organizationId: ID!
+  id: ID!
+): Target
+  groups(
+  organizationId: ID!
+): [Group]
+  subscriptionPlans: [SubscriptionPlan]
+}
+```
+
+
+### Fields
+
+#### [`me`](#) ([`Account`](/swapi/objects/account))
+
+
+
+
+#### [`apiKeys`](#) ([`[ApiKey]`](/swapi/objects/api-key))
+
+
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+#### [`architectures`](#) ([`[Architecture]`](/swapi/objects/architecture))
+
+
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+#### [`filterArtifactsByType`](#) ([`[Artifact]`](/swapi/objects/artifact))
+
+Filter artifacts by an artifact definition type.
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+- ##### [`type`](#) ([`String!`](/swapi/scalars/string))
+
+
+
+
+#### [`artifact`](#) ([`Artifact`](/swapi/objects/artifact))
+
+Get an artifact by ID
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+- ##### [`id`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+#### [`artifacts`](#) ([`[Artifact]`](/swapi/objects/artifact))
+
+List all artifacts
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+- ##### [`input`](#) ([`ArtifactsInput`](/swapi/inputs/artifacts-input))
+
+Search, filter, and sort inputs
+
+
+#### [`artifactDefinitions`](#) ([`[ArtifactDefinition]`](/swapi/objects/artifact-definition))
+
+
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+List all artifact definitions
+
+
+- ##### [`input`](#) ([`ArtifactDefinitionInput`](/swapi/inputs/artifact-definition-input))
+
+Filter artifact definition results
+
+
+#### [`defaultableTargetConnectionGroups`](#) ([`[DefaultableTargetConnectionGroup]`](/swapi/objects/defaultable-target-connection-group))
+
+
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+List defaultable target connections by group
+
+
+#### [`containerRepositoryCredentialArtifactDefinitions`](#) ([`[ArtifactDefinition]`](/swapi/objects/artifact-definition))
+
+
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+List artifact definitions which can be used to provision and connect container repositories
+
+
+#### [`compareTargets`](#) ([`Changeset`](/swapi/objects/changeset))
+
+
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+- ##### [`fromTargetId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+- ##### [`toTargetId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+#### [`compareDeployments`](#) ([`Changeset`](/swapi/objects/changeset))
+
+
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+- ##### [`fromDeploymentId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+- ##### [`toDeploymentId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+#### [`billingSubscription`](#) ([`BillingSubscription`](/swapi/objects/billing-subscription))
+
+
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+#### [`bundles`](#) ([`[Bundle]`](/swapi/objects/bundle))
+
+
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+#### [`containerRepositories`](#) ([`[ContainerRepository]`](/swapi/objects/container-repository))
+
+
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+#### [`deployments`](#) ([`[Deployment]`](/swapi/objects/deployment))
+
+
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+- ##### [`manifestId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+- ##### [`targetId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+#### [`supportedLocations`](#) ([`LocationList`](/swapi/objects/location-list))
+
+Gets supported regions for cloud services
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+- ##### [`cloudService`](#) ([`String!`](/swapi/scalars/string))
+
+
+
+
+#### [`manifest`](#) ([`Manifest`](/swapi/objects/manifest))
+
+
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+- ##### [`id`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+#### [`package`](#) ([`Package`](/swapi/objects/package))
+
+
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+- ##### [`manifestId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+- ##### [`targetId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+#### [`projects`](#) ([`[Project]`](/swapi/objects/project))
+
+
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+#### [`project`](#) ([`Project`](/swapi/objects/project))
+
+
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+- ##### [`id`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+#### [`target`](#) ([`Target`](/swapi/objects/target))
+
+
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+- ##### [`id`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+#### [`groups`](#) ([`[Group]`](/swapi/objects/group))
+
+gets all groups for an organization
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+#### [`subscriptionPlans`](#) ([`[SubscriptionPlan]`](/swapi/objects/subscription-plan))
+
+
+
+
+
+

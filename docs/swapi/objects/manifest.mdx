@@ -1,0 +1,79 @@
+---
+id: manifest
+title: Manifest
+hide_table_of_contents: false
+---
+
+
+No description
+
+```graphql
+type Manifest {
+  id: ID!
+  name: String!
+  slug: String!
+  suffix: String!
+  description: String
+  deletable: ManifestDeletionLifecycle!
+  createdAt: DateTime
+  updatedAt: DateTime
+  bundle: Bundle
+  packages: [Package]
+}
+```
+
+
+### Fields
+
+#### [`id`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+#### [`name`](#) ([`String!`](/swapi/scalars/string))
+
+
+
+
+#### [`slug`](#) ([`String!`](/swapi/scalars/string))
+
+
+
+
+#### [`suffix`](#) ([`String!`](/swapi/scalars/string))
+
+
+
+
+#### [`description`](#) ([`String`](/swapi/scalars/string))
+
+
+
+
+#### [`deletable`](#) ([`ManifestDeletionLifecycle!`](/swapi/objects/manifest-deletion-lifecycle))
+
+
+
+
+#### [`createdAt`](#) ([`DateTime`](/swapi/scalars/date-time))
+
+
+
+
+#### [`updatedAt`](#) ([`DateTime`](/swapi/scalars/date-time))
+
+
+
+
+#### [`bundle`](#) ([`Bundle`](/swapi/objects/bundle))
+
+
+
+
+#### [`packages`](#) ([`[Package]`](/swapi/objects/package))
+
+
+
+
+
+

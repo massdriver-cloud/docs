@@ -1,0 +1,97 @@
+---
+id: target
+title: Target
+hide_table_of_contents: false
+---
+
+
+No description
+
+```graphql
+type Target {
+  id: ID
+  name: String
+  slug: String
+  description: String
+  deletable: TargetDeletionLifecycle!
+  alarmChannels: [AlarmChannel]
+  createdAt: DateTime
+  updatedAt: DateTime
+  diagram: Diagram
+  manifests: [Manifest]
+  project: Project
+  packages: [Package]
+  connections: [TargetConnection]
+}
+```
+
+
+### Fields
+
+#### [`id`](#) ([`ID`](/swapi/scalars/id))
+
+
+
+
+#### [`name`](#) ([`String`](/swapi/scalars/string))
+
+
+
+
+#### [`slug`](#) ([`String`](/swapi/scalars/string))
+
+
+
+
+#### [`description`](#) ([`String`](/swapi/scalars/string))
+
+
+
+
+#### [`deletable`](#) ([`TargetDeletionLifecycle!`](/swapi/objects/target-deletion-lifecycle))
+
+
+
+
+#### [`alarmChannels`](#) ([`[AlarmChannel]`](/swapi/objects/alarm-channel))
+
+
+
+
+#### [`createdAt`](#) ([`DateTime`](/swapi/scalars/date-time))
+
+
+
+
+#### [`updatedAt`](#) ([`DateTime`](/swapi/scalars/date-time))
+
+
+
+
+#### [`diagram`](#) ([`Diagram`](/swapi/objects/diagram))
+
+Target's diagram links and resources
+
+
+#### [`manifests`](#) ([`[Manifest]`](/swapi/objects/manifest))
+
+Manifests for this target's package
+
+
+#### [`project`](#) ([`Project`](/swapi/objects/project))
+
+
+
+
+#### [`packages`](#) ([`[Package]`](/swapi/objects/package))
+
+
+
+
+#### [`connections`](#) ([`[TargetConnection]`](/swapi/objects/target-connection))
+
+
+
+
+
+

@@ -1,0 +1,73 @@
+---
+id: account
+title: Account
+hide_table_of_contents: false
+---
+
+
+No description
+
+```graphql
+type Account {
+  id: ID!
+  email: String!
+  betaAccessEnabled: Boolean!
+  attribution: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  token: String
+  pendingInvitations: [PendingInvitation]
+  organizations: [Organization]
+}
+```
+
+
+### Fields
+
+#### [`id`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+#### [`email`](#) ([`String!`](/swapi/scalars/string))
+
+
+
+
+#### [`betaAccessEnabled`](#) ([`Boolean!`](/swapi/scalars/boolean))
+
+
+
+
+#### [`attribution`](#) ([`String`](/swapi/scalars/string))
+
+
+
+
+#### [`createdAt`](#) ([`DateTime!`](/swapi/scalars/date-time))
+
+
+
+
+#### [`updatedAt`](#) ([`DateTime!`](/swapi/scalars/date-time))
+
+
+
+
+#### [`token`](#) ([`String`](/swapi/scalars/string))
+
+Temporary Account token for GraphQL Subscriptions
+
+
+#### [`pendingInvitations`](#) ([`[PendingInvitation]`](/swapi/objects/pending-invitation))
+
+
+
+
+#### [`organizations`](#) ([`[Organization]`](/swapi/objects/organization))
+
+Organizations you are a member of
+
+
+
+

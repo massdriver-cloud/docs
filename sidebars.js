@@ -7,6 +7,7 @@ module.exports = {
       items: ["bundles/overview"]
     },
     { type: "category", label: "Deploying Applications", items: ["applications/overview"] },
-    { type: "category", label: "JSON Schema Recipes", items: ["json-schema-recipes/overview"] }
-  ]
+    { type: "category", label: "JSON Schema Recipes", items: ["json-schema-recipes/overview"] },
+  ],
+  ...require("./docs/swapi/sidebar-schema.js"),
 };

@@ -1,0 +1,81 @@
+---
+id: root-subscription-type
+title: RootSubscriptionType
+hide_table_of_contents: false
+---
+
+
+No description
+
+```graphql
+type RootSubscriptionType {
+  deploymentProgress(
+  organizationId: ID!
+  packageId: ID!
+): ProvisioningLifecycleEvents
+  containerRepositories(
+  organizationId: ID!
+): ContainerRepository
+  cloudContainerRepositories(
+  organizationId: ID!
+  operationId: ID!
+): CloudContainerRepositoryRequest
+  packageAlerts(
+  organizationId: ID!
+  packageId: ID!
+): PackageAlert
+}
+```
+
+
+### Fields
+
+#### [`deploymentProgress`](#) ([`ProvisioningLifecycleEvents`](/swapi/unions/provisioning-lifecycle-events))
+
+
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+- ##### [`packageId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+#### [`containerRepositories`](#) ([`ContainerRepository`](/swapi/objects/container-repository))
+
+
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+#### [`cloudContainerRepositories`](#) ([`CloudContainerRepositoryRequest`](/swapi/objects/cloud-container-repository-request))
+
+
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+- ##### [`operationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+#### [`packageAlerts`](#) ([`PackageAlert`](/swapi/objects/package-alert))
+
+
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+- ##### [`packageId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+
+

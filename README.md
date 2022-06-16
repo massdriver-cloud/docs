@@ -17,3 +17,13 @@ To get started with Docusaurus on Vercel, you can use the [Docusaurus CLI](https
 ```shell
 $ npx @docusaurus/init@next init my-website classic
 ```
+
+### Generating GQL Docs
+
+```shell
+cd $MASSDRIVER_DIR
+mix absinthe.schema.sdl
+mv schema.graphql $DOCS_DIR/schema/md.graphql
+cd $DOCS_DIR
+npx docusaurus graphql-to-doc
+```

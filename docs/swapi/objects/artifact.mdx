@@ -1,0 +1,103 @@
+---
+id: artifact
+title: Artifact
+hide_table_of_contents: false
+---
+
+
+No description
+
+```graphql
+type Artifact {
+  id: ID!
+  name: String!
+  type: String!
+  data: JSON
+  specs: JSON
+  packageId: ID
+  artifactDefinition: ArtifactDefinition!
+  package: Package
+  connections: [Connection]
+  targetConnections: [TargetConnection]
+  origin: ArtifactOrigin
+  deletable: ArtifactDeletionLifecycle!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [`id`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+#### [`name`](#) ([`String!`](/swapi/scalars/string))
+
+
+
+
+#### [`type`](#) ([`String!`](/swapi/scalars/string))
+
+
+
+
+#### [`data`](#) ([`JSON`](/swapi/scalars/json))
+
+
+
+
+#### [`specs`](#) ([`JSON`](/swapi/scalars/json))
+
+
+
+
+#### [`packageId`](#) ([`ID`](/swapi/scalars/id))
+
+
+
+
+#### [`artifactDefinition`](#) ([`ArtifactDefinition!`](/swapi/objects/artifact-definition))
+
+The type of artifact
+
+
+#### [`package`](#) ([`Package`](/swapi/objects/package))
+
+The package that provisioned this artifact
+
+
+#### [`connections`](#) ([`[Connection]`](/swapi/objects/connection))
+
+Connections to packages
+
+
+#### [`targetConnections`](#) ([`[TargetConnection]`](/swapi/objects/target-connection))
+
+Targets this package is a default in
+
+
+#### [`origin`](#) ([`ArtifactOrigin`](/swapi/enums/artifact-origin))
+
+How the artifact was created, manually imported or provisioned by Massdriver
+
+
+#### [`deletable`](#) ([`ArtifactDeletionLifecycle!`](/swapi/objects/artifact-deletion-lifecycle))
+
+Check to see if the artifact can be deleted.
+
+
+#### [`createdAt`](#) ([`DateTime!`](/swapi/scalars/date-time))
+
+
+
+
+#### [`updatedAt`](#) ([`DateTime!`](/swapi/scalars/date-time))
+
+
+
+
+
+

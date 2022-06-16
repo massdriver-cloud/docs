@@ -1,0 +1,42 @@
+---
+id: delete-target-connection
+title: deleteTargetConnection
+hide_table_of_contents: false
+---
+
+
+Disconnect an artifact as the default artifact type for a given target.
+
+This is a potentially dangerous/destructive action.
+
+For example, changing the default VPC will cause all resources to be deleted and recreated in the new VPC.
+
+```graphql
+deleteTargetConnection(
+  organizationId: ID!
+  id: ID!
+): TargetConnectionPayload
+```
+
+
+### Arguments
+
+#### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+#### [`id`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+### Type
+
+#### [`TargetConnectionPayload`](/swapi/objects/target-connection-payload)
+
+
+
+
+
+

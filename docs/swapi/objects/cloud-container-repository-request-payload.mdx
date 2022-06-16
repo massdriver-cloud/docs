@@ -1,0 +1,37 @@
+---
+id: cloud-container-repository-request-payload
+title: CloudContainerRepositoryRequestPayload
+hide_table_of_contents: false
+---
+
+
+No description
+
+```graphql
+type CloudContainerRepositoryRequestPayload {
+  successful: Boolean!
+  messages: [ValidationMessage]
+  result: CloudContainerRepositoryRequest
+}
+```
+
+
+### Fields
+
+#### [`successful`](#) ([`Boolean!`](/swapi/scalars/boolean))
+
+Indicates if the mutation completed successfully or not.
+
+
+#### [`messages`](#) ([`[ValidationMessage]`](/swapi/objects/validation-message))
+
+A list of failed validations. May be blank or null if mutation succeeded.
+
+
+#### [`result`](#) ([`CloudContainerRepositoryRequest`](/swapi/objects/cloud-container-repository-request))
+
+The object created/updated/deleted by the mutation. May be null if mutation failed.
+
+
+
+
