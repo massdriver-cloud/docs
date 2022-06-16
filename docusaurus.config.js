@@ -15,12 +15,6 @@ module.exports = {
       },
       items: [
         {
-          to: 'docs/doc1',
-          activeBasePath: 'docs',
-          label: 'Docs',
-          position: 'left',
-        },
-        {
           href: 'https://github.com/massdriver-cloud',
           label: 'GitHub',
           position: 'right',
