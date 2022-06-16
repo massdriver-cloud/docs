@@ -25,7 +25,7 @@ module.exports = {
       style: 'dark',
       links: [
         // {
-        //   title: 'Docs',
+        //   title: 'We can put links to most popular doc pages here',
         //   items: [
         //     {
         //       label: 'Style Guide',
