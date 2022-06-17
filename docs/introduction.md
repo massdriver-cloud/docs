@@ -1,11 +1,13 @@
 ---
 id: introduction
 slug: /
-title: Introduction
+title: Welcome to Massdriver!
 sidebar_label: Introduction
 ---
 
+Massdriver is an internal developer platfrom with support for managing cloud infrastructure _and_ applications 
 
+## Bar
 Sections:
 
 * IDP

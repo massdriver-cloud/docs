@@ -19,6 +19,11 @@ module.exports = {
           label: "GraphQL Schema", // change the label with yours
           position: "left",
         },
+        // {
+        //   href: 'https://community.massdriver.cloud',
+        //   label: 'Community',
+        //   position: 'right',
+        // }        
         {
           href: 'https://github.com/massdriver-cloud',
           label: 'GitHub',
@@ -96,7 +101,7 @@ module.exports = {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl:
-            'https://github.com/massdriver-cloud/docs/edit/main/website/',
+            'https://github.com/massdriver-cloud/docs/edit/main/',
         },
         blog: false,
         theme: {
