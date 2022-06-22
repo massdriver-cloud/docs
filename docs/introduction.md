@@ -31,37 +31,35 @@ A collection of manifests that compose an application or architecture. A project
 
 A project also acts as the parity boundary. All targets in a project will have the same blueprint of resources applied (although scale can be controlled independently).
 
-### Manifest
+### Manifests & Packages
 
 Manifests are _bundles_ that have been added to a project with a context. 
 
-For example: You may add the 'aws-elasticache-redis' bundle to a project twice, once for `user-sessions` and a second instance for `caching`.
+For example: You may add the `aws-elasticache-redis` bundle to a project for multiple use-cases, one instance for `user-sessions` and a second instance for `caching`.
+
+A _package_ is a deployed intance of a _manifest_.
 
 ### Target
 
-An "environment" or "workspace" that a manifest will be deployed to. Massdriver doesn't enforce any governance on how you design your targets. They can be modeled by application stage (production, staging, development), by region (prod-usw, prod-eu), and even ephemerally per developer (alice-dev, bob-dev).
+An "environment" or "workspace" that a manifest will be deployed to. Massdriver doesn't enforce any governance on how you design your targets. Targets can be modeled by application stage (production, staging, development), by region (prod-usw, prod-eu), and even ephemerally per developer (alice-dev, bob-dev).
 
-Massdriver separates authentication and scale from the parity that is enforced by a project onto a target. This allows you to have the same 'architecture' for staging and production, but have a different scale for cost savings purposes.
+Massdriver separates authentication and scale from the parity that is enforced by a project. This allows targets to share the same 'architecture' for staging and production, but have a different scale for cost savings purposes.
 
-### Link
+### Links & Connections
 
-A link is the line between two manifests. A link acts as a template for Connection creation at the package level. 
+Links and connections are the lines between manifests in the Massdriver UI. They can be thought of as an "input" that is another package's artifact.
 
-### Connection
+A _link_ acts as a placeholder for a connection when connecting infrastructure in Massdriver. Links are converted to connections once the source manifest (left-side) of the connection has been provisioned. They are indicated as dashed lines in the Massdriver UI.
 
- A connection can be thought of as an "input" that is another package's artifact. This links that artifact as an 'input connection' to the package.
-
-### Package
-
-A manifest that has been configured or deployed to a target.
+A _connection_ is indicated by a solid line. A connection represents a provisioned artifact that is connected as an input to the dependent manifest (right-side).
 
 ### Params
 
-User supplied parameters to package
+Values that are configured by an end-user to deploy a manifest. These are defined using JSON Schema (draft-07).
 
 ### Deployment
  
-The history of provisioning or decommissioning infrastructure or applications in Massdriver.
+A record of provisioning or decommissioning infrastructure or applications in Massdriver.
 
 ## Parity Enforcement
 

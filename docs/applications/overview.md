@@ -5,7 +5,6 @@ title: Applications
 sidebar_label: Overview
 ---
 
-
 :::note
 Applications in massdriver are supported today, but the documentation is _coming soon_.
 
