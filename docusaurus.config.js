@@ -7,6 +7,9 @@ module.exports = {
   organizationName: 'massdriver-cloud',
   projectName: 'docs',
   themeConfig: {
+    prism: {
+      additionalLanguages: ['yaml', 'hcl', 'shell-session'],
+    },
     navbar: {
       title: 'Massdriver',
       logo: {
