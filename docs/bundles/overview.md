@@ -5,18 +5,29 @@ title: Bundle Development
 sidebar_label: Overview
 ---
 
-Sections
+:::note
+This guide is a work-in-progress.
+:::
 
-* What is a bundle
-  * params, connections, artifacts
-  * artifact definitions https://github.com/massdriver-cloud/artifact-definitions#readme
-  * How is it different than Terraform
-* Generating a bundle
-* dev params
-* dev connections
-* local provider overrides (providers.tf)
-* md_metadata
-* 
-* monitoring modules
-* artifact definitions
-* MD best practices
+## What is a Bundle
+
+### Params
+
+### Connections
+
+### Artifacts
+
+### Artifact Definitions
+
+## Development
+
+### Massdriver Metadata
+
+### Dev Params & Connections
+
+### Local `Provider` Overrides
+
+## Integrated Monitoring & Alarms
+
+
+## Best Practices
