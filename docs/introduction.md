@@ -17,9 +17,13 @@ Massdriver includes a number of pre-built best-practices and reference architect
 
 A Massdriver bundle typically services a single purpose rather than abstracting an entire cloud service. Instead of terraform modules like "AWS RDS" they will typically be designed around the use case a software engineering is looking for like "AWS RDS MySQL".
 
-### ArtifactDefinition
+### Artifact Definition
 
 Artifact definitions are a form of type system in Massdriver that determines _what_ types of bundles can be connected together. They typically carry metadata like region, policies, and cloud resource identifiers.
+
+### Artifact
+
+Resource created by a deployment that can be attached to other bundles.
 
 ### Project
 
@@ -58,9 +62,6 @@ User supplied parameters to package
 ### Deployment
  
 The history of provisioning or decommissioning infrastructure or applications in Massdriver.
-### Artifact
-
-Resource created by a deployment.
 
 ## Parity Enforcement
 
