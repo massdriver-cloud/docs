@@ -2,6 +2,17 @@
 
 This directory is a brief example of a [Docusaurus](https://v2.docusaurus.io) site that can be deployed to Vercel with zero configuration.
 
+## Enabling Pre-commit
+
+This repo includes Terraform pre-commit hooks.
+
+[Install precommmit](https://pre-commit.com/index.html#installation) on your system.
+
+```shell
+git init
+pre-commit install
+```
+
 ## Deploy Your Own
 
 Deploy your own Docusaurus project with Vercel.
