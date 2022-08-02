@@ -5,62 +5,48 @@ title: Welcome to Massdriver!
 sidebar_label: Introduction
 ---
 
-Massdriver is an internal developer platfrom with support for deploying cloud infrastructure _and_ applications in AWS, Google Cloud, Azure, and Kubernetes.
+Massdriver is a visual internal developer platfrom (IDP) that enables engineers to deploy production-ready cloud infrastructure and applications in minutes, no DevOps unicorn required.
 
-## Terminology
+Our goal is to help teams fully realize the promise of DevOps and remove the silos of knowledge between engineering and operations teams.
 
-### Bundles
+The culture of DevOps has been long dead, and modern "DevOps" teams are waterfall development in agile clothing.
 
-Bundles are the basic building blocks of infrastructure, applications, and architectures in Massdriver. They are composed of Terraform modules and Helm charts.
+Below are a list of technical features, but by far the most important feature we offer is _anti-frustration_.
 
-Massdriver includes a number of pre-built best-practices and reference architecture bundles, but you may also develop your own.
+Software Engineers, confidentally self-serve infrastructure and application services without the tyranny of an op's team backlog
 
-A Massdriver bundle typically services a single purpose rather than abstracting an entire cloud service. Instead of terraform modules like "AWS RDS" they will typically be designed around the use case a software engineering is looking for like "AWS RDS MySQL".
+Operations Engineers, let software engineers self-serve with the confidence that your governance, guardrails, and audit logs are in place. Focus on work thats valuable to the business, not just configuring an S3 bucket or database for the 1000th time.
 
-### Artifact Definition
+**Features you'll love:**
 
-Artifact definitions are a form of type system in Massdriver that determines _what_ types of bundles can be connected together. They typically carry metadata like region, policies, and cloud resource identifiers.
+* Anti-lockin: Use the best tool for the job in each cloud with the same interface. All infrastructure and applications run in _your_ cloud account - walk away anytime without a migration process.
+* No black boxes: Our bundles and design docs are all [open source.](#LINKTBD)
+* Parity: Each `project` is a _blueprint_ with adjustable scale per application environment, region, or tenant.
+* Security benchmark and compliance scanning
+* Automated IAM management and secrets management for your applications
+* Integrated OPA rules to avoid accidental deletion
+* Visually diff environments and deployment history
+* Integrated monitoring and alerting, cancel PagerDuty - we'll wake you up for free!
+* Consistent naming and tagging conventions everywhere.
+* Fast track compliance with diagrams, activity logs, bundle source code access, and change/deployment history
 
-### Artifact
+Massdriver includes 50+ infrastructure and application bundles designed by industry experts focusing on security and best-practices with support for AWS, GCP, Azure, and Kubernetes (in cloud or on-prem).
 
-Resource created by a deployment that can be attached to other bundles.
+Massdriver is an extendable platform. We don't want to be the black box that most PaaS are today. Design your own [private bundles](#TBDLINK) and [applications](#TBDLINK) or [request bundles](#TBDLINK) and we'll add it to our roadmap.
 
-### Project
+Massdriver integrates with your CI system and provides an unified infrastructure and application continous deployment system.
 
-A collection of manifests that compose an application or architecture. A project acts as a 'blue print' that can be applied to multiple environments or regions.
+We fully dogfood Massdriver,and all of [our bundles](#TBDLINK) are open sourced.
+## Getting started
 
-A project also acts as the parity boundary. All targets in a project will have the same blueprint of resources applied (although scale can be controlled independently).
+* Developing custom bundles
+* Packaging serverless applications
+* Packaging kubernetes applications
+* Packaging virtual machine applications
 
-### Manifests & Packages
+## We are here to help
 
-Manifests are _bundles_ that have been added to a project with a context. 
-
-For example: You may add the `aws-elasticache-redis` bundle to a project for multiple use-cases, one instance for `user-sessions` and a second instance for `caching`.
-
-A _package_ is a deployed intance of a _manifest_.
-
-### Target
-
-An "environment" or "workspace" that a manifest will be deployed to. Massdriver doesn't enforce any governance on how you design your targets. Targets can be modeled by application stage (production, staging, development), by region (prod-usw, prod-eu), and even ephemerally per developer (alice-dev, bob-dev).
-
-Massdriver separates authentication and scale from the parity that is enforced by a project. This allows targets to share the same 'architecture' for staging and production, but have a different scale for cost savings purposes.
-
-### Links & Connections
-
-Links and connections are the lines between manifests in the Massdriver UI. They can be thought of as an "input" that is another package's artifact.
-
-A _link_ acts as a placeholder for a connection when connecting infrastructure in Massdriver. Links are converted to connections once the source manifest (left-side) of the connection has been provisioned. They are indicated as dashed lines in the Massdriver UI.
-
-A _connection_ is indicated by a solid line. A connection represents a provisioned artifact that is connected as an input to the dependent manifest (right-side).
-
-### Params
-
-Values that are configured by an end-user to deploy a manifest. These are defined using JSON Schema (draft-07).
-
-### Deployment
- 
-A record of provisioning or decommissioning infrastructure or applications in Massdriver.
-
-## Parity Enforcement
-
-## JSON Schema
+* Explore our bundles
+* See (and contribute to) our roadmap
+* Join the conversation
+* Coming soon: webinars and workshops

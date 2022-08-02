@@ -22,11 +22,11 @@ module.exports = {
           label: "GraphQL Schema", // change the label with yours
           position: "left",
         },
-        // {
-        //   href: 'https://community.massdriver.cloud',
-        //   label: 'Community',
-        //   position: 'right',
-        // }        
+        {
+          href: 'https://community.massdriver.cloud',
+          label: 'Community',
+          position: 'right',
+        },
         {
           href: 'https://github.com/massdriver-cloud',
           label: 'GitHub',
@@ -57,10 +57,10 @@ module.exports = {
               label: 'Stack Overflow',
               href: 'https://stackoverflow.com/questions/tagged/massdriver',
             },
-            // {
-            //   label: 'Discord',
-            //   href: 'https://discordapp.com/invite/docusaurus',
-            // },
+            {
+              href: 'https://community.massdriver.cloud',
+              label: 'Community',
+            },
             {
               label: 'Twitter',
               href: 'https://twitter.com/massdriver',
@@ -70,10 +70,10 @@ module.exports = {
         {
           title: 'More',
           items: [
-            // {
-            //   label: 'Blog',
-            //   href: 'https://blog.massdriver.cloud',
-            // },
+            {
+              label: 'Blog',
+              href: 'https://blog.massdriver.cloud',
+            },
             {
               label: 'GitHub',
               href: 'https://github.com/massdriver-cloud',
@@ -102,9 +102,7 @@ module.exports = {
         docs: {
           routeBasePath: '/',
           sidebarPath: require.resolve('./sidebars.js'),
-          // Please change this to your repo.
-          editUrl:
-            'https://github.com/massdriver-cloud/docs/edit/main/',
+          editUrl: 'https://github.com/massdriver-cloud/docs/edit/main/',
         },
         blog: false,
         theme: {

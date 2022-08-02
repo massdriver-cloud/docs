@@ -1,8 +1,8 @@
 ---
-id: walk-through
+id: bundles-walk-through
 slug: /bundles/walk-through
 title: Terraform Bundle Development
-sidebar_label: Terraform Bundle Development
+sidebar_label: Walk Through
 ---
 
 This tutorial will walk you through the process of building your own custom bundle for use in Massdriver.cloud.
@@ -43,7 +43,7 @@ Description: An AWS SNS topic for event driven workflows
 We find it best to manage your bundle in its own source code repository. This allows you to develop, update, and publish the bundle independently. Thus, the bundle template will come with a set of useful git files for validation and maintenance.
 :::
 
-The bundle generator will create the `aws-sns-topic-tutorial` directory, and within it will be multiple files and folders. 
+The bundle generator will create the `aws-sns-topic-tutorial` directory, and within it will be multiple files and folders.
 
 The two most notable are:
 
@@ -53,11 +53,11 @@ The two most notable are:
 ### Write the terraform in the src directory
 
 For this tutorial, we’re going to make a simple AWS SNS topic. Open the `main.tf` file in the `src` directory and create an `aws_sns_topic` resource.
- 
+
 ```hcl title="./src/main.tf"
-resource "aws_sns_topic" "main" { 
+resource "aws_sns_topic" "main" {
   # We'll configure this to use a variable later in the tutorial
-  name = "temporary" 
+  name = "temporary"
 }
 ```
 
@@ -79,7 +79,7 @@ connections:
 ```
 
 
-This `connections` block is technically a yaml-formated JSON Schema block. We are declaring that this SNS bundle has exactly one dependency, named `aws_authentication`, it is required, and its type is a massdriver/aws-iam-role. 
+This `connections` block is technically a yaml-formated JSON Schema block. We are declaring that this SNS bundle has exactly one dependency, named `aws_authentication`, it is required, and its type is a massdriver/aws-iam-role.
 
 :::note
 Massdriver has open sourced all of our artifact definitions so users can see the full structure. https://github.com/massdriver-cloud/artifact-definitions
@@ -221,7 +221,7 @@ If either of these commands returns an error, address the schema violations befo
 Now that we have variables in our terraform, let’s use them. Re-open the `main.tf` file and update the terraform to look like the section below.
 
 ```hcl title="src/main.tf"
-resource "aws_sns_topic" "main" { 
+resource "aws_sns_topic" "main" {
   name                        = "${var.md_metadata.name_prefix}" + var.fifo ? ".fifo" : ""
   fifo_topic                  = var.fifo
   content_based_deduplication = var.fifo

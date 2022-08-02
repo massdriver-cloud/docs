@@ -1,5 +1,5 @@
 ---
-id: overview
+id: applications-overview
 slug: /applications
 title: Applications
 sidebar_label: Overview
@@ -10,3 +10,8 @@ Applications in massdriver are supported today, but the documentation is _coming
 
 In the meantime you can check out our [CLI's](https://github.com/massdriver-cloud/massdriver-cli) `help` command to get started.
 :::
+
+* [ ] Applications _are_ bundles 🤯
+* [ ] Configure CD w/ GHA & `mass app deploy`
+* [ ] Configuring DNS Zones
+* [ ] Configuring Container Repositories
