@@ -1,6 +1,6 @@
 module.exports = {
   title: 'Massdriver Docs',
-  tagline: 'Effortless DevOps',
+  tagline: 'The Future of Platform Engineering',
   url: 'https://docs.massdriver.cloud',
   baseUrl: '/',
   favicon: 'img/favicon.ico',
@@ -18,8 +18,8 @@ module.exports = {
       },
       items: [
         {
-          to: "/swapi", // adjust the location depending on your baseURL (see configuration)
-          label: "GraphQL Schema", // change the label with yours
+          to: "/swapi",
+          label: "GraphQL API",
           position: "left",
         },
         {
