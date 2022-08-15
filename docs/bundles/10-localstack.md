@@ -26,4 +26,3 @@ tflocal plan -var-file dev.params.tfvars.json -var-file dev.connections.tfvars.j
 ## Note on connections
 
 In order for your connections to be set up the same way they would normally you should still download and AWS IAM artifact from massdriver and place the details in the `aws_authentication` portion of your `dev.connections.tfvars.json` file. These credentials will essentially be ignored while using local stack.
-

@@ -13,6 +13,8 @@ Resource created by a [deployment](#deployment) that can be attached to other bu
 
 Artifact definitions are a form of type system in Massdriver that determines _what_ types of [bundles](#bundle) can be connected together. They typically carry metadata like region, policies, and cloud resource identifiers.
 
+additonalProperties should always be false or object
+
 ### Bundle
 
 Bundles are the basic building blocks of infrastructure, applications, and architectures in Massdriver. They are composed of Terraform modules and Helm charts.

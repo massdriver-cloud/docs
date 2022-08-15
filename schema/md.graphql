@@ -33,10 +33,18 @@ type ArchitectureLink {
   destField: String!
 }
 
+type DnsZone {
+  id: ID
+  name: String
+  cloud: String
+  location: String
+  cloudProviderId: String
+}
+
 enum AlarmState {
   OK
   ALARM
-  INSUFFICENT_DATA
+  INSUFFICIENT_DATA
 }
 
 type TargetPayload {
@@ -83,12 +91,6 @@ type ArchitectureManifest {
   links: [ArchitectureLink]
 }
 
-type FeatureSet {
-  seats: Int
-  projects: Int
-  targetsPerProject: Int
-}
-
 type OrganizationPayload {
   "Indicates if the mutation completed successfully or not."
   successful: Boolean!
@@ -122,17 +124,34 @@ type ApiKeyPayload {
   result: ApiKey
 }
 
+"Represents an uploaded file."
+scalar Upload
+
 type PackageAlert {
   notification: JSON
   occurredAt: String
-  providerNotificationId: String
+  providerResourceId: String
   displayName: String
   state: Boolean @deprecated(reason: "This field will be removed after cutover to the new package alert format")
   packageAlertState: PackageAlertState
 }
 
+"Field that an artifact can be linked to on this manifest."
+type LinkableField {
+  name: String!
+  artifactDefinition: ArtifactDefinition!
+}
+
 type LocationList {
   locations: [String]
+}
+
+"Supported download formats"
+type ArtifactDefinitionExportFormat {
+  downloadButtonText: String!
+  fileFormat: String!
+  template: String!
+  templateLang: String!
 }
 
 type Account {
@@ -140,13 +159,16 @@ type Account {
 
   email: String!
 
-  betaAccessEnabled: Boolean!
+  betaAccessEnabled: Boolean! @deprecated(reason: "Removing the beta block feature")
 
   attribution: String
 
   createdAt: DateTime!
 
   updatedAt: DateTime!
+
+  "Account's avatar"
+  avatar: Avatar
 
   "Temporary Account token for GraphQL Subscriptions"
   token: String
@@ -157,12 +179,23 @@ type Account {
   organizations: [Organization]
 }
 
+"Container Repository filters"
+input ContainerRepositoryFilters {
+  "The cloud in which to filter by"
+  cloud: String
+}
+
 "Artifact filters"
 input ArtifactsFilters {
   "The artifact definition type to filter by"
   type: String
 
   origin: ArtifactOrigin
+}
+
+type PackageDeletionLifecycleArtifactError {
+  artifact: Artifact!
+  message: String!
 }
 
 type ManifestDeletionLifecyclePackageError {
@@ -176,8 +209,6 @@ type Membership {
 
 type RootSubscriptionType {
   deploymentProgress(organizationId: ID!, packageId: ID!): ProvisioningLifecycleEvents
-  containerRepositories(organizationId: ID!): ContainerRepository
-  cloudContainerRepositories(organizationId: ID!, operationId: ID!): CloudContainerRepositoryRequest
   packageAlerts(organizationId: ID!, packageId: ID!): PackageAlert
 }
 
@@ -223,23 +254,33 @@ type ArtifactResource {
   sourceProjectId: String
 }
 
+type PackageDeletionLifecycle {
+  result: Boolean!
+  messages: [PackageDeletionLifecycleArtifactError]
+}
+
 type Package {
   id: ID!
 
   namePrefix: String!
 
   "Package configuration parameters"
-  params: JSON
+  params: JSON!
 
   status: PackageStatus!
 
-  createdAt: DateTime
+  createdAt: DateTime!
 
-  updatedAt: DateTime
+  updatedAt: DateTime!
 
   activeDeployment: Deployment
 
+  "Checks if this package can be decommissioned."
+  decommissionable: PackageDeletionLifecycle!
+
   manifest: Manifest!
+
+  paramsSchema: JSON!
 
   providerResources: [ProviderResource]
 
@@ -265,6 +306,7 @@ type ArtifactDeletionLifecycle {
 type Bundle {
   id: ID!
 
+  "The short name of the bundle"
   name: String!
 
   "Application or bundle"
@@ -289,7 +331,7 @@ type Bundle {
 
   updatedAt: DateTime!
 
-  "Full name of the bundle"
+  "The full name of the bundle"
   fqn: String!
 }
 
@@ -325,6 +367,9 @@ type Deployment {
   status: String!
 
   action: String!
+
+  "Errors encountered during deployment"
+  errors: [DeploymentError]
 
   package: Package!
 
@@ -425,7 +470,8 @@ human-readable json string.
 scalar JSON
 
 type RootMutationType {
-  createAlarmChannel(organizationId: ID!, targetId: ID!, artifactId: ID!, location: String!, cloud: String!): AlarmChannelPayload
+  "Upload an avatar for an account."
+  uploadAvatar(image: Upload!): AvatarPayload
 
   "Creates an API key"
   createApiKey(organizationId: ID!, name: String!): ApiKeyPayload
@@ -448,13 +494,13 @@ type RootMutationType {
 
   createBillingSubscription(organizationId: ID!, planId: ID!): BillingSubscriptionPayload
 
-  createContainerRepository(organizationId: ID!, name: String!, location: String!, artifactId: ID!): ContainerRepositoryPayload
+  createContainerRepository(organizationId: ID!, name: String!, location: String!, artifactId: ID!, cloud: String!): ContainerRepositoryPayload
 
   disconnectContainerRepository(organizationId: ID!, id: ID!): ContainerRepositoryPayload
 
-  connectContainerRepository(organizationId: ID!, name: String!, location: String!, cloudProviderId: String!): ContainerRepositoryPayload
-
-  requestCloudContainerRepositories(organizationId: ID!, artifactId: ID!, location: String!): CloudContainerRepositoryRequestPayload
+  connectContainerRepository(
+    organizationId: ID!, name: String!, location: String!, cloudProviderId: String!, cloud: String!
+  ): ContainerRepositoryPayload
 
   "Enqueues a package for deployment"
   deployPackage(organizationId: ID!, targetId: ID!, manifestId: ID!): DeploymentPayload
@@ -468,6 +514,12 @@ type RootMutationType {
   ): LinkPayload
 
   unlinkManifests(organizationId: ID!, linkId: ID!): LinkPayload
+
+  createDnsZone(organizationId: ID!, name: String!, location: String!, artifactId: ID!, cloud: String!): DnsZonePayload
+
+  connectDnsZone(organizationId: ID!, name: String!, location: String!, cloudProviderId: String!, cloud: String!): DnsZonePayload
+
+  disconnectDnsZone(organizationId: ID!, id: ID!): DnsZonePayload
 
   "Adds a bundle to a project"
   createManifest(organizationId: ID!, bundleId: ID!, projectId: ID!, name: String!, slug: String!, description: String): ManifestPayload
@@ -485,7 +537,7 @@ type RootMutationType {
   configurePackage(organizationId: ID!, manifestId: ID!, targetId: ID!, params: JSON!): PackagePayload
 
   "Create a project"
-  createProject(organizationId: ID!, name: String!, description: String, slug: String): ProjectPayload
+  createProject(organizationId: ID!, name: String!, description: String, slug: String!): ProjectPayload
 
   "Update a project"
   updateProject(organizationId: ID!, id: ID!, name: String!, description: String): ProjectPayload
@@ -549,6 +601,9 @@ type RootQueryType {
     input: ArtifactsInput
   ): [Artifact]
 
+  "Connection data for an artifact rendered in requested format"
+  downloadArtifact(organizationId: ID!, artifactId: ID!, format: DownloadFormat!): RenderedArtifact
+
   artifactDefinitions(
     "List all artifact definitions"
     organizationId: ID!
@@ -575,22 +630,53 @@ type RootQueryType {
 
   bundles(organizationId: ID!): [Bundle]
 
-  containerRepositories(organizationId: ID!): [ContainerRepository]
+  containerRepositories(
+    organizationId: ID!
+
+    "Filter Container Repository results"
+    input: ContainerRepositoryInput
+  ): [ContainerRepository]
+
+  cloudContainerRepositories(organizationId: ID!, location: String!, artifactId: ID!): [ContainerRepository]
 
   deployments(organizationId: ID!, manifestId: ID!, targetId: ID!): [Deployment]
+
+  dnsZones(
+    organizationId: ID!
+
+    "Filter DNS Zone results"
+    input: DnsZoneInput
+  ): [DnsZone]
+
+  cloudDnsZones(organizationId: ID!, location: String!, artifactId: ID!): [DnsZone]
 
   "Gets supported regions for cloud services"
   supportedLocations(organizationId: ID!, cloudService: String!): LocationList
 
-  manifest(organizationId: ID!, id: ID!): Manifest
+  manifest(
+    organizationId: ID!
+
+    "Manifest ID or slug"
+    id: ID!
+  ): Manifest
 
   package(organizationId: ID!, manifestId: ID!, targetId: ID!): Package
 
   projects(organizationId: ID!): [Project]
 
-  project(organizationId: ID!, id: ID!): Project
+  project(
+    organizationId: ID!
 
-  target(organizationId: ID!, id: ID!): Target
+    "Project ID or slug"
+    id: ID!
+  ): Project
+
+  target(
+    organizationId: ID!
+
+    "Target ID or slug"
+    id: ID!
+  ): Target
 
   "gets all groups for an organization"
   groups(organizationId: ID!): [Group]
@@ -734,17 +820,6 @@ type MembershipPayload {
   result: Membership
 }
 
-type CloudContainerRepositoryRequestPayload {
-  "Indicates if the mutation completed successfully or not."
-  successful: Boolean!
-
-  "A list of failed validations. May be blank or null if mutation succeeded."
-  messages: [ValidationMessage]
-
-  "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
-  result: CloudContainerRepositoryRequest
-}
-
 type Manifest {
   id: ID!
   name: String!
@@ -752,10 +827,22 @@ type Manifest {
   suffix: String!
   description: String
   deletable: ManifestDeletionLifecycle!
-  createdAt: DateTime
-  updatedAt: DateTime
-  bundle: Bundle
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  bundle: Bundle!
   packages: [Package]
+  linkableFields: [LinkableField]
+}
+
+type AvatarPayload {
+  "Indicates if the mutation completed successfully or not."
+  successful: Boolean!
+
+  "A list of failed validations. May be blank or null if mutation succeeded."
+  messages: [ValidationMessage]
+
+  "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
+  result: Avatar
 }
 
 type TargetConnectionPayload {
@@ -802,16 +889,14 @@ type DeploymentLifecycleEvent {
   deployment: Deployment!
 }
 
-type CloudContainerRepositoryRequest {
-  location: String
-  operation: String
-  operationId: ID
-  status: String
-  result: JSON
-}
-
 "Deployment and resource lifecycle events"
 union ProvisioningLifecycleEvents = DeploymentLifecycleEvent | ResourceLifecycleEvent
+
+"DNS Zone filters"
+input DnsZoneFilters {
+  "The cloud in which to filter by"
+  cloud: String
+}
 
 enum PackageStatus {
   INITIALIZED
@@ -834,8 +919,10 @@ type ArtifactDefinition {
   id: ID
   name: String
   url: String
-  type: String
+  type: String @deprecated(reason: "use `name` field")
   schema: String
+  exportFormats: [ArtifactDefinitionExportFormat]
+  fqn: String! @deprecated(reason: "use `name` field")
 }
 
 type PendingInvitation {
@@ -846,10 +933,11 @@ type PendingInvitation {
 type SubscriptionPlan {
   id: ID!
   name: String!
-  providerProductId: String
-  providerPriceId: String
-  price: Int
-  featureSet: FeatureSet
+  providerProductId: String!
+  providerPriceId: String!
+  price: Int!
+  planLimits: PlanLimit!
+  attribution: String!
 }
 
 type Organization {
@@ -869,14 +957,6 @@ type Connection {
   updatedAt: DateTime
 }
 
-type AlarmChannel {
-  id: ID
-  name: String
-  location: String
-  cloud: String
-  cloudProviderId: String
-}
-
 type Link {
   id: String!
   srcField: String!
@@ -891,7 +971,7 @@ type Link {
 type ContainerRepository {
   id: ID
   name: String
-  status: String
+  cloud: String
   location: String
   cloudProviderId: String
 }
@@ -928,8 +1008,6 @@ type Target {
 
   deletable: TargetDeletionLifecycle!
 
-  alarmChannels: [AlarmChannel]
-
   createdAt: DateTime
 
   updatedAt: DateTime
@@ -947,15 +1025,23 @@ type Target {
   connections: [TargetConnection]
 }
 
-type AlarmChannelPayload {
-  "Indicates if the mutation completed successfully or not."
-  successful: Boolean!
+"DNS Zone filters"
+input DnsZoneInput {
+  filter: DnsZoneFilters
+}
 
-  "A list of failed validations. May be blank or null if mutation succeeded."
-  messages: [ValidationMessage]
+"Container Repository filters"
+input ContainerRepositoryInput {
+  filter: ContainerRepositoryFilters
+}
 
-  "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
-  result: AlarmChannel
+type PlanLimit {
+  maxMembers: Int!
+  maxCloudAccounts: Int!
+  maxTargets: Int!
+  maxArtifactDefinitions: Int!
+  maxPublicBundles: Int!
+  maxPrivateBundles: Int!
 }
 
 type ProjectPayload {
@@ -969,6 +1055,17 @@ type ProjectPayload {
   result: Project
 }
 
+type DnsZonePayload {
+  "Indicates if the mutation completed successfully or not."
+  successful: Boolean!
+
+  "A list of failed validations. May be blank or null if mutation succeeded."
+  messages: [ValidationMessage]
+
+  "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
+  result: DnsZone
+}
+
 type BillingSubscriptionPayload {
   "Indicates if the mutation completed successfully or not."
   successful: Boolean!
@@ -978,6 +1075,16 @@ type BillingSubscriptionPayload {
 
   "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
   result: BillingSubscription
+}
+
+"supported file formats for artifacts"
+enum DownloadFormat {
+  RAW
+  YAML
+}
+
+type RenderedArtifact {
+  renderedArtifact: String!
 }
 
 type ResourceLifecycleEvent {
@@ -996,6 +1103,20 @@ type ResourceLifecycleEvent {
 
 type Member {
   email: String
+}
+
+type Avatar {
+  thumbnailUrl: String!
+  originalUrl: String!
+}
+
+"Error encountered during provisioning or decommissioning"
+type DeploymentError {
+  "Brief overview of error"
+  message: JSON
+
+  "Additional details of error"
+  details: JSON
 }
 
 type Group {
