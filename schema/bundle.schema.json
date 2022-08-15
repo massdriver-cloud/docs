@@ -32,7 +32,7 @@
     },
     "description": {
       "title": "Description",
-      "description": "A description of the bundles.",
+      "description": "A description of the bundle.",
       "type": "string",
       "minLength": 10,
       "maxLength": 1024
@@ -46,7 +46,7 @@
     "access": {
       "title": "Access",
       "type": "string",
-      "description": "The access level of the bundle. Private will only be available to the organization it is published under.",
+      "description": "The access level of the bundle. Private bundles will only be accessible by the organization it is published under.",
       "enum": [
         "public",
         "private"

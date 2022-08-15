@@ -1,8 +1,8 @@
 ---
-id: bundles-terminology
-slug: /bundles/terminology
-title: Terminology
-sidebar_label: Terminology
+id: concepts-FOO
+slug: /concepts/terminology
+title: FOO
+sidebar_label: FOO
 ---
 
 ### Artifact

@@ -1,3 +1,10 @@
+---
+id: bundles-local-aws-development
+slug: /bundles/local-aws
+title: Local AWS Development
+sidebar_label: Localstack - AWS
+---
+
 This guide walks through the use of [LocalStack](https://localstack.cloud/) for bundle development
 
 ## Install `localstack` and `tflocal` wrapper CLIs

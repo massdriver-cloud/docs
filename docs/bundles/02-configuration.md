@@ -2,7 +2,7 @@
 id: bundles-configuration
 slug: /bundles/configuration
 title: Bundle Configuration
-sidebar_label: Overview
+sidebar_label: Configuration
 ---
 
 The `massdriver.yaml` file contains metadata for publishing a Massdriver bundle to the Massdriver package manager as well as configuration for controlling the UI interface.
@@ -24,7 +24,7 @@ The `massdriver.yaml` file contains metadata for publishing a Massdriver bundle 
 
 Additional properties are not allowed.
 
-### massdriver.yaml.name
+### Bundle Name
 
 The name of the bundle. This will be prefixed with your organization name upon publishing.
 
@@ -34,7 +34,7 @@ The name of the bundle. This will be prefixed with your organization name upon p
 * **Minimum Length**`: >= 3`
 * **Maximum Length**`: <= 53`
 
-### massdriver.yaml.schema
+### Bundle Schema
 
 The JSON Schema used to define the bundle.
 
@@ -43,26 +43,28 @@ The JSON Schema used to define the bundle.
 * **Allowed values**:
     * `"draft-07"`
 
-### massdriver.yaml.description
+### Bundle Description
 
-A description of the bundles.
+A description of the bundle.
 
 * **Type**: `string`
 * **Required**:  &#10003; Yes
 * **Minimum Length**`: >= 10`
 * **Maximum Length**`: <= 1024`
 
-### massdriver.yaml.ref
+### Bundle Ref
 
 Link to the bundle source code.
+
+Note: `ref` is a legacy term in Massdriver and will likely change in the future.
 
 * **Type**: `string`
 * **Required**:  &#10003; Yes
 * **Format**: uri
 
-### massdriver.yaml.access
+### Bundle Access
 
-The access level of the bundle. Private will only be available to the organization it is published under.
+The access level of the bundle. Private bundles will only be accessible by the organization it is published under.
 
 * **Type**: `string`
 * **Required**:  &#10003; Yes
@@ -70,7 +72,7 @@ The access level of the bundle. Private will only be available to the organizati
     * `"public"`
     * `"private"`
 
-### massdriver.yaml.type
+### Bundle Type
 
 The type of bundle: infrastructure (legacy term: bundle) or application.
 
@@ -80,30 +82,36 @@ The type of bundle: infrastructure (legacy term: bundle) or application.
     * `"bundle"`
     * `"application"`
 
-### massdriver.yaml.params
+### Bundle.params
 
 Input parameters for the bundle.
 
 * **Type**: `any`
 * **Required**:  &#10003; Yes
 
-### massdriver.yaml.connections
+### Bundle Connections
 
 Input connections for this bundle. Determines which artifacts from other bundles this bundle depends on.
 
 * **Type**: `any`
 * **Required**:  &#10003; Yes
 
-### massdriver.yaml.artifacts
+### Bundle Artifacts
 
 Cloud resources created by this bundle that are available to be used as input connections to other bundles. See: https://github.com/massdriver-cloud/artifact-definitions
 
 * **Type**: `any`
 * **Required**:  &#10003; Yes
 
-### massdriver.yaml.ui
+### Bundle UI
 
 RJSF UI Schema for advanced control over the UI. See https://react-jsonschema-form.readthedocs.io/en/docs/api-reference/uiSchema/#uischema
 
 * **Type**: `object`
 * **Required**:  &#10003; Yes
+
+## Example `massdriver.yaml` Files
+
+* [AWS RDS MySQL](https://github.com/massdriver-cloud/aws-rds-mysql/blob/main/massdriver.yaml)
+* [Timescale DB](https://github.com/massdriver-cloud/k8s-timescale-db/blob/main/massdriver.yaml)
+* [AWS SQS Pub/Sub Subscription](https://github.com/massdriver-cloud/aws-sqs-pubsub-subscription/blob/main/massdriver.yaml)
