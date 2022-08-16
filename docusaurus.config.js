@@ -7,6 +7,7 @@ module.exports = {
   organizationName: 'massdriver-cloud',
   projectName: 'docs',
   themeConfig: {
+    metadata: [{ name: 'keywords', content: 'massdriver, mass driver, internal developer platform, ' }],
     prism: {
       additionalLanguages: ['yaml', 'hcl', 'shell-session'],
     },
