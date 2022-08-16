@@ -5,23 +5,22 @@
 Run this script in the Azure CLI using Bash. Replace the values in the script with your own.
 
 ``` Bash
-ACR_NAME=mdmclacrecho
-SERVICE_PRINCIPAL_NAME=mdmclacrecho
-LOCATION=eastus
+ACR_NAME=<name of container registry> # Alpha-numeric characters only, between 5 and 50 characters
+LOCATION=<location> # Examples: eastus, westus2, northcentralus
 
 az group create --name $ACR_NAME --location $LOCATION
 az acr create --resource-group $ACR_NAME --name $ACR_NAME --sku Standard
 ACR_REGISTRY_ID=$(az acr show --name $ACR_NAME --query "id" --output tsv)
 
-PASSWORD=$(az ad sp create-for-rbac --name $SERVICE_PRINCIPAL_NAME --scopes $ACR_REGISTRY_ID --role acrpush --query "password" --output tsv)
-USER_NAME=$(az ad sp list --display-name $SERVICE_PRINCIPAL_NAME --query "[].appId" --output tsv)
+PASSWORD=$(az ad sp create-for-rbac --name $ACR_NAME --scopes $ACR_REGISTRY_ID --role acrpush --query "password" --output tsv)
+USER_NAME=$(az ad sp list --display-name $ACR_NAME --query "[].appId" --output tsv)
 LOGIN_SERVER=$(az acr show --name $ACR_NAME --query "loginServer" --output tsv)
 
-echo "Login server: $LOGIN_SERVER"
-echo "Client ID: $USER_NAME"
-echo "Client secret: $PASSWORD"
+echo "ACR_LOGIN_SERVER: $LOGIN_SERVER"
+echo "AZURE_CLIENT_ID: $USER_NAME"
+echo "AZURE_CLIENT_SECRET: $PASSWORD"
 ```
-Copy the `Login server`, `Client ID` and `Client secret` to use in a later step.
+Copy the `ACR_LOGIN_SERVER`, `AZURE_CLIENT_ID` and `AZURE_CLIENT_SECRET` to use in a later step.
 
 ## Using Azure portal
 
@@ -35,6 +34,7 @@ Copy the `Login server`, `Client ID` and `Client secret` to use in a later step.
   3. Select a location
   4. Select a SKU (Standard is used for most scenarios)
   5. Click **Review + create** and **Create**
+4. In the **Overview** tab of the container registry, copy and save the `Login server` value for later use
 ![Example 1](/static/img/acr-example-1.png)
 
 ### Create the Azure service principal
@@ -68,17 +68,24 @@ Copy the `Login server`, `Client ID` and `Client secret` to use in a later step.
 
 1. Open your GitHub repository and click **Settings**
 2. Click **Secrets** and then **New Secret**
-3. Create secrets for the following using values saved from previous steps:
-  - `AZURE_CLIENT_ID` = `Client ID` or `Application (client) ID`
-  - `AZURE_CLIENT_SECRET` = `Client secret` or `Value`
+3. Create 3 secrets for the following using values saved from previous steps:
+  - Secret 1
+    - Name: `ACR_LOGIN_SERVER`
+    - Value: Paste login server value here
+  - Secret 2
+    - Name: `AZURE_CLIENT_ID`
+    - Value: Paste Azure client ID here
+  - Secret 3
+    - Name: `AZURE_CLIENT_SECRET`
+    - Value: Paste Azure client secret value here
 
 ## Create Docker file
 
 ### Linux
 
-Replace `<Login server>` with the name of your Azure Container Registry.
 
 ``` YAML
+// .github/workflows/docker-push.yaml
 name: Push Docker Image to Azure Container Registry
 on: [push]
 permissions:
@@ -92,7 +99,7 @@ jobs:
     - name: Login to the Container Registry
       uses: azure/docker-login@v1
       with:
-        login-server: <Login server>
+        login-server: ${{ secrets.ACR_LOGIN_SERVER }}
         username: ${{ secrets.AZURE_CLIENT_ID }}
         password: ${{ secrets.AZURE_CLIENT_SECRET }}
     - name: Docker meta
@@ -101,7 +108,7 @@ jobs:
       with:
         flavor: |
           latest=true
-        images: <Login server>/${{ github.repository }}
+        images: ${{ secrets.ACR_LOGIN_SERVER }}/${{ github.repository }}
         tags: |
           type=ref,event=branch
           type=sha
