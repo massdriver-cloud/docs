@@ -12,6 +12,8 @@ In the meantime you can check out our [CLI's](https://github.com/massdriver-clou
 :::
 
 * [ ] Applications _are_ bundles 🤯
-* [ ] Configure CD w/ GHA & `mass app deploy`
+* [ ] Creating an application template
+* [ ] Using an application template
 * [ ] Configuring DNS Zones
 * [ ] Configuring Container Repositories
+* [ ] Configure CD w/ GHA & `mass app deploy`
