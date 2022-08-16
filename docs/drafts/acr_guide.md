@@ -5,9 +5,9 @@
 Run this script in the Azure CLI using Bash. Replace the values in the script with your own.
 
 ``` Bash
-ACR_NAME=<your ACR name>
-SERVICE_PRINCIPAL_NAME=<your service principal name>
-LOCATION=<your location>
+ACR_NAME=mdmclacrecho
+SERVICE_PRINCIPAL_NAME=mdmclacrecho
+LOCATION=eastus
 
 az group create --name $ACR_NAME --location $LOCATION
 az acr create --resource-group $ACR_NAME --name $ACR_NAME --sku Standard
@@ -15,11 +15,13 @@ ACR_REGISTRY_ID=$(az acr show --name $ACR_NAME --query "id" --output tsv)
 
 PASSWORD=$(az ad sp create-for-rbac --name $SERVICE_PRINCIPAL_NAME --scopes $ACR_REGISTRY_ID --role acrpush --query "password" --output tsv)
 USER_NAME=$(az ad sp list --display-name $SERVICE_PRINCIPAL_NAME --query "[].appId" --output tsv)
+LOGIN_SERVER=$(az acr show --name $ACR_NAME --query "loginServer" --output tsv)
 
-echo "AZURE_CLIENT_ID: $USER_NAME"
-echo "AZURE_CLIENT_SECRET: $PASSWORD"
+echo "Login server: $LOGIN_SERVER"
+echo "Client ID: $USER_NAME"
+echo "Client secret: $PASSWORD"
 ```
-Copy the `AZURE_CLIENT_ID` and `AZURE_CLIENT_SECRET` to use in a later step.
+Copy the `Login server`, `Client ID` and `Client secret` to use in a later step.
 
 ## Using Azure portal
 
@@ -67,14 +69,14 @@ Copy the `AZURE_CLIENT_ID` and `AZURE_CLIENT_SECRET` to use in a later step.
 1. Open your GitHub repository and click **Settings**
 2. Click **Secrets** and then **New Secret**
 3. Create secrets for the following using values saved from previous steps:
-  - `AZURE_CLIENT_ID` = `AZURE_CLIENT_ID` or `Application (client) ID`
-  - `AZURE_CLIENT_SECRET` = `AZURE_CLIENT_SECRET` or `Value`
+  - `AZURE_CLIENT_ID` = `Client ID` or `Application (client) ID`
+  - `AZURE_CLIENT_SECRET` = `Client secret` or `Value`
 
 ## Create Docker file
 
 ### Linux
 
-Replace `ACR-NAME` with the name of your Azure Container Registry.
+Replace `<Login server>` with the name of your Azure Container Registry.
 
 ``` YAML
 name: Push Docker Image to Azure Container Registry
@@ -90,7 +92,7 @@ jobs:
     - name: Login to the Container Registry
       uses: azure/docker-login@v1
       with:
-        login-server: <ACR-NAME>.azurecr.io
+        login-server: <Login server>
         username: ${{ secrets.AZURE_CLIENT_ID }}
         password: ${{ secrets.AZURE_CLIENT_SECRET }}
     - name: Docker meta
@@ -99,7 +101,7 @@ jobs:
       with:
         flavor: |
           latest=true
-        images: <ACR-NAME>.azurecr.io/${{ github.repository }}
+        images: <Login server>/${{ github.repository }}
         tags: |
           type=ref,event=branch
           type=sha
