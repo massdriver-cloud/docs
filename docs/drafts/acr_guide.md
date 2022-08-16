@@ -83,6 +83,7 @@ Copy the `ACR_LOGIN_SERVER`, `AZURE_CLIENT_ID` and `AZURE_CLIENT_SECRET` to use 
 
 ### Linux
 
+Place file in `.github/workflows/docker-push.yaml`
 
 ``` YAML
 // .github/workflows/docker-push.yaml
