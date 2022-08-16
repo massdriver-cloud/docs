@@ -6,7 +6,7 @@ Run this script in the Azure CLI using Bash. Replace the values in the script wi
 
 ```Bash
 ACR_NAME=<name of container registry> # Alpha-numeric characters only, between 5 and 50 characters
-LOCATION=location> # Examples: eastus, westus2, northcentralus
+LOCATION=<location> # Examples: eastus, westus2, northcentralus
 
 az group create --name $ACR_NAME --location $LOCATION
 az acr create --resource-group $ACR_NAME --name $ACR_NAME --sku Standard
