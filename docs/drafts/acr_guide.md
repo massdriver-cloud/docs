@@ -86,7 +86,6 @@ Copy the `ACR_LOGIN_SERVER`, `AZURE_CLIENT_ID` and `AZURE_CLIENT_SECRET` to use 
 Save file in `.github/workflows/docker-push.yaml`
 
 ``` YAML
-// .github/workflows/docker-push.yaml
 name: Push Docker Image to Azure Container Registry
 on: [push]
 permissions:
