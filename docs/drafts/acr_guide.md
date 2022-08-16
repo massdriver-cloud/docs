@@ -1,24 +1,25 @@
 # Creating an Azure Container Registry
 
-## Using Azure CLI
+## Using Azure CLI (Bash)
 
-### Connect to your Azure subscription
+Run this script in the Azure CLI using Bash. Replace the values in the script with your own.
 
-```
-az login
-```
+``` Bash
+ACR_NAME=<your ACR name>
+SERVICE_PRINCIPAL_NAME=<your service principal name>
+LOCATION=<your location>
 
-### Create a resource group
+az group create --name $ACR_NAME --location $LOCATION
+az acr create --resource-group $ACR_NAME --name $ACR_NAME --sku Standard
+ACR_REGISTRY_ID=$(az acr show --name $ACR_NAME --query "id" --output tsv)
 
-```
-az group create --name myResourceGroup --location eastus
-```
+PASSWORD=$(az ad sp create-for-rbac --name $SERVICE_PRINCIPAL_NAME --scopes $ACR_REGISTRY_ID --role acrpush --query "password" --output tsv)
+USER_NAME=$(az ad sp list --display-name $SERVICE_PRINCIPAL_NAME --query "[].appId" --output tsv)
 
-### Create a container registry
-
+echo "AZURE_CLIENT_ID: $USER_NAME"
+echo "AZURE_CLIENT_SECRET: $PASSWORD"
 ```
-az acr create --resource-group myResourceGroup --name myContainerRegistry001 --sku Standard
-```
+Copy the `AZURE_CLIENT_ID` and `AZURE_CLIENT_SECRET` to use in a later step.
 
 ## Using Azure portal
 
@@ -34,74 +35,20 @@ az acr create --resource-group myResourceGroup --name myContainerRegistry001 --s
   5. Click **Review + create** and **Create**
 ![Example 1](/static/img/acr-example-1.png)
 
-# Pushing container registry to GitHub actions
-
-## Using Azure CLI
-
-### Connect to your Azure subscription
-
-```
-az login
-```
-
-### Create the Azure service principal
-
-```
-az ad app create --display-name myApp
-```
-This will output the `appId` and `objectId` in JSON. Save these values for later use.
-
-```
-az ad sp create --id $appId
-```
-Replace `$appId` with the value from the previous step.
-
-### Create role assignment for service principal
-
-```
-az role assignment create --role contributor --subscription $subscriptionId --assignee-object-id  $objectId --assignee-principal-type ServicePrincipal --scope /subscriptions/$subscriptionId/resourceGroups/$resourceGroupName
-```
-Replace `$subscriptionId` and `$objectId` with the values from the previous steps. Replace `$resourceGroupName` with the name of the resource group you created for the container registry.
-
-Copy the values for `clientId`, `subscriptionId`, and `tenantId` for later use in your GitHub actions workflow.
-
-### Create federated credentials for service principal
-
-```
-az rest --method POST --uri 'https://graph.microsoft.com/beta/applications/<APPLICATION-OBJECT-ID>/federatedIdentityCredentials' --body '{"name":"<CREDENTIAL-NAME>","issuer":"https://token.actions.githubusercontent.com","subject":"<repo:organization/repository:environment:name>","description":"Testing","audiences":["api://AzureADTokenExchange"]}'
-```
-- Replace `APPLICATION-OBJECT-ID` with the **objectId** from the previous step
-- Set a value for `CREDENTIAL-NAME` to reference later
-- Set the `subject`. The value of this is defined by GitHub depending on your workflow:
-  - Jobs in your GitHub Actions environment: `repo:organization/repository:environment:Production`
-  - Jobs not tied to an environment (ref path for branch/tag): `repo:organization/repository:ref:refs/heads/my-branch` or `repo:organization/repository:ref:refs/tags/my-tag`
-  - For workflows triggered by a pull request: `repo:organization/repository:pull_request`
-
-## Using Azure portal
-
 ### Create the Azure service principal
 
 1. In your Azure account, search for and click on **Subscriptions**
 2. Copy the **Subscription ID** and save for later use
 3. Search for and click on **Azure Active Directory**
-4. Select **App registrations**
+4. Select **App registrations** tab
 5. Select **New registration**
 6. Name your application and click **Register**
-7. Copy the **Application (client) ID** and **Directory (tenant) ID** and save for later use
-
-### Create federated credentials for service principal
-
-1. Select **Certificates & secrets**
-2. Select the **Federated credentials** tab
-3. Click **+ Add credential**
-4. Select the scenario **GitHub Actions deploying Azure resources**
-5. Enter your GitHub account information:
-  - Organization: Your GitHub organization name or GitHub username
-  - Repository: Your repository name
-  - Entity type: The filter used to scope the OIDC requests from GitHub workflows, used to generate the `subject` for the credential
-  - GitHub name: The name of the environment, branch, or tag
-  - Credential details name: Name for the created credential 
-6. Click **Add**
+7. Select **Certificates & secrets** tab
+8. Click **New client secret**
+9. Name your client secret and click **Add**
+10. Copy the `Value` of the secret and save for later use (this will be the only time the secret will be displayed)
+11. Select **Overview** tab to copy and save the `Application (client) ID` for later use
+![Example 3](/static/img/acr-example-3.png)
 
 ### Create role assignment for service principal
 
@@ -113,63 +60,54 @@ az rest --method POST --uri 'https://graph.microsoft.com/beta/applications/<APPL
 6. Click **Review + assign**
 ![Example 2](/static/img/acr-example-2.png)
 
-## Set up GitHub Actions
+# Pushing container registry to GitHub actions
 
-### Create GitHub secrets
+## Create GitHub secrets
 
 1. Open your GitHub repository and click **Settings**
 2. Click **Secrets** and then **New Secret**
 3. Create secrets for the following using values saved from previous steps:
-  - `AZURE_CLIENT_ID` = `Application (client) ID`
-  - `AZURE_TENANT_ID` = `Directory (tenant) ID`
-  - `AZURE_SUBSCRIPTION_ID` = `Subscription ID`
+  - `AZURE_CLIENT_ID` = `AZURE_CLIENT_ID` or `Application (client) ID`
+  - `AZURE_CLIENT_SECRET` = `AZURE_CLIENT_SECRET` or `Value`
 
-### Setup Azure Login with OpenID Connect authentication
+## Create Docker file
 
-#### Linux
+### Linux
 
 Replace `ACR-NAME` with the name of your Azure Container Registry.
 
-```
-name: Run Azure Login with OpenID Connect
+``` YAML
+name: Push Docker Image to Azure Container Registry
 on: [push]
-
 permissions:
-      id-token: write
-      contents: read
-      
-jobs: 
+  id-token: write
+  contents: read
+
+jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: 'Az CLI login'
-      uses: azure/login@v1
+    - name: Login to the Container Registry
+      uses: azure/docker-login@v1
       with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-  
-    - name: 'Run Azure CLI commands'
-      run: |
-          az account show
-          az group list
-          pwd 
-
+        login-server: <ACR-NAME>.azurecr.io
+        username: ${{ secrets.AZURE_CLIENT_ID }}
+        password: ${{ secrets.AZURE_CLIENT_SECRET }}
     - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v3
-        with:
-          flavor: |
-            latest=true
-          images: <ACR-NAME>.azurecr.io/${{ github.repository }}
-          tags: |
-            type=ref,event=branch
-            type=sha
-      - name: Build and push
-        id: docker-build
-        uses: docker/build-push-action@v2
-        with:
-          file: Dockerfile.prod
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}  
+      id: meta
+      uses: docker/metadata-action@v3
+      with:
+        flavor: |
+          latest=true
+        images: <ACR-NAME>.azurecr.io/${{ github.repository }}
+        tags: |
+          type=ref,event=branch
+          type=sha
+    - name: Build and push
+      id: docker-build
+      uses: docker/build-push-action@v2
+      with:
+        file: Dockerfile
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
 ```
