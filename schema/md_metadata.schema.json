@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "title": "Massdriver Provisioning Metadata",
+  "description": "Metadata provided to provisioning tools during a deployment.",
+  "type": "object",
+  "required": [
+    "default_tags",
+    "name_prefix",
+    "observability",
+    "organization"
+  ],
+  "properties": {
+    "target": {
+      "title": "Target",
+      "description": "Target metadata for this deployment.",
+      "type": "object",
+      "required": [
+        "contact_email"
+      ],
+      "properties": {
+        "contact_email": {
+          "type": "string",
+          "format": "email",
+          "title": "Contact Email",
+          "description": "The email address of the contact for this target. This email address may be used by services like Lets Encrypt or to validate AWS SES domains."
+        }
+      }
+    },
+    "observability": {
+      "type": "object",
+      "title": "Observability",
+      "description": "Observability integration metadata for this deployment.",
+      "required": [
+        "alarm_webhook_url"
+      ],
+      "properties": {
+        "alarm_webhook_url": {
+          "title": "Alarm Webhook URL",
+          "type": "string",
+          "description": "A webhook URL to process metrics from AWS SNS Notifications, GCP Notification Channels, and Azure Monitor Action Groups. This will be a Massdriver URL used to present alerts from cloud resources.",
+          "format": "uri"
+        }
+      }
+    },
+    "name_prefix": {
+      "title": "Name Prefix",
+      "type": "string",
+      "description": "Standardized cloud agnostic naming convention prefix to be used on all resources created by a bundle. The name prefix is the project slug, target slug, manifest slug, and a random 4 character slug joined by hyphens. This should be the name/identifier of the primary resource in your bundle and used a prefix for other resources created. The name prefix also happens to be the Massdriver package name.",
+      "minimum": 33,
+      "maximum": 33
+    },
+    "default_tags": {
+      "title": "Default Tags",
+      "description": "Default tags to be applied to all bundle resources.",
+      "required": [
+        "managed-by",
+        "md-manifest",
+        "md-package",
+        "md-project",
+        "md-target"
+      ],
+      "type": "object",
+      "properties": {
+        "managed-by": {
+          "title": "managed-by",
+          "type": "string",
+          "description": "Provisioning tool managing the resource.",
+          "enum": [
+            "massdriver"
+          ]
+        },
+        "md-manifest": {
+          "title": "md-manifest",
+          "type": "string",
+          "description": "Massdriver manifest slug.",
+          "minimum": 1,
+          "maximum": 12,
+          "pattern": "^[a-z]{1,}[a-z0-9]{0,11}$"
+        },
+        "md-package": {
+          "title": "md-package",
+          "type": "string",
+          "description": "Massdriver package name.",
+          "minimum": 33,
+          "maximum": 33
+        },
+        "md-project": {
+          "title": "md-project",
+          "type": "string",
+          "description": "Massdriver project slug.",
+          "minimum": 1,
+          "maximum": 7,
+          "pattern": "^[a-z]{1,}[a-z0-9]{0,6}$"
+        },
+        "md-target": {
+          "title": "md-target",
+          "type": "string",
+          "description": "Massdriver target slug.",
+          "minimum": 1,
+          "maximum": 7,
+          "pattern": "^[a-z]{1,}[a-z0-9]{0,6}$"
+        }
+      }
+    }
+  }
+}

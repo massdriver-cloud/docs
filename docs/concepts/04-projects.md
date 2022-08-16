@@ -9,7 +9,7 @@ Projects are the _blueprints_ of infrastructure and application architectures in
 
 ![Projects](./img/projects.png)
 
-All targets in the same project will always have the same diagram, but scale and authentication can be customized per target. 
+All targets in the same project will always have the same diagram, but scale and authentication can be customized per target.
 
 This allows for:
 

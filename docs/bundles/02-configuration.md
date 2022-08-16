@@ -7,7 +7,7 @@ sidebar_label: Configuration
 
 The `massdriver.yaml` file contains metadata for publishing a Massdriver bundle to the Massdriver package manager as well as configuration for controlling the UI interface.
 
-**`massdriver.yaml` Properties**
+**`massdriver.yaml` Properties**:
 
 |   |Type|Description|Required|
 |---|---|---|---|
@@ -82,16 +82,16 @@ The type of bundle: infrastructure (legacy term: bundle) or application.
     * `"bundle"`
     * `"application"`
 
-### Bundle.params
+### Bundle Params
 
-Input parameters for the bundle.
+Input parameters for the bundle. These will be converted to input variables for your IaC module.
 
 * **Type**: `any`
 * **Required**:  &#10003; Yes
 
 ### Bundle Connections
 
-Input connections for this bundle. Determines which artifacts from other bundles this bundle depends on.
+Input connections for this bundle. Determines which artifacts from other bundles this bundle depends on. These will be converted to input variables for your IaC module.
 
 * **Type**: `any`
 * **Required**:  &#10003; Yes
@@ -109,6 +109,15 @@ RJSF UI Schema for advanced control over the UI. See https://react-jsonschema-fo
 
 * **Type**: `object`
 * **Required**:  &#10003; Yes
+
+
+#### Widgets & Fields
+
+:::note
+
+WIP: https://github.com/massdriver-cloud/massdriver-bundle-preview/wiki/RJSF-Widgets-&-Fields
+
+:::
 
 ## Example `massdriver.yaml` Files
 

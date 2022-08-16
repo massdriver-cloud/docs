@@ -63,11 +63,11 @@
     },
     "params": {
       "title": "Input Parameters",
-      "description": "Input parameters for the bundle."
+      "description": "Input parameters for the bundle. These will be converted to input variables for your IaC module."
     },
     "connections": {
       "title": "Input Connections",
-      "description": "Input connections for this bundle. Determines which artifacts from other bundles this bundle depends on."
+      "description": "Input connections for this bundle. Determines which artifacts from other bundles this bundle depends on. These will be converted to input variables for your IaC module."
     },
     "artifacts": {
       "title": "Output Artifacts",

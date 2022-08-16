@@ -11,7 +11,7 @@ Massdriver is a visual internal developer platfrom (IDP) that enables engineers 
 
 * **Infrastructure-as-Diagrams**: Diagrams as the source of truth. Onboard team members faster with accurate representations of your cloud environment.
 * **Anti-lockin**: Use the best tool for the job in each cloud with the same interface. All infrastructure and applications run in _your_ cloud account - walk away anytime without a migration process.
-* **No black boxes**: Our bundles and design docs are all [open source.](#LINKTBD)
+* **No black boxes**: Our bundles and design docs are all [open source.](https://github.com/massdriver-cloud)
 * **Parity**: Each `project` is a _blueprint_ with adjustable scale per application environment, region, or tenant.
 * **Secure & Compliant**: Each provisioning runs security benchmarks and compliance scanning.
 * **Automated IAM Management**: No one enjoys managing IAM, Massdriver gives teams principal of least privilege by default.
