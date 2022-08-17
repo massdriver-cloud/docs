@@ -38,7 +38,7 @@ properties:
 
 ### Conditionally Displayed Fields
 
-Conditionally _displaying_ the field is also possible with a slighly modified `properties` structure.
+Conditionally _displaying_ the field is also possible with a slightly modified `properties` structure.
 
 In this example the conditional fields are placed beneath the `dependencies` field.
 
