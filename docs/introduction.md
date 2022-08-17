@@ -24,22 +24,22 @@ Massdriver is a visual internal developer platfrom (IDP) that enables engineers 
 
 Massdriver includes 50+ infrastructure and application bundles designed by industry experts focusing on security and best-practices with support for AWS, GCP, Azure, and Kubernetes (in cloud or on-prem).
 
-Massdriver is an extendable platform. We don't want to be the black box that Platforms-as-a-Service offer. With Massdriver teams can design private [bundles](#TBDLINK) and [applications](#TBDLINK) or [request bundles](#TBDLINK) and we'll add it to our roadmap.
+Massdriver is an extendable platform. We don't want to be the black box that Platforms-as-a-Service offer. With Massdriver teams can design private [bundles](/bundles) and [applications](/applications) or [request bundles](#TBDLINK) and we'll add it to our roadmap.
 
 Massdriver integrates with any CI system and provides a unified infrastructure and application continous deployment system.
 
-We fully dogfood Massdriver,and all of [our bundles](#TBDLINK) are open sourced.
+We fully dogfood Massdriver,and all of [our bundles](https://github.com/orgs/massdriver-cloud/repositories?q=&type=all&language=terraform&sort=) are open sourced.
 
 ## Getting started
 
-* Developing custom bundles
-* Packaging serverless applications
-* Packaging kubernetes applications
-* Packaging virtual machine applications
+* [Developing custom bundles](/bundles/walk-through)
+* **COMING SOON**: Packaging serverless applications
+* **COMING SOON**: Packaging kubernetes applications
+* **COMING SOON**: Packaging virtual machine applications
 
 ## We are here to help
 
-* Explore our bundles
-* See (and contribute to) our roadmap
-* Join the conversation
-* Coming soon: webinars and workshops
+* Explore our [bundles](https://github.com/orgs/massdriver-cloud/repositories?q=&type=all&language=terraform&sort=)
+* **COMING SOON**: See (and contribute to) our roadmap
+* **COMING SOON**: Join the conversation
+* **COMING SOON**: Webinars and workshops
