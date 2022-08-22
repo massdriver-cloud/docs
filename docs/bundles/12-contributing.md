@@ -2,13 +2,13 @@
 
 ## A Note on Bundle Philosophy
 Bundles are intended to be tightly use-case scoped, intention-based reusable pieces of IaC
-for use in the Massdriver platform, see [Building the Right Size Bundle](https://docs.massdriver.cloud/bundles/development#building-the-right-sized-bundle).  
+for use in the Massdriver platform, see [Building the Right Size Bundle](https://docs.massdriver.cloud/bundles/development#building-the-right-sized-bundle).
 For this reason, major feature additions that broaden the scope of an existing bundle are likely to be rejected by the community.
 
 
 ## How to contribute
 There are several ways to contribute Massdriver bundles:
-- Fix bugs 
+- Fix bugs
 - Contribute minor non-interface breaking improvements to existing bundles in the massdriver-cloud organization
 
 If you do choose to contribute to a public massdriver bundle the process is as follows:
@@ -26,7 +26,5 @@ For the time being, only Massdriver employees will have approve / merge / commit
 
 ## Not sure whether to to Fix or Fork?
 Before doing a lot of hard work, please open an issue on the existing bundle repo describing the change you'd
-and tag your issue `proposal` and the community will reivew it and get back to you on if your change fits in 
-the existing bundle scope. You can tag the Code Owners of that bundle repo to expedite getting feedback. 
-
-
+and tag your issue `proposal` and the community will reivew it and get back to you on if your change fits in
+the existing bundle scope. You can tag the Code Owners of that bundle repo to expedite getting feedback.
