@@ -17,7 +17,6 @@ Here is an example of using the `schema` and `uiSchema` to display a custom `Con
 
 
 ```yaml title="schema"
----
 type: object
 title: Filtered Container Repositories & DNS Zones schema
 description: A dummy schema to show how to filter the dnsZones and container repositories
@@ -53,7 +52,6 @@ For `array fields`, you must also specify nesting under the `items` property. An
 Here is an example:
 
 ```yaml title="schema"
----
 type: object
 title: Nested custom fields/widgets example
 description: A dummy schema to show how to render custom fields/widgets in nested
@@ -87,7 +85,6 @@ properties:
 ```
 
 ```yaml title="uiSchema"
----
 personalInformation: # We have nested down under 'personalInformation/name/lastName' to change this specific property's field.
   name:
     lastName:
@@ -151,7 +148,6 @@ External props passed through the `uiSchema`
 
 **Example**
 ```yaml title="schema"
----
 type: object
 title: Conversion Field schema
 description: Testing Conversion Fields.
@@ -165,7 +161,6 @@ properties:
 ```
 
 ```yaml title="uiSchema"
----
 data:
   ui:field: conversionFieldData # Necessary to render the custom field
   unit: Bytes # A necessary prop that decides what unit of measurement the user data gets converted into in the formData. In this case, "Bytes"
@@ -186,7 +181,6 @@ External props passed through the `uiSchema`
 
 **Example**
 ```yaml title="schema"
----
 type: object
 title: Conversion Field schema
 description: Testing Conversion Fields.
@@ -200,7 +194,6 @@ properties:
 ```
 
 ```yaml title="uiSchema"
----
 duration:
   ui:field: conversionFieldTime
   unit: Milliseconds
@@ -221,7 +214,6 @@ External props passed through the `uiSchema`
 
 **Example**
 ```yaml title="schema"
----
 type: object
 title: Filtered Container Repositories schema
 description: An example schema that shows the containerRepositoriesDropdown field
@@ -235,7 +227,6 @@ properties:
 
 
 ```yaml title="uiSchema"
----
 containerRepositories:
   ui:field: containerRepositoriesDropdown
   cloud: aws
@@ -256,7 +247,6 @@ External props passed through the `uiSchema`
 
 **Example**
 ```yaml title="schema"
----
 type: object
 title: Dns Zones schema
 description: An example schema that shows the dnsZonesDropdown field implementation.
@@ -268,7 +258,6 @@ properties:
 ```
 
 ```yaml title="uiSchema"
----
 dnsZones:
   ui:field: dnsZonesDropdown
   cloud: azure
@@ -290,7 +279,6 @@ External props passed through the `uiSchema`
 
 **Example**
 ```yaml title="schema"
----
 type: object
 title: Locations schema
 description: An example schema that shows the supportedCloudLocationsDropdown field
@@ -303,7 +291,6 @@ properties:
 ```
 
 ```yaml title="uiSchema"
----
 locations:
   ui:field: supportedCloudLocationsDropdown
   cloudService: ECR
@@ -358,7 +345,6 @@ External props passed through the `uiSchema`
 
 **Example**
 ```yaml title="schema"
----
 type: object
 title: Slug schema
 description: An example schema that shows the slug field implementation.
@@ -380,7 +366,6 @@ properties:
 ```
 
 ```yaml title="uiSchema"
----
 slug:
   ui:field: slug
   slugPrefix: myproj-dev-
@@ -399,7 +384,6 @@ External props passed through the `uiSchema`
 
 **Example**
 ```yaml title="schema"
----
 type: object
 title: Dropzone schema
 description: An example schema that shows the dropzone field implementation.
@@ -412,7 +396,6 @@ properties:
 ```
 
 ```yaml title="uiSchema"
----
 dropzone:
   ui:field: dropzone
 ```
@@ -430,7 +413,6 @@ For example, if you want to render a `SupportedCloudLocationsDropdown` and are u
 
 **Example**
 ```yaml title="schema"
----
 type: object
 title: Mocked SupportedCloudLocationsDropdown using GenericField schema
 description: An example schema that shows how to mock the SupportedCloudLocationsDropdown field using the GenericField implementation.
@@ -442,7 +424,6 @@ properties:
 ```
 
 ```yaml title="uiSchema"
----
 locations:
   ui:field: genericField # This will render the GenericField and let you look into the schema/uiSchema to ensure the correct information is being passed to the field.
   cloudService: ECR # A required prop that is used to decide which cloud's supported locations are being queried for. In this case, "ECR" (essentially AWS Locations)
