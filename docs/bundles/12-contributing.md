@@ -1,10 +1,19 @@
-# Contributing to Massdriver Bundles
+---
+id: bundles-contributing
+slug: /bundles/contributing
+title: Contributing to Massdriver Bundles
+sidebar_label: Contributing
+---
 
-## A Note on Bundle Philosophy
+:::note
+
+**Bundle Philosophy**
+
 Bundles are intended to be tightly use-case scoped, intention-based reusable pieces of IaC
 for use in the Massdriver platform, see [Building the Right Size Bundle](https://docs.massdriver.cloud/bundles/development#building-the-right-sized-bundle).
 For this reason, major feature additions that broaden the scope of an existing bundle are likely to be rejected by the community.
 
+:::
 
 ## How to contribute
 There are several ways to contribute Massdriver bundles:
@@ -17,7 +26,7 @@ If you do choose to contribute to a public massdriver bundle the process is as f
 3. cut a new branch for your feature from the tip of `origin/main`
 4. push your changes and open a pull request
 
-# ## PR reviews on Existing Bundle Repos
+## PR reviews on Existing Bundle Repos
 For the time being, only Massdriver employees will have approve / merge / commit access to our bundle repos.
 
 ## Alternatives to contributing to public bundles
