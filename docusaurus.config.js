@@ -24,7 +24,12 @@ module.exports = {
           position: "left",
         },
         {
-          href: 'https://community.massdriver.cloud',
+          href: 'https://roadmap.massdriver.cloud/',
+          label: 'Roadmap',
+          position: 'right',
+        },
+        {
+          href: 'https://github.com/massdriver-cloud/docs/discussions/9',
           label: 'Community',
           position: 'right',
         },
@@ -38,19 +43,6 @@ module.exports = {
     footer: {
       style: 'dark',
       links: [
-        // {
-        //   title: 'We can put links to most popular doc pages here',
-        //   items: [
-        //     {
-        //       label: 'Style Guide',
-        //       to: 'docs/doc1',
-        //     },
-        //     {
-        //       label: 'Second Doc',
-        //       to: 'docs/doc2',
-        //     },
-        //   ],
-        // },
         {
           title: 'Community',
           items: [
@@ -59,13 +51,17 @@ module.exports = {
               href: 'https://stackoverflow.com/questions/tagged/massdriver',
             },
             {
-              href: 'https://community.massdriver.cloud',
-              label: 'Community',
+              href: 'https://roadmap.massdriver.cloud/',
+              label: 'Roadmap',
             },
             {
               label: 'Twitter',
               href: 'https://twitter.com/massdriver',
             },
+            {
+              label: 'Community',
+              href: 'https://github.com/massdriver-cloud/docs/discussions/9',
+            }
           ],
         },
         {
