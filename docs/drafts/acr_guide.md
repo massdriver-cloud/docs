@@ -9,7 +9,7 @@ ACR_NAME=<name of container registry> # Alpha-numeric characters only, between 5
 LOCATION=<location> # Examples: eastus, westus2, northcentralus
 
 az group create --name $ACR_NAME --location $LOCATION
-az acr create --resource-group $ACR_NAME --name $ACR_NAME --sku Standard
+az acr create --resource-group $ACR_NAME --name $ACR_NAME --sku Standard --admin-enabled true
 ACR_REGISTRY_ID=$(az acr show --name $ACR_NAME --query "id" --output tsv)
 
 PASSWORD=$(az ad sp create-for-rbac --name $ACR_NAME --scopes $ACR_REGISTRY_ID --role acrpush --query "password" --output tsv)
@@ -36,6 +36,7 @@ Copy the `ACR_LOGIN_SERVER`, `AZURE_CLIENT_ID` and `AZURE_CLIENT_SECRET` to use 
   4. Select a SKU (Standard is used for most scenarios)
   5. Click **Review + create** and **Create**
 4. In the **Overview** tab of the container registry, copy and save the `Login server` value for later use
+5. Select the **Access keys** tab of the container registry, and enable the `Admin user` option
    ![Example 1](/static/img/acr-example-1.png)
 
 ### Create the Azure service principal
