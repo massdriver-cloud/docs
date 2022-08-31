@@ -1,18 +1,24 @@
-# Creating a GCP Container Reposiotory
+# Pushing Your Container Image to GCP With A GitHub Action
+
+To push your container image to GCP from GitHub, you'll need to follow this guide. We'll start by creating a new repository using Massdriver, then go through the steps to set up keyless authentication from GitHub to GCP.
+
+## Creating a GCP Container Reposiotory
 
 To create a Container Repository for a workload on GCP, simply visit the Container Repository page in Massdiver.
 
-<>
+![Container Repository](./img/gar-example-1.png)
 
 Enter a name, select the credentials and location you'd like to use, then click submit. Your container repository will be created and you'll be ready for the next step.
 
 ## Authentication Setup
 
-To authenticate with GCP Artifact Registry, we need to create a [Workload Identity Pool](https://cloud.google.com/iam/docs/workload-identity-federation). This allows us to authenticate with the Artifact Registry, without using a service account key.
+To authenticate with GCP Artifact Registry, you need to create a [Workload Identity Pool](https://cloud.google.com/iam/docs/workload-identity-federation). This allows you to authenticate with the Artifact Registry, without using a service account key.
+
+To do this, follow the commands below but make sure the `export` lines have values specific to your environment.
 
 Create the pool.
 
-```
+```bash
  export PROJECT_ID="my-gcp-project"
  export WORKLOAD_IDENTITY_POOL=my-pool
  gcloud iam workload-identity-pools create "${WORKLOAD_IDENTITY_POOL}" \
@@ -23,7 +29,7 @@ Create the pool.
 
 Create a provider within the pool for GitHub to access.
 
-```
+```bash
 export WORKLOAD_PROVIDER=my-provider
 gcloud iam workload-identity-pools providers create-oidc "${WORKLOAD_PROVIDER}" \
   --project="${PROJECT_ID}" \
@@ -34,35 +40,41 @@ gcloud iam workload-identity-pools providers create-oidc "${WORKLOAD_PROVIDER}" 
   --issuer-uri="https://token.actions.githubusercontent.com"
 ```
 
-This needs to be done once per Google Artifact Repository.
+Associate the GitHub repo with the pool.
+
+This needs to be done once per Google Artifact Repository + GH Repo pair. Use this command to get the full `name` of the workload identity pool.
 
 `gcloud iam workload-identity-pools list --location=global`
 
-```
+```bash
 ---
 displayName: my-pool
 name: projects/68804004948/locations/global/workloadIdentityPools/my-pool
 state: ACTIVE
 ```
 
-```
-export REPO=container-labs/test-azure
+Run this command to create the iam policy binding.
+
+```bash
+export GITHUB_REPO=my-org/my-repo
 export SERVICE_ACCOUNT_NAME=massdriver-sa
 export WORKLOAD_IDENTITY_POOL_NAME=projects/68804004948/locations/global/workloadIdentityPools/my-pool
 gcloud iam service-accounts add-iam-policy-binding "${SERVICE_ACCOUNT_NAME}@${PROJECT_ID}.iam.gserviceaccount.com" \
   --project="${PROJECT_ID}" \
   --role="roles/iam.workloadIdentityUser" \
-  --member="principalSet://iam.googleapis.com/${WORKLOAD_IDENTITY_POOL_NAME}/attribute.repository/${REPO}"
+  --member="principalSet://iam.googleapis.com/${WORKLOAD_IDENTITY_POOL_NAME}/attribute.repository/${GITHUB_REPO}"
 ```
 
 ## GitHub Action To Build And Push your Image
 
-Save the action in `.github/workflows/docker-push.yaml`. If you use another branch besides `main`, make sure to replace it below.
+The action below is usable without any changes. Simply add Github Action Secrets to your repository. The secrets, with example values, are:
 
-- CONTAINER_REPO - us-west2-docker.pkg.dev/my-project/my-repo
-- WORKLOAD_IDENTITY_PROVIDER_ID - projects/68804004948/locations/global/workloadIdentityPools/my-pool/providers/my-provider
-- SERVICE_ACCOUNT_EMAIL - massdriver-sa@xyz
-- REGISTRY_LOCATION - us-west2
+- `CONTAINER_REPO` - us-west2-docker.pkg.dev/my-project/my-repo
+- `WORKLOAD_IDENTITY_PROVIDER_ID` - projects/68804004948/locations/global/workloadIdentityPools/my-pool/providers/my-provider
+- `SERVICE_ACCOUNT_EMAIL` - massdriver-sa@xyz..
+- `REGISTRY_LOCATION` - us-west2
+
+Save the action in `.github/workflows/docker-push.yaml`. If you use another branch besides `main`, make sure to replace it below.
 
 ```yaml
 # .github/workflows/docker-push.yaml
