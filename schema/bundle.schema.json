@@ -14,6 +14,25 @@
     "type"
   ],
   "properties": {
+    "app": {
+      "title": "Application Configuration",
+      "type": "object",
+      "properties": {
+        "envs": {
+          "title": "Environment variables",
+          "description": "Map param and connection values to environment variables with JQ for processing.",
+          "type": "object"
+        },
+        "policies": {
+          "title": "IAM Permissions",
+          "description": "Map param and connection values to IAM Permissions & Policies for your application.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "name": {
       "title": "Title",
       "type": "string",
@@ -37,7 +56,7 @@
       "minLength": 10,
       "maxLength": 1024
     },
-    "ref": {
+    "source_url": {
       "title": "Source URL",
       "type": "string",
       "description": "Link to the bundle source code.",

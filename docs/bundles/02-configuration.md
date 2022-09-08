@@ -14,7 +14,7 @@ The `massdriver.yaml` file contains metadata for publishing a Massdriver bundle 
 |**name**|`string`|The name of the bundle. This will be prefixed with your organization name upon publishing.| &#10003; Yes|
 |**schema**|`string`|The JSON Schema used to define the bundle.| &#10003; Yes|
 |**description**|`string`|A description of the bundles.| &#10003; Yes|
-|**ref**|`string`|Link to the bundle source code.| &#10003; Yes|
+|**source_url**|`string`|Link to the bundle source code.| &#10003; Yes|
 |**access**|`string`|The access level of the bundle. Private will only be available to the organization it is published under.| &#10003; Yes|
 |**type**|`string`|The type of bundle: infrastructure (legacy term: bundle) or application.| &#10003; Yes|
 |**params**|`object`| draft-07 JSON Schema describing input parameters for the bundle.| &#10003; Yes|
