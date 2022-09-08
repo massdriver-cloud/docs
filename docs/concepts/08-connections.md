@@ -5,7 +5,7 @@ title: Connections
 sidebar_label: Connections
 ---
 
-Connections are the lines between [manifests](#manifest) in the Massdriver UI. They can be thought of as an "input" that is another package's artifact.
+Connections are the lines between [manifests](#manifest) in the Massdriver UI. They indicate other application and infrastructure bundles that a bundle is depdenent on. They can be thought of as an "input" that is another package's artifact.
 
 Connections are unidirectional. The always flow from "left" to "right" and are the _edges_ of a directed acyclic graph defining the dependency hierachy of your infrastructure and applications.
 

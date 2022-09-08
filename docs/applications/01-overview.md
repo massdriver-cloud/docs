@@ -5,7 +5,7 @@ title: Applications
 sidebar_label: Overview
 ---
 
-Applications in Massdriver _are_ bundles. Everything in the [Bundle Guide](/bundles) applies to applications.
+Applications in Massdriver _are_ bundles. Everything in the [Bundle Guide](/bundles) applies to applications. The application bundle code is _rigging_ to run your application in the cloud and connect to it services.
 
 Additionally, applications have a few other characteristics:
 
