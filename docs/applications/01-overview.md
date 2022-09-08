@@ -5,18 +5,11 @@ title: Applications
 sidebar_label: Overview
 ---
 
-:::note
-Applications in massdriver are supported today, but the documentation is _coming soon_.
+Applications in Massdriver _are_ bundles. Everything in the [Bundle Guide](/bundles) applies to applications.
 
-In the meantime you can check out our [CLI's](https://github.com/massdriver-cloud/massdriver-cli) `help` command to get started.
-:::
+Additionally, applications have a few other characteristics:
 
-## TODOs:
-
-* [ ] Applications _are_ bundles 🤯
-* [ ] Creating an application template
-* [ ] Using an application template
-* [ ] Configuring DNS Zones
-* [ ] Configuring Container Repositories
-* [ ] Configure CD w/ GHA & `mass app deploy`
-* [ ] `.app` documentation & schema
+* IAM Roles (AWS) or Service Accounts (GCP / Azure) are automatically created for your app to manage IAM with principle of least privilege.
+* They are container based ([VMs are on our roadmap](https://roadmap.massdriver.cloud/bundles/application-vm-support-cl7s8svuy3959141xipth2cwcbe)).
+* Ability to generate environment variables via the application [package's](/concepts/packages) parameters or [connections](/concepts/connections).
+* Ability to programatically select IAM Policies & Permissions from infrastructure components.
