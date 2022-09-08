@@ -134,7 +134,13 @@ All custom Widgets/Fields have their **Component Name** in `PascalCase` and thei
 
 ### Data Conversion Field
 
-The `ConversionFieldData` is a TextField that converts whatever units the user submits to the base units defined in the `uiSchema`. The TextField has a Select Menu adjacent to it where the user can select what units they want to be submitting.  For example, say you have a ConversionFieldData that takes the input as bytes. A user can choose to submit `2 megabytes`, which would automatically be turned into `1000000 bytes` in the `formData`. Pass a specific `unit` (`Bytes`, `Kibibytes`, `Kilobytes`, `Mebibytes`, `Megabytes`, `Gibibytes`, or `Gigabytes`) externally via the `uiSchema` to control what the user input gets converted into in the `formData`.
+The `ConversionFieldData` is a TextField that converts whatever units the user submits to the base units defined in the `uiSchema`. The TextField has a Select Menu adjacent to it where the user can select what units they want to be submitting.  For example, say you have a ConversionFieldData that takes the input as bytes. A user can choose to submit `2 megabytes`, which would automatically be turned into `1000000 bytes` in the `formData`. Pass a specific `unit` (`Bytes`, `KiB`, `KB`, `MiB`, `MB`, `GiB`, or `GB`) externally via the `uiSchema` to control what the user input gets converted into in the `formData`.
+
+:::note 
+
+Do not update the `unit` value in the `uiSchema` once this field is exposed to a user. If the user has previously saved data, changing the `unit` value in the `uiSchema` will alter the user's saved data in unpredictable ways. 
+
+:::
 
 **Props**
 
@@ -143,7 +149,7 @@ External props passed through the `uiSchema`
 
 | Name         |  Required    |  Type       |    Default  |   Example  | Description |
 | ------------ | -----------  | ----------- | ----------- | -----------| ----------- |
-| unit         |  True        | string      |   undefined | `Bytes`, `Kibibytes`, `Kilobytes`, `Mebibytes`, `Megabytes`, `Gibibytes`, or `Gigabytes`  | A string that decides what unit of measurement the user input gets converted into in the `formData`. |
+| unit         |  True        | string      |   undefined | `Bytes`, `KiB`, `KB`, `MiB`, `MB`, `GiB`, or `GB` **DEPRICATED:** `Kibibytes`, `Kilobytes`, `Mebibytes`, `Megabytes`, `Gibibytes`, or `Gigabytes`  | A string that decides what unit of measurement the user input gets converted into in the `formData`. |
 
 
 **Example**
@@ -170,6 +176,12 @@ data:
 ### Time Conversion Field
 
 The `ConversionFieldTime` is a TextField that converts whatever units the user submits to the base units defined in the `uiSchema`. The TextField has a Select Menu adjacent to it where the user can select what units they want to be submitting.  For example, say you have a ConversionFieldTime that takes the input as milliseconds. A user can choose to submit `2 minutes`, which would automatically be turned into `120000 milliseconds` in the `formData`. Pass a specific `unit` (`Milliseconds`, `Seconds`, `Minutes`, `Hours`, or `Days`) externally via the `uiSchema` to control what the user input gets converted into in the `formData`.
+
+:::note 
+
+Do not update the `unit` value in the `uiSchema` once this field is exposed to a user. If the user has previously saved data, changing the `unit` value in the `uiSchema` will alter the user's saved data in unpredictable ways. 
+
+:::
 
 **Props**
 
