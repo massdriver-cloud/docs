@@ -21,7 +21,7 @@ export REPOSITORY_ARN=$(aws ecr create-repository --repository-name ${AWS_REPO_N
 
 Next we will create an IAM user and access key and assign it permissions to access our repo.
 
-::: note
+:::note
 
 Below is a permissive policy, feel free to fine tune `ecr:*` actions.
 
