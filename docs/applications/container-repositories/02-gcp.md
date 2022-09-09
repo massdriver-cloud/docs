@@ -5,7 +5,7 @@ title: GCP Container Repositories
 sidebar_label: GCP Container Repositories
 ---
 
-To push your container image to GCP from GitHub, you'll need to follow this guide. We'll start by creating a new repository using Massdriver, then go through the steps to set up keyless authentication from GitHub to GCP.
+To push your container image to GCP from GitHub, you'll need to follow this guide. We'll start by creating a new repository, then go through the steps to set up keyless authentication from GitHub to GCP.
 
 ## Creating a GCP Container Repository
 
