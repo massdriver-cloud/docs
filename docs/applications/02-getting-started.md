@@ -15,7 +15,7 @@ Before getting started you'll need:
 
 :::
 
-In this guide we'll generate the `application bundle` and **publish** it to Massdriver. The application bundle will be all of the configuration your application needs to connect to runtimes (serverless, containers) and cloud resources (queues, databases, etc). Once the application bundle is published, we'll configure it in the UI and set up continious deployments from GitHub actions.
+In this guide we'll generate an `application bundle` and **publish** it to Massdriver. The application bundle will be all of the configuration your application needs to connect to runtimes (serverless, containers) and cloud resources (queues, databases, etc). Once the application bundle is published, we'll configure it in the UI and set up continious deployments from GitHub actions.
 
 First, create a new application bundle:
 
@@ -75,7 +75,7 @@ For this example we'll choose [`massdriver/postgresql-authentication`](https://g
 
 You'll be prompted to name the variable for each connection that you added. We suggest simple names like `postgres`, but if you have more complex dependencies it may make sense to use names like `inventory_database` for an inventory database or `website_cache` for a Redis website cache.
 
-Finally, you'll be prompted for the output directory. There are different schools of thought as to if your application cloud configuration should be stored alongside your application code or in a different directory. For `private` applications, we suggest keeping it alongside your application code to simplify CI/CD.
+Finally, you'll be prompted for the output directory. There are different schools of thought as to if your application's cloud configuration should be stored alongside your application code or in a different directory. For `private` applications, we suggest keeping it alongside your application code to simplify CI/CD.
 
 For this example we'll set the output directory to `k8s-phoenix-chat-example` since we are using a publicly available application and docker image.
 
@@ -221,6 +221,16 @@ mass app publish
 
 You should see a success message. Upon visiting a project canvas in Massdriver, your `k8s-phoenix-chat-example` should be visible in the bundle bar prefixed with your organization name.
 
-Add Kubernetes and Postgres to your canvas, connect, and deploy!
+Add Kubernetes and Postgres to your canvas, connect, and [deploy](/applications/deploying)!
 
 ![Published Application](./published-application.png)
+
+If you would like to automatically publish your application bundle in CI/CD, see the [GitHub Actions guide](/bundles/github-action).
+
+:::info
+
+We have a number of pre-defined application templates available [here](https://github.com/massdriver-cloud/application-templates). We welcomes PRs to add more. 
+
+If you are interested in private repositories for application templates, please `+1` this [issue](https://github.com/massdriver-cloud/massdriver-cli/issues/67).
+
+:::
