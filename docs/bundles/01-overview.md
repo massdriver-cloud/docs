@@ -12,7 +12,7 @@ Massdriver manages parity across application environments, regions, and tenants,
 :::note
 Singleton resources like _container repositories_, _DNS Zones_, and _transit gateways_ are examples of resources that **do not** fit well into Massdriver bundles.
 
-Some resources like _container repositories__ and _DNS Zones_ are supported as first class citizens in Massdriver.
+Some resources like _DNS Zones_ are supported as first class citizens in Massdriver.
 
-If you need help with incorporating a singleton resource in Massdriver, feel free to [contact us](#TBDLINK). We're always happy to help.
+If you need help with incorporating a singleton resource in Massdriver, feel free to [contact us](https://roadmap.massdriver.cloud). We're always happy to help.
 :::

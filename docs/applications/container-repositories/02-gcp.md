@@ -1,14 +1,17 @@
-# Pushing Your Container Image to GCP With A GitHub Action
+---
+id: applications-container-repositories-gcp
+slug: /applications/container-repositories/gcp
+title: GCP Container Repositories
+sidebar_label: GCP Container Repositories
+---
 
 To push your container image to GCP from GitHub, you'll need to follow this guide. We'll start by creating a new repository using Massdriver, then go through the steps to set up keyless authentication from GitHub to GCP.
 
-## Creating a GCP Container Reposiotory
+## Creating a GCP Container Repository
 
-To create a Container Repository for a workload on GCP, simply visit the Container Repository page in Massdiver.
-
-![Container Repository](./img/gar-example-1.png)
-
-Enter a name, select the credentials and location you'd like to use, then click submit. Your container repository will be created and you'll be ready for the next step.
+```shell
+gcloud artifacts repositories create my-repo --location us-west2 --repository-format=docker
+```
 
 ## Authentication Setup
 
@@ -18,7 +21,7 @@ To do this, follow the commands below but make sure the `export` lines have valu
 
 Create the pool.
 
-```bash
+```shell
  export PROJECT_ID="my-gcp-project"
  export WORKLOAD_IDENTITY_POOL=my-pool
  gcloud iam workload-identity-pools create "${WORKLOAD_IDENTITY_POOL}" \
@@ -29,7 +32,7 @@ Create the pool.
 
 Create a provider within the pool for GitHub to access.
 
-```bash
+```shell
 export WORKLOAD_PROVIDER=my-provider
 gcloud iam workload-identity-pools providers create-oidc "${WORKLOAD_PROVIDER}" \
   --project="${PROJECT_ID}" \
@@ -46,7 +49,7 @@ This needs to be done once per Google Artifact Repository + GH Repo pair. Use th
 
 `gcloud iam workload-identity-pools list --location=global`
 
-```bash
+```yaml
 ---
 displayName: my-pool
 name: projects/68804004948/locations/global/workloadIdentityPools/my-pool
@@ -55,7 +58,7 @@ state: ACTIVE
 
 Run this command to create the iam policy binding.
 
-```bash
+```shell
 export GITHUB_REPO=my-org/my-repo
 export SERVICE_ACCOUNT_NAME=massdriver-sa
 export WORKLOAD_IDENTITY_POOL_NAME=projects/68804004948/locations/global/workloadIdentityPools/my-pool

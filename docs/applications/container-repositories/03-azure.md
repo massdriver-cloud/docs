@@ -1,10 +1,15 @@
-# Creating an Azure Container Registry
+---
+id: applications-container-repositories-azure
+slug: /applications/container-repositories/azure
+title: Azure Container Repositories
+sidebar_label: Azure Container Repositories
+---
 
 ## Using Azure CLI (Bash)
 
 Run this script in the Azure CLI using Bash. Replace the values in the script with your own.
 
-```Bash
+```shell
 ACR_NAME=<name of container registry> # Alpha-numeric characters only, between 5 and 50 characters
 LOCATION=<location> # Examples: eastus, westus2, northcentralus
 
@@ -37,7 +42,7 @@ Copy the `ACR_LOGIN_SERVER`, `AZURE_CLIENT_ID` and `AZURE_CLIENT_SECRET` to use 
   5. Click **Review + create** and **Create**
 4. In the **Overview** tab of the container registry, copy and save the `Login server` value for later use
 5. Select the **Access keys** tab of the container registry, and enable the `Admin user` option
-   ![Example 1](/img/acr-example-1.png)
+   ![Example 1](./acr-example-1.png)
 
 ### Create the Azure service principal
 
@@ -52,7 +57,7 @@ Copy the `ACR_LOGIN_SERVER`, `AZURE_CLIENT_ID` and `AZURE_CLIENT_SECRET` to use 
 9. Name your client secret and click **Add**
 10. Copy the `Value` of the secret and save for later use (this will be the only time the secret will be displayed)
 11. Select **Overview** tab to copy and save the `Application (client) ID` for later use
-    ![Example 3](/img/acr-example-3.png)
+    ![Example 3](./acr-example-3.png)
 
 ### Create role assignment for service principal
 
@@ -62,7 +67,7 @@ Copy the `ACR_LOGIN_SERVER`, `AZURE_CLIENT_ID` and `AZURE_CLIENT_SECRET` to use 
 4. Select **Contributor** and click **Next**
 5. Click **Select members** and search for the **service principal** you created earlier, select it and click **Select**
 6. Click **Review + assign**
-   ![Example 2](/img/acr-example-2.png)
+   ![Example 2](./acr-example-2.png)
 
 # Pushing container registry to GitHub actions
 

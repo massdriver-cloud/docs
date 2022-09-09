@@ -182,8 +182,6 @@ To run this example, we'll set the `default` for the `image.repository`.
 
 The repository is available [here](https://hub.docker.com/repository/docker/massdrivercloud/phoenix-chat-example) and the code is on [GitHub](https://github.com/massdriver-cloud/phoenix-chat-example).
 
-Optionally, you can create a [container repository](/platform/container-repos) in Massdriver with a custom docker image and use the [Container Repository](/bundles/custom-widgets-and-fields#container-repositories) widget.
-
 ### Connections
 
 Your generated connections should resemble those below. In this example we have two required connections:
@@ -229,7 +227,7 @@ If you would like to automatically publish your application bundle in CI/CD, see
 
 :::info
 
-We have a number of pre-defined application templates available [here](https://github.com/massdriver-cloud/application-templates). We welcomes PRs to add more. 
+We have a number of pre-defined application templates available [here](https://github.com/massdriver-cloud/application-templates). We welcomes PRs to add more.
 
 If you are interested in private repositories for application templates, please `+1` this [issue](https://github.com/massdriver-cloud/massdriver-cli/issues/67).
 
