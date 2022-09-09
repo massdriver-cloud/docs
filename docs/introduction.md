@@ -33,13 +33,13 @@ We fully dogfood Massdriver,and all of [our bundles](https://github.com/orgs/mas
 ## Getting started
 
 * [Developing custom bundles](/bundles/walk-through)
+* [Packaging kubernetes applications](/applications/getting-started)
 * **COMING SOON**: Packaging serverless applications
-* **COMING SOON**: Packaging kubernetes applications
 * **COMING SOON**: Packaging virtual machine applications
 
 ## We are here to help
 
 * Explore our [bundles](https://github.com/orgs/massdriver-cloud/repositories?q=&type=all&language=terraform&sort=)
-* **COMING SOON**: See (and contribute to) our roadmap
-* **COMING SOON**: Join the conversation
+* [Check out (and contribute to) our roadmap](https://roadmap.massdriver.cloud)
+* [Join the GitHub discussion forum](https://github.com/massdriver-cloud/docs/discussions)
 * **COMING SOON**: Webinars and workshops
