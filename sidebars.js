@@ -13,4 +13,3 @@ module.exports = {
   ],
   ...require("./docs/swapi/sidebar-schema.js"),
 };
-

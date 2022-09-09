@@ -5,7 +5,7 @@ title: Deploying
 sidebar_label: Deploying
 ---
 
-Once an application bundle has been published to the Massdriver Bundle Manager, it can be connected and configured via the UI and then deployed via UI or CLI. 
+Once an application bundle has been published to the Massdriver Bundle Manager, it can be connected and configured via the UI and then deployed via UI or CLI.
 
 :::note
 
@@ -27,7 +27,7 @@ To finish this guide you will need:
 
 :::
 
-Log into [Massdriver](https://app.massdriver.cloud/login). 
+Log into [Massdriver](https://app.massdriver.cloud/login).
 
 Navigate to [Organization > Credentials](https://app.massdriver.cloud/organization/credentials) and click **AWS IAM Role** and follow the instructions on the screen.
 
@@ -90,4 +90,3 @@ mass deploy example-staging-phoenixchat
 Your Organization ID can be found by hovering over your org name in the sidebar:
 
 ![Organization ID](./org-id.png)
-

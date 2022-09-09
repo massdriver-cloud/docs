@@ -227,7 +227,7 @@ If you would like to automatically publish your application bundle in CI/CD, see
 
 :::info
 
-We have a number of pre-defined application templates available [here](https://github.com/massdriver-cloud/application-templates). We welcomes PRs to add more. 
+We have a number of pre-defined application templates available [here](https://github.com/massdriver-cloud/application-templates). We welcomes PRs to add more.
 
 If you are interested in private repositories for application templates, please `+1` this [issue](https://github.com/massdriver-cloud/massdriver-cli/issues/67).
 
