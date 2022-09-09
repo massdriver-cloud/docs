@@ -211,41 +211,6 @@ duration:
   unit: Milliseconds
 ```
 
-### Container Repositories
-
-The `ContainerRepositoriesDropdown` is an asynchronous dropdown field that queries for and populates with an organization's container repositories currently connected with Massdriver. Once selected, the container repository's `cloudProviderId` will be added to the `formData`. This dropdown also supports external filtering via a `cloud` type. Pass a specific `cloud` (`aws`, `gcp`, or `azure`) externally via the `uiSchema` to control what the `ContainerRepositoriesDropdown` displays. You can also pass a specific `returnType` (`cloudProviderId` or `cloudProviderURI`) externally via the `uiSchema` to control what the `ContainerRepositoriesDropdown` returns. Any attribute associated with a `containerRepository` (`name`, `id`, `cloud`, `location`, etc) is a valid `returnType`, but be sure to only pass unique values, like `id`, to have all the visual aspects work properly.
-
-**Props**
-
-External props passed through the `uiSchema`
-
-| Name         |  Required    |  Type       |    Default  |   Example  | Description |
-| ------------ | -----------  | ----------- | ----------- | -----------| ----------- |
-| cloud        |  False       | string      |   undefined | `aws`, `gcp`, `azure`  | A string that, if provided, constrain the contents of the field by cloud type. |
-| returnType   |  False       | string      |   cloudProviderId | `cloudProviderId`, `cloudProviderURI`  |A string that decides what value gets returned from the field. It allows any `containerRepository` attribute, but one should only pass unique values like `id` to ensure all the visual aspects work as intended. If an invalid `returnType` is passed, the field will default to `cloudProviderId`. |
-
-
-**Example**
-```yaml title="schema"
-type: object
-title: Filtered Container Repositories schema
-description: An example schema that shows the containerRepositoriesDropdown field
-  implementation.
-properties:
-  containerRepositories:
-    type: string
-    title: Container Repositories
-    description: A list of Container Repositories configured with massdriver.
-```
-
-
-```yaml title="uiSchema"
-containerRepositories:
-  ui:field: containerRepositoriesDropdown
-  cloud: aws
-  returnType: cloudProviderURI
-```
-
 ### DNS Zones
 
 The `DnsZonesDropdown` is an asynchronous dropdown field that queries for and populates with an organization's DNS Zones currently connected with Massdriver. Once selected, the DNS Zone's `cloudProviderId` will be added to the `formData`. This dropdown also supports external filtering via a `cloud` type. Pass a specific `cloud` (`aws`, `gcp`, or `azure`) externally via the `uiSchema` to control what the `DnsZonesDropdown` displays.
