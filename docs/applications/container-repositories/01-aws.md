@@ -23,7 +23,7 @@ Next we will create an IAM user and access key and assign it permissions to acce
 
 :::note
 
-Below is a permissive policy, feel free to fine tune `ecr:*` actions.
+Below is a permissive policy, feel free to fine tune [`ecr:*` actions](https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonelasticcontainerregistry.html).
 
 :::
 
