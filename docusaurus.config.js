@@ -83,6 +83,14 @@ module.exports = {
   },
   plugins: [
     [
+      // https://github.com/cmfcmf/docusaurus-search-local
+      "@cmfcmf/docusaurus-search-local",
+      {
+        indexDocs: true,
+        indexBlog: false
+      }
+    ],
+    [
       "@edno/docusaurus2-graphql-doc-generator",
       {
         schema: "./schema/md.graphql",
