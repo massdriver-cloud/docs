@@ -378,32 +378,3 @@ properties:
 dropzone:
   ui:field: dropzone
 ```
-
-### Generic Field
-
-The `GenericField` is a placeholder field that is used for **development purposes**. It can be used in the place of any other custom field and will render a block of information including the `name` of the property and the sections of both the `schema` and the `uiSchema` pertaining to that property. As there is no interactivity with the user, it will not change the `formData`.
-
-**Props**
-External props passed through the `uiSchema`
-
-The `GenericField` can be passed any props. As it is used as a placeholder, the best practice is to pass the props that the real field you want to render will display.
-
-For example, if you want to render a `SupportedCloudLocationsDropdown` and are using the `GenericField` as a placeholder, be sure to pass in `cloudService`. You can then see the `uiSchema` thanks to the `GenericWidget` and ensure that the proper data is being passed via the uiSchema.
-
-**Example**
-```yaml title="schema"
-type: object
-title: Mocked SupportedCloudLocationsDropdown using GenericField schema
-description: An example schema that shows how to mock the SupportedCloudLocationsDropdown field using the GenericField implementation.
-properties:
-  locations:
-    type: string
-    title: Locations
-    description: A list of supported locations for this cloud service.
-```
-
-```yaml title="uiSchema"
-locations:
-  ui:field: genericField # This will render the GenericField and let you look into the schema/uiSchema to ensure the correct information is being passed to the field.
-  cloudService: ECR # A required prop that is used to decide which cloud's supported locations are being queried for. In this case, "ECR" (essentially AWS Locations)
-```
