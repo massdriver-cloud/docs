@@ -15,3 +15,15 @@ Additionally, applications have a few other characteristics:
 * They are container based ([VMs are on our roadmap](https://roadmap.massdriver.cloud/bundles/application-vm-support-cl7s8svuy3959141xipth2cwcbe)).
 * Ability to generate environment variables via the application [package's](/concepts/packages) parameters or [connections](/concepts/connections).
 * Ability to programatically select IAM Policies & Permissions from infrastructure components.
+
+**Supported Runtimes**:
+
+* AWS Lambda
+* Azure App Service
+* GCP Cloud Run
+* GCP VMs
+* Kubernetes Deployments (EKS, AKS, GKE, & On-prem)
+* Kubernetes Cronjobs (EKS, AKS, GKE, & On-prem)
+* Kubernetes Jobs (EKS, AKS, GKE, & On-prem)
+
+Additional application runtimes can be supported by adding a runtime template [here](https://github.com/massdriver-cloud/application-templates).
