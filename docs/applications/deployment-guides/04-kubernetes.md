@@ -1,8 +1,8 @@
 ---
-id: applications-deploying
-slug: /applications/deploying
-title: Deploying
-sidebar_label: Deploying
+id: applications-deploying-kubernetes
+slug: /applications/deploying/kubernetes
+title: Deploying To Kubernetes
+sidebar_label: Kubernetes
 ---
 
 Once an application bundle has been published to the Massdriver Bundle Manager, it can be connected and configured via the UI and then deployed via UI or CLI.
@@ -31,19 +31,19 @@ Log into [Massdriver](https://app.massdriver.cloud/login).
 
 Navigate to [Organization > Credentials](https://app.massdriver.cloud/organization/credentials) and click **AWS IAM Role** and follow the instructions on the screen.
 
-![Add AWS Credential](./add-credential.png)
+![Add AWS Credential](../add-credential.png)
 
 Next navigate to [projects](https://app.massdriver.cloud/projects) and create a new project named `Example`. A [project](/concepts/projects) is a parity boundary and used to replicate infrastructure and applications between _targets_ like application environments (staging, production) and/or regions (us-west-1, us-west-2, or prod us west 2).
 
-![Create Project](./create-project.png).
+![Create Project](../create-project.png).
 
 Add a [targets](/concepts/targets) `Staging`.
 
-![Create Target](./create-target.png)
+![Create Target](../create-target.png)
 
 Finally attach the credential you created in the previous step:
 
-![Connect AWS IAM Role](./connect-credential.png)
+![Connect AWS IAM Role](../connect-credential.png)
 
 **Design and deploy infrastructure for your application**:
 
@@ -67,7 +67,7 @@ In this example you could use `massdriver/aws-rds-postgres`, `massdriver/aws-aur
 
 :::
 
-![Draw Infrastructure](./draw-infrastructure.png)
+![Draw Infrastructure](../draw-infrastructure.png)
 
 Once all of your infrastructure has booted up, you can add and connect your application: `YOUR_ORG_PREFIX/k8s-phoenix-chat-example`.
 
@@ -89,4 +89,4 @@ mass deploy example-staging-phoenixchat
 
 Your Organization ID can be found by hovering over your org name in the sidebar:
 
-![Organization ID](./org-id.png)
+![Organization ID](../org-id.png)
