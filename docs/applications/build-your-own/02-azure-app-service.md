@@ -193,7 +193,7 @@ connections:
 
 ## Publish
 
-At this point the application bundle can be published to the Massdriver bundle manager:
+At this point the application bundle can be published to the Massdriver package manager:
 
 ```yaml
 mass app publish
