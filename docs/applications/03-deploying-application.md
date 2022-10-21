@@ -1,6 +1,6 @@
 ---
-id: applications-deploying
-slug: /applications/deploying
+id: applications-deploying-application
+slug: /applications/deploying-application
 title: Deploying
 sidebar_label: Deploying
 ---
@@ -57,7 +57,7 @@ You'll need to add:
 * massdriver/aws-eks-cluster
 * massdriver/aws-rds-postgres or massdriver/aws-aurora-serverless-postgres
 
-After adding each to the canvas click "Configure." Feel free to fine tune the configuration, but if you are new to cloud infrastructure the "Configuration Presets" are a great way to get started quickly. Select a preset like "Development" and then click "Save & Deploy."
+After adding each to the canvas click **Configure**. Feel free to fine tune the configuration, but if you are new to cloud infrastructure the `Configuration Presets` are a great way to get started quickly. Select a preset like **Development** and then click **Deploy**.
 
 :::note
 
