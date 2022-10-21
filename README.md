@@ -20,6 +20,13 @@ yarn start
 open http://localhost:3000/
 ```
 
+Or with docker
+
+```shell
+docker run --rm -it -v $PWD:/app -w /app -p 3001:3000 node:19-alpine3.16 yarn
+docker run --rm -it -v $PWD:/app -w /app -p 3001:3000 node:19-alpine3.16 yarn start
+```
+
 ### Generating GQL Docs
 
 To update the GraphQL docs, you'll need access to generated the GraphQL SDL file from Massdriver.

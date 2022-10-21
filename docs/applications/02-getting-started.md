@@ -219,7 +219,7 @@ mass app publish
 
 You should see a success message. Upon visiting a project canvas in Massdriver, your `k8s-phoenix-chat-example` should be visible in the bundle bar prefixed with your organization name.
 
-Add Kubernetes and Postgres to your canvas, connect, and [deploy](/applications/deploying)!
+Add Kubernetes and Postgres to your canvas, connect, and [deploy](/applications/deploying-application)!
 
 ![Published Application](./published-application.png)
 
