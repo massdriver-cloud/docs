@@ -1,6 +1,6 @@
 ---
-id: applications-deploying
-slug: /applications/deploying
+id: applications-deploying-application
+slug: /applications/deploying-application
 title: Deploying
 sidebar_label: Deploying
 ---
@@ -57,7 +57,7 @@ You'll need to add:
 * massdriver/aws-eks-cluster
 * massdriver/aws-rds-postgres or massdriver/aws-aurora-serverless-postgres
 
-After adding each to the canvas click "Configure." Feel free to fine tune the configuration, but if you are new to cloud infrastructure the "Configuration Presets" are a great way to get started quickly. Select a preset like "Development" and then click "Save & Deploy."
+After adding each to the canvas click **Configure**. Feel free to fine tune the configuration, but if you are new to cloud infrastructure the `Configuration Presets` are a great way to get started quickly. Select a preset like **Development** and then click **Deploy**.
 
 :::note
 
@@ -77,7 +77,9 @@ If you [registered a DNS Zone](/platform/dns-zones) check "Enable Public Interne
 
 Once your application has been configured and connected, it can also be deployed from our CLI.
 
-The `deploy` command expects the name in the format of `project-target-manifest`. If you followed the above example it will be `example-staging-phoenixchat`. If you can't remember the name of your application, mouse over its human-friendly name in the UI and it will be displayed.
+The `deploy` command expects the package name in the format of `foo-bar-baz`. If you followed the above example it will be `example-staging-phoenixchat`. If you can't remember the name of your application, mouse over its human-friendly name in the UI and it will be displayed.
+
+![Package Name](./package-name.png)
 
 `mass deploy` can be added to your CI/CD pipeline to trigger deployments to your Kubernetes cluster.
 

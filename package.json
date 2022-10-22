@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "docusaurus start",
+    "start": "docusaurus start --host 0.0.0.0",
     "build": "docusaurus build",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy"
@@ -15,15 +15,12 @@
     "@edno/docusaurus2-graphql-doc-generator": "^1.10.2",
     "classnames": "^2.2.6",
     "graphql": "^16.5.0",
+    "posthog-docusaurus": "^2.0.0",
     "react": "^16.8.4",
     "react-dom": "^16.8.4"
   },
   "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
+    "production": [">0.2%", "not dead", "not op_mini all"],
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",

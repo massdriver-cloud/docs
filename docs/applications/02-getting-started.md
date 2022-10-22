@@ -15,7 +15,7 @@ Before getting started you'll need:
 
 :::
 
-In this guide we'll generate an `application bundle` and **publish** it to Massdriver. The application bundle will be all of the configuration your application needs to connect to runtimes (serverless, containers) and cloud resources (queues, databases, etc). Once the application bundle is published, we'll configure it in the UI and set up continious deployments from GitHub actions.
+In this guide we'll generate an `application bundle` and **publish** it to Massdriver. The application bundle will be all of the configuration your application needs to connect to runtimes (serverless, containers) and cloud resources (queues, databases, etc). Once the application bundle is published, we'll configure it in the UI and set up continuous deployments from GitHub actions.
 
 First, create a new application bundle:
 
@@ -52,7 +52,7 @@ For this example we'll choose `kubernetes-deployment`:
 
 :::info
 
-Application templates are cached locally the first time `mass app new` is run. To get the latest application templatest run `mass app template refresh`.
+Application templates are cached locally the first time `mass app new` is run. To get the latest application templates run `mass app template refresh`.
 
 :::
 
@@ -85,7 +85,7 @@ The following directory structure will be created:
 
 * `massdriver.yaml` - Bundle metadata, input parameter requirements / validation, connections / dependencies, and UI controls
 * `src` - Infrastructure-as-code rigging for your application. This will generally be the IAM, observability, and deployment configuration of your app.
-* `README.md` - Its a README 🤓
+* `README.md` - It's a README 🤓
 
 :::info
 
@@ -156,18 +156,18 @@ For this walkthrough our application doesn't have any requirements that need to 
 
 A breakdown of the fields:
 
-* .connections - all connected infrastructure and applications.
-* .connections.sqs - the connected SQS queue (if required & present).
-* .connections.sqs.data - sensitive information in the SQS artifact.
-* .connections.sqs.data.security - security related information for SQS.
-* .connections.sqs.data.security.iam - Principal of least privilege IAM policies exposed by this SQS bundle.
-* .connections.sqs.data.security.iam.subscribe - The `subscribe` policy your application needs.
+* `.connections` - all connected infrastructure and applications.
+* `.connections.sqs` - the connected SQS queue (if required & present).
+* `.connections.sqs.data` - sensitive information in the SQS artifact.
+* `.connections.sqs.data.security` - security related information for SQS.
+* `.connections.sqs.data.security.iam` - Principal of least privilege IAM policies exposed by this SQS bundle.
+* `.connections.sqs.data.security.iam.subscribe` - The `subscribe` policy your application needs.
 
 ### Parameters
 
 The `params` in your `massdriver.yaml` are really good defaults for a Kubernetes deployment. Feel free to add or remove values depending on what you want to expose to your users / developers.
 
-With Helm based applications the `values.yaml` file will be loaded as the base level defaults, and your parameters will be applied on top of those. If there are parameters that you dont want exposed to end users, simple remove the parameter from `params` and add the hard coded value to the `values.yaml` file.
+With Helm based applications the `values.yaml` file will be loaded as the base level defaults, and your parameters will be applied on top of those. If there are parameters that you don't want exposed to end users, simple remove the parameter from `params` and add the hard coded value to the `values.yaml` file.
 
 A good example of where to do this is your container repository (`.params.image.repository`). For private applications it may make sense to hard code this value to something like `my-org/web-api`. You could remove this field and set the image repository manually in the `values.yaml` file.
 
@@ -219,7 +219,7 @@ mass app publish
 
 You should see a success message. Upon visiting a project canvas in Massdriver, your `k8s-phoenix-chat-example` should be visible in the bundle bar prefixed with your organization name.
 
-Add Kubernetes and Postgres to your canvas, connect, and [deploy](/applications/deploying)!
+Add Kubernetes and Postgres to your canvas, connect, and [deploy](/applications/deploying-application)!
 
 ![Published Application](./published-application.png)
 
