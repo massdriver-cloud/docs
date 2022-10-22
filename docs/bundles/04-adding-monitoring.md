@@ -1,6 +1,6 @@
 ---
 id: bundles-add-monitoring
-slug: /bundles/add-monitorin
+slug: /bundles/add-monitoring
 title: Adding Monitoring
 sidebar_label: Monitoring
 ---
