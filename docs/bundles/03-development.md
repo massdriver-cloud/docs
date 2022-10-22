@@ -179,8 +179,8 @@ Coming soon we will be releasing a UI visualizer for `massdriver.yaml`.
 
 Two files are useful for local development:
 
-* `dev.params.tfvars.json`
-* `dev.connections.tfvars.json`
+* `_params.auto.tfvars.json`
+* `_connections.auto.tfvars.json`
 
 [Artifacts](https://app.massdriver.cloud/artifacts)
 
@@ -198,6 +198,8 @@ WIP : `terraform-provider-massdriver` & [Artifact Definitions](https://github.co
 
 :::
 
+Find our artifact definitions at [massdriver-cloud/artifact-definitions](https://github.com/massdriver-cloud/artifact-definitions).
+
 ## Local Provider Overrides
 
 :::note
@@ -205,6 +207,17 @@ WIP : `terraform-provider-massdriver` & [Artifact Definitions](https://github.co
 WIP
 
 :::
+
+If you've made changes to the provider and want to test them locally, you can "override" where Terraform looks for provdivers.
+
+```bash title="~/.terraformrc"
+provider_installation {
+  dev_overrides {
+    "registry.terraform.io/massdriver-cloud/massdriver" = "/home/cghill/src/massdriver/terraform-provider-massdriver"
+  }
+  direct {}
+}
+```
 
 ## Preset Configurations
 
