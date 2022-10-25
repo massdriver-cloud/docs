@@ -11,14 +11,14 @@ Adding monitorning to your bundle is easy. For general use-cases, you can take a
 
 First, you'll need to add an alarm channel to your bundle. This is how your alarms get registered with Massdriver. Usually, we'll add a file named `monitoring.tf` to the bundle for this code.
 
-```hcl title="AWS Alarm Channel"
+```hcl title="AWS Alarm Channel - src/monitoring.tf"
 module "alarm_channel" {
   source      = "github.com/massdriver-cloud/terraform-modules//aws-alarm-channel?ref=aa08797"
   md_metadata = var.md_metadata
 }
 ```
 
-```hcl title="Azure Alarm Channel"
+```hcl title="Azure Alarm Channel - src/monitoring.tf"
 module "alarm_channel" {
   source              = "github.com/massdriver-cloud/terraform-modules//azure-alarm-channel?ref=40d6e54"
   md_metadata         = var.md_metadata
@@ -26,7 +26,7 @@ module "alarm_channel" {
 }
 ```
 
-```hcl title="GCP Alarm Channel"
+```hcl title="GCP Alarm Channel - src/monitoring.tf"
 module "alarm_channel" {
   source      = "github.com/massdriver-cloud/terraform-modules//gcp-alarm-channel?ref=bfcf556"
   md_metadata = var.md_metadata
@@ -36,9 +36,9 @@ module "alarm_channel" {
 
 ## Adding An Alarm
 
-Once our channel has been set up, we can add 1 or more alarms.
+Once our channel has been set up, we can add 1 or more alarms. Below are examples from each cloud of adding memory usage alarams to Redis.
 
-```hcl title="AWS Alarm"
+```hcl title="AWS Alarm - src/monitoring.tf"
 locals {
   memory_usage_threshold = "90"
   member_clusters_count  = var.cluster_mode_enabled ? (var.node_groups * (var.replicas + 1)) : var.replicas + 1
@@ -71,7 +71,7 @@ module "memory_usage_alarm" {
 }
 ```
 
-```hcl title="Azure Alarm"
+```hcl title="Azure Alarm - src/monitoring.tf"
 locals {
   scope_config = {
     severity    = "1"
@@ -115,7 +115,7 @@ module "memory_metric_alert" {
 }
 ```
 
-```hcl title="GCP Alarm"
+```hcl title="GCP Alarm - src/monitoring.tf"
 locals {
   metrics = {
     memory = {
