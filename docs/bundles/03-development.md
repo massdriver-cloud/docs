@@ -204,7 +204,7 @@ Find our artifact definitions at [massdriver-cloud/artifact-definitions](https:/
 
 :::note
 
-WIP
+This is advanced usage and not recommended for most users. You'll only need to do this if you're developing for one of our providers locally.
 
 :::
 
@@ -213,6 +213,7 @@ If you've made changes to the provider and want to test them locally, you can "o
 ```bash title="~/.terraformrc"
 provider_installation {
   dev_overrides {
+                                                          # this is an example path, you'll need to change this
     "registry.terraform.io/massdriver-cloud/massdriver" = "/home/cghill/src/massdriver/terraform-provider-massdriver"
   }
   direct {}
