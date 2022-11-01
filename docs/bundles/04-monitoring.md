@@ -1,7 +1,7 @@
 ---
-id: bundles-add-monitoring
-slug: /bundles/add-monitoring
-title: Adding Monitoring
+id: bundles-monitoring
+slug: /bundles/monitoring
+title: Monitoring
 sidebar_label: Monitoring
 ---
 
@@ -33,10 +33,9 @@ module "alarm_channel" {
 }
 ```
 
-
 ## Adding An Alarm
 
-Once our channel has been set up, we can add 1 or more alarms. Below are examples from each cloud of adding memory usage alarams to Redis.
+Now that our channel has been set up, we can add 1 or more alarms. Below are examples from each cloud of adding memory usage alarams to Redis.
 
 ```hcl title="AWS Alarm - src/monitoring.tf"
 locals {
@@ -144,4 +143,10 @@ module "database_memory_alarm" {
 
 ## Roll your own
 
-If you don't want to use our Terraform modules for your alarms, you don't have to. You'll still need to create the `alarm_channel` to connect to Massdriver, but from there you can take a look at our modules to see how we're connecting metrics from various clouds to Massdriver.
+If you don't want to use our Terraform modules for your alarms, you don't have to. You'll still need to create the `alarm_channel` to connect to Massdriver, but from there you can take a look at our Terraform modules to see how we're connecting metrics from various clouds to Massdriver.
+
+**Massdriver Alarm Terraform Modules**
+
+- [AWS](https://github.com/massdriver-cloud/terraform-modules/blob/main/aws-cloudwatch-alarm/main.tf)
+- [Azure](https://github.com/massdriver-cloud/terraform-modules/blob/main/azure-monitor-metrics-alarm/main.tf)
+- [GCP](https://github.com/massdriver-cloud/terraform-modules/blob/main/gcp-monitoring-utilization-threshold/main.tf)
