@@ -73,7 +73,9 @@ aws rds wait db-snapshot-available --region ${RDS_MIGRATION_SNAPSHOT_REGION} --d
 
 Log into the Massdriver UI and add a new RDS manifest to your canvas. Make sure to set the SQL version to your **current** version of SQL, _not_ the version you are planning to upgrade to.
 
-We tend to treat our data stores as 'cattle' and include the data in (MMYY) format as a suffix of when the database was created.
+:::note
+At Massdriver we tend to treat our data stores as 'cattle' and include the data in (MMYY) format as a suffix of when the database was created.
+:::
 
 ![Add new RDS Manifest](./migrating_rds_databases/add-manifest.png)
 
