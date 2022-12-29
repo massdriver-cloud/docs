@@ -80,7 +80,7 @@ Massdriver recommends (and follows) the following naming convention for bundles:
 
 ## Massdriver Metadata
 
-Massdriver provides metadata to your IaC tool during provisioning. We publish a [JSON Schema](https://github.com/massdriver-cloud/docs/blob/main/schema/md_metadata.schema.json) of the metadata and provide backwards compatability in the data provided to your bundle.
+Massdriver provides metadata to your IaC tool during provisioning. We publish a [JSON Schema](https://github.com/massdriver-cloud/metaschemas/blob/main/md_metadata.json) of the metadata and provide backwards compatability in the data provided to your bundle.
 
 The metadata will be a top-level value provided to your IaC tool.
 
