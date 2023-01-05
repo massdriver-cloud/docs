@@ -27,7 +27,12 @@ type RootQueryType {
   artifacts(
   organizationId: ID!
   input: ArtifactsInput
-): [Artifact]
+): PaginatedArtifacts
+  downloadArtifact(
+  organizationId: ID!
+  artifactId: ID!
+  format: DownloadFormat!
+): RenderedArtifact
   artifactDefinitions(
   organizationId: ID!
   input: ArtifactDefinitionInput
@@ -54,14 +59,41 @@ type RootQueryType {
   bundles(
   organizationId: ID!
 ): [Bundle]
+  searchBundles(
+  organizationId: ID!
+  input: BundleSearchFilters
+): [Bundle]
   containerRepositories(
   organizationId: ID!
+  input: ContainerRepositoryInput
 ): [ContainerRepository]
+  cloudContainerRepositories(
+  organizationId: ID!
+  location: String!
+  artifactId: ID!
+): [ContainerRepository]
+  deployment(
+  organizationId: ID!
+  id: ID!
+): Deployment
   deployments(
   organizationId: ID!
   manifestId: ID!
   targetId: ID!
 ): [Deployment]
+  resourceLifecycleState(
+  organizationId: ID!
+  id: ID!
+): ResourceLifecycleState
+  dnsZones(
+  organizationId: ID!
+  input: DnsZoneInput
+): [DnsZone]
+  cloudDnsZones(
+  organizationId: ID!
+  location: String!
+  artifactId: ID!
+): [DnsZone]
   supportedLocations(
   organizationId: ID!
   cloudService: String!
@@ -70,10 +102,17 @@ type RootQueryType {
   organizationId: ID!
   id: ID!
 ): Manifest
+  organization(
+  organizationId: ID!
+): Organization!
   package(
   organizationId: ID!
   manifestId: ID!
   targetId: ID!
+): Package
+  getPackageByNamingConvention(
+  organizationId: ID!
+  name: String!
 ): Package
   projects(
   organizationId: ID!
@@ -82,6 +121,10 @@ type RootQueryType {
   organizationId: ID!
   id: ID!
 ): Project
+  providerResources(
+  organizationId: ID!
+  input: ProviderResourcesInput
+): PaginatedProviderResources
   target(
   organizationId: ID!
   id: ID!
@@ -111,7 +154,7 @@ type RootQueryType {
 
 #### [`architectures`](#) ([`[Architecture]`](/swapi/objects/architecture))
 
-
+List all architectures belonging to the given organization.
 - ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
 
 
@@ -143,7 +186,7 @@ Get an artifact by ID
 
 
 
-#### [`artifacts`](#) ([`[Artifact]`](/swapi/objects/artifact))
+#### [`artifacts`](#) ([`PaginatedArtifacts`](/swapi/objects/paginated-artifacts))
 
 List all artifacts
 - ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
@@ -154,6 +197,24 @@ List all artifacts
 - ##### [`input`](#) ([`ArtifactsInput`](/swapi/inputs/artifacts-input))
 
 Search, filter, and sort inputs
+
+
+#### [`downloadArtifact`](#) ([`RenderedArtifact`](/swapi/objects/rendered-artifact))
+
+Connection data for an artifact rendered in requested format
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+- ##### [`artifactId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+- ##### [`format`](#) ([`DownloadFormat!`](/swapi/enums/download-format))
+
+
 
 
 #### [`artifactDefinitions`](#) ([`[ArtifactDefinition]`](/swapi/objects/artifact-definition))
@@ -237,12 +298,61 @@ List artifact definitions which can be used to provision and connect container r
 
 
 
+#### [`searchBundles`](#) ([`[Bundle]`](/swapi/objects/bundle))
+
+
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+- ##### [`input`](#) ([`BundleSearchFilters`](/swapi/inputs/bundle-search-filters))
+
+Filter bundle search results
+
+
 #### [`containerRepositories`](#) ([`[ContainerRepository]`](/swapi/objects/container-repository))
 
 
 - ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
 
 
+
+
+- ##### [`input`](#) ([`ContainerRepositoryInput`](/swapi/inputs/container-repository-input))
+
+Filter Container Repository results
+
+
+#### [`cloudContainerRepositories`](#) ([`[ContainerRepository]`](/swapi/objects/container-repository))
+
+
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+- ##### [`location`](#) ([`String!`](/swapi/scalars/string))
+
+
+
+
+- ##### [`artifactId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+#### [`deployment`](#) ([`Deployment`](/swapi/objects/deployment))
+
+
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+- ##### [`id`](#) ([`ID!`](/swapi/scalars/id))
+
+Deployment ID
 
 
 #### [`deployments`](#) ([`[Deployment]`](/swapi/objects/deployment))
@@ -259,6 +369,50 @@ List artifact definitions which can be used to provision and connect container r
 
 
 - ##### [`targetId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+#### [`resourceLifecycleState`](#) ([`ResourceLifecycleState`](/swapi/objects/resource-lifecycle-state))
+
+
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+- ##### [`id`](#) ([`ID!`](/swapi/scalars/id))
+
+Deployment ID
+
+
+#### [`dnsZones`](#) ([`[DnsZone]`](/swapi/objects/dns-zone))
+
+
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+- ##### [`input`](#) ([`DnsZoneInput`](/swapi/inputs/dns-zone-input))
+
+Filter DNS Zone results
+
+
+#### [`cloudDnsZones`](#) ([`[DnsZone]`](/swapi/objects/dns-zone))
+
+
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+- ##### [`location`](#) ([`String!`](/swapi/scalars/string))
+
+
+
+
+- ##### [`artifactId`](#) ([`ID!`](/swapi/scalars/id))
 
 
 
@@ -286,6 +440,14 @@ Gets supported regions for cloud services
 
 - ##### [`id`](#) ([`ID!`](/swapi/scalars/id))
 
+Manifest ID or slug
+
+
+#### [`organization`](#) ([`Organization!`](/swapi/objects/organization))
+
+Gets the organization the user has selected to act on behalf of
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
 
 
 
@@ -307,6 +469,19 @@ Gets supported regions for cloud services
 
 
 
+#### [`getPackageByNamingConvention`](#) ([`Package`](/swapi/objects/package))
+
+Finds a package by its naming convention, the name prefix (project-target-manifest) without the random unique suffix.
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+- ##### [`name`](#) ([`String!`](/swapi/scalars/string))
+
+Package ID or &#x007B;project.slug&#x007D;-&#x007B;target.slug&#x007D;-&#x007B;manifest.slug&#x007D; i.e.: ecomm-staging-database
+
+
 #### [`projects`](#) ([`[Project]`](/swapi/objects/project))
 
 
@@ -325,7 +500,20 @@ Gets supported regions for cloud services
 
 - ##### [`id`](#) ([`ID!`](/swapi/scalars/id))
 
+Project ID or slug
 
+
+#### [`providerResources`](#) ([`PaginatedProviderResources`](/swapi/objects/paginated-provider-resources))
+
+List and filter provider resources
+- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+- ##### [`input`](#) ([`ProviderResourcesInput`](/swapi/inputs/provider-resources-input))
+
+Search, filter, and sort provider resources
 
 
 #### [`target`](#) ([`Target`](/swapi/objects/target))
@@ -338,7 +526,7 @@ Gets supported regions for cloud services
 
 - ##### [`id`](#) ([`ID!`](/swapi/scalars/id))
 
-
+Target ID or slug
 
 
 #### [`groups`](#) ([`[Group]`](/swapi/objects/group))
@@ -350,3 +538,9 @@ gets all groups for an organization
 
 
 #### [`subscriptionPlans`](#) ([`[SubscriptionPlan]`](/swapi/objects/subscription-plan))
+
+
+
+
+
+

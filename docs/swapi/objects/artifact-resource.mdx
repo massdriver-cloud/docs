@@ -11,11 +11,11 @@ No description
 type ArtifactResource {
   name: String
   type: String
-  id: String
-  artifactId: String
+  id: ID
+  artifactId: ID
   origin: String
-  sourceTargetId: String
-  sourceProjectId: String
+  sourceTargetId: ID
+  sourceProjectId: ID
 }
 ```
 
@@ -32,12 +32,12 @@ Artifact name
 Artifact type
 
 
-#### [`id`](#) ([`String`](/swapi/scalars/string))
+#### [`id`](#) ([`ID`](/swapi/scalars/id))
 
 
 
 
-#### [`artifactId`](#) ([`String`](/swapi/scalars/string))
+#### [`artifactId`](#) ([`ID`](/swapi/scalars/id))
 
 
 
@@ -47,9 +47,15 @@ Artifact type
 
 
 
-#### [`sourceTargetId`](#) ([`String`](/swapi/scalars/string))
+#### [`sourceTargetId`](#) ([`ID`](/swapi/scalars/id))
 
 
 
 
-#### [`sourceProjectId`](#) ([`String`](/swapi/scalars/string))
+#### [`sourceProjectId`](#) ([`ID`](/swapi/scalars/id))
+
+
+
+
+
+

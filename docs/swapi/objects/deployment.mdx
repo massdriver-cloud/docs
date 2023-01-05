@@ -12,6 +12,7 @@ type Deployment {
   id: ID!
   status: String!
   action: String!
+  errors: [DeploymentError]
   package: Package!
   artifacts: [Artifact]
   deployedBy: String
@@ -38,6 +39,11 @@ type Deployment {
 #### [`action`](#) ([`String!`](/swapi/scalars/string))
 
 
+
+
+#### [`errors`](#) ([`[DeploymentError]`](/swapi/objects/deployment-error))
+
+Errors encountered during deployment
 
 
 #### [`package`](#) ([`Package!`](/swapi/objects/package))
@@ -73,3 +79,7 @@ type Deployment {
 #### [`elapsedTime`](#) ([`Int!`](/swapi/scalars/int))
 
 Elapsed time in second
+
+
+
+

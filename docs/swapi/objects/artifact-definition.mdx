@@ -13,7 +13,9 @@ type ArtifactDefinition {
   name: String
   url: String
   type: String
-  schema: String
+  schema: JSON!
+  exportFormats: [ArtifactDefinitionExportFormat]
+  fqn: String!
 }
 ```
 
@@ -40,4 +42,20 @@ type ArtifactDefinition {
 
 
 
-#### [`schema`](#) ([`String`](/swapi/scalars/string))
+#### [`schema`](#) ([`JSON!`](/swapi/scalars/json))
+
+
+
+
+#### [`exportFormats`](#) ([`[ArtifactDefinitionExportFormat]`](/swapi/objects/artifact-definition-export-format))
+
+
+
+
+#### [`fqn`](#) ([`String!`](/swapi/scalars/string))
+
+
+
+
+
+

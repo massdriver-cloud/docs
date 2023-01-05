@@ -11,9 +11,9 @@ No description
 type ContainerRepository {
   id: ID
   name: String
-  status: String
+  cloud: String
   location: String
-  cloudProviderId: String
+  cloudProviderId: ID
 }
 ```
 
@@ -30,7 +30,7 @@ type ContainerRepository {
 
 
 
-#### [`status`](#) ([`String`](/swapi/scalars/string))
+#### [`cloud`](#) ([`String`](/swapi/scalars/string))
 
 
 
@@ -40,4 +40,10 @@ type ContainerRepository {
 
 
 
-#### [`cloudProviderId`](#) ([`String`](/swapi/scalars/string))
+#### [`cloudProviderId`](#) ([`ID`](/swapi/scalars/id))
+
+
+
+
+
+

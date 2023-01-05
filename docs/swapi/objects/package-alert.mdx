@@ -11,7 +11,7 @@ No description
 type PackageAlert {
   notification: JSON
   occurredAt: String
-  providerNotificationId: String
+  providerResourceId: ID
   displayName: String
   state: Boolean
   packageAlertState: PackageAlertState
@@ -31,7 +31,7 @@ type PackageAlert {
 
 
 
-#### [`providerNotificationId`](#) ([`String`](/swapi/scalars/string))
+#### [`providerResourceId`](#) ([`ID`](/swapi/scalars/id))
 
 
 
@@ -47,3 +47,9 @@ type PackageAlert {
 
 
 #### [`packageAlertState`](#) ([`PackageAlertState`](/swapi/objects/package-alert-state))
+
+
+
+
+
+

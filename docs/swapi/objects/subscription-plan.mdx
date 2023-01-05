@@ -11,10 +11,11 @@ No description
 type SubscriptionPlan {
   id: ID!
   name: String!
-  providerProductId: String
-  providerPriceId: String
-  price: Int
-  featureSet: FeatureSet
+  providerProductId: ID!
+  providerPriceId: ID!
+  price: Int!
+  planLimits: PlanLimit!
+  attribution: String!
 }
 ```
 
@@ -31,19 +32,30 @@ type SubscriptionPlan {
 
 
 
-#### [`providerProductId`](#) ([`String`](/swapi/scalars/string))
+#### [`providerProductId`](#) ([`ID!`](/swapi/scalars/id))
 
 
 
 
-#### [`providerPriceId`](#) ([`String`](/swapi/scalars/string))
+#### [`providerPriceId`](#) ([`ID!`](/swapi/scalars/id))
 
 
 
 
-#### [`price`](#) ([`Int`](/swapi/scalars/int))
+#### [`price`](#) ([`Int!`](/swapi/scalars/int))
 
 
 
 
-#### [`featureSet`](#) ([`FeatureSet`](/swapi/objects/feature-set))
+#### [`planLimits`](#) ([`PlanLimit!`](/swapi/objects/plan-limit))
+
+
+
+
+#### [`attribution`](#) ([`String!`](/swapi/scalars/string))
+
+
+
+
+
+

@@ -14,11 +14,14 @@ type Manifest {
   slug: String!
   suffix: String!
   description: String
+  position: GraphPosition
+  secretFields: [SecretField]
   deletable: ManifestDeletionLifecycle!
-  createdAt: DateTime
-  updatedAt: DateTime
-  bundle: Bundle
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  bundle: Bundle!
   packages: [Package]
+  linkableFields: [LinkableField]
 }
 ```
 
@@ -50,24 +53,45 @@ type Manifest {
 
 
 
+#### [`position`](#) ([`GraphPosition`](/swapi/objects/graph-position))
+
+
+
+
+#### [`secretFields`](#) ([`[SecretField]`](/swapi/objects/secret-field))
+
+Fields & values for managing default secret values in preview environments.
+
+
 #### [`deletable`](#) ([`ManifestDeletionLifecycle!`](/swapi/objects/manifest-deletion-lifecycle))
 
 
 
 
-#### [`createdAt`](#) ([`DateTime`](/swapi/scalars/date-time))
+#### [`createdAt`](#) ([`DateTime!`](/swapi/scalars/date-time))
 
 
 
 
-#### [`updatedAt`](#) ([`DateTime`](/swapi/scalars/date-time))
+#### [`updatedAt`](#) ([`DateTime!`](/swapi/scalars/date-time))
 
 
 
 
-#### [`bundle`](#) ([`Bundle`](/swapi/objects/bundle))
+#### [`bundle`](#) ([`Bundle!`](/swapi/objects/bundle))
 
 
 
 
 #### [`packages`](#) ([`[Package]`](/swapi/objects/package))
+
+
+
+
+#### [`linkableFields`](#) ([`[LinkableField]`](/swapi/objects/linkable-field))
+
+
+
+
+
+

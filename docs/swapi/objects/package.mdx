@@ -11,18 +11,23 @@ No description
 type Package {
   id: ID!
   namePrefix: String!
-  params: JSON
+  params: JSON!
   status: PackageStatus!
-  createdAt: DateTime
-  updatedAt: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  secretFields: [SecretField]
   activeDeployment: Deployment
+  decommissionable: PackageDeletionLifecycle!
   manifest: Manifest!
+  paramsSchema: JSON!
   providerResources: [ProviderResource]
   target: Target!
   deployments: [Deployment]
   connections: [Connection]
   artifacts: [Artifact]
   packageAlerts: [PackageAlert]
+  remoteReferences: [RemoteReference]
+  health: [MetricSet]
 }
 ```
 
@@ -39,7 +44,7 @@ type Package {
 
 
 
-#### [`params`](#) ([`JSON`](/swapi/scalars/json))
+#### [`params`](#) ([`JSON!`](/swapi/scalars/json))
 
 Package configuration parameters
 
@@ -49,14 +54,19 @@ Package configuration parameters
 
 
 
-#### [`createdAt`](#) ([`DateTime`](/swapi/scalars/date-time))
+#### [`createdAt`](#) ([`DateTime!`](/swapi/scalars/date-time))
 
 
 
 
-#### [`updatedAt`](#) ([`DateTime`](/swapi/scalars/date-time))
+#### [`updatedAt`](#) ([`DateTime!`](/swapi/scalars/date-time))
 
 
+
+
+#### [`secretFields`](#) ([`[SecretField]`](/swapi/objects/secret-field))
+
+Secret configuration for application packages
 
 
 #### [`activeDeployment`](#) ([`Deployment`](/swapi/objects/deployment))
@@ -64,7 +74,17 @@ Package configuration parameters
 
 
 
+#### [`decommissionable`](#) ([`PackageDeletionLifecycle!`](/swapi/objects/package-deletion-lifecycle))
+
+Checks if this package can be decommissioned.
+
+
 #### [`manifest`](#) ([`Manifest!`](/swapi/objects/manifest))
+
+
+
+
+#### [`paramsSchema`](#) ([`JSON!`](/swapi/scalars/json))
 
 
 
@@ -97,3 +117,17 @@ Artifacts provisioned by this package
 #### [`packageAlerts`](#) ([`[PackageAlert]`](/swapi/objects/package-alert))
 
 Current alarms for this package
+
+
+#### [`remoteReferences`](#) ([`[RemoteReference]`](/swapi/objects/remote-reference))
+
+Artifacts from a remote source like another project or a resource not managed by massdriver
+
+
+#### [`health`](#) ([`[MetricSet]`](/swapi/objects/metric-set))
+
+Package health information
+
+
+
+

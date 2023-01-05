@@ -12,7 +12,8 @@ connectContainerRepository(
   organizationId: ID!
   name: String!
   location: String!
-  cloudProviderId: String!
+  cloudProviderId: ID!
+  cloud: String!
 ): ContainerRepositoryPayload
 ```
 
@@ -34,7 +35,12 @@ connectContainerRepository(
 
 
 
-#### [`cloudProviderId`](#) ([`String!`](/swapi/scalars/string))
+#### [`cloudProviderId`](#) ([`ID!`](/swapi/scalars/id))
+
+
+
+
+#### [`cloud`](#) ([`String!`](/swapi/scalars/string))
 
 
 
@@ -42,3 +48,9 @@ connectContainerRepository(
 ### Type
 
 #### [`ContainerRepositoryPayload`](/swapi/objects/container-repository-payload)
+
+
+
+
+
+

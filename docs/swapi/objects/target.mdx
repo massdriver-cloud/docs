@@ -13,8 +13,8 @@ type Target {
   name: String
   slug: String
   description: String
+  mode: TargetMode
   deletable: TargetDeletionLifecycle!
-  alarmChannels: [AlarmChannel]
   createdAt: DateTime
   updatedAt: DateTime
   diagram: Diagram
@@ -22,6 +22,7 @@ type Target {
   project: Project
   packages: [Package]
   connections: [TargetConnection]
+  defaultConnections: [DefaultTargetConnection]
 }
 ```
 
@@ -48,12 +49,12 @@ type Target {
 
 
 
+#### [`mode`](#) ([`TargetMode`](/swapi/enums/target-mode))
+
+
+
+
 #### [`deletable`](#) ([`TargetDeletionLifecycle!`](/swapi/objects/target-deletion-lifecycle))
-
-
-
-
-#### [`alarmChannels`](#) ([`[AlarmChannel]`](/swapi/objects/alarm-channel))
 
 
 
@@ -89,3 +90,14 @@ Manifests for this target's package
 
 
 #### [`connections`](#) ([`[TargetConnection]`](/swapi/objects/target-connection))
+
+
+
+
+#### [`defaultConnections`](#) ([`[DefaultTargetConnection]`](/swapi/objects/default-target-connection))
+
+
+
+
+
+

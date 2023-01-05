@@ -12,7 +12,7 @@ type ProviderResource {
   id: ID!
   provisionerResourceName: String!
   provisionerResourceKey: String
-  providerResourceId: String!
+  providerResourceId: ID!
   provisionerResourceType: String!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -37,7 +37,7 @@ Name the provisioner refers to this resource by
 Internal set ID for collections
 
 
-#### [`providerResourceId`](#) ([`String!`](/swapi/scalars/string))
+#### [`providerResourceId`](#) ([`ID!`](/swapi/scalars/id))
 
 Cloud provider resource ID
 
@@ -53,3 +53,9 @@ Provisioner resource type. E.g.: terraform `aws_s3_bucket`, kubernetes `apps/v1/
 
 
 #### [`updatedAt`](#) ([`DateTime!`](/swapi/scalars/date-time))
+
+
+
+
+
+

@@ -10,9 +10,10 @@ No description
 ```graphql
 type BillingSubscription {
   id: ID!
-  providerCustomerId: String!
+  providerCustomerId: ID!
   providerPaymentStatus: String!
   subscriptionPlan: SubscriptionPlan
+  trialEndDate: DateTime
 }
 ```
 
@@ -24,7 +25,7 @@ type BillingSubscription {
 
 
 
-#### [`providerCustomerId`](#) ([`String!`](/swapi/scalars/string))
+#### [`providerCustomerId`](#) ([`ID!`](/swapi/scalars/id))
 
 
 
@@ -35,3 +36,14 @@ type BillingSubscription {
 
 
 #### [`subscriptionPlan`](#) ([`SubscriptionPlan`](/swapi/objects/subscription-plan))
+
+
+
+
+#### [`trialEndDate`](#) ([`DateTime`](/swapi/scalars/date-time))
+
+
+
+
+
+

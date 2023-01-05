@@ -15,12 +15,14 @@ type Bundle {
   access: String!
   description: String
   ref: String
-  paramsSchema: String
-  connectionsSchema: String
-  artifactsSchema: String
-  uiSchema: String
+  sourceUrl: String
+  paramsSchema: JSON!
+  connectionsSchema: JSON!
+  artifactsSchema: JSON!
+  uiSchema: JSON!
   createdAt: DateTime!
   updatedAt: DateTime!
+  compliance: [Compliance]
   fqn: String!
 }
 ```
@@ -35,7 +37,7 @@ type Bundle {
 
 #### [`name`](#) ([`String!`](/swapi/scalars/string))
 
-
+The short name of the bundle
 
 
 #### [`type`](#) ([`String!`](/swapi/scalars/string))
@@ -58,22 +60,27 @@ Public or private
 
 
 
-#### [`paramsSchema`](#) ([`String`](/swapi/scalars/string))
+#### [`sourceUrl`](#) ([`String`](/swapi/scalars/string))
 
 
 
 
-#### [`connectionsSchema`](#) ([`String`](/swapi/scalars/string))
+#### [`paramsSchema`](#) ([`JSON!`](/swapi/scalars/json))
 
 
 
 
-#### [`artifactsSchema`](#) ([`String`](/swapi/scalars/string))
+#### [`connectionsSchema`](#) ([`JSON!`](/swapi/scalars/json))
 
 
 
 
-#### [`uiSchema`](#) ([`String`](/swapi/scalars/string))
+#### [`artifactsSchema`](#) ([`JSON!`](/swapi/scalars/json))
+
+
+
+
+#### [`uiSchema`](#) ([`JSON!`](/swapi/scalars/json))
 
 
 
@@ -88,6 +95,15 @@ Public or private
 
 
 
+#### [`compliance`](#) ([`[Compliance]`](/swapi/objects/compliance))
+
+
+
+
 #### [`fqn`](#) ([`String!`](/swapi/scalars/string))
 
-Full name of the bundle
+The full name of the bundle
+
+
+
+

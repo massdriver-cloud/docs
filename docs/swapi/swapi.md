@@ -4,4 +4,6 @@ title: Schema Documentation
 sidebar_position: 1
 ---
 
-# Coming Soon
+# Massdriver GraphQL API
+
+__Tutorials and Guides coming soon__

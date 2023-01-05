@@ -97,11 +97,13 @@ In this example, we generated a Kubernetes deployment with a Helm chart. The gen
 
 :::
 
+## Configuring Apps
 
 In addition to the configuration options exposed in the _bundle guide_, two additional configuration options are exposed to application bundles:
 
 * `app.envs` - _Map_ of environment variables to set on the running application.
 * `app.policies` - _Array_ of IAM policies / permissions to attach to this application's cloud role / service account.
+* `app.secrets` - _Map_ of secret **definitions**. These will be presented in your application's configuration interface in Massdriver and can be set per-package or for preview environments.
 
 Both of these configuration options expect [jq](https://stedolan.github.io/jq/manual/) queries to extract values from `parameters` or upstream `connections`.
 
@@ -128,6 +130,8 @@ app:
     POSTGRES_USERNAME: .connections.postgres.data.authentication.username
 ```
 
+While secrets are automatically converted to environment variables, they can also be parsed if necessary. More on secrets [below](#secret-examples).
+
 :::info
 
 The structure of each artifact type is documented [here](https://github.com/massdriver-cloud/artifact-definitions/tree/main/definitions/artifacts).
@@ -150,6 +154,7 @@ Massdriver bundles will typically emit IAM Policies or Permissions information f
 For this walkthrough our application doesn't have any requirements that need to bind IAM permissions, but here is an example _if_ our application depended on AWS SQS and we wanted to bind the `subscribe` policy. Don't add this to your bundle without including SQS as a connection dependency.
 
 ```yaml title="Binding IAM Policies to Cloud Workloads"
+app:
   policies:
     - .connections.sqs.data.security.iam.subscribe
 ```
@@ -163,7 +168,27 @@ A breakdown of the fields:
 * `.connections.sqs.data.security.iam` - Principal of least privilege IAM policies exposed by this SQS bundle.
 * `.connections.sqs.data.security.iam.subscribe` - The `subscribe` policy your application needs.
 
-### Parameters
+### Secret Examples
+
+Secrets can be defined in your `massdriver.yaml` file. This will create forms in the Massdriver UI where 3rd party secrets can be set for your application.
+
+Secrets will be turned into environment variables at deploy time and are also exposed to the `envs` section for JQ parsing similar to `.params` and `.connections` [above](#environment-variable-examples).
+
+
+```yaml title="Parsing secrets into an environment variable"
+app:
+  envs:
+    FOO: bar
+    # SOME_SECRET is automatically created, but if you needed to map to a different var or perform parsing on the secret, you can do so
+    SOME_SECRET_RENAMED: .secret.SOME_SECRET
+    SOME_SECRET_UPCASED: .secret.SOME_SECRET | ascii_upcase
+  secrets:
+    SOME_SECRET: # This is env var name this will be converted to
+      required: true # if a secret is required, massdriver will block deployments that are missing this secret
+      title: "A nice name for the UI"
+      description: "A great description for the UI"
+```
+## Parameters
 
 The `params` in your `massdriver.yaml` are really good defaults for a Kubernetes deployment. Feel free to add or remove values depending on what you want to expose to your users / developers.
 

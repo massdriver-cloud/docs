@@ -9,6 +9,8 @@ No description
 
 ```graphql
 input ArtifactsInput {
+  limit: Int
+  after: String
   filter: ArtifactsFilters
 }
 ```
@@ -16,4 +18,20 @@ input ArtifactsInput {
 
 ### Fields
 
+#### [`limit`](#) ([`Int`](/swapi/scalars/int))
+
+The number of items to return.
+
+
+#### [`after`](#) ([`String`](/swapi/scalars/string))
+
+A cursor pointing to an item. Instructs the API to return items after the cursor.
+
+
 #### [`filter`](#) ([`ArtifactsFilters`](/swapi/inputs/artifacts-filters))
+
+
+
+
+
+
