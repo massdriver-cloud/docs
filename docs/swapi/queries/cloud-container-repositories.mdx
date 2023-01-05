@@ -10,8 +10,9 @@ No description
 ```graphql
 cloudContainerRepositories(
   organizationId: ID!
-  operationId: ID!
-): CloudContainerRepositoryRequest
+  location: String!
+  artifactId: ID!
+): [ContainerRepository]
 ```
 
 
@@ -22,11 +23,22 @@ cloudContainerRepositories(
 
 
 
-#### [`operationId`](#) ([`ID!`](/swapi/scalars/id))
+#### [`location`](#) ([`String!`](/swapi/scalars/string))
+
+
+
+
+#### [`artifactId`](#) ([`ID!`](/swapi/scalars/id))
 
 
 
 
 ### Type
 
-#### [`CloudContainerRepositoryRequest`](/swapi/objects/cloud-container-repository-request)
+#### [`ContainerRepository`](/swapi/objects/container-repository)
+
+
+
+
+
+

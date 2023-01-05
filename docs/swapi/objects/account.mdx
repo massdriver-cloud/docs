@@ -11,9 +11,11 @@ No description
 type Account {
   id: ID!
   email: String!
+  betaAccessEnabled: Boolean!
   attribution: String
   createdAt: DateTime!
   updatedAt: DateTime!
+  avatar: Avatar
   token: String
   pendingInvitations: [PendingInvitation]
   organizations: [Organization]
@@ -33,6 +35,11 @@ type Account {
 
 
 
+#### [`betaAccessEnabled`](#) ([`Boolean!`](/swapi/scalars/boolean))
+
+
+
+
 #### [`attribution`](#) ([`String`](/swapi/scalars/string))
 
 
@@ -46,6 +53,11 @@ type Account {
 #### [`updatedAt`](#) ([`DateTime!`](/swapi/scalars/date-time))
 
 
+
+
+#### [`avatar`](#) ([`Avatar`](/swapi/objects/avatar))
+
+Account's avatar
 
 
 #### [`token`](#) ([`String`](/swapi/scalars/string))

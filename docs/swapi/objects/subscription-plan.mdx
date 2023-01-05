@@ -11,8 +11,8 @@ No description
 type SubscriptionPlan {
   id: ID!
   name: String!
-  providerProductId: ID!
-  providerPriceId: ID!
+  providerProductId: String!
+  providerPriceId: String!
   price: Int!
   planLimits: PlanLimit!
   attribution: String!
@@ -32,12 +32,12 @@ type SubscriptionPlan {
 
 
 
-#### [`providerProductId`](#) ([`ID!`](/swapi/scalars/id))
+#### [`providerProductId`](#) ([`String!`](/swapi/scalars/string))
 
 
 
 
-#### [`providerPriceId`](#) ([`ID!`](/swapi/scalars/id))
+#### [`providerPriceId`](#) ([`String!`](/swapi/scalars/string))
 
 
 

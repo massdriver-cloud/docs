@@ -1,6 +1,6 @@
 ---
-id: connect-container-repository
-title: connectContainerRepository
+id: create-dns-zone
+title: createDnsZone
 hide_table_of_contents: false
 ---
 
@@ -8,13 +8,13 @@ hide_table_of_contents: false
 No description
 
 ```graphql
-connectContainerRepository(
+createDnsZone(
   organizationId: ID!
   name: String!
   location: String!
-  cloudProviderId: String!
+  artifactId: ID!
   cloud: String!
-): ContainerRepositoryPayload
+): DnsZonePayload
 ```
 
 
@@ -35,7 +35,7 @@ connectContainerRepository(
 
 
 
-#### [`cloudProviderId`](#) ([`String!`](/swapi/scalars/string))
+#### [`artifactId`](#) ([`ID!`](/swapi/scalars/id))
 
 
 
@@ -47,7 +47,7 @@ connectContainerRepository(
 
 ### Type
 
-#### [`ContainerRepositoryPayload`](/swapi/objects/container-repository-payload)
+#### [`DnsZonePayload`](/swapi/objects/dns-zone-payload)
 
 
 

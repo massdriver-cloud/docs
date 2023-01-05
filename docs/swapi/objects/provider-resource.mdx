@@ -12,7 +12,7 @@ type ProviderResource {
   id: ID!
   provisionerResourceName: String!
   provisionerResourceKey: String
-  providerResourceId: ID!
+  providerResourceId: String!
   provisionerResourceType: String!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -37,7 +37,7 @@ Name the provisioner refers to this resource by
 Internal set ID for collections
 
 
-#### [`providerResourceId`](#) ([`ID!`](/swapi/scalars/id))
+#### [`providerResourceId`](#) ([`String!`](/swapi/scalars/string))
 
 Cloud provider resource ID
 

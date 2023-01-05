@@ -14,8 +14,6 @@ type Manifest {
   slug: String!
   suffix: String!
   description: String
-  position: GraphPosition
-  secretFields: [SecretField]
   deletable: ManifestDeletionLifecycle!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -51,16 +49,6 @@ type Manifest {
 #### [`description`](#) ([`String`](/swapi/scalars/string))
 
 
-
-
-#### [`position`](#) ([`GraphPosition`](/swapi/objects/graph-position))
-
-
-
-
-#### [`secretFields`](#) ([`[SecretField]`](/swapi/objects/secret-field))
-
-Fields & values for managing default secret values in preview environments.
 
 
 #### [`deletable`](#) ([`ManifestDeletionLifecycle!`](/swapi/objects/manifest-deletion-lifecycle))

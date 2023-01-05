@@ -15,14 +15,12 @@ type Bundle {
   access: String!
   description: String
   ref: String
-  sourceUrl: String
-  paramsSchema: JSON!
-  connectionsSchema: JSON!
-  artifactsSchema: JSON!
-  uiSchema: JSON!
+  paramsSchema: String
+  connectionsSchema: String
+  artifactsSchema: String
+  uiSchema: String
   createdAt: DateTime!
   updatedAt: DateTime!
-  compliance: [Compliance]
   fqn: String!
 }
 ```
@@ -60,27 +58,22 @@ Public or private
 
 
 
-#### [`sourceUrl`](#) ([`String`](/swapi/scalars/string))
+#### [`paramsSchema`](#) ([`String`](/swapi/scalars/string))
 
 
 
 
-#### [`paramsSchema`](#) ([`JSON!`](/swapi/scalars/json))
+#### [`connectionsSchema`](#) ([`String`](/swapi/scalars/string))
 
 
 
 
-#### [`connectionsSchema`](#) ([`JSON!`](/swapi/scalars/json))
+#### [`artifactsSchema`](#) ([`String`](/swapi/scalars/string))
 
 
 
 
-#### [`artifactsSchema`](#) ([`JSON!`](/swapi/scalars/json))
-
-
-
-
-#### [`uiSchema`](#) ([`JSON!`](/swapi/scalars/json))
+#### [`uiSchema`](#) ([`String`](/swapi/scalars/string))
 
 
 
@@ -91,11 +84,6 @@ Public or private
 
 
 #### [`updatedAt`](#) ([`DateTime!`](/swapi/scalars/date-time))
-
-
-
-
-#### [`compliance`](#) ([`[Compliance]`](/swapi/objects/compliance))
 
 
 

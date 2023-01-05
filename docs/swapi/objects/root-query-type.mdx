@@ -27,7 +27,7 @@ type RootQueryType {
   artifacts(
   organizationId: ID!
   input: ArtifactsInput
-): PaginatedArtifacts
+): [Artifact]
   downloadArtifact(
   organizationId: ID!
   artifactId: ID!
@@ -59,10 +59,6 @@ type RootQueryType {
   bundles(
   organizationId: ID!
 ): [Bundle]
-  searchBundles(
-  organizationId: ID!
-  input: BundleSearchFilters
-): [Bundle]
   containerRepositories(
   organizationId: ID!
   input: ContainerRepositoryInput
@@ -72,19 +68,11 @@ type RootQueryType {
   location: String!
   artifactId: ID!
 ): [ContainerRepository]
-  deployment(
-  organizationId: ID!
-  id: ID!
-): Deployment
   deployments(
   organizationId: ID!
   manifestId: ID!
   targetId: ID!
 ): [Deployment]
-  resourceLifecycleState(
-  organizationId: ID!
-  id: ID!
-): ResourceLifecycleState
   dnsZones(
   organizationId: ID!
   input: DnsZoneInput
@@ -102,17 +90,10 @@ type RootQueryType {
   organizationId: ID!
   id: ID!
 ): Manifest
-  organization(
-  organizationId: ID!
-): Organization!
   package(
   organizationId: ID!
   manifestId: ID!
   targetId: ID!
-): Package
-  getPackageByNamingConvention(
-  organizationId: ID!
-  name: String!
 ): Package
   projects(
   organizationId: ID!
@@ -121,10 +102,6 @@ type RootQueryType {
   organizationId: ID!
   id: ID!
 ): Project
-  providerResources(
-  organizationId: ID!
-  input: ProviderResourcesInput
-): PaginatedProviderResources
   target(
   organizationId: ID!
   id: ID!
@@ -154,7 +131,7 @@ type RootQueryType {
 
 #### [`architectures`](#) ([`[Architecture]`](/swapi/objects/architecture))
 
-List all architectures belonging to the given organization.
+
 - ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
 
 
@@ -186,7 +163,7 @@ Get an artifact by ID
 
 
 
-#### [`artifacts`](#) ([`PaginatedArtifacts`](/swapi/objects/paginated-artifacts))
+#### [`artifacts`](#) ([`[Artifact]`](/swapi/objects/artifact))
 
 List all artifacts
 - ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
@@ -298,19 +275,6 @@ List artifact definitions which can be used to provision and connect container r
 
 
 
-#### [`searchBundles`](#) ([`[Bundle]`](/swapi/objects/bundle))
-
-
-- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
-
-
-
-
-- ##### [`input`](#) ([`BundleSearchFilters`](/swapi/inputs/bundle-search-filters))
-
-Filter bundle search results
-
-
 #### [`containerRepositories`](#) ([`[ContainerRepository]`](/swapi/objects/container-repository))
 
 
@@ -342,19 +306,6 @@ Filter Container Repository results
 
 
 
-#### [`deployment`](#) ([`Deployment`](/swapi/objects/deployment))
-
-
-- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
-
-
-
-
-- ##### [`id`](#) ([`ID!`](/swapi/scalars/id))
-
-Deployment ID
-
-
 #### [`deployments`](#) ([`[Deployment]`](/swapi/objects/deployment))
 
 
@@ -371,19 +322,6 @@ Deployment ID
 - ##### [`targetId`](#) ([`ID!`](/swapi/scalars/id))
 
 
-
-
-#### [`resourceLifecycleState`](#) ([`ResourceLifecycleState`](/swapi/objects/resource-lifecycle-state))
-
-
-- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
-
-
-
-
-- ##### [`id`](#) ([`ID!`](/swapi/scalars/id))
-
-Deployment ID
 
 
 #### [`dnsZones`](#) ([`[DnsZone]`](/swapi/objects/dns-zone))
@@ -443,14 +381,6 @@ Gets supported regions for cloud services
 Manifest ID or slug
 
 
-#### [`organization`](#) ([`Organization!`](/swapi/objects/organization))
-
-Gets the organization the user has selected to act on behalf of
-- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
-
-
-
-
 #### [`package`](#) ([`Package`](/swapi/objects/package))
 
 
@@ -467,19 +397,6 @@ Gets the organization the user has selected to act on behalf of
 - ##### [`targetId`](#) ([`ID!`](/swapi/scalars/id))
 
 
-
-
-#### [`getPackageByNamingConvention`](#) ([`Package`](/swapi/objects/package))
-
-Finds a package by its naming convention, the name prefix (project-target-manifest) without the random unique suffix.
-- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
-
-
-
-
-- ##### [`name`](#) ([`String!`](/swapi/scalars/string))
-
-Package ID or &#x007B;project.slug&#x007D;-&#x007B;target.slug&#x007D;-&#x007B;manifest.slug&#x007D; i.e.: ecomm-staging-database
 
 
 #### [`projects`](#) ([`[Project]`](/swapi/objects/project))
@@ -501,19 +418,6 @@ Package ID or &#x007B;project.slug&#x007D;-&#x007B;target.slug&#x007D;-&#x007B;m
 - ##### [`id`](#) ([`ID!`](/swapi/scalars/id))
 
 Project ID or slug
-
-
-#### [`providerResources`](#) ([`PaginatedProviderResources`](/swapi/objects/paginated-provider-resources))
-
-List and filter provider resources
-- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
-
-
-
-
-- ##### [`input`](#) ([`ProviderResourcesInput`](/swapi/inputs/provider-resources-input))
-
-Search, filter, and sort provider resources
 
 
 #### [`target`](#) ([`Target`](/swapi/objects/target))

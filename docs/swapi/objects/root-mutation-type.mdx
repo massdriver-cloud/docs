@@ -9,6 +9,9 @@ No description
 
 ```graphql
 type RootMutationType {
+  uploadAvatar(
+  image: Upload!
+): AvatarPayload
   createApiKey(
   organizationId: ID!
   name: String!
@@ -32,44 +35,10 @@ type RootMutationType {
   specs: JSON!
   data: JSON!
 ): ArtifactPayload
-  updateArtifact(
-  organizationId: ID!
-  id: ID!
-  params: ArtifactUpdateParams!
-): ArtifactPayload
   deleteArtifact(
   organizationId: ID!
   id: ID!
 ): ArtifactPayload
-  createArchitecture(
-  organizationId: ID!
-  name: String!
-  description: String
-  blueprint: [BlueprintInputChoice!]!
-  access: String!
-): ArchitecturePayload
-  updateArchitecture(
-  id: ID!
-  organizationId: ID!
-  name: String
-  description: String
-  blueprint: [BlueprintInputChoice!]
-  access: String
-): ArchitecturePayload
-  deleteArchitecture(
-  id: ID!
-  organizationId: ID!
-): ArchitecturePayload
-  instantiateArchitecture(
-  id: ID!
-  organizationId: ID!
-  projectId: ID!
-  manifests: [ManifestParams!]!
-): InstantiatedArchitecturePayload
-  saveProjectAsArchitecture(
-  organizationId: ID!
-  projectId: ID!
-): ArchitecturePayload!
   createBillingSubscription(
   organizationId: ID!
   planId: ID!
@@ -89,7 +58,7 @@ type RootMutationType {
   organizationId: ID!
   name: String!
   location: String!
-  cloudProviderId: ID!
+  cloudProviderId: String!
   cloud: String!
 ): ContainerRepositoryPayload
   deployPackage(
@@ -124,7 +93,7 @@ type RootMutationType {
   organizationId: ID!
   name: String!
   location: String!
-  cloudProviderId: ID!
+  cloudProviderId: String!
   cloud: String!
 ): DnsZonePayload
   disconnectDnsZone(
@@ -149,21 +118,6 @@ type RootMutationType {
   organizationId: ID!
   id: ID!
 ): ManifestPayload
-  setManifestPosition(
-  organizationId: ID!
-  id: ID!
-  params: GraphPositionParams!
-): ManifestPayload
-  setDefaultSecretForPreviewEnvironments(
-  organizationId: ID!
-  id: ID!
-  input: SetSecretValueInput!
-): SecretMetadataPayload
-  unsetDefaultSecretForPreviewEnvironments(
-  organizationId: ID!
-  id: ID!
-  input: UnsetSecretValueInput!
-): SecretMetadataPayload
   createOrganization(
   name: String!
   slug: String!
@@ -174,16 +128,6 @@ type RootMutationType {
   targetId: ID!
   params: JSON!
 ): PackagePayload
-  setPackageSecret(
-  organizationId: ID!
-  id: ID!
-  input: SetSecretValueInput!
-): SecretMetadataPayload
-  unsetPackageSecret(
-  organizationId: ID!
-  id: ID!
-  input: UnsetSecretValueInput!
-): SecretMetadataPayload
   createProject(
   organizationId: ID!
   name: String!
@@ -216,15 +160,6 @@ type RootMutationType {
   slug: String!
   description: String
 ): TargetPayload
-  deployPreviewEnvironment(
-  organizationId: ID!
-  projectId: ID!
-  input: PreviewEnvironmentInput!
-): TargetPayload
-  decommissionPreviewEnvironment(
-  organizationId: ID!
-  targetId: ID!
-): TargetPayload
   updateTarget(
   organizationId: ID!
   id: ID!
@@ -246,21 +181,19 @@ type RootMutationType {
   createSubscriptionManagementSession(
   organizationId: ID!
 ): SessionPayload
-  assignRemoteReference(
-  organizationId: ID!
-  artifactId: ID!
-  packageId: ID!
-  params: RemoteReferenceParams!
-): RemoteReferencePayload
-  unsetRemoteReference(
-  organizationId: ID!
-  remoteReferenceId: ID!
-): RemoteReferencePayload
 }
 ```
 
 
 ### Fields
+
+#### [`uploadAvatar`](#) ([`AvatarPayload`](/swapi/objects/avatar-payload))
+
+Upload an avatar for an account.
+- ##### [`image`](#) ([`Upload!`](/swapi/scalars/upload))
+
+
+
 
 #### [`createApiKey`](#) ([`ApiKeyPayload`](/swapi/objects/api-key-payload))
 
@@ -342,24 +275,6 @@ Create an artifact
 
 
 
-#### [`updateArtifact`](#) ([`ArtifactPayload`](/swapi/objects/artifact-payload))
-
-Update an artifact
-- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
-
-
-
-
-- ##### [`id`](#) ([`ID!`](/swapi/scalars/id))
-
-
-
-
-- ##### [`params`](#) ([`ArtifactUpdateParams!`](/swapi/inputs/artifact-update-params))
-
-
-
-
 #### [`deleteArtifact`](#) ([`ArtifactPayload`](/swapi/objects/artifact-payload))
 
 Delete an artifact.
@@ -371,116 +286,6 @@ Artifacts cannot be deleted if provisioned by Massdriver.
 
 
 - ##### [`id`](#) ([`ID!`](/swapi/scalars/id))
-
-
-
-
-#### [`createArchitecture`](#) ([`ArchitecturePayload`](/swapi/objects/architecture-payload))
-
-Create an architecture with the given parameters.
-- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
-
-
-
-
-- ##### [`name`](#) ([`String!`](/swapi/scalars/string))
-
-
-
-
-- ##### [`description`](#) ([`String`](/swapi/scalars/string))
-
-
-
-
-- ##### [`blueprint`](#) ([`[BlueprintInputChoice!]!`](/swapi/inputs/blueprint-input-choice))
-
-
-
-
-- ##### [`access`](#) ([`String!`](/swapi/scalars/string))
-
-
-
-
-#### [`updateArchitecture`](#) ([`ArchitecturePayload`](/swapi/objects/architecture-payload))
-
-Update an architecture with the given ID and parameters. May change any part of the architecture.
-- ##### [`id`](#) ([`ID!`](/swapi/scalars/id))
-
-
-
-
-- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
-
-
-
-
-- ##### [`name`](#) ([`String`](/swapi/scalars/string))
-
-
-
-
-- ##### [`description`](#) ([`String`](/swapi/scalars/string))
-
-
-
-
-- ##### [`blueprint`](#) ([`[BlueprintInputChoice!]`](/swapi/inputs/blueprint-input-choice))
-
-
-
-
-- ##### [`access`](#) ([`String`](/swapi/scalars/string))
-
-
-
-
-#### [`deleteArchitecture`](#) ([`ArchitecturePayload`](/swapi/objects/architecture-payload))
-
-Delete the architecture with the given ID.
-- ##### [`id`](#) ([`ID!`](/swapi/scalars/id))
-
-
-
-
-- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
-
-
-
-
-#### [`instantiateArchitecture`](#) ([`InstantiatedArchitecturePayload`](/swapi/objects/instantiated-architecture-payload))
-
-Instantiate the architecture with the provided ID into the given project with the provided set of manifest configurations.
-- ##### [`id`](#) ([`ID!`](/swapi/scalars/id))
-
-
-
-
-- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
-
-
-
-
-- ##### [`projectId`](#) ([`ID!`](/swapi/scalars/id))
-
-
-
-
-- ##### [`manifests`](#) ([`[ManifestParams!]!`](/swapi/inputs/manifest-params))
-
-
-
-
-#### [`saveProjectAsArchitecture`](#) ([`ArchitecturePayload!`](/swapi/objects/architecture-payload))
-
-Convert the project with the given ID into an architecture. Will NOT affect the original project.
-- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
-
-
-
-
-- ##### [`projectId`](#) ([`ID!`](/swapi/scalars/id))
 
 
 
@@ -557,7 +362,7 @@ Convert the project with the given ID into an architecture. Will NOT affect the 
 
 
 
-- ##### [`cloudProviderId`](#) ([`ID!`](/swapi/scalars/id))
+- ##### [`cloudProviderId`](#) ([`String!`](/swapi/scalars/string))
 
 
 
@@ -690,7 +495,7 @@ Links two manifests
 
 
 
-- ##### [`cloudProviderId`](#) ([`ID!`](/swapi/scalars/id))
+- ##### [`cloudProviderId`](#) ([`String!`](/swapi/scalars/string))
 
 
 
@@ -782,60 +587,6 @@ Removes a manifest from a project. This will fail if infrastructure is still pro
 
 
 
-#### [`setManifestPosition`](#) ([`ManifestPayload`](/swapi/objects/manifest-payload))
-
-Set the manifest position in the graph page
-- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
-
-
-
-
-- ##### [`id`](#) ([`ID!`](/swapi/scalars/id))
-
-Manifest ID or &#x007B;project.slug&#x007D;-&#x007B;manifest.slug&#x007D; i.e.: ecomm-database
-
-
-- ##### [`params`](#) ([`GraphPositionParams!`](/swapi/inputs/graph-position-params))
-
-
-
-
-#### [`setDefaultSecretForPreviewEnvironments`](#) ([`SecretMetadataPayload`](/swapi/objects/secret-metadata-payload))
-
-Sets a default secret value for this manifest in all preview environments. This value can be overridden by setting a secret value on a package in your preview environment.
-- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
-
-
-
-
-- ##### [`id`](#) ([`ID!`](/swapi/scalars/id))
-
-Manifest ID or &#x007B;project.slug&#x007D;-&#x007B;manifest.slug&#x007D; i.e.: ecomm-database
-
-
-- ##### [`input`](#) ([`SetSecretValueInput!`](/swapi/inputs/set-secret-value-input))
-
-
-
-
-#### [`unsetDefaultSecretForPreviewEnvironments`](#) ([`SecretMetadataPayload`](/swapi/objects/secret-metadata-payload))
-
-Removes a default secret value for this manifest in all preview environments.
-- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
-
-
-
-
-- ##### [`id`](#) ([`ID!`](/swapi/scalars/id))
-
-Manifest ID or &#x007B;project.slug&#x007D;-&#x007B;manifest.slug&#x007D; i.e.: ecomm-database
-
-
-- ##### [`input`](#) ([`UnsetSecretValueInput!`](/swapi/inputs/unset-secret-value-input))
-
-
-
-
 #### [`createOrganization`](#) ([`OrganizationPayload`](/swapi/objects/organization-payload))
 
 Create an organization
@@ -868,42 +619,6 @@ Update a Package's parameters
 
 
 - ##### [`params`](#) ([`JSON!`](/swapi/scalars/json))
-
-
-
-
-#### [`setPackageSecret`](#) ([`SecretMetadataPayload`](/swapi/objects/secret-metadata-payload))
-
-Set a secret value for the package.
-- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
-
-
-
-
-- ##### [`id`](#) ([`ID!`](/swapi/scalars/id))
-
-Package ID or &#x007B;project.slug&#x007D;-&#x007B;target.slug&#x007D;-&#x007B;manifest.slug&#x007D; i.e.: ecomm-staging-database
-
-
-- ##### [`input`](#) ([`SetSecretValueInput!`](/swapi/inputs/set-secret-value-input))
-
-
-
-
-#### [`unsetPackageSecret`](#) ([`SecretMetadataPayload`](/swapi/objects/secret-metadata-payload))
-
-Remove a secret value from the package.
-- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
-
-
-
-
-- ##### [`id`](#) ([`ID!`](/swapi/scalars/id))
-
-Package ID or &#x007B;project.slug&#x007D;-&#x007B;target.slug&#x007D;-&#x007B;manifest.slug&#x007D; i.e.: ecomm-staging-database
-
-
-- ##### [`input`](#) ([`UnsetSecretValueInput!`](/swapi/inputs/unset-secret-value-input))
 
 
 
@@ -1030,37 +745,6 @@ Create a target
 
 
 
-#### [`deployPreviewEnvironment`](#) ([`TargetPayload`](/swapi/objects/target-payload))
-
-Deploy a Preview Environment
-- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
-
-
-
-
-- ##### [`projectId`](#) ([`ID!`](/swapi/scalars/id))
-
-
-
-
-- ##### [`input`](#) ([`PreviewEnvironmentInput!`](/swapi/inputs/preview-environment-input))
-
-
-
-
-#### [`decommissionPreviewEnvironment`](#) ([`TargetPayload`](/swapi/objects/target-payload))
-
-
-- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
-
-
-
-
-- ##### [`targetId`](#) ([`ID!`](/swapi/scalars/id))
-
-
-
-
 #### [`updateTarget`](#) ([`TargetPayload`](/swapi/objects/target-payload))
 
 Update a target
@@ -1127,42 +811,6 @@ Allows users to accept invitations
 
 Create a stripe subscription management session
 - ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
-
-
-
-
-#### [`assignRemoteReference`](#) ([`RemoteReferencePayload`](/swapi/objects/remote-reference-payload))
-
-Assign a reference to an artifact of infrastructure in another project, or that is not managed by massdriver
-- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
-
-
-
-
-- ##### [`artifactId`](#) ([`ID!`](/swapi/scalars/id))
-
-
-
-
-- ##### [`packageId`](#) ([`ID!`](/swapi/scalars/id))
-
-
-
-
-- ##### [`params`](#) ([`RemoteReferenceParams!`](/swapi/inputs/remote-reference-params))
-
-
-
-
-#### [`unsetRemoteReference`](#) ([`RemoteReferencePayload`](/swapi/objects/remote-reference-payload))
-
-Removes a remote reference from a package's field
-- ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
-
-
-
-
-- ##### [`remoteReferenceId`](#) ([`ID!`](/swapi/scalars/id))
 
 
 

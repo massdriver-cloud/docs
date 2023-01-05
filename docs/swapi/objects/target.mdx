@@ -13,7 +13,6 @@ type Target {
   name: String
   slug: String
   description: String
-  mode: TargetMode
   deletable: TargetDeletionLifecycle!
   createdAt: DateTime
   updatedAt: DateTime
@@ -22,7 +21,6 @@ type Target {
   project: Project
   packages: [Package]
   connections: [TargetConnection]
-  defaultConnections: [DefaultTargetConnection]
 }
 ```
 
@@ -45,11 +43,6 @@ type Target {
 
 
 #### [`description`](#) ([`String`](/swapi/scalars/string))
-
-
-
-
-#### [`mode`](#) ([`TargetMode`](/swapi/enums/target-mode))
 
 
 
@@ -90,11 +83,6 @@ Manifests for this target's package
 
 
 #### [`connections`](#) ([`[TargetConnection]`](/swapi/objects/target-connection))
-
-
-
-
-#### [`defaultConnections`](#) ([`[DefaultTargetConnection]`](/swapi/objects/default-target-connection))
 
 
 

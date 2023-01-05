@@ -1,6 +1,6 @@
 ---
-id: alarm-channel-payload
-title: AlarmChannelPayload
+id: avatar-payload
+title: AvatarPayload
 hide_table_of_contents: false
 ---
 
@@ -8,10 +8,10 @@ hide_table_of_contents: false
 No description
 
 ```graphql
-type AlarmChannelPayload {
+type AvatarPayload {
   successful: Boolean!
   messages: [ValidationMessage]
-  result: AlarmChannel
+  result: Avatar
 }
 ```
 
@@ -28,6 +28,10 @@ Indicates if the mutation completed successfully or not.
 A list of failed validations. May be blank or null if mutation succeeded.
 
 
-#### [`result`](#) ([`AlarmChannel`](/swapi/objects/alarm-channel))
+#### [`result`](#) ([`Avatar`](/swapi/objects/avatar))
 
 The object created/updated/deleted by the mutation. May be null if mutation failed.
+
+
+
+

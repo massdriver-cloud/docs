@@ -1,6 +1,6 @@
 ---
-id: cloud-container-repository-request-payload
-title: CloudContainerRepositoryRequestPayload
+id: dns-zone-payload
+title: DnsZonePayload
 hide_table_of_contents: false
 ---
 
@@ -8,10 +8,10 @@ hide_table_of_contents: false
 No description
 
 ```graphql
-type CloudContainerRepositoryRequestPayload {
+type DnsZonePayload {
   successful: Boolean!
   messages: [ValidationMessage]
-  result: CloudContainerRepositoryRequest
+  result: DnsZone
 }
 ```
 
@@ -28,6 +28,10 @@ Indicates if the mutation completed successfully or not.
 A list of failed validations. May be blank or null if mutation succeeded.
 
 
-#### [`result`](#) ([`CloudContainerRepositoryRequest`](/swapi/objects/cloud-container-repository-request))
+#### [`result`](#) ([`DnsZone`](/swapi/objects/dns-zone))
 
 The object created/updated/deleted by the mutation. May be null if mutation failed.
+
+
+
+

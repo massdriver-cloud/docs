@@ -5,15 +5,14 @@ hide_table_of_contents: false
 ---
 
 
-A hypothetical set of manifests and links that can be deployed into a Massdriver project.
+No description
 
 ```graphql
 type Architecture {
   id: ID!
+  type: String!
   name: String!
-  description: String
-  access: String!
-  blueprint: [BlueprintChoice]!
+  blueprint: [ArchitectureManifest]
 }
 ```
 
@@ -25,22 +24,17 @@ type Architecture {
 
 
 
+#### [`type`](#) ([`String!`](/swapi/scalars/string))
+
+
+
+
 #### [`name`](#) ([`String!`](/swapi/scalars/string))
 
-The name of this architecture.
 
 
-#### [`description`](#) ([`String`](/swapi/scalars/string))
 
-The description of this bundle.
-
-
-#### [`access`](#) ([`String!`](/swapi/scalars/string))
-
-Public or private.
-
-
-#### [`blueprint`](#) ([`[BlueprintChoice]!`](/swapi/objects/blueprint-choice))
+#### [`blueprint`](#) ([`[ArchitectureManifest]`](/swapi/objects/architecture-manifest))
 
 The manifests and links to build this architecture.
 
