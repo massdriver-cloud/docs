@@ -275,40 +275,6 @@ locations:
   cloudService: ECR
 ```
 
-### Artifact Credentials
-
-The `FilteredArtifactCredentialsDropdown` is an asynchronous dropdown field that queries for and populates with all the supported `Credential Artifact Definitions` configured with Massdriver given a `cloudType` (`massdriver/aws-iam-role`, `massdriver/gcp-service-account`, etc.). Once selected, the `id` for the `Credential Artifact Definition` will be added to the `formData`.
-
-**Props**
-
-External props passed through the `uiSchema`
-
-| Name         |  Required    |  Type       |    Default  |   Example  | Description |
-| ------------ | -----------  | ----------- | ----------- | -----------| ----------- |
-| cloudType    |  True        | string      |   undefined |`massdriver/aws-iam-role`, `massdriver/gcp-service-account`, etc.| A string that is used in the query to get all the `Credential Artifact Definitions` for a specific cloud. |
-
-
-**Example**
-
-```yaml title="schema"
-type: object
-title: Credentials schema
-description: An example schema that shows the filteredArtifactCredentialsDropdown
-  field implementation.
-properties:
-  artifactId:
-    type: string
-    title: Credential
-    description: A list of the Credential Artifact Definitions for the given cloudType.
-    default: ''
-```
-
-```yaml title="uiSchema"
-artifactId:
-  ui:field: filteredArtifactDefinitionsDropdown
-  cloudType: massdriver/aws-iam-role
-```
-
 ### Azure Instance Types
 
 The `InstanceTypesDropdown` is an asynchronous dropdown field that queries for and populates a list of supported instance types for a region in Azure. In order to do that, an argument must be supplied that informs Massdriver how to find
@@ -344,50 +310,9 @@ properties:
 ```
 
 ```yaml title="uiSchema"
-artifactId:
+sku_name:
   ui:field: InstanceTypesDropdown
   query: params.region 
-```
-
-### Slug
-
-The `Slug` field is an enhanced `TextField` that displays `startAdornment` (prefix). Once typed, **only the plaintext that the user typed** will be added to the `formData`. The startAdornment is ignored.
-
-**Props**
-
-External props passed through the `uiSchema`
-
-| Name         |  Required    |  Type       |    Default  |   Example  | Description |
-| ------------ | -----------  | ----------- | ----------- | -----------| ----------- |
-| slugPrefix   |  True        | string      |   undefined |`myproj-dev-`| A string that is used as the `startAdornment` for the `TextField`. |
-
-
-**Example**
-```yaml title="schema"
-type: object
-title: Slug schema
-description: An example schema that shows the slug field implementation.
-properties:
-  slug:
-    type: string
-    minLength: 1
-    maxLength: 7
-    pattern: "^[a-z0-9]+$"
-    title: Abbreviation
-    description: An abbreviation for the item you are creating.
-    message:
-      pattern: Abbreviation must be a short string containing only lower case letters
-        a-z and numbers 0-9
-    examples:
-    - ecomm
-    - clketl
-
-```
-
-```yaml title="uiSchema"
-slug:
-  ui:field: slug
-  slugPrefix: myproj-dev-
 ```
 
 ### Dropzone
