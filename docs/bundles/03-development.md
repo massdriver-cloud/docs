@@ -179,8 +179,8 @@ Coming soon we will be releasing a UI visualizer for `massdriver.yaml`.
 
 Two files are useful for local development:
 
-* `dev.params.tfvars.json`
-* `dev.connections.tfvars.json`
+* `_params.auto.tfvars.json`
+* `_connections.auto.tfvars.json`
 
 [Artifacts](https://app.massdriver.cloud/artifacts)
 
