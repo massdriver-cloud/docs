@@ -5,7 +5,7 @@ title: DNS Zones
 sidebar_label: DNS Zones
 ---
 
-DNS Zones can be created in or imported from AWS, Azure, and GCP. Connecting a DNS Zone in Massdriver allows our [DNS Widget](/bundles/custom-widgets-and-fields#dns-zones) to create a rich dropdown for selecting zones, and can be used by Kubernetes clusters to automatically register DNS domains and TLS Certifacts (using Let's Encrypt).
+DNS Zones can be created in or imported from AWS, Azure, and GCP. Connecting a DNS Zone in Massdriver allows our [DNS Widget](/bundles/custom-widgets-and-fields#dns-zones) to create a rich dropdown for selecting zones, and can be used by Kubernetes clusters, serverless applications, and managed databases to automatically register DNS domains and TLS Certifacts (using Let's Encrypt).
 
 To create a DNS Zone or connect an existing zone:
 
