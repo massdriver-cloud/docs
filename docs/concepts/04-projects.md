@@ -13,6 +13,6 @@ All targets in the same project will always have the same diagram, but scale and
 
 This allows for:
 
-* running cost efficient staging or preview environments that have architectural parity with production
+* running cost-efficient staging or preview environments that have architectural parity with production
 * managing applications and infrastructure in isolated tenant environments
 * replicating infrastructure and applications between regions
