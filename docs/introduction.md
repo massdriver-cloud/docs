@@ -1,7 +1,7 @@
 ---
 id: introduction
 slug: /
-title: Welcome to Massdriver!
+title: Massdriver Docs
 sidebar_label: Introduction
 ---
 
