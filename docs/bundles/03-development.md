@@ -7,7 +7,7 @@ sidebar_label: Development
 
 Massdriver bundles wrap IaC tools like Terraform and Helm (more coming soon).
 
-This guide will cover how some of the key components and best practices for integration your IaC module with the Massdriver UI and provisioning system.
+This guide will cover some of the key components and best practices for integrating your IaC module with the Massdriver UI and provisioning system.
 
 :::note
 
@@ -25,25 +25,25 @@ Let's generate a bundle:
 mass bundle new
 ```
 
-You'll notice that in your `./src` directory there are not Terraform variable files. Massdriver uses JSON Schema to present a rich user interface to end-users and uses that interface to also generate Terraform and Helm variable files.
+You'll notice that in your `./src` directory there are no Terraform variable files. Massdriver uses JSON Schema to present a rich user interface to end-users and uses that interface to also generate Terraform and Helm variable files.
 
-You can generate your variables by running.
+You can generate your variables by running:
 
 ```shell
 mass bundle build
 ```
 
-## Building the Right Sized Bundle
+## Building the Right-Sized Bundle
 
 We recommend building single use-case scoped bundles rather than bundles that encapsulate an entire cloud service.
 
-Complex infrastructure modules are confusing to end users (S3 Buckets have over 90 attributes) and there are many fields in the cloud resource APIs that are incompatible with each other.
+Complex infrastructure modules are confusing to end-users (S3 Buckets have over 90 attributes) and there are many fields in the cloud resource APIs that are incompatible with each other.
 
 We've also seen how bloated general purpose modules can be. EKS modules
 
 **Bad scopes**:
 
-* AWS RDS - End users are looking for a specific database type, there are many fields in RDS configs that only work for MySQL or Postgres.
+* AWS RDS - End-users are looking for a specific database type; there are many fields in RDS configs that only work for MySQL or Postgres.
 * AWS S3 - As noted above, S3 has a lot of fields that may not apply to an end-user use case.
 
 **Good scopes**:
@@ -54,7 +54,7 @@ We've also seen how bloated general purpose modules can be. EKS modules
 * AWS S3 Logging Bucket
 * AWS S3 Application Assets Bucket
 
-Smaller scopes mean simpler use cases. This makes it easier for user to configure and manage, as well as simpler IAM policies that follow least privileges for their specific use case.
+Smaller scopes mean simpler use cases. This makes it easier for the user to configure and manage, while having simpler IAM policies that follow least privileges for their specific use case.
 
 Massdriver bundles should do one thing and do it well.
 
@@ -80,7 +80,7 @@ Massdriver recommends (and follows) the following naming convention for bundles:
 
 ## Massdriver Metadata
 
-Massdriver provides metadata to your IaC tool during provisioning. We publish a [JSON Schema](https://github.com/massdriver-cloud/metaschemas/blob/main/md_metadata.json) of the metadata and provide backwards compatability in the data provided to your bundle.
+Massdriver provides metadata to your IaC tool during provisioning. We publish a [JSON Schema](https://github.com/massdriver-cloud/metaschemas/blob/main/md_metadata.json) of the metadata and provide backwards compatibility in the data provided to your bundle.
 
 The metadata will be a top-level value provided to your IaC tool.
 
