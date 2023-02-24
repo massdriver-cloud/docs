@@ -5,7 +5,7 @@ title: Bundle Configuration
 sidebar_label: Configuration
 ---
 
-The `massdriver.yaml` file contains metadata for publishing a Massdriver bundle to the Massdriver package manager as well as configuration for controlling the UI interface.
+The `massdriver.yaml` file contains metadata for publishing a Massdriver bundle to the Massdriver package manager as well as configuration for controlling the UI.
 
 **`massdriver.yaml` Properties**:
 
