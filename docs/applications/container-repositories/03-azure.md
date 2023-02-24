@@ -1,133 +1,72 @@
 ---
 id: applications-container-repositories-azure
 slug: /applications/container-repositories/azure
-title: Azure Container Repositories
-sidebar_label: Azure Container Repositories
+title: Azure
+sidebar_label: Azure
 ---
 
-## Using Azure CLI (Bash)
+## Docker image push & deploy
 
-Run this script in the Azure CLI using Bash. Replace the values in the script with your own.
+### GitHub Action
 
-```shell
-ACR_NAME=<name of container registry> # Alpha-numeric characters only, between 5 and 50 characters
-LOCATION=<location> # Examples: eastus, westus2, northcentralus
-
-az group create --name $ACR_NAME --location $LOCATION
-az acr create --resource-group $ACR_NAME --name $ACR_NAME --sku Standard --admin-enabled true
-ACR_REGISTRY_ID=$(az acr show --name $ACR_NAME --query "id" --output tsv)
-
-PASSWORD=$(az ad sp create-for-rbac --name $ACR_NAME --scopes $ACR_REGISTRY_ID --role acrpush --query "password" --output tsv)
-USER_NAME=$(az ad sp list --display-name $ACR_NAME --query "[].appId" --output tsv)
-LOGIN_SERVER=$(az acr show --name $ACR_NAME --query "loginServer" --output tsv)
-
-echo "ACR_LOGIN_SERVER: $LOGIN_SERVER"
-echo "AZURE_CLIENT_ID: $USER_NAME"
-echo "AZURE_CLIENT_SECRET: $PASSWORD"
-```
-
-Copy the `ACR_LOGIN_SERVER`, `AZURE_CLIENT_ID` and `AZURE_CLIENT_SECRET` to use in a later step.
-
-## Using Azure portal
-
-### Create a container registry
-
-1. In your Azure account, search for and click on **container registries**
-2. Click **Create**
-3. On the create screen, complete the required fields:
-  1. Click **Create new** under resource group to create a new resource group
-  2. Enter a name for your container registry
-  3. Select a location
-  4. Select a SKU (Standard is used for most scenarios)
-  5. Click **Review + create** and **Create**
-4. In the **Overview** tab of the container registry, copy and save the `Login server` value for later use
-5. Select the **Access keys** tab of the container registry, and enable the `Admin user` option
-   ![Example 1](./acr-example-1.png)
-
-### Create the Azure service principal
-
-1. In your Azure account, search for and click on **Subscriptions**
-2. Copy the **Subscription ID** and save for later use
-3. Search for and click on **Azure Active Directory**
-4. Select **App registrations** tab
-5. Select **New registration**
-6. Name your application and click **Register**
-7. Select **Certificates & secrets** tab
-8. Click **New client secret**
-9. Name your client secret and click **Add**
-10. Copy the `Value` of the secret and save for later use (this will be the only time the secret will be displayed)
-11. Select **Overview** tab to copy and save the `Application (client) ID` for later use
-    ![Example 3](./acr-example-3.png)
-
-### Create role assignment for service principal
-
-1. Search for and open the **resource group** of your Azure Container Registry
-2. Select **Access control (IAM)**
-3. Click **+ Add** and **Add role assignment**
-4. Select **Contributor** and click **Next**
-5. Click **Select members** and search for the **service principal** you created earlier, select it and click **Select**
-6. Click **Review + assign**
-   ![Example 2](./acr-example-2.png)
-
-# Pushing container registry to GitHub actions
-
-## Create GitHub secrets
-
-1. Open your GitHub repository and click **Settings**
-2. Click **Secrets** and then **New Secret**
-3. Create 3 secrets for the following using values saved from previous steps:
-
-- Secret 1
-  - Name: `ACR_LOGIN_SERVER`
-  - Value: Paste login server value here
-- Secret 2
-  - Name: `AZURE_CLIENT_ID`
-  - Value: Paste Azure client ID here
-- Secret 3
-  - Name: `AZURE_CLIENT_SECRET`
-  - Value: Paste Azure client secret value here
-
-## Create Docker file
-
-### Linux
-
-Save file in `.github/workflows/docker-push.yaml`. If you use another branch besides `main`, make sure to replace it below.
-
-```YAML
-name: Push Docker Image to Azure Container Registry
+```yaml title="mass-app-deploy.yaml"
+name: Deploy to Massdriver
 on:
   push:
-    branches:
-      - main
-permissions:
-  id-token: write
-  contents: read
+    branches: [main]
 
 jobs:
-  build-and-deploy:
+  push_and_deploy:
     runs-on: ubuntu-latest
+    env:
+      MASSDRIVER_ORG_ID: ${{ secrets.MASSDRIVER_ORG_ID }}
+      MASSDRIVER_API_KEY: ${{ secrets.MASSDRIVER_API_KEY }}
     steps:
-    - name: Login to the Container Registry
-      uses: azure/docker-login@v1
-      with:
-        login-server: ${{ secrets.ACR_LOGIN_SERVER }}
-        username: ${{ secrets.AZURE_CLIENT_ID }}
-        password: ${{ secrets.AZURE_CLIENT_SECRET }}
-    - name: Docker meta
-      id: meta
-      uses: docker/metadata-action@v3
-      with:
-        flavor: |
-          latest=true
-        images: ${{ secrets.ACR_LOGIN_SERVER }}/${{ github.repository }}
-        tags: |
-          type=ref,event=branch
-          type=sha
-    - name: Build and push
-      id: docker-build
-      uses: docker/build-push-action@v2
-      with:
-        file: Dockerfile
-        push: true
-        tags: ${{ steps.meta.outputs.tags }}
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set outputs
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      - name: Install Massdriver CLI
+        uses: massdriver-cloud/actions/setup@v2.1
+      - name: Build and Push - Azure
+        run: mass image push testrepo -a ${{ secrets.AUTHENTICATION_ARTIFACT_ID_AZURE }} -r westus -t ${{ steps.vars.outputs.sha_short }}
+      # Deploy
+      - name: Update Tag
+        run: cat mass-app-params.json | sed s/IMAGE_TAG/${{ steps.vars.outputs.sha_short }}/ > mass-app-params-rendered.json
+      - name: Publish
+        run: mass app publish local-dev-test-0001
+      - name: Configure Package
+        run: mass package configure local-dev-test-0001 -f mass-app-params-rendered.json
+      # this requires a massdriver.yaml file, we might not want that
+      - name: Deploy
+        run: mass app deploy local-dev-test-0001
+```
+
+### Params file
+```json title="mass-app-params.json"
+{
+  "application": {
+    "health_check_path": "/health",
+    "logs": {
+      "disk_quota_mb": 50,
+      "retention_period_days": 7
+    },
+    "maximum_worker_count": 3,
+    "minimum_worker_count": 1,
+    "sku_name": "P1v3",
+    "zone_balancing": false
+  },
+  "dns": {
+    "enable_dns": false
+  },
+  "docker": {
+    "image": "bloby",
+    "registry": "massdrivercloud",
+    "tag": "IMAGE_TAG"
+  },
+  "monitoring": {
+    "mode": "AUTOMATED"
+  }
+}
 ```
