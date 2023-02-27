@@ -1,8 +1,8 @@
 ---
-id: applications-container-repositories-gcp
-slug: /applications/container-repositories/gcp
-title: GCP Container Repositories
-sidebar_label: GCP Container Repositories
+id: applications-github-action-gcp
+slug: /applications/github-action/gcp
+title: GCP
+sidebar_label: GCP
 ---
 
 To push your container image to GCP from GitHub, you'll need to follow this guide. We'll start by creating a new repository, then go through the steps to set up keyless authentication from GitHub to GCP.

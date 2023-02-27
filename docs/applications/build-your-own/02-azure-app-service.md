@@ -213,7 +213,7 @@ If you are interested in private repositories for application templates, please 
 
 ## Deploy
 
-Once an application bundle has been published, it can be connected and configured via the UI and then deployed via UI or CLI.
+Once an application bundle has been published, it can be dragged onto the canvas, connected, and configured via the UI and then deployed via UI or CLI.
 
 :::note
 

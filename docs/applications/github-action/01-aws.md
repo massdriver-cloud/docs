@@ -1,8 +1,8 @@
 ---
-id: applications-container-repositories-aws
-slug: /applications/container-repositories/aws
-title: AWS Container Repositories
-sidebar_label: AWS Container Repositories
+id: applications-github-action-aws
+slug: /applications/github-action/aws
+title: AWS
+sidebar_label: AWS
 ---
 
 To push your container image to AWS ECR from GitHub, you'll need to follow this guide. We'll start by creating a new repository, then go through creating a CI IAM User with access to your repo.

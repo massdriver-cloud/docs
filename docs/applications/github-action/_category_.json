@@ -1,6 +1,6 @@
 {
   "position": 10,
-  "label": "Container Repositories & CI/CD",
+  "label": "Deploying with GitHub Actions",
   "collapsible": true,
   "collapsed": true
 }
