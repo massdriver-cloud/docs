@@ -125,4 +125,4 @@ You may need to modify the branch name in the `on` section of the workflow to ma
 When this GitHub Action runs, it will:
 * Build and push your image to your ACR
 * Update the tag in your params file
-* Redeploy your application in Massdriver
+* Redeploy your application in Massdriver with the updated tag
