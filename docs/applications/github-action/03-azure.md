@@ -33,7 +33,7 @@ mass preview init <application-package-slug-id>
 
 Hover over `Azure` and hit **enter** to select. Hit `s` to save. Hover over the name of your credential and hit **enter** to select. Hit `s` to save.
 
-This will output a JSON file named `preview.json` in your current directory with the values of every package in the same target as your application. Use `cat preview.json` to view the contents of the file. Copy and save the `credentials` UUID for use in ![Set secrets and vars](#set-secrets-and-vars).
+This will output a JSON file named `preview.json` in your current directory with the values of every package in the same target as your application. Use `cat preview.json` to view the contents of the file. Copy and save the `credentials` UUID for use in [Set secrets and vars](#set-secrets-and-vars).
 
 Find the name of your application and copy the JSON block for your application into a new file named `mass-app-params.json`. You can find an example params file below:
 
