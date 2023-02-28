@@ -17,25 +17,13 @@ Before getting started, you'll need:
 
 :::
 
-### Set secrets and vars
-Once you've published your application, you'll need to set the following secrets and vars in your GitHub repository:
-
-| Name | Description | Type | Notes |
-| --- | --- | --- | --- |
-| `MASSDRIVER_ORG_ID` | Your Massdriver organization ID | secret | Your Organization ID can be found by hovering over your org logo in the sidebar |
-| `MASSDRIVER_API_KEY` | Your Massdriver API key | secret | [Service Accounts](/platform/service-accounts) |
-| `AUTHENTICATION_ARTIFACT_ID_AZURE` | The ID of the authentication artifact for your Azure Container Registry | secret | Browse to your organization [artifacts](https://app.massdriver.cloud/artifacts), open your credentials artifact, and copy the UUID in the browser URL |
-| `IMAGE_REPO` | The name of your ACR repository | variable | Must be in `name/name` format. If it does not exist, it will be created for you |
-| `PACKAGE_SLUG` | The slug of your Massdriver application package | variable | Hover over the name of your application in Massdriver to view the slug |
-| `REGION` | The region where your ACR is located | variable | Must be a valid Azure region. For example: `eastus` |
-
 ### Publish your application
 Before you can set up a GitHub Action to deploy your application, first you'll need to publish it to Massdriver and create a package. You can do this by following the [Getting Started](/applications/getting-started) guide.
 
 After you publish your application, you'll need to create a package. You can do this by dragging your application out from the bundle bar in the Massdriver canvas. Fill in the values of your application and click **Deploy**.
 
-### Params file
-Next, we'll need to create a params file for our application. This file will be used by the GitHub Action workflow to update the image tag and update the configuration of your application.
+### Package preview file
+Next, we'll need to create a package preview file to fetch the application params. This file will be used by the GitHub Action workflow to update the image tag and update the configuration of your application.
 
 To generate this file, in your terminal run the following command:
 
@@ -45,7 +33,9 @@ mass preview init <application-package-slug-id>
 
 Hover over `Azure` and hit **enter** to select. Hit `s` to save. Hover over the name of your credential and hit **enter** to select. Hit `s` to save.
 
-This will output a JSON file named `preview.json` in your current directory with the values of every package in the same target as your application. Use `cat preview.json` to view the contents of the file, and copy the JSON block for your application into a new file named `mass-app-params.json`. You can find an example params file below:
+This will output a JSON file named `preview.json` in your current directory with the values of every package in the same target as your application. Use `cat preview.json` to view the contents of the file. Copy and save the `credentials` UUID for use in ![Set secrets and vars](#set-secrets-and-vars).
+
+Find the name of your application and copy the JSON block for your application into a new file named `mass-app-params.json`. You can find an example params file below:
 
 ```json title=".github/workflows/mass-app-params.json"
 {
@@ -80,6 +70,18 @@ Any changes to the values in this params file will override the values for your 
 :::
 
 Store `mass-app-params.json` in your GitHub repository in the `.github/workflows` directory.
+
+### Set secrets and vars
+Once you've published your application and configured your `mass-app-params.json` file, you'll need to set the following secrets and vars in your GitHub repository:
+
+| Name | Description | Type | Notes |
+| --- | --- | --- | --- |
+| `MASSDRIVER_ORG_ID` | Your Massdriver organization ID | secret | Your Organization ID can be found by hovering over your org logo in the sidebar |
+| `MASSDRIVER_API_KEY` | Your Massdriver API key | secret | [Service Accounts](/platform/service-accounts) |
+| `AUTHENTICATION_ARTIFACT_ID_AZURE` | The ID of the authentication artifact for your Azure Container Registry | secret | The credential UUID from `preview.json` |
+| `IMAGE_REPO` | The name of your ACR repository | variable | Must be in `name/name` format. If it does not exist, it will be created for you |
+| `PACKAGE_SLUG` | The slug of your Massdriver application package | variable | Hover over the name of your application in Massdriver to view the slug |
+| `REGION` | The region where your ACR is located | variable | Must be a valid Azure region. For example: `eastus` |
 
 ### GitHub Action
 :::note
