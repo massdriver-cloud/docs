@@ -22,6 +22,8 @@ Before you can set up a GitHub Action to deploy your application, first you'll n
 
 After you publish your application, you'll need to create a package. You can do this by dragging your application out from the bundle bar in the Massdriver canvas. Fill in the values of your application and click **Deploy**.
 
+Copy and save the package slug by hovering over the name of your application on the canvas. This will be used in the next step.
+
 ### Package preview file
 Next, we'll need to create a package preview file to fetch the application params. This file will be used by the GitHub Action workflow to update the image tag and update the configuration of your application.
 
