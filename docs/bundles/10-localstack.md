@@ -5,7 +5,7 @@ title: Local AWS Development
 sidebar_label: Localstack - AWS
 ---
 
-This guide walks through the use of [LocalStack](https://localstack.cloud/) for bundle development
+This guide walks through the use of [LocalStack](https://localstack.cloud/) for bundle development.
 
 ## Install `localstack` and `tflocal` wrapper CLIs
 
@@ -32,4 +32,4 @@ tflocal plan -var-file _params.auto.tfvars.json -var-file _connections.auto.tfva
 
 ## Note on connections
 
-In order for your connections to be set up the same way they would normally you should still download and AWS IAM artifact from massdriver and place the details in the `aws_authentication` portion of your `_connections.auto.tfvars.json` file. These credentials will essentially be ignored while using local stack.
+In order for your connections to be set up the same way they would normally, you should still download an AWS IAM artifact from Massdriver and place the details in the `aws_authentication` portion of your `_connections.auto.tfvars.json` file. These credentials will essentially be ignored while using local stack.
