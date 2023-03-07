@@ -65,7 +65,7 @@ Technically, this is all the terraform we need to create a SNS topic! However, w
 
 ### Specify Connections
 
-Connections are the dependencies your bundle has on other bundles. This is enforced through Massdrivers type system, and specifically through the concept of artifacts. For example, a bundle that requires an AWS VPC network, such as an RDS database, would need to declare a massdriver/aws-vpc artifact as a connection.
+Connections are the dependencies your bundle has on other bundles. This is enforced through Massdriver's type system, and specifically through the concept of artifacts. For example, a bundle that requires an AWS VPC network, such as an RDS database, would need to declare a massdriver/aws-vpc artifact as a connection.
 
 Most bundles will require at least one connection for authentication into the service where the bundle will provision resources. In this case, we need a massdriver/aws-iam-role connection. Open the `massdriver.yaml` file, scroll down to the `connections` section and update it to be the following:
 
@@ -87,9 +87,9 @@ Massdriver has open sourced all of our artifact definitions so users can see the
 
 ### Specify Parameters
 
-Parameters are the configuration values for a bundle that can be specified by the user in the Massdriver console. Like the connections block, these parameters are defined using JSON Schema (draft-07). However, the parameters require the bundle author to define the JSON Schema structure as opposed to referencing an defined artifact.
+Parameters are the configuration values for a bundle that can be specified by the user in the Massdriver console. Like the connections block, these parameters are defined using JSON Schema (draft-07). However, the parameters require the bundle author to define the JSON Schema structure as opposed to referencing a defined artifact.
 
-For this SNS Topic bundle, we need to specify the AWS region to provision the topic into as well as the whether we want a FIFO topic, or a normal topic. Update the params block to be the following:
+For this SNS Topic bundle, we need to specify the AWS region to provision the topic into as well as whether we want a FIFO topic, or a normal topic. Update the params block to be the following:
 
 ```yaml title="./massdriver.yaml"
 params:
@@ -115,12 +115,12 @@ First, in the `examples` section, we’ve created 2 configuration presets: one f
 
 Next we are specifying two parameters: `aws_region` and `fifo`. We have marked the `aws_region` parameter as `required` to ensure a value is set before saving or deploying is allowed. We don’t have to do this for `fifo` since it is a boolean and an empty boolean is always treated as `false` (effectively, it is always set).
 
-For the `aws_region` parameter, we are referencing a Massdriver managed type which is an enumerated list of our supported AWS regions. You can use the URL in the `$ref` to view the schema definition. When referencing a type through a `$ref` like this any fields defined within the parameter schema will override the values in the referenced schema in the event of a collision. Since we also declare `title` here, it will override the `title` in the referenced schema.
+For the `aws_region` parameter, we are referencing a Massdriver managed type which is an enumerated list of our supported AWS regions. You can use the URL in the `$ref` to view the schema definition. When referencing a type through a `$ref` like this, any fields defined within the parameter schema will override the values in the referenced schema in the event of a collision. Since we also declare `title` here, it will override the `title` in the referenced schema.
 
 We are also creating a boolean field named `fifo`. We will use this boolean in a later step to determine whether to enable or disable the FIFO configuration of the SNS topic.
 
 ### Specify Artifacts
-Artifacts are the types that are created and exported by your bundle, allowing other bundles to connect to it. This block is very similar to the connections block, except artifacts are bundle “outputs”, which connections are bundle “imports”.
+Artifacts are the types that are created and exported by your bundle, allowing other bundles to connect to it. This block is very similar to the connections block, except artifacts are bundle “outputs”, whereas connections are bundle “imports”.
 
 In this case, we are exporting exactly one required artifact, an aws-sns-topic.
 
@@ -143,7 +143,7 @@ In a terminal, run the following command:
 mass bundle build
 ```
 
-If you check your src directory, you should now have 2 generated files.
+If you check your src directory, you should now have 2 generated files:
 * `_connections_variables.tf.json`
 * `_params_variables.tf.json`
 
@@ -207,7 +207,7 @@ Configuring manually may be the best option for the `aws_authentication` artifac
 
 ### Validate Variables against Schemas
 
-To ensure the `_params.auto.tfvars.json` and `_connections.auto.tfvars.json` files are valid, the CLI provides a command to perform JSON Schema. Run the following two commands to ensure the params and connections are valid.
+To ensure the `_params.auto.tfvars.json` and `_connections.auto.tfvars.json` files are valid, the CLI provides a command to perform JSON Schema. Run the following two commands to ensure the params and connections are valid:
 
 ```shell-session
 mass schema validate -s schema-params.json -d src/_params.auto.tfvars.json
@@ -218,7 +218,7 @@ If either of these commands returns an error, address the schema violations befo
 
 ### Update Terraform to Use Parameters
 
-Now that we have variables in our terraform, let’s use them. Re-open the `main.tf` file and update the terraform to look like the section below.
+Now that we have variables in our terraform, let’s use them. Re-open the `main.tf` file and update the terraform to look like the section below:
 
 ```hcl title="src/main.tf"
 resource "aws_sns_topic" "main" {
@@ -231,7 +231,7 @@ resource "aws_sns_topic" "main" {
 We updated the `name` to use the `var.md_metadata.name_prefix` which ensures uniqueness and a common naming convention. We also conditionally add the “.fifo” suffix if `var.fifo` is true. This is a requirement of AWS for FIFO topics. We then also set `fifo_topic` and `content_based_deduplication` to the value of `var.fifo` as well, to conditionally turn these features on or off based on the user’s selection.
 
 ### Create Policies for Security
-As part of Massdrivers managed security model, cloud IAM management is handled automatically for the user. In AWS, this means we need to create a set of IAM policies which govern the user of the resource. For an SNS topic, that will be subscribing, publishing and administering the topic. Create a new file named `policies.tf` and copy the contents below into it.
+As part of Massdriver's managed security model, cloud IAM management is handled automatically for the user. In AWS, this means we need to create a set of IAM policies which govern the user of the resource. For an SNS topic, that will be subscribing, publishing and administering the topic. Create a new file named `policies.tf` and copy the contents below into it:
 
 ```hcl title="src/policies.tf"
 resource "aws_iam_policy" "subscribe" {
@@ -292,11 +292,11 @@ resource "aws_iam_policy" "admin" {
 }
 ```
 
-This creates 3 policies specific to this SNS topic. One to subscribe, one to publish and one to administer the topic. You’ll need these policies in the next step when we create the artifact.
+This creates 3 policies specific to this SNS topic. One to subscribe, one to publish, and one to administer the topic. You’ll need these policies in the next step when we create the artifact.
 
 ### Create Artifact in Terraform
 
-You’re almost done. The last terraform we need to write is to create the artifact to send back to Massdriver so this bundle will be connectable by other bundles. Create a file named `./src/_artifacts.tf` and copy the contents below into the file.
+You’re almost done. The last terraform we need to write is to create the artifact to send back to Massdriver so this bundle will be connectable by other bundles. Create a file named `./src/_artifacts.tf` and copy the contents below into the file:
 
 ```hcl title="./src/_artifacts.tf"
 resource "massdriver_artifact" "topic" {
@@ -333,11 +333,11 @@ resource "massdriver_artifact" "topic" {
 }
 ```
 
-You can see we are using of Massdriver’s own [terraform provider](https://registry.terraform.io/providers/massdriver-cloud/massdriver/latest) to create the artifact. Some resources in the provider, such as the `massdriver_artifact`, only provision properly when running in Massdriver’s internal environment. This is so resources like artifacts can’t be arbitrarily created by users outside of an official Massdriver deployment. The provider will detect that it’s not running within Massdriver and issue a warning without performing any meaningful actions.
+You can see we are using Massdriver’s own [terraform provider](https://registry.terraform.io/providers/massdriver-cloud/massdriver/latest) to create the artifact. Some resources in the provider, such as the `massdriver_artifact`, only provision properly when running in Massdriver’s internal environment. This is so resources like artifacts can’t be arbitrarily created by users outside of an official Massdriver deployment. The provider will detect that it’s not running within Massdriver and issue a warning without performing any meaningful actions.
 
 ### Plan and Apply Terraform
 
-Now that the terraform is written, the last thing to do before publishing is testing to ensure the bundle runs. Run the following commands.
+Now that the terraform is written, the last thing to do before publishing is testing to ensure the bundle runs. Run the following commands:
 
 ```shell-session
 terraform init
@@ -348,17 +348,17 @@ If both of these run successfully and the plan looks valid, then apply!
 ```shell-session
 terraform apply -var-file _params.auto.tfvars.json -var-file _connections.auto.tfvars.json
 ```
-Ensure all of the resource provision successfully. When you are done, it’s best to destroy the resources since they are only used for testing.
+Ensure all of the resources provision successfully. When you are done, it’s best to destroy the resources since they are only used for testing:
 
 ```shell-session
 terraform destroy -var-file _params.auto.tfvars.json -var-file _connections.auto.tfvars.json
 ```
 
 ### Publish Bundle
-You’re now ready to publish your bundle for use in Massdriver. The CLI has a command to do this for you.
+You’re now ready to publish your bundle for use in Massdriver. The CLI has a command to do this for you:
 
 ```shell-session
 mass bundle publish
 ```
 
-Now you can log into Massdriver and check for you newly published bundle in the bundle sidebar.
+Now you can log into Massdriver and check for your newly published bundle in the bundle sidebar.
