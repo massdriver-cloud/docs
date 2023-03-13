@@ -89,9 +89,9 @@ The following directory structure will be created:
 
 :::info
 
-The `massdriver.yaml`is covered in detail under [Bundle Configuration](/bundles/configuration) section.
+The `massdriver.yaml` is covered in detail under [Bundle Configuration](/bundles/configuration) section.
 
-Its important to note that the generated code is a great way to _get started_, but you can customize the fields in `massdriver.yaml` and the rigging code in `src` to meet your needs.
+It's important to note that the generated code is a great way to _get started_, but you can customize the fields in `massdriver.yaml` and the rigging code in `src` to meet your needs.
 
 In this example, we generated a Kubernetes deployment with a Helm chart. The generated Helm works well for most deployments, but you can replace or edit the chart as necessary. The values provided at provisioning time will be passed in similarly to `values.yaml` in a standard Helm chart.
 
@@ -113,7 +113,7 @@ Environment variables can be extracted from `parameters` and/or `connections`. M
 
 The following would set the `LOG_LEVEL` in your application based on the value a users selects from the `log_level` dropdown.
 
-The `.params` prefix tells massdriver where to pull the value from. The field names can be any complex expression with JQ as we'll see in the next example.
+The `.params` prefix tells Massdriver where to pull the value from. The field names can be any complex expression with JQ as we'll see in the next example.
 
 ```yaml title="Simple param-based environment variable"
 app:
@@ -164,7 +164,7 @@ A breakdown of the fields:
 * `.connections` - all connected infrastructure and applications.
 * `.connections.sqs` - the connected SQS queue (if required & present).
 * `.connections.sqs.data` - sensitive information in the SQS artifact.
-* `.connections.sqs.data.security` - security related information for SQS.
+* `.connections.sqs.data.security` - security-related information for SQS.
 * `.connections.sqs.data.security.iam` - Principal of least privilege IAM policies exposed by this SQS bundle.
 * `.connections.sqs.data.security.iam.subscribe` - The `subscribe` policy your application needs.
 
@@ -184,7 +184,7 @@ app:
     SOME_SECRET_UPCASED: .secret.SOME_SECRET | ascii_upcase
   secrets:
     SOME_SECRET: # This is env var name this will be converted to
-      required: true # if a secret is required, massdriver will block deployments that are missing this secret
+      required: true # if a secret is required, Massdriver will block deployments that are missing this secret
       title: "A nice name for the UI"
       description: "A great description for the UI"
 ```
@@ -192,7 +192,7 @@ app:
 
 The `params` in your `massdriver.yaml` are really good defaults for a Kubernetes deployment. Feel free to add or remove values depending on what you want to expose to your users / developers.
 
-With Helm based applications the `values.yaml` file will be loaded as the base level defaults, and your parameters will be applied on top of those. If there are parameters that you don't want exposed to end users, simple remove the parameter from `params` and add the hard coded value to the `values.yaml` file.
+With Helm-based applications the `values.yaml` file will be loaded as the base level defaults, and your parameters will be applied on top of those. If there are parameters that you don't want exposed to end users, simply remove the parameter from `params` and add the hard coded value to the `values.yaml` file.
 
 A good example of where to do this is your container repository (`.params.image.repository`). For private applications it may make sense to hard code this value to something like `my-org/web-api`. You could remove this field and set the image repository manually in the `values.yaml` file.
 
@@ -252,7 +252,7 @@ If you would like to automatically publish your application bundle in CI/CD, see
 
 :::info
 
-We have a number of pre-defined application templates available [here](https://github.com/massdriver-cloud/application-templates). We welcomes PRs to add more.
+We have a number of pre-defined application templates available [here](https://github.com/massdriver-cloud/application-templates). We welcome PRs to add more.
 
 If you are interested in private repositories for application templates, please `+1` this [issue](https://github.com/massdriver-cloud/massdriver-cli/issues/67).
 
