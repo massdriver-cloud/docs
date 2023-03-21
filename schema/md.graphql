@@ -284,8 +284,8 @@ type Package {
 
   providerResources: [ProviderResource]
 
-  "The target this package will be deployed to"
-  target: Target!
+  "The environment this package will be deployed to"
+  environment: Environment!
 
   deployments: [Deployment]
 
@@ -413,7 +413,7 @@ type Artifact {
   "Connections to packages"
   connections: [Connection]
 
-  "Targets this package is a default in"
+  "Environments this package is a default in"
   targetConnections: [TargetConnection]
 
   "How the artifact was created, manually imported or provisioned by Massdriver"
@@ -442,7 +442,7 @@ type ArtifactDeletionLifecycleArtifactError {
   message: String!
 }
 
-"Artifact definitions that can be set as a target default (TargetConnection)"
+"Artifact definitions that can be set as an environment default (TargetConnection)"
 type DefaultableTargetConnectionGroup {
   "UI Label for group"
   name: String
@@ -527,7 +527,7 @@ type RootMutationType {
   "Update a manifest"
   updateManifest(organizationId: ID!, id: ID!, name: String!, description: String): ManifestPayload
 
-  "Removes a manifest from a project. This will fail if infrastructure is still provisioned in a target."
+  "Removes a manifest from a project. This will fail if infrastructure is still provisioned in an environment."
   deleteManifest(organizationId: ID!, id: ID!): ManifestPayload
 
   "Create an organization"
@@ -544,11 +544,11 @@ type RootMutationType {
 
   deleteProject(organizationId: ID!, id: ID!): ProjectPayload
 
-  "Connect an artifact as the default artifact type for a given target"
+  "Connect an artifact as the default artifact type for a given environment"
   createTargetConnection(organizationId: ID!, artifactId: ID!, targetId: ID!): TargetConnectionPayload
 
   """
-  Disconnect an artifact as the default artifact type for a given target.
+  Disconnect an artifact as the default artifact type for a given environment.
 
   This is a potentially dangerous/destructive action.
 
@@ -556,13 +556,13 @@ type RootMutationType {
   """
   deleteTargetConnection(organizationId: ID!, id: ID!): TargetConnectionPayload
 
-  "Create a target"
+  "Create an environment"
   createTarget(organizationId: ID!, projectId: ID!, name: String!, slug: String!, description: String): TargetPayload
 
-  "Update a target"
+  "Update an environment"
   updateTarget(organizationId: ID!, id: ID!, name: String!, description: String): TargetPayload
 
-  "Removes a target from a project. This will fail if infrastructure is still provisioned in the target."
+  "Removes an environment from a project. This will fail if infrastructure is still provisioned in the environment."
   deleteTarget(organizationId: ID!, id: ID!): TargetPayload
 
   "Invites a user"
@@ -613,7 +613,7 @@ type RootQueryType {
   ): [ArtifactDefinition]
 
   defaultableTargetConnectionGroups(
-    "List defaultable target connections by group"
+    "List defaultable environment connections by group"
     organizationId: ID!
   ): [DefaultableTargetConnectionGroup]
 
@@ -674,7 +674,7 @@ type RootQueryType {
   target(
     organizationId: ID!
 
-    "Target ID or slug"
+    "Environment ID or slug"
     id: ID!
   ): Target
 
@@ -1012,10 +1012,10 @@ type Target {
 
   updatedAt: DateTime
 
-  "Target's diagram links and resources"
+  "Environment's diagram links and resources"
   diagram: Diagram
 
-  "Manifests for this target's package"
+  "Manifests for this environment's package"
   manifests: [Manifest]
 
   project: Project

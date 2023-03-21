@@ -22,7 +22,7 @@ It can be difficult to figure out the differences in configuration between two d
 
 <figure>
 
-![Environment Comparison](./img/targets-comparison.png) 
+![Environment Comparison](./img/targets-comparison.png)
 
 <figcaption>Staging and production environment with different storage configurations and instance sizes.</figcaption>
 

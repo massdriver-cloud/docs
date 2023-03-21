@@ -5,7 +5,7 @@ title: Packages
 sidebar_label: Packages
 ---
 
-A _package_ is a [manifest](/concepts/manifests) that has been deployed to a specific [target](/concepts/targets) (e.g., production, staging, US West, etc).
+A _package_ is a [manifest](/concepts/manifests) that has been deployed to a specific [environment](/concepts/environments) (e.g., production, staging, US West, etc).
 
 In Massdriver, naming conventions for cloud resources are managed for you. The package's identifier can be seen by hovering over the _name_. This will be the naming prefix for all resources created when this package is deployed.
 
