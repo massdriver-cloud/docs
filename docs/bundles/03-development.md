@@ -94,15 +94,15 @@ There are various fields that your IaC tool can use to integrate with the Massdr
 
 **MD Metadata Properties**:
 
-- **`name_prefix`** *(string)*: Standardized cloud agnostic naming convention prefix to be used on all resources created by a bundle. The name prefix is the project slug, target slug, manifest slug, and a random 4 character slug joined by hyphens. This should be the name/identifier of the primary resource in your bundle and used a prefix for other resources created. The name prefix also happens to be the Massdriver package name. Minimum: `33`. Maximum: `33`.
+- **`name_prefix`** *(string)*: Standardized cloud agnostic naming convention prefix to be used on all resources created by a bundle. The name prefix is the project slug, environment slug, manifest slug, and a random 4 character slug joined by hyphens. This should be the name/identifier of the primary resource in your bundle and used a prefix for other resources created. The name prefix also happens to be the Massdriver package name. Minimum: `33`. Maximum: `33`.
 - **`default_tags`** *(object)*: Default tags to be applied to all bundle resources.
   - **`managed-by`** *(string)*: Provisioning tool managing the resource. Must be one of: `['massdriver']`.
   - **`md-manifest`** *(string)*: Massdriver manifest slug. Minimum: `1`. Maximum: `12`.
   - **`md-package`** *(string)*: Massdriver package name. Minimum: `33`. Maximum: `33`.
   - **`md-project`** *(string)*: Massdriver project slug. Minimum: `1`. Maximum: `7`.
-  - **`md-target`** *(string)*: Massdriver target slug. Minimum: `1`. Maximum: `7`.
-- **`target`** *(object)*: Target metadata for this deployment.
-  - **`contact_email`** *(string)*: The email address of the contact for this target. This email address may be used by services like Lets Encrypt or to validate AWS SES domains.
+  - **`md-environment`** *(string)*: Massdriver environment slug. Minimum: `1`. Maximum: `7`.
+- **`environment`** *(object)*: Environment metadata for this deployment.
+  - **`contact_email`** *(string)*: The email address of the contact for this environment. This email address may be used by services like Lets Encrypt or to validate AWS SES domains.
 - **`observability`** *(object)*: Observability integration metadata for this deployment.
   - **`alarm_webhook_url`** *(string)*: A webhook URL to process metrics from AWS SNS Notifications, GCP Notification Channels, and Azure Monitor Action Groups. This will be a Massdriver URL used to present alerts from cloud resources.
 

@@ -5,11 +5,11 @@ title: Projects
 sidebar_label: Projects
 ---
 
-Projects are the _blueprints_ of infrastructure and application architectures in Massdriver. A project acts as the parity boundary for deploying your architecture against multiple [targets](/concepts/targets) (e.g.: application environments, tenants, or regions).
+Projects are the _blueprints_ of infrastructure and application architectures in Massdriver. A project acts as the parity boundary for deploying your architecture against multiple [environments](/concepts/environments) (e.g.: application environments, tenants, or regions).
 
 ![Projects](./img/projects.png)
 
-All targets in the same project will always have the same diagram, but scale and authentication can be customized per target.
+All environments in the same project will always have the same diagram, but scale and authentication can be customized per environment.
 
 This allows for:
 
