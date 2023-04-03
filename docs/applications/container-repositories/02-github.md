@@ -76,7 +76,7 @@ jobs:
       - name: Publish Bundle 
         uses: massdriver-cloud/actions/bundle_publish@v3
         with:
-          build-directory: "./"
+          build-directory: ./
       - name: Set Image Version 
         uses: massdriver-cloud/actions/app_patch@v3
         with:
@@ -131,3 +131,7 @@ runtime:
           default: latest
 ```
 Then your image tag path would be `.runtime.image.tag`. 
+
+### I have subdirectories in my repository. How do I set the build context?
+* If your `Dockerfile` is in a subdirectory, you can update the `build-context` to point to that directory. For example, if your `Dockerfile` is in the `./app` directory, you can set the `build-context` to `./app`.
+* If your `massdriver.yaml` file is in a subdirectory, you can update the `build-directory` to point to that directory. For example, if your `massdriver.yaml` file is in the `./app/massdriver` directory, you can set the `build-directory` to `./app/massdriver`.
