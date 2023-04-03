@@ -5,7 +5,7 @@ title: Custom Widgets & Fields
 sidebar_label: Custom Widgets & Fields
 ---
 
-Massdriver's `RJSF Form` component is a wrapper enhancing RJSF's Mui `ThemedForm`. This wrapper allows us to provide custom widgets, fields, error messages, and ajv formData sanitization to the basic `ThemedForm` functionality.
+Massdriver's `RJSF Form` component is a wrapper enhancing RJSF's MUI `ThemedForm`. This wrapper allows us to provide custom widgets, fields, error messages, and AJV formData sanitization to the basic `ThemedForm` functionality.
 
 ## Implementation Pattern
 
@@ -13,7 +13,7 @@ When implementing a `Custom Widget/Field`, you must define both the `schema` and
 
 ### Schema & UiSchema Pairing
 
-Here is an example of using the `schema` and `uiSchema` to display a custom `ContainerRepositoriesDropdown` `field`:
+Here is an example, using the `schema` and `uiSchema` to display a custom `ContainerRepositoriesDropdown` `field`:
 
 
 ```yaml title="schema"
@@ -25,7 +25,7 @@ properties:
   containerRepositories: # <-- This is where you define the property name
     type: string
     title: Container Repositories
-    description: A list of Container Repositories configured with massdriver.
+    description: A list of Container Repositories configured with Massdriver.
 ```
 
 ```yaml title="uiSchema"
@@ -35,7 +35,7 @@ containerRepositories: # <-- Use the name defined in the properties object. If i
 
 :::note
 
-For any custom Widget/Field, setting the `property type` does not matter. Set it to `string`, to have a basic text field render if there is any issue with the `schema/uiSchema`.
+For any custom Widget/Field, setting the `property type` does not matter. Set it to `string` to have a basic text field render if there is any issue with the `schema/uiSchema`.
 
 :::
 
@@ -112,7 +112,7 @@ properties:
   name:
     type: string
     title: Name
-    description: A user friendly name.
+    description: A user-friendly name.
     pattern: "^(?:[a-z0-9]+(?:-[a-z0-9]+)*/)*[a-z0-9]+(?:-[a-z0-9]+)*$" # Here we define the regex pattern constraint
     message: # When an invalid name is submitted, the custom error below will be rendered in place of the default
       pattern: Invalid name. Should only contain lowercase letters, numbers, dashes and forward slashes.
@@ -128,7 +128,7 @@ All custom Widgets/Fields have their **Component Name** in `PascalCase` and thei
 
 ## Widgets
 
-**There are no custom Widgets available currently.**
+**There are currently no custom Widgets available.**
 
 ## Fields
 
@@ -169,13 +169,13 @@ properties:
 ```yaml title="uiSchema"
 data:
   ui:field: conversionFieldData # Necessary to render the custom field
-  unit: Bytes # A necessary prop that decides what unit of measurement the user data gets converted into in the formData. In this case, "Bytes"
+  unit: Bytes # A necessary prop that decides what unit of measurement the user data gets converted into in the formData (in this case, "Bytes")
 ```
 
 
 ### Time Conversion Field
 
-The `ConversionFieldTime` is a TextField that converts whatever units the user submits to the base units defined in the `uiSchema`. The TextField has a Select Menu adjacent to it where the user can select what units they want to be submitting.  For example, say you have a ConversionFieldTime that takes the input as milliseconds. A user can choose to submit `2 minutes`, which would automatically be turned into `120000 milliseconds` in the `formData`. Pass a specific `unit` (`Milliseconds`, `Seconds`, `Minutes`, `Hours`, or `Days`) externally via the `uiSchema` to control what the user input gets converted into in the `formData`.
+The `ConversionFieldTime` is a TextField that converts user-submitted units into the base units defined in the `uiSchema`. The TextField has a Select Menu adjacent to it where the user can select what units they want to be submitting.  For example, say you have a ConversionFieldTime that takes the input as milliseconds: A user can choose to submit `2 minutes`, which would automatically be turned into `120000 milliseconds` in the `formData`. Pass a specific `unit` (`Milliseconds`, `Seconds`, `Minutes`, `Hours`, or `Days`) externally via the `uiSchema` to control what the user input gets converted into in the `formData`.
 
 :::note
 
@@ -221,7 +221,7 @@ External props passed through the `uiSchema`
 
 | Name         |  Required    |  Type       |    Default  |   Example  | Description |
 | ------------ | -----------  | ----------- | ----------- | -----------| ----------- |
-| cloud        |  False       | string      |   undefined | `aws`, `gcp`, `azure`  | A string that, if provided, constrain the contents of the field by cloud type. |
+| cloud        |  False       | string      |   undefined | `aws`, `gcp`, `azure`  | A string that, if provided, constrains the contents of the field by cloud type. |
 
 
 **Example**
@@ -233,7 +233,7 @@ properties:
   dnsZones:
     type: string
     title: DNS Zones
-    description: A list of DNS Zones configured with massdriver.
+    description: A list of DNS Zones configured with Massdriver.
 ```
 
 ```yaml title="uiSchema"

@@ -245,9 +245,9 @@ Next navigate to [projects](https://app.massdriver.cloud/projects) and create a 
 
 ![Create Project](../create-project.png)
 
-Create a [target](/concepts/targets).
+Create an [environment](/concepts/environments).
 
-![Create Target](../create-target.png)
+![Create Environment](../create-target.png)
 
 Finally attach the credential you created in the previous step:
 
@@ -273,14 +273,14 @@ Click **Configure** to set your values.
 
 Once your application has been configured and connected, it can also be deployed from our CLI.
 
-The `deploy` command expects the name in the format of `project-target-manifest`. If you can't remember the name of your application, mouse over its human-friendly name in the UI and it will be displayed.
+The `deploy` command expects the name in the format of `project-environment-manifest`. If you can't remember the name of your application, mouse over its human-friendly name in the UI and it will be displayed.
 
 `mass deploy` can be added to your CI/CD pipeline to trigger deployments.
 
 ```yaml
 export MASSDRIVER_ORG_ID=FOO
 export MASSDRIVER_API_KEY=BAR
-mass deploy project-target-manifest
+mass deploy project-environment-manifest
 ```
 
 Your Organization ID can be found by hovering over your org name in the sidebar:

@@ -576,7 +576,7 @@ Update a manifest
 
 #### [`deleteManifest`](#) ([`ManifestPayload`](/swapi/objects/manifest-payload))
 
-Removes a manifest from a project. This will fail if infrastructure is still provisioned in a target.
+Removes a manifest from a project. This will fail if infrastructure is still provisioned in an environment.
 - ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
 
 
@@ -684,7 +684,7 @@ Update a project
 
 #### [`createTargetConnection`](#) ([`TargetConnectionPayload`](/swapi/objects/target-connection-payload))
 
-Connect an artifact as the default artifact type for a given target
+Connect an artifact as the default artifact type for a given environment
 - ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
 
 
@@ -702,7 +702,7 @@ Connect an artifact as the default artifact type for a given target
 
 #### [`deleteTargetConnection`](#) ([`TargetConnectionPayload`](/swapi/objects/target-connection-payload))
 
-Disconnect an artifact as the default artifact type for a given target.
+Disconnect an artifact as the default artifact type for a given environment.
 
 This is a potentially dangerous/destructive action.
 
@@ -719,7 +719,7 @@ For example, changing the default VPC will cause all resources to be deleted and
 
 #### [`createTarget`](#) ([`TargetPayload`](/swapi/objects/target-payload))
 
-Create a target
+Create an environment
 - ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
 
 
@@ -747,7 +747,7 @@ Create a target
 
 #### [`updateTarget`](#) ([`TargetPayload`](/swapi/objects/target-payload))
 
-Update a target
+Update an environment
 - ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
 
 
@@ -770,7 +770,7 @@ Update a target
 
 #### [`deleteTarget`](#) ([`TargetPayload`](/swapi/objects/target-payload))
 
-Removes a target from a project. This will fail if infrastructure is still provisioned in the target.
+Removes an environment from a project. This will fail if infrastructure is still provisioned in the environment.
 - ##### [`organizationId`](#) ([`ID!`](/swapi/scalars/id))
 
 

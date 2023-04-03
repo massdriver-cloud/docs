@@ -33,13 +33,13 @@ Navigate to [Organization > Credentials](https://app.massdriver.cloud/organizati
 
 ![Add AWS Credential](./add-credential.png)
 
-Next navigate to [projects](https://app.massdriver.cloud/projects) and create a new project named `Example`. A [project](/concepts/projects) is a parity boundary and used to replicate infrastructure and applications between _targets_ like application environments (staging, production) and/or regions (us-west-1, us-west-2, or prod us west 2).
+Next navigate to [projects](https://app.massdriver.cloud/projects) and create a new project named `Example`. A [project](/concepts/projects) is a parity boundary and used to replicate infrastructure and applications between _environments_ like application environments (staging, production) and/or regions (us-west-1, us-west-2, or prod us west 2).
 
 ![Create Project](./create-project.png).
 
-Add a [targets](/concepts/targets) `Staging`.
+Add an [environments](/concepts/environments) `Staging`.
 
-![Create Target](./create-target.png)
+![Create Environment](./create-target.png)
 
 Finally attach the credential you created in the previous step:
 
