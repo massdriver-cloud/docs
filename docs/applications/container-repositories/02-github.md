@@ -97,7 +97,7 @@ When this GitHub Action runs, it will:
 
 ### Where can I find my secrets, project, target, and manifest names?
 
-* [Secrets](#set-secrets-and-vars)
+* [Secrets & vars](#set-secrets-and-vars)
 * [Projects](/concepts/projects) are found on the Projects page of Massdriver
 * [Targets](/concepts/environments) are found listed inside your project
 * [Manifests](/concepts/manifests) are the abbreviated name of your bundle or application ![Manifest Name](/manifest.png)
