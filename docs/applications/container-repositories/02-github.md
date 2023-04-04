@@ -40,12 +40,6 @@ Once you've published your application, you'll need to set the following secrets
 
 ## Workflow file
 
-:::note
-
-This GitHub Action will create a new cloud container repository with the following name format: `massdriver<region>`. The region will be the same as the region you set in the `REGION` variable. If the registry already exists, the action will use it.
-
-:::
-
 To set up the GitHub Action, create a new file named `deploy.yaml` in the `.github/workflows` directory of your GitHub repository. You can use this workflow below:
 
 ```yaml title=".github/workflows/deploy.yaml"
@@ -101,8 +95,9 @@ When this GitHub Action runs, it will:
 * Update the tag in your application package
 * Redeploy your application in Massdriver with the updated tag
 
-### Where can I find my project, target, and manifest names?
+### Where can I find my secrets, project, target, and manifest names?
 
+* [Secrets](#set-secrets-and-vars)
 * [Projects](/concepts/projects) are found on the Projects page of Massdriver
 * [Targets](/concepts/environments) are found listed inside your project
 * [Manifests](/concepts/manifests) are the abbreviated name of your bundle or application ![Manifest Name](/manifest.png)
@@ -133,5 +128,6 @@ runtime:
 Then your image tag path would be `.runtime.image.tag`. 
 
 ### I have subdirectories in my repository. How do I set the build context?
+
 * If your `Dockerfile` is in a subdirectory, you can update the `build-context` to point to that directory. For example, if your `Dockerfile` is in the `./app` directory, you can set the `build-context` to `./app`.
 * If your `massdriver.yaml` file is in a subdirectory, you can update the `build-directory` to point to that directory. For example, if your `massdriver.yaml` file is in the `./app/massdriver` directory, you can set the `build-directory` to `./app/massdriver`.
