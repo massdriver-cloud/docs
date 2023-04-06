@@ -21,9 +21,7 @@ Before getting started, you'll need:
 
 Before you can set up a GitHub Action to deploy your application, first you'll need to publish it to Massdriver and create a package. You can do this by following the [Getting Started](/applications/getting-started) guide.
 
-After you publish your application, you'll need to create a package. You can do this by dragging your application out from the bundle bar in the Massdriver canvas. Fill in the values of your application and click **Deploy**.
-
-Copy and save the package slug by hovering over the name of your application on the canvas. This will be used in the next step.
+After you publish your application, you'll need to create a package. You can do this by dragging your application out from the bundle bar in the Massdriver canvas. Fill in the fields of your application and click **Save**. 
 
 ## Set secrets and vars
 
@@ -32,7 +30,7 @@ Once you've published your application, you'll need to set the following secrets
 | Name | Description | Type | Notes |
 | --- | --- | --- | --- |
 | `MASSDRIVER_ORG_ID` | Your Massdriver organization ID | secret | Your Organization ID can be found by hovering over your org logo in the sidebar |
-| `MASSDRIVER_API_KEY` | Your Massdriver API key | secret | [Service Accounts](/platform/service-accounts) |
+| `MASSDRIVER_API_KEY` | Your Massdriver API key | secret | Create a [Service Account](/platform/service-accounts) |
 | `MASSDRIVER_ARTIFACT_ID` | The ID of the authentication artifact in Massdriver | secret | Select your cloud credential from the Artifacts page in Massdriver, then click **Copy Artifact ID** |
 | `NAMESPACE` | The namespace of your build | variable | If it does not exist paired with the `IMAGE_NAME`, then it will be created for you |
 | `IMAGE_NAME` | The image name of your build | variable | If it does not exist paired with the `NAMESPACE`, then it will be created for you |
@@ -40,7 +38,7 @@ Once you've published your application, you'll need to set the following secrets
 
 ## Workflow file
 
-To set up the GitHub Action, create a new file named `deploy.yaml` in the `.github/workflows` directory of your GitHub repository. You can use this workflow below:
+To set up the GitHub Action, create a new file named `deploy.yaml` in the `.github/workflows` directory of your GitHub repository. You can use this workflow below as a starting point:
 
 ```yaml title=".github/workflows/deploy.yaml"
 name: Deploy to Massdriver
@@ -88,7 +86,7 @@ jobs:
 
 ```
 
-You may need to modify the branch name in the `on` section of the workflow to match the branch you're using for your application.
+You may need to modify the branch name in the `on: push:` section of the workflow to match the branch you're using for your application.
 
 When this GitHub Action runs, it will:
 * Build and push your image to your cloud container repository
@@ -101,6 +99,7 @@ When this GitHub Action runs, it will:
 * [Projects](/concepts/projects) are found on the Projects page of Massdriver
 * [Targets](/concepts/environments) are found listed inside your project
 * [Manifests](/concepts/manifests) are the abbreviated name of your bundle or application
+
 ![Manifest Name](manifest.png)
 
 ### Where can I find my image tag path?
