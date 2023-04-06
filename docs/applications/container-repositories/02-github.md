@@ -64,26 +64,25 @@ jobs:
           artifact: ${{ secrets.MASSDRIVER_ARTIFACT_ID }}
           region: ${{ vars.REGION }}
           image-tag: ${{ github.sha }}
-          build-context: ./
+          build-context: ./ # path to Dockerfile
       - name: Publish Bundle 
         uses: massdriver-cloud/actions/bundle_publish@v3
         with:
-          build-directory: ./
+          build-directory: ./massdriver # path to massdriver config directory, contains massdriver.yaml
       - name: Set Image Version 
         uses: massdriver-cloud/actions/app_patch@v3
         with:
-          project: <insert-project-name-here>
-          target: <insert-environment-name-here>
-          manifest: <insert-bundle/app-manifest-here>
+          project: <insert-project-abbreviation-here>
+          target: <insert-environment-abbreviation-here>
+          manifest: <insert-manifest-abbreviation-here>
           set: |
             <insert-image-tag-path> = "${{ github.sha }}"
       - name: Deploy App
         uses: massdriver-cloud/actions/app_deploy@v3
         with:
-          project: <insert-project-name-here>
-          target: <insert-environment-name-here>
-          manifest: <insert-bundle/app-manifest-here>
-
+          project: <insert-project-abbreviation-here>
+          target: <insert-environment-abbreviation-here>
+          manifest: <insert-manifest-abbreviation-here>
 ```
 
 You may need to modify the branch name in the `on: push:` section of the workflow to match the branch you're using for your application.
