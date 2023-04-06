@@ -100,7 +100,8 @@ When this GitHub Action runs, it will:
 * [Secrets & vars](#set-secrets-and-vars)
 * [Projects](/concepts/projects) are found on the Projects page of Massdriver
 * [Targets](/concepts/environments) are found listed inside your project
-* [Manifests](/concepts/manifests) are the abbreviated name of your bundle or application ![Manifest Name](/manifest.png)
+* [Manifests](/concepts/manifests) are the abbreviated name of your bundle or application
+![Manifest Name](manifest.png)
 
 ### Where can I find my image tag path?
 
