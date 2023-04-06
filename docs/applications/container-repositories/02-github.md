@@ -85,7 +85,7 @@ jobs:
           manifest: <insert-manifest-abbreviation-here>
 ```
 
-You may need to modify the branch name in the `on: push:` section of the workflow to match the branch you're using for your application.
+This example is configured to trigger on pushes to the repository's `main` branch. Be sure to update the trigger to match your branching and git workflow process.
 
 When this GitHub Action runs, it will:
 * Build and push your image to your cloud container repository
@@ -103,7 +103,7 @@ When this GitHub Action runs, it will:
 
 ### Where can I find my image tag path?
 
-The image tag path is the path configured within your application's `massdriver.yaml` file. For example, if your `massdriver.yaml` file looks like this:
+The image tag path is the [`jq`](https://stedolan.github.io/jq/manual/) formatted path to the image tag field in the params section of your application's `massdriver.yaml` file. For example, if your `massdriver.yaml` file looks like this:
 
 ```yaml title="massdriver.yaml"
 runtime:
