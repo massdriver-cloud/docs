@@ -29,8 +29,8 @@ module.exports = {
           position: 'right',
         },
         {
-          href: 'https://github.com/massdriver-cloud/docs/discussions/9',
-          label: 'Community',
+          href: 'https://join.slack.com/t/massdrivercommunity/shared_invite/zt-1smvckvdj-jVFpBG2jF5XiYzX2njDCWA',
+          label: 'Slack',
           position: 'right',
         },
         {
@@ -59,8 +59,8 @@ module.exports = {
               href: 'https://twitter.com/massdriver',
             },
             {
-              label: 'Community',
-              href: 'https://github.com/massdriver-cloud/docs/discussions/9',
+              label: 'Slack',
+              href: 'https://join.slack.com/t/massdrivercommunity/shared_invite/zt-1smvckvdj-jVFpBG2jF5XiYzX2njDCWA',
             }
           ],
         },
