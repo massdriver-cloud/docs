@@ -73,7 +73,7 @@ jobs:
         uses: massdriver-cloud/actions/app_patch@v3
         with:
           project: <insert-project-abbreviation-here>
-          target: <insert-environment-abbreviation-here>
+          env: <insert-environment-abbreviation-here>
           manifest: <insert-manifest-abbreviation-here>
           set: |
             <insert-image-tag-path> = "${{ github.sha }}"
@@ -81,7 +81,7 @@ jobs:
         uses: massdriver-cloud/actions/app_deploy@v3
         with:
           project: <insert-project-abbreviation-here>
-          target: <insert-environment-abbreviation-here>
+          env: <insert-environment-abbreviation-here>
           manifest: <insert-manifest-abbreviation-here>
 ```
 
@@ -96,7 +96,7 @@ When this GitHub Action runs, it will:
 
 * [Secrets & vars](#set-secrets-and-vars)
 * [Projects](/concepts/projects) are found on the Projects page of Massdriver
-* [Targets](/concepts/environments) are found listed inside your project
+* [Environments](/concepts/environments) are found listed inside your project
 * [Manifests](/concepts/manifests) are the abbreviated name of your bundle or application
 
 ![Manifest Name](manifest.png)
