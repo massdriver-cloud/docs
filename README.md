@@ -38,3 +38,11 @@ mv schema.graphql $DOCS_DIR/schema/md.graphql
 cd $DOCS_DIR
 npx docusaurus graphql-to-doc
 ```
+
+### Sync CLI docs
+
+The [Massdriver CLI](https://github.com/massdriver-cloud/mass) has markdown docs for all commands. They can be sync'd to ./cli w/ the following command:
+
+```shell
+make sync-cli-docs
+```
