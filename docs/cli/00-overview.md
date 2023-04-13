@@ -42,7 +42,7 @@ For Mac OS users, you will need to allow `mass` to run by opening the `System Pr
 
 ### Image
 
-* `mass image push` - [Builds and pushes an image](/cli/image/push) to Massdriver
+* `mass image push` - [Builds and pushes an image](/cli/image/push) to a cloud image registry (e.g. ACR, ECR, or GCR)
 
 ### Infrastructure
 
