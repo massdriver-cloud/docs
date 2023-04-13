@@ -29,7 +29,7 @@ Once you've published your application, you'll need to set the following secrets
 
 | Name | Description | Type | Notes |
 | --- | --- | --- | --- |
-| `MASSDRIVER_ORG_ID` | Your Massdriver organization ID | secret | Copy your [Organization ID](/concepts/organizations) |
+| `MASSDRIVER_ORG_ID` | Your Massdriver organization ID | secret | Copy your [Organization ID](/concepts/organizations#find-your-organization-id) |
 | `MASSDRIVER_API_KEY` | Your Massdriver API key | secret | Create a [Service Account](/platform/service-accounts) |
 | `MASSDRIVER_ARTIFACT_ID` | The ID of the authentication artifact in Massdriver | secret | Copy your [Artifact ID](/concepts/artifacts) |
 | `NAMESPACE` | The namespace of your build | variable | If it does not exist paired with the `IMAGE_NAME`, then it will be created for you |

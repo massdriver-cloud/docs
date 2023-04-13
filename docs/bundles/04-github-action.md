@@ -19,7 +19,7 @@ Before getting started, you'll need:
 
 | Name | Description | Type | Notes |
 | --- | --- | --- | --- |
-| `MASSDRIVER_ORG_ID` | Your Massdriver organization ID | secret | Copy your [Organization ID](/concepts/organizations) |
+| `MASSDRIVER_ORG_ID` | Your Massdriver organization ID | secret | Copy your [Organization ID](/concepts/organizations#find-your-organization-id) |
 | `MASSDRIVER_API_KEY` | Your Massdriver API key | secret | Create a [Service Account](/platform/service-accounts) |
 
 ## Workflow file
