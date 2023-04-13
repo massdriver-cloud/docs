@@ -22,7 +22,7 @@ There are several ways to contribute Massdriver bundles:
 
 If you do choose to contribute to a public Massdriver bundle the process is as follows:
 1. Open a tracking issue to describe the change or fix you plan to implement
-2. Fork the repo
+2. [Fork the repo](/extend-the-platform/fork-the-bundle#forking-a-massdriver-bundle)
 3. Cut a new branch for your feature from the tip of `origin/main`
 4. Push your changes and open a pull request
 
@@ -30,8 +30,8 @@ If you do choose to contribute to a public Massdriver bundle the process is as f
 For the time being, only Massdriver employees will have approve / merge / commit access to our bundle repos.
 
 ## Alternatives to Contributing to Public Bundles
-- [Fork an existing bundle](https://docs.massdriver.cloud/extend-the-bundle/fork-the-bundle) if you are trying to make a major feature change or support a different use case with similar technology
-- [Develop](https://docs.massdriver.cloud/bundles/development) your own bundle from scratch and optionally open source in your own organization
+- [Fork an existing bundle](/extend-the-platform/fork-the-bundle) if you are trying to make a major feature change or support a different use case with similar technology
+- [Develop](/bundles/development) your own bundle from scratch and optionally open source in your own organization
 
 ## Not Sure Whether to Fix or Fork?
 Before doing a lot of hard work, please open an issue on the existing bundle repo describing the change
