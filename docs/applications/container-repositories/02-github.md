@@ -53,11 +53,11 @@ jobs:
       MASSDRIVER_ORG_ID: ${{ secrets.MASSDRIVER_ORG_ID }}
       MASSDRIVER_API_KEY: ${{ secrets.MASSDRIVER_API_KEY }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install Massdriver CLI
-        uses: massdriver-cloud/actions@v3
+        uses: massdriver-cloud/actions@v4
       - name: Push Image
-        uses: massdriver-cloud/actions/image_push@v3
+        uses: massdriver-cloud/actions/image_push@v4
         with:
           namespace: ${{ vars.NAMESPACE }}
           image-name: ${{ vars.IMAGE_NAME }}
@@ -66,22 +66,22 @@ jobs:
           image-tag: ${{ github.sha }}
           build-context: ./ # path to Dockerfile
       - name: Publish Bundle 
-        uses: massdriver-cloud/actions/bundle_publish@v3
+        uses: massdriver-cloud/actions/bundle_publish@v4
         with:
           build-directory: ./massdriver # path to massdriver config directory, contains massdriver.yaml
       - name: Set Image Version 
-        uses: massdriver-cloud/actions/app_patch@v3
+        uses: massdriver-cloud/actions/app_patch@v4
         with:
           project: <insert-project-abbreviation-here>
-          target: <insert-environment-abbreviation-here>
+          env: <insert-environment-abbreviation-here>
           manifest: <insert-manifest-abbreviation-here>
           set: |
             <insert-image-tag-path> = "${{ github.sha }}"
       - name: Deploy App
-        uses: massdriver-cloud/actions/app_deploy@v3
+        uses: massdriver-cloud/actions/app_deploy@v4
         with:
           project: <insert-project-abbreviation-here>
-          target: <insert-environment-abbreviation-here>
+          env: <insert-environment-abbreviation-here>
           manifest: <insert-manifest-abbreviation-here>
 ```
 
@@ -96,7 +96,7 @@ When this GitHub Action runs, it will:
 
 * [Secrets & vars](#set-secrets-and-vars)
 * [Projects](/concepts/projects) are found on the Projects page of Massdriver
-* [Targets](/concepts/environments) are found listed inside your project
+* [Environments](/concepts/environments) are found listed inside your project
 * [Manifests](/concepts/manifests) are the abbreviated name of your bundle or application
 
 ![Manifest Name](manifest.png)
