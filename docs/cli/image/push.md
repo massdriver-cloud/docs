@@ -1,4 +1,9 @@
-# Push Container Images To Cloud Repositories
+---
+id: cli-image-push
+slug: /cli/image/push
+title: Push Container Images To Cloud Repositories
+sidebar_label: Push
+---
 
 Create registries, repositories and push images via the Massdriver CLI. Massdriver will build a Docker registry if it does not exist in the region in which you are pushing an image, create a repository in that region's registry and finally push a tagged version of the image to that repository.
 
@@ -11,4 +16,4 @@ mass image push massdriver-cloud/massdriver \
     --tag v1
 ```
 
-In the above example massdriver would create a registry with the namespace provided, and push your built container as the image name in that registry. The artifact ID is a unique idenifier for a credential artifact in Massdriver that is authorized to access the cloud account you are pushing the image to. The tag is the image tag which can be used to signal container orchestration systems which version of the image to pull.
+In the above example massdriver would create a registry with the namespace provided, and push your built container as the image name in that registry. The artifact ID is a unique identifier for a credential artifact in Massdriver that is authorized to access the cloud account you are pushing the image to. The tag is the image tag which can be used to signal container orchestration systems which version of the image to pull.

@@ -1,6 +1,6 @@
 ---
 id: bundles-contributing
-slug: /bundles/contributing
+slug: /extend-the-platform/contributing
 title: Contributing to Massdriver Bundles
 sidebar_label: Contributing
 ---
@@ -30,7 +30,7 @@ If you do choose to contribute to a public Massdriver bundle the process is as f
 For the time being, only Massdriver employees will have approve / merge / commit access to our bundle repos.
 
 ## Alternatives to Contributing to Public Bundles
-- Fork an existing bundle if you are trying to make a major feature change or support a different use case with similar technology
+- [Fork an existing bundle](https://docs.massdriver.cloud/extend-the-bundle/fork-the-bundle) if you are trying to make a major feature change or support a different use case with similar technology
 - [Develop](https://docs.massdriver.cloud/bundles/development) your own bundle from scratch and optionally open source in your own organization
 
 ## Not Sure Whether to Fix or Fork?

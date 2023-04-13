@@ -1,4 +1,9 @@
-# Configure applications on Massdriver.
+---
+id: cli-application-configure
+slug: /cli/application/configure
+title: Configure applications on Massdriver
+sidebar_label: Configure
+---
 
 Your application must be published as a [bundle](https://docs.massdriver.cloud/applications) to Massdriver first and be added to an environment (target).
 

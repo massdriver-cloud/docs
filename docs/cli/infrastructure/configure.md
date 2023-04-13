@@ -1,4 +1,9 @@
-# Configure infrastructure on Massdriver.
+---
+id: cli-infrastructure-configure
+slug: /cli/infrastructure/configure
+title: Configure infrastructure on Massdriver
+sidebar_label: Configure
+---
 
 Your infrastructure IaC must be published as a [bundle](https://docs.massdriver.cloud/bundles) to Massdriver first and be to an environment (target).
 

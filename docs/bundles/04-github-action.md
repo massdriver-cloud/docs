@@ -5,35 +5,53 @@ title: Publishing with GitHub Actions
 sidebar_label: Publishing with GitHub Actions
 ---
 
-Publishing bundles from GitHub Actions when your CI passes is pretty straightforward.
+This guide will walk you through the process of setting up a GitHub Action to build and publish your bundle to your Massdriver organization.
 
-You'll need a [Service Account key](/platform/service-accounts) and to add the following GitHub Actions YAML file:
+:::note
 
+Before getting started, you'll need:
+- A Massdriver account
+- A Massdriver [service account](/platform/service-accounts)
+
+:::
+
+## Set secrets
+
+| Name | Description | Type | Notes |
+| --- | --- | --- | --- |
+| `MASSDRIVER_ORG_ID` | Your Massdriver organization ID | secret | Copy your [Organization ID](/concepts/organizations) |
+| `MASSDRIVER_API_KEY` | Your Massdriver API key | secret | Create a [Service Account](/platform/service-accounts) |
+
+## Workflow file
+
+To set up the GitHub Action, create a new file named `publish.yaml` in the `.github/workflows` directory of your GitHub repository. You can use this workflow below as a starting point:
 
 ```yaml title=".github/workflows/publish.yaml"
 name: Publish to Massdriver
 on:
   push:
-    tags:
-      - "release-*"
+    branches: [main]
 
 jobs:
-  publish_to_massdriver:
-    name: Build and publish
+  publish:
     runs-on: ubuntu-latest
+    env:
+      MASSDRIVER_ORG_ID: ${{ secrets.MASSDRIVER_ORG_ID }}
+      MASSDRIVER_API_KEY: ${{ secrets.MASSDRIVER_API_KEY }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Download massdriver cli
-        uses: dsaltares/fetch-gh-release-asset@0.0.8
+      - uses: actions/checkout@v4
+      - name: Install Massdriver CLI
+        uses: massdriver-cloud/actions@v4
+      - name: Publish Bundle 
+        uses: massdriver-cloud/actions/bundle_publish@v4
         with:
-          repo: "massdriver-cloud/massdriver-cli"
-          file: "^mass-.*-linux-amd64\\.tar\\.gz$"
-          regex: true
-
-      - name: Publish
-        env:
-          MASSDRIVER_API_KEY: ${{ secrets.MASSDRIVER_SERVICE_ACCOUNT_KEY }}
-        run: tar -xzf mass-*.tar.gz -C /usr/local/bin && rm -rf mass-*.tar.gz .git* && mass bundle build && mass bundle publish
+          build-directory: ./ # path to massdriver config directory, contains massdriver.yaml
 ```
+
+This example is configured to trigger on pushes to the repository's `main` branch. Be sure to update the trigger to match your branching and git workflow process.
+
+::: note
+
+If your `massdriver.yaml` file is in a subdirectory, you can update the `build-directory` to point to that directory. For example, if your `massdriver.yaml` file is in the `./bundle` directory, you can set the `build-directory` to `./bundle`.
+
+:::

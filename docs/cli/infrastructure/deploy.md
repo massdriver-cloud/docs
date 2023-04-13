@@ -1,4 +1,9 @@
-# Deploy infrastructure on Massdriver.
+---
+id: cli-infrastructure-deploy
+slug: /cli/infrastructure/deploy
+title: Deploy infrastructure on Massdriver
+sidebar_label: Deploy
+---
 
 Your infrastructure IaC must be published as a [bundle](https://docs.massdriver.cloud/bundles) to Massdriver first and be configured for a given environment (target).
 

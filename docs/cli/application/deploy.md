@@ -1,4 +1,9 @@
-# Deploy applications on Massdriver.
+---
+id: cli-application-deploy
+slug: /cli/application/deploy
+title: Deploy applications on Massdriver
+sidebar_label: Deploy
+---
 
 This application must be published as a [bundle](https://docs.massdriver.cloud/applications) to Massdriver first and be configured for a given environment (target).
 
