@@ -17,7 +17,7 @@ Select the file that matches your operating system and architecture, i.e. `mass_
 
 Unzip the `mass` file and move it to a directory in your `$PATH`, i.e. `/usr/local/bin`.
 
-::: note
+:::note
 
 For Mac OS users, you will need to allow `mass` to run by opening the `System Preferences` app, clicking on `Security & Privacy`, and clicking on the `Open Anyway` button. You may need to do this a second time after attempting to invoke the `mass` command.
 

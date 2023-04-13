@@ -50,7 +50,7 @@ jobs:
 
 This example is configured to trigger on pushes to the repository's `main` branch. Be sure to update the trigger to match your branching and git workflow process.
 
-::: note
+:::note
 
 If your `massdriver.yaml` file is in a subdirectory, you can update the `build-directory` to point to that directory. For example, if your `massdriver.yaml` file is in the `./bundle` directory, you can set the `build-directory` to `./bundle`.
 

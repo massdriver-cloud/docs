@@ -22,7 +22,7 @@ Forking a Massdriver bundle is useful to test contributions to official Massdriv
 
 ## Publishing a forked bundle to your Massdriver organization
 
-::: note
+:::note
 
 This step requires the use of the Massdriver CLI. If you haven't already, [install the Massdriver CLI](/cli/overview).
 
