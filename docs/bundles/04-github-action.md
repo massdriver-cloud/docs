@@ -55,3 +55,5 @@ This example is configured to trigger on pushes to the repository's `main` branc
 If your `massdriver.yaml` file is in a subdirectory, you can update the `build-directory` to point to that directory. For example, if your `massdriver.yaml` file is in the `./bundle` directory, you can set the `build-directory` to `./bundle`.
 
 :::
+
+View the Massdriver GitHub Actions on the [GitHub Marketplace](https://github.com/marketplace/actions/massdriver-actions).
