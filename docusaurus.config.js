@@ -68,6 +68,10 @@ module.exports = {
           title: 'More',
           items: [
             {
+              label: 'YouTube Demos & Quick Starts',
+              href: 'https://www.youtube.com/channel/UCfj8P7MJcdlem2DJpvymtaQ'
+            },
+            {
               label: 'Blog',
               href: 'https://blog.massdriver.cloud',
             },

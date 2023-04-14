@@ -9,6 +9,10 @@ Applications in Massdriver _are_ bundles. 🤯
 
 Everything in the [Bundle Guide](/bundles) applies to applications. The application bundle code is _rigging_ to run your application in the cloud and connect to it services.
 
+We've got some great getting started tutorials on YouTube.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/jWAdaNe57ws" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
 Additionally, applications have a few other characteristics:
 
 * IAM Roles (AWS) or Service Accounts (GCP / Azure) are automatically created for your app to manage IAM with principle of least privilege.
