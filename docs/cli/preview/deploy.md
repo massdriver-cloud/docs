@@ -1,4 +1,9 @@
-# Deploy Preview Environment
+---
+id: cli-preview-deploy
+slug: /cli/preview/deploy
+title: Deploy a Preview Environment
+sidebar_label: Deploy
+---
 
 Deploys a preview environment in your project.
 

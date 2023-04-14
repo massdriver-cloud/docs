@@ -1,4 +1,9 @@
-# Patching application configuration on Massdriver.
+---
+id: cli-application-patch
+slug: /cli/application/patch
+title: Patching application configuration on Massdriver
+sidebar_label: Patch
+---
 
 Your application must be published as a [bundle](https://docs.massdriver.cloud/bundles) to Massdriver first and be to an environment (target).
 

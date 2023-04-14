@@ -1,4 +1,9 @@
-# Initialize a Preview Environment Config File
+---
+id: cli-preview-init
+slug: /cli/preview/init
+title: Initialize a Preview Environment config file
+sidebar_label: Init
+---
 
 The preview environment config file should be checked into your source repository. The `preview.json` file supports bash interpolation in the event you need to dynamically set values from your CI.
 

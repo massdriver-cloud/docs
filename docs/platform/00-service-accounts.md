@@ -7,7 +7,7 @@ sidebar_label: Service Accounts
 
 Service accounts are a special type of non-human privileged account used to execute publish bundles, deploy applications, and other functions in our [API](/swapi). In some cases, they may have administrative privileges.
 
-Service account keys are required for using the [Massdriver CLI](https://github.com/massdriver-cloud/massdriver-cli).
+Service account keys are required for using the [Massdriver CLI](https://github.com/massdriver-cloud/mass).
 
 To create a service account:
 
@@ -18,7 +18,7 @@ To create a service account:
 
 ![](./service-accounts.png)
 
-You'll need to export your key to the following environment variable
+You'll need to export your key to the following environment variable:
 
 ```shell
 MASSDRIVER_API_KEY=fookey9000!

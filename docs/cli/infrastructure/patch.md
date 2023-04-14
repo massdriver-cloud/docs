@@ -1,4 +1,9 @@
-# Patching infrastructure configuration on Massdriver.
+---
+id: cli-infrastructure-patch
+slug: /cli/infrastructure/patch
+title: Patch infrastructure configuration on Massdriver
+sidebar_label: Patch
+---
 
 Your infrastructure IaC must be published as a [bundle](https://docs.massdriver.cloud/bundles) to Massdriver first and be to an environment (target).
 

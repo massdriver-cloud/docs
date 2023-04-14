@@ -29,9 +29,9 @@ Once you've published your application, you'll need to set the following secrets
 
 | Name | Description | Type | Notes |
 | --- | --- | --- | --- |
-| `MASSDRIVER_ORG_ID` | Your Massdriver organization ID | secret | Your Organization ID can be found by hovering over your org logo in the sidebar |
+| `MASSDRIVER_ORG_ID` | Your Massdriver organization ID | secret | Copy your [Organization ID](/concepts/organizations#find-your-organization-id) |
 | `MASSDRIVER_API_KEY` | Your Massdriver API key | secret | Create a [Service Account](/platform/service-accounts) |
-| `MASSDRIVER_ARTIFACT_ID` | The ID of the authentication artifact in Massdriver | secret | Select your cloud credential from the Artifacts page in Massdriver, then click **Copy Artifact ID** |
+| `MASSDRIVER_ARTIFACT_ID` | The ID of the authentication artifact in Massdriver | secret | Copy your [Artifact ID](/concepts/artifacts#artifact-id) |
 | `NAMESPACE` | The namespace of your build | variable | If it does not exist paired with the `IMAGE_NAME`, then it will be created for you |
 | `IMAGE_NAME` | The image name of your build | variable | If it does not exist paired with the `NAMESPACE`, then it will be created for you |
 | `REGION` | The region where your cloud container repository is located | variable | Must be a valid cloud region. For example: `eastus` for Azure, or `us-west-1` for AWS. |
