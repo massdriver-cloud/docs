@@ -32,14 +32,16 @@ We fully dogfood Massdriver, and all of [our bundles](https://github.com/orgs/ma
 
 ## Getting started
 
-* [Developing custom bundles](/bundles/walk-through)
-* [Packaging kubernetes applications](/applications/getting-started)
-* **COMING SOON**: Packaging serverless applications
-* **COMING SOON**: Packaging virtual machine applications
+* [Developing Custom Infrastructure Components](/bundles/walk-through)
+* [Running Applications on Massdriver](/applications/getting-started)
+
+We've got some great getting started tutorials on YouTube.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/jWAdaNe57ws" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 ## We are here to help
 
-* Explore our [bundles](https://github.com/orgs/massdriver-cloud/repositories?q=&type=all&language=terraform&sort=)
+* Explore our [open-source Terraform modules](https://github.com/orgs/massdriver-cloud/repositories?q=&type=all&language=terraform&sort=)
 * [Check out (and contribute to) our roadmap](https://roadmap.massdriver.cloud)
-* [Join the GitHub discussion forum](https://github.com/massdriver-cloud/docs/discussions)
-* **COMING SOON**: Webinars and workshops
+* [Join the community Slack](https://join.slack.com/t/massdrivercommunity/shared_invite/zt-1sxag35w2-eYw7gatS1hwlH2y8MCmwXA)
+* [Webinars and workshops](https://blog.massdriver.cloud/webinars)
