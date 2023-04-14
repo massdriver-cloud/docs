@@ -130,3 +130,5 @@ Then your image tag path would be `.runtime.image.tag`.
 
 * If your `Dockerfile` is in a subdirectory, you can update the `build-context` to point to that directory. For example, if your `Dockerfile` is in the `./app` directory, you can set the `build-context` to `./app`.
 * If your `massdriver.yaml` file is in a subdirectory, you can update the `build-directory` to point to that directory. For example, if your `massdriver.yaml` file is in the `./app/massdriver` directory, you can set the `build-directory` to `./app/massdriver`.
+
+View the Massdriver GitHub Actions on the [GitHub Marketplace](https://github.com/marketplace/actions/massdriver-actions).
