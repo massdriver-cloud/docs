@@ -15,7 +15,7 @@ Requirements:
 
 ## Add DNS to Massdriver
 To create a DNS zone (or link an exising one):
-1. Visit the [DNZ Zones page](https://app.massdriver.cloud/dns-zones)
+1. Visit the [DNS Zones page](https://app.massdriver.cloud/dns-zones)
 2. Click `Create` to create a new zone, or `Connect` to connect an existing zone
 3. Select the cloud you want to use for DNS
 4. Fill out the form and click `Submit`
