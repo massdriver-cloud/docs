@@ -37,7 +37,9 @@ To add your DNS zone to your kubernetes cluster:
 2. Select your DNS zone from the dropdown
 3. Click **Deploy**
 
+:::info
 Massdriver will automatically deploy the DNS zone to your cluster, using [cert-manager](https://cert-manager.io/docs/) and [external-dns](https://github.com/kubernetes-sigs/external-dns) helm charts. Cert-manager adds certificates and certificate issuers as resource types in Kubernetes clusters, and simplifies the process of obtaining, renewing and using those certificates ExternalDNS allows you to control DNS records dynamically via Kubernetes resources in a DNS provider-agnostic way. ExternalDNS synchronizes exposed Kubernetes Services and Ingresses with DNS providers.
+:::
 
 ## Serverless
 To add your DNS zone to your serverless app runtime:
