@@ -47,3 +47,7 @@ To add your DNS zone to your serverless app runtime:
 1. Click **Configure** on the serverless application
 2. Select your DNS zone from the dropdown
 3. Click **Deploy**
+
+:::info
+Massdriver will automatically handle the IAM/RBAC needed to deploy your DNS zone to your serverless app runtime using least privilege access best practices.
+:::
