@@ -44,4 +44,3 @@ To add your DNS zone to your serverless app runtime:
 1. Click **Configure** on the serverless application
 2. Select your DNS zone from the dropdown
 3. Click **Deploy**
-4. 
