@@ -12,6 +12,7 @@ Requirements:
 - A registered DNS domain
 - A cloud provider account (AWS, GCP, Azure)
 - Cloud provider credentials [configured in Massdriver](https://app.massdriver.cloud/organization/credentials)
+:::
 
 ## Add DNS to Massdriver
 To create a DNS zone (or link an exising one):
