@@ -28,7 +28,7 @@ To create a DNS zone (or link an exising one):
 * [GoDaddy](/questlog/custom-dns/godaddy)
 
 :::note
-If your domain registar is not listed, please [let us know](roadmap.massdriver.cloud) by leaving feedback! 
+If your domain registar is not listed, please [let us know](https://roadmap.massdriver.cloud) by leaving feedback! 
 :::
 
 ## Kubernetes
