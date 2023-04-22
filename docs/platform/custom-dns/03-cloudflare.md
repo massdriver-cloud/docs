@@ -1,6 +1,6 @@
 ---
-id: questlog-custom-dns-cloudflare
-slug: /questlog/custom-dns/cloudflare
+id: platform-custom-dns-cloudflare
+slug: /platform/custom-dns/cloudflare
 title: Cloudflare
 sidebar_label: Cloudflare
 ---
@@ -34,7 +34,7 @@ nslookup -type=SOA yourdomain.com 8.8.8.8
 nslookup -type=NS yourdomain.com 8.8.8.8
 ```
 
-### Cleanup
+### Remove nameservers in Cloudflare
 1. Remove nameservers with [PUT command](https://developers.cloudflare.com/api/operations/account-level-custom-nameservers-usage-for-a-zone-set-account-custom-nameserver-related-zone-metadata)
 2. Set `"enabled": true` to `"enabled": false`
 3. Open a ticket with [Cloudflare support](https://support.cloudflare.com/hc/articles/200172476) to remove glue records from your account nameservers and have your nameservers updated

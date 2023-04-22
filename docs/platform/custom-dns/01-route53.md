@@ -1,6 +1,6 @@
 ---
-id: questlog-custom-dns-route53
-slug: /questlog/custom-dns/route53
+id: platform-custom-dns-route53
+slug: /platform/custom-dns/route53
 title: AWS Route 53
 sidebar_label: AWS Route 53
 ---
@@ -36,7 +36,7 @@ nslookup -type=SOA yourdomain.com 8.8.8.8
 nslookup -type=NS yourdomain.com 8.8.8.8
 ```
 
-### Cleanup
+### Remove nameservers in Route53
 1. Log into [AWS Console](https://aws.amazon.com/console/)
 2. Navigate to **Services** -> **Network & Content Deliver** -> **Route 53** -> **Registered Domains** -> **Your domain**
 3. Click on **Add or edit name servers**

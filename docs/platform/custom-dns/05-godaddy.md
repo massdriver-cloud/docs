@@ -1,6 +1,6 @@
 ---
-id: questlog-custom-dns-godaddy
-slug: /questlog/custom-dns/godaddy
+id: platform-custom-dns-godaddy
+slug: /platform/custom-dns/godaddy
 title: GoDaddy
 sidebar_label: GoDaddy
 ---
@@ -37,7 +37,7 @@ nslookup -type=SOA yourdomain.com 8.8.8.8
 nslookup -type=NS yourdomain.com 8.8.8.8
 ```
 
-### Cleanup
+### Remove nameservers in GoDaddy
 1. Sign into your [GoDaddy account](https://dcc.godaddy.com/control/portfolio)
 2. Select the checkbox next to the domain you want to update
 3. Select **Nameservers** from the menu (might need to select **More** and scroll down to **Nameservers**)

@@ -1,6 +1,6 @@
 ---
-id: questlog-custom-dns-namecheap
-slug: /questlog/custom-dns/namecheap
+id: platform-custom-dns-namecheap
+slug: /platform/custom-dns/namecheap
 title: Namecheap
 sidebar_label: Namecheap
 ---
@@ -36,7 +36,7 @@ nslookup -type=SOA yourdomain.com 8.8.8.8
 nslookup -type=NS yourdomain.com 8.8.8.8
 ```
 
-### Cleanup
+### Remove nameservers in Namecheap
 1. Log into [Namecheap dashboard](https://www.namecheap.com/myaccount/login/)
 2. Navigate to **Domain List** -> **Manage**
 3. In the **Domain** section, under **Nameservers**, select **Namecheap BasicDNS**

@@ -1,6 +1,6 @@
 ---
-id: questlog-custom-dns-google
-slug: /questlog/custom-dns/google
+id: platform-custom-dns-google
+slug: /platform/custom-dns/google
 title: Google Domains
 sidebar_label: Google Domains
 ---
@@ -38,7 +38,7 @@ nslookup -type=SOA yourdomain.com 8.8.8.8
 nslookup -type=NS yourdomain.com 8.8.8.8
 ```
 
-### Cleanup
+### Remove nameservers in Google Domains
 1. Log into [Google Domains](https://domains.google.com/)
 2. For your domain, click **Manage**
 3. Navigate to **DNS**
