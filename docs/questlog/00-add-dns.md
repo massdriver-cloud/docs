@@ -33,20 +33,30 @@ If your domain registar is not listed, please [let us know](https://roadmap.mass
 :::
 
 ## Kubernetes
-To add your DNS zone to your kubernetes cluster: 
 1. Click **Configure** on the kubernetes bundle
 2. Select your DNS zone from the dropdown
 3. Click **Deploy**
+
+![Kubernetes DNS](./k8sdns.gif)
 
 :::info
 Massdriver will automatically deploy the DNS zone to your cluster, using [cert-manager](https://cert-manager.io/docs/) and [external-dns](https://github.com/kubernetes-sigs/external-dns) helm charts. Cert-manager adds certificates and certificate issuers as resource types in Kubernetes clusters, and simplifies the process of obtaining, renewing and using those certificates. ExternalDNS allows you to control DNS records dynamically via Kubernetes resources in a DNS provider-agnostic way. ExternalDNS synchronizes exposed Kubernetes Services and Ingresses with DNS providers.
 :::
 
-## Serverless
-To add your DNS zone to your serverless app runtime:
-1. Click **Configure** on the serverless application
-2. Select your DNS zone from the dropdown
+### Add DNS to your kubernetes deployment
+1. Click **Configure** on the FizzBuzz application
+2. Set your DNS hostname to `fizzbuzz.yourdomain.com`
 3. Click **Deploy**
+
+![Kubernetes app DNS](./k8sappdns.gif)
+
+## Serverless
+1. Click **Configure** on the FizzBuzz application
+2. Select your DNS zone from the dropdown
+3. Set your subdomain to `fizzbuzz`
+4. Click **Deploy**
+
+![Serverless DNS](./serverlessdns.gif)
 
 :::info
 Massdriver will automatically handle the IAM/RBAC needed to deploy your DNS zone to your serverless app runtime using least privilege access best practices.
