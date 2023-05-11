@@ -15,7 +15,7 @@ A tl;dr full walkthrough on building an AWS SNS Topic bundle can be found [here]
 
 :::
 
-For developing infrastructure bundles and applications you'll need the [Massdriver CLI](https://github.com/massdriver-cloud/massdriver-cli/releases).
+For developing infrastructure bundles and applications you'll need the [Massdriver CLI](https://github.com/massdriver-cloud/mass/releases).
 
 ## Where Are My Variable Files?
 

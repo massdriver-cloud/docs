@@ -19,7 +19,7 @@ export MASSDRIVER_API_KEY=your-key-here
 
 ### Download the Massdriver CLI
 
-The [Massdriver CLI](https://github.com/massdriver-cloud/massdriver-cli) is open sourced. You can download the most recent available version for your operating system and platform on the [release page](https://github.com/massdriver-cloud/massdriver-cli/releases). Untar the package and add it to your path.
+The [Massdriver CLI](https://github.com/massdriver-cloud/mass) is open sourced. You can download the most recent available version for your operating system and platform on the [release page](https://github.com/massdriver-cloud/mass/releases). Untar the package and add it to your path.
 
 ## Write the Bundle
 

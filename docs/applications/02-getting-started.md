@@ -9,7 +9,7 @@ sidebar_label: Getting Started
 
 Before getting started you'll need:
 
-* [Massdriver CLI](https://github.com/massdriver-cloud/massdriver-cli/releases)
+* [Massdriver CLI](https://github.com/massdriver-cloud/mass/releases)
 * [Service Account key](/platform/service-accounts)
 * A containerized application. Quick start application examples are available [here](https://github.com/massdriver-cloud/application-examples#source-code-for-example-applications).
 
@@ -253,7 +253,5 @@ If you would like to automatically publish your application bundle in CI/CD, see
 :::info
 
 We have a number of pre-defined application templates available [here](https://github.com/massdriver-cloud/application-templates). We welcome PRs to add more.
-
-If you are interested in private repositories for application templates, please `+1` this [issue](https://github.com/massdriver-cloud/massdriver-cli/issues/67).
 
 :::
