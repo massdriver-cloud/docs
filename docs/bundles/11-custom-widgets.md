@@ -149,7 +149,7 @@ External props passed through the `uiSchema`
 
 | Name         |  Required    |  Type       |    Default  |   Example  | Description |
 | ------------ | -----------  | ----------- | ----------- | -----------| ----------- |
-| unit         |  True        | string      |   undefined | `Bytes`, `KiB`, `KB`, `MiB`, `MB`, `GiB`, or `GB` **DEPRICATED:** `Kibibytes`, `Kilobytes`, `Mebibytes`, `Megabytes`, `Gibibytes`, or `Gigabytes`  | A string that decides what unit of measurement the user input gets converted into in the `formData`. |
+| unit         |  True        | string      |   undefined | `Bytes`, `KiB`, `KB`, `MiB`, `MB`, `GiB`, or `GB` **DEPRECATED:** `Kibibytes`, `Kilobytes`, `Mebibytes`, `Megabytes`, `Gibibytes`, or `Gigabytes`  | A string that decides what unit of measurement the user input gets converted into in the `formData`. |
 
 
 **Example**
@@ -342,4 +342,38 @@ properties:
 ```yaml title="uiSchema"
 dropzone:
   ui:field: dropzone
+```
+
+### Versioning Dropdown
+
+The `versioningDropdown` widget sets up the version field so that users can upgrade, but cannot downgrade to older versions. 
+
+:::note
+
+There is currently a bug where the `default:` setting will select that version, and not allow selecting older versions even if the manifest hasn't been deployed yet.
+
+:::
+
+**Example**
+
+```yaml title="schema"
+database:
+  properties:
+    version:
+      title: Version
+      description: The server version.
+      type: string
+      enum:
+        - "4.2"
+        - "4.0"
+        - "3.6"
+```
+
+```yaml title="uiSchema"
+database:
+  ui:order:
+    - version
+    - "*"
+  version:
+    ui:field: versioningDropdown
 ```
