@@ -20,7 +20,7 @@ In this guide we'll generate an `application bundle` and **publish** it to Massd
 First, create a new application bundle:
 
 ```shell
-mass app new
+mass bundle new
 ```
 
 Enter `k8s-phoenix-chat-example` as the name and a description. These will be used in the Massdriver UI to identify application bundles to users.
@@ -52,7 +52,7 @@ For this example we'll choose `kubernetes-deployment`:
 
 :::info
 
-Application templates are cached locally the first time `mass app new` is run. To get the latest application templates run `mass app template refresh`.
+Application templates are cached locally the first time `mass bundle new` is run. To get the latest application templates run `mass app template refresh`.
 
 :::
 
