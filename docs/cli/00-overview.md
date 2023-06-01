@@ -38,6 +38,7 @@ To use your organization ID in the Massdriver CLI, export the `MASSDRIVER_ORG_ID
 ```bash
 export MASSDRIVER_ORG_ID=your-org-id
 ```
+![Finding your Org ID](../applications/org-id.png)
 
 #### Setting The Serivce Account
 
