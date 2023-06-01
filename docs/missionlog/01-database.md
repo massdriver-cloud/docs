@@ -1,6 +1,6 @@
 ---
-id: questlog-database
-slug: /questlog/database
+id: missionlog-database
+slug: /missionlog/database
 title: Deploy a database
 sidebar_label: Deploy database
 ---
