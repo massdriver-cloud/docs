@@ -1,6 +1,6 @@
 ---
-id: questlog-add-dns
-slug: /questlog/add-dns
+id: missionlog-add-dns
+slug: /missionlog/add-dns
 title: Add DNS
 sidebar_label: Add DNS
 ---

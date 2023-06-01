@@ -1,6 +1,6 @@
 ---
-id: questlog-cleanup
-slug: /questlog/cleanup
+id: missionlog-cleanup
+slug: /missionlog/cleanup
 title: Decommissioning your environment
 sidebar_label: Decommissioning
 ---

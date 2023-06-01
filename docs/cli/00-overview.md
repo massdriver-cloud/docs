@@ -23,6 +23,38 @@ For Mac OS users, you will need to allow `mass` to run by opening the `System Pr
 
 :::
 
+### Setup
+
+In order to execute commands against your Massdriver organization, you must set environment variables for the CLI to use.
+
+#### Find your organization ID
+
+To find your organization ID, hover over your organization name logo in the top left corner of the Massdriver UI and click the copy button next to your organization ID.
+
+#### Use your organization ID in the Massdriver CLI
+
+To use your organization ID in the Massdriver CLI, export the `MASSDRIVER_ORG_ID` environment variable to the value of your Organization UUID.
+
+```bash
+export MASSDRIVER_ORG_ID=your-org-id
+```
+![Finding your Org ID](../applications/org-id.png)
+
+#### Setting The Serivce Account
+
+1. Visit the [Service Accounts page](https://app.massdriver.cloud/organization/api-keys)
+2. Click 'Add Service Account'
+3. Give the service account a name
+4. Click the 'clipboard' icon.
+
+![](../platform/service-accounts.png)
+
+You'll need to export your key to the following environment variable:
+
+```bash
+export MASSDRIVER_API_KEY=fookey9000!
+```
+
 ## Commands
 
 ### Applications

@@ -1,6 +1,6 @@
 ---
-id: questlog-environment
-slug: /questlog/environment
+id: missionlog-environment
+slug: /missionlog/environment
 title: Environments
 sidebar_label: Environments
 ---

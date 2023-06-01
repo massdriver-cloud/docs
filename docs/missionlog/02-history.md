@@ -1,6 +1,6 @@
 ---
-id: questlog-history
-slug: /questlog/history
+id: missionlog-history
+slug: /missionlog/history
 title: Bundle Deployment History
 sidebar_label: Bundle History
 ---
