@@ -7,6 +7,14 @@ module.exports = {
   organizationName: 'massdriver-cloud',
   projectName: 'docs',
   themeConfig: {
+    announcementBar: {
+      id: 'were_hiring',
+      content:
+        "🎉 We're hiring! Check out our <a target='_blank' rel='noopener noreferrer' href='https://www.ycombinator.com/companies/massdriver/jobs'>open roles.</a>",
+      backgroundColor: '#fafbfc',
+      textColor: '#091E42',
+      isCloseable: false,
+    },
     metadata: [{ name: 'keywords', content: 'massdriver, mass driver, internal developer platform, ' }],
     prism: {
       additionalLanguages: ['yaml', 'hcl', 'shell-session'],
