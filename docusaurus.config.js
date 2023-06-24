@@ -95,14 +95,6 @@ module.exports = {
   },
   plugins: [
     [
-      "posthog-docusaurus",
-      {
-        apiKey: process.env.POSTHOG_API_KEY || "DEV",
-        appUrl: "https://app.posthog.com",
-        enableInDevelopment: false
-      },
-    ],
-    [
       // https://github.com/cmfcmf/docusaurus-search-local
       "@cmfcmf/docusaurus-search-local",
       {

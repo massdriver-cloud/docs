@@ -15,7 +15,6 @@
     "@edno/docusaurus2-graphql-doc-generator": "^1.10.2",
     "classnames": "^2.2.6",
     "graphql": "^16.5.0",
-    "posthog-docusaurus": "^2.0.0",
     "react": "^16.8.4",
     "react-dom": "^16.8.4"
   },
