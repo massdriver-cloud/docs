@@ -4,10 +4,6 @@ slug: /applications/build-your-own/azure-app-service
 title: Azure App Service
 sidebar_label: Azure App Service
 ---
-# Table of contents
-1. [Build](#build)
-2. [Publish](#publish)
-3. [Deploy](#deploy)
 
 ## Build
 
