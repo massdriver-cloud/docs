@@ -1,8 +1,8 @@
 ---
 id: applications-docker-creating-dockerfile
 slug: /applications/docker/creating-dockerfile
-title: Creating Dockerfile
-sidebar_label: Creating Dockerfile
+title: Creating a Dockerfile
+sidebar_label: Creating a Dockerfile
 ---
 
 # Creating a Dockerfile

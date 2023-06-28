@@ -5,9 +5,9 @@ title: Templates
 sidebar_label: Templates
 ---
 
-# Python
+## Python
 
-## Dockerfile
+### Dockerfile
 
 ```dockerfile
 # Download base image
@@ -34,7 +34,7 @@ EXPOSE 8080
 CMD ["python3", "-m" , "flask", "run", "--host=0.0.0.0"]
 ```
 
-## .dockerignore
+### .dockerignore
 
 ```bash
 __pycache__
@@ -62,9 +62,9 @@ coverage.xml
 
 [Source](https://docs.docker.com/language/python/build-images/)
 
-# Node.js
+## Node.js
 
-## Dockerfile
+### Dockerfile
 
 ```dockerfile
 # Download base image
@@ -96,7 +96,7 @@ EXPOSE 8080
 CMD ["node", "server.js"]
 ```
 
-## .dockerignore
+### .dockerignore
 
 ```bash
 node_modules
@@ -105,9 +105,9 @@ npm-debug.log
 
 [Source](https://docs.docker.com/language/nodejs/build-images/)
 
-# Java
+## Java
 
-## Dockerfile
+### Dockerfile
 
 ```dockerfile
 # Download base image
@@ -135,7 +135,7 @@ EXPOSE 8080
 CMD ["./mvnw", "spring-boot:run"]
 ```
 
-## .dockerignore
+### .dockerignore
 
 ```bash
 .git/
@@ -144,9 +144,9 @@ target/
 
 [Source](https://docs.docker.com/language/java/build-images/)
 
-# Go
+## Go
 
-## Dockerfile
+### Dockerfile
 
 ```dockerfile
 # Download base image
@@ -177,7 +177,7 @@ EXPOSE 8080
 CMD ["/docker-gs-ping"]
 ```
 
-## .dockerignore
+### .dockerignore
 
 ```bash
 # The .dockerignore file excludes files from the container build process.
@@ -197,9 +197,9 @@ vendor/
 
 [Source](https://docs.docker.com/language/golang/build-images/)
 
-# C# (.NET)
+## C# (.NET)
 
-## Dockerfile
+### Dockerfile
 
 ```dockerfile
 # Download base image using multi-stage build and define a stage for building the app
@@ -236,7 +236,7 @@ EXPOSE 8080
 ENTRYPOINT ["dotnet", "myWebApp.dll"]
 ```
 
-## .dockerignore
+### .dockerignore
 
 ```bash
 **/bin/
