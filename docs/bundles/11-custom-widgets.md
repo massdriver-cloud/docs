@@ -15,11 +15,11 @@ When implementing a `Custom Widget/Field`, you must define both the `schema` and
 
 Here is an example, using the `schema` and `uiSchema` to display a custom `ContainerRepositoriesDropdown` `field`:
 
-
 ```yaml title="schema"
 type: object
 title: Filtered Container Repositories & DNS Zones schema
-description: A dummy schema to show how to filter the dnsZones and container repositories
+description:
+  A dummy schema to show how to filter the dnsZones and container repositories
   widgets.
 properties:
   containerRepositories: # <-- This is where you define the property name
@@ -30,7 +30,7 @@ properties:
 
 ```yaml title="uiSchema"
 containerRepositories: # <-- Use the name defined in the properties object. If it is a nested property, follow the same path here
-  ui:field: "containerRepositoriesDropdown" # <-- Here we define the ui:field and match it to the name given to our custom field
+  ui:field: 'containerRepositoriesDropdown' # <-- Here we define the ui:field and match it to the name given to our custom field
 ```
 
 :::note
@@ -54,7 +54,8 @@ Here is an example:
 ```yaml title="schema"
 type: object
 title: Nested custom fields/widgets example
-description: A dummy schema to show how to render custom fields/widgets in nested
+description:
+  A dummy schema to show how to render custom fields/widgets in nested
   properties.
 properties:
   personalInformation:
@@ -81,7 +82,6 @@ properties:
             hobby:
               type: string
               title: One of your hobbies
-
 ```
 
 ```yaml title="uiSchema"
@@ -107,13 +107,13 @@ type: object
 title: Custom Error Messages Example
 description: A Description.
 required:
-- name
+  - name
 properties:
   name:
     type: string
     title: Name
     description: A user-friendly name.
-    pattern: "^(?:[a-z0-9]+(?:-[a-z0-9]+)*/)*[a-z0-9]+(?:-[a-z0-9]+)*$" # Here we define the regex pattern constraint
+    pattern: '^(?:[a-z0-9]+(?:-[a-z0-9]+)*/)*[a-z0-9]+(?:-[a-z0-9]+)*$' # Here we define the regex pattern constraint
     message: # When an invalid name is submitted, the custom error below will be rendered in place of the default
       pattern: Invalid name. Should only contain lowercase letters, numbers, dashes and forward slashes.
 ```
@@ -134,7 +134,7 @@ All custom Widgets/Fields have their **Component Name** in `PascalCase` and thei
 
 ### Data Conversion Field
 
-The `ConversionFieldData` is a TextField that converts whatever units the user submits to the base units defined in the `uiSchema`. The TextField has a Select Menu adjacent to it where the user can select what units they want to be submitting.  For example, say you have a ConversionFieldData that takes the input as bytes. A user can choose to submit `2 megabytes`, which would automatically be turned into `1000000 bytes` in the `formData`. Pass a specific `unit` (`Bytes`, `KiB`, `KB`, `MiB`, `MB`, `GiB`, or `GB`) externally via the `uiSchema` to control what the user input gets converted into in the `formData`.
+The `ConversionFieldData` is a TextField that converts whatever units the user submits to the base units defined in the `uiSchema`. The TextField has a Select Menu adjacent to it where the user can select what units they want to be submitting. For example, say you have a ConversionFieldData that takes the input as bytes. A user can choose to submit `2 megabytes`, which would automatically be turned into `1000000 bytes` in the `formData`. Pass a specific `unit` (`Bytes`, `KiB`, `KB`, `MiB`, `MB`, `GiB`, or `GB`) externally via the `uiSchema` to control what the user input gets converted into in the `formData`.
 
 :::note
 
@@ -146,19 +146,18 @@ Do not update the `unit` value in the `uiSchema` once this field is exposed to a
 
 External props passed through the `uiSchema`
 
-
-| Name         |  Required    |  Type       |    Default  |   Example  | Description |
-| ------------ | -----------  | ----------- | ----------- | -----------| ----------- |
-| unit         |  True        | string      |   undefined | `Bytes`, `KiB`, `KB`, `MiB`, `MB`, `GiB`, or `GB` **DEPRECATED:** `Kibibytes`, `Kilobytes`, `Mebibytes`, `Megabytes`, `Gibibytes`, or `Gigabytes`  | A string that decides what unit of measurement the user input gets converted into in the `formData`. |
-
+| Name | Required | Type   | Default   | Example                                                                                                                                           | Description                                                                                          |
+| ---- | -------- | ------ | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| unit | True     | string | undefined | `Bytes`, `KiB`, `KB`, `MiB`, `MB`, `GiB`, or `GB` **DEPRECATED:** `Kibibytes`, `Kilobytes`, `Mebibytes`, `Megabytes`, `Gibibytes`, or `Gigabytes` | A string that decides what unit of measurement the user input gets converted into in the `formData`. |
 
 **Example**
+
 ```yaml title="schema"
 type: object
 title: Conversion Field schema
 description: Testing Conversion Fields.
 required:
-- data
+  - data
 properties:
   data:
     type: integer
@@ -172,10 +171,9 @@ data:
   unit: Bytes # A necessary prop that decides what unit of measurement the user data gets converted into in the formData (in this case, "Bytes")
 ```
 
-
 ### Time Conversion Field
 
-The `ConversionFieldTime` is a TextField that converts user-submitted units into the base units defined in the `uiSchema`. The TextField has a Select Menu adjacent to it where the user can select what units they want to be submitting.  For example, say you have a ConversionFieldTime that takes the input as milliseconds: A user can choose to submit `2 minutes`, which would automatically be turned into `120000 milliseconds` in the `formData`. Pass a specific `unit` (`Milliseconds`, `Seconds`, `Minutes`, `Hours`, or `Days`) externally via the `uiSchema` to control what the user input gets converted into in the `formData`.
+The `ConversionFieldTime` is a TextField that converts user-submitted units into the base units defined in the `uiSchema`. The TextField has a Select Menu adjacent to it where the user can select what units they want to be submitting. For example, say you have a ConversionFieldTime that takes the input as milliseconds: A user can choose to submit `2 minutes`, which would automatically be turned into `120000 milliseconds` in the `formData`. Pass a specific `unit` (`Milliseconds`, `Seconds`, `Minutes`, `Hours`, or `Days`) externally via the `uiSchema` to control what the user input gets converted into in the `formData`.
 
 :::note
 
@@ -187,17 +185,18 @@ Do not update the `unit` value in the `uiSchema` once this field is exposed to a
 
 External props passed through the `uiSchema`
 
-| Name         |  Required    |  Type       |    Default  |   Example  | Description |
-| ------------ | -----------  | ----------- | ----------- | -----------| ----------- |
-| unit         |  True        | string      |   undefined | `Milliseconds`, `Seconds`, `Minutes`, `Hours`, or `Days`  | A string that decides what unit of measurement the user input gets converted into in the `formData`. |
+| Name | Required | Type   | Default   | Example                                                  | Description                                                                                          |
+| ---- | -------- | ------ | --------- | -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| unit | True     | string | undefined | `Milliseconds`, `Seconds`, `Minutes`, `Hours`, or `Days` | A string that decides what unit of measurement the user input gets converted into in the `formData`. |
 
 **Example**
+
 ```yaml title="schema"
 type: object
 title: Conversion Field schema
 description: Testing Conversion Fields.
 required:
-- duration
+  - duration
 properties:
   duration:
     type: integer
@@ -219,12 +218,12 @@ The `DnsZonesDropdown` is an asynchronous dropdown field that queries for and po
 
 External props passed through the `uiSchema`
 
-| Name         |  Required    |  Type       |    Default  |   Example  | Description |
-| ------------ | -----------  | ----------- | ----------- | -----------| ----------- |
-| cloud        |  False       | string      |   undefined | `aws`, `gcp`, `azure`  | A string that, if provided, constrains the contents of the field by cloud type. |
-
+| Name  | Required | Type   | Default   | Example               | Description                                                                     |
+| ----- | -------- | ------ | --------- | --------------------- | ------------------------------------------------------------------------------- |
+| cloud | False    | string | undefined | `aws`, `gcp`, `azure` | A string that, if provided, constrains the contents of the field by cloud type. |
 
 **Example**
+
 ```yaml title="schema"
 type: object
 title: Dns Zones schema
@@ -251,16 +250,17 @@ Most of the time, you will be fine passing a given cloud provider as the `cloudS
 **Props**
 External props passed through the `uiSchema`
 
-| Name         |  Required    |  Type       |    Default  |   Example  | Description |
-| ------------ | -----------  | ----------- | ----------- | -----------| ----------- |
-| cloudService |  True        | string      |   undefined |`aws`, `gcp`, `azure`, `ECR`, `GAR`, etc.| A string that is used in the query to get all the supported locations for a specific cloud. |
-
+| Name         | Required | Type   | Default   | Example                                   | Description                                                                                 |
+| ------------ | -------- | ------ | --------- | ----------------------------------------- | ------------------------------------------------------------------------------------------- |
+| cloudService | True     | string | undefined | `aws`, `gcp`, `azure`, `ECR`, `GAR`, etc. | A string that is used in the query to get all the supported locations for a specific cloud. |
 
 **Example**
+
 ```yaml title="schema"
 type: object
 title: Locations schema
-description: An example schema that shows the supportedCloudLocationsDropdown field
+description:
+  An example schema that shows the supportedCloudLocationsDropdown field
   implementation.
 properties:
   locations:
@@ -284,16 +284,16 @@ the region, either by way of connections or params schemas.
 
 External props passed through the `uiSchema`
 
-| Name         |  Required    |  Type       |    Default  |   Example  | Description |
-| ------------ | -----------  | ----------- | ----------- | -----------| ----------- |
-| query        |  True        | string      |   undefined |`connections.azure_virtual_network.specs.azure.region`, `params.region`, etc.| A string that is used in the query to get all the `supported instance types` for a specific Azure region. |
-
+| Name    | Required | Type   | Default   | Example                                                                       | Description                                                                                               |
+| ------- | -------- | ------ | --------- | ----------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| query   | True     | string | undefined | `connections.azure_virtual_network.specs.azure.region`, `params.region`, etc. | A string that is used in the query to get all the `supported instance types` for a specific Azure region. |
+| service | True     | string | undefined | `Microsoft.DBforPostgreSQL`                                                   | A string that is used in the query to get all the `supported instance types` for a specific Azure region. |
 
 **Example**
 
 ```yaml title="schema"
 type: object
-title: Sku 
+title: Sku
 description: An example schema that shows the InstanceTypesDropdown
   field implementation.
 properties:
@@ -305,14 +305,15 @@ properties:
   region:
     type: string
     title: Region
-    descripton: "The region to deploy to"
+    descripton: 'The region to deploy to'
     default: ''
 ```
 
 ```yaml title="uiSchema"
 sku_name:
   ui:field: InstanceTypesDropdown
-  query: params.region 
+  query: connections.azure_virtual_network.specs.azure.region
+  service: Microsoft.DBforPostgreSQL
 ```
 
 ### Dropzone
@@ -323,10 +324,10 @@ The `Dropzone` field is a file dropzone. Once a file is added, the parsed `binar
 
 External props passed through the `uiSchema`
 
->**None**
-
+> **None**
 
 **Example**
+
 ```yaml title="schema"
 type: object
 title: Dropzone schema
@@ -336,7 +337,6 @@ properties:
     type: string
     title: File Dropzone
     description: A file dropzone.
-
 ```
 
 ```yaml title="uiSchema"
@@ -346,34 +346,64 @@ dropzone:
 
 ### Versioning Dropdown
 
-The `versioningDropdown` widget sets up the version field so that users can upgrade, but cannot downgrade to older versions. 
-
-:::note
-
-There is currently a bug where the `default:` setting will select that version, and not allow selecting older versions even if the manifest hasn't been deployed yet.
-
-:::
+The `versioningDropdown` field is used to block users from downgrading versions. By providing it a list of versions, the field will automatically sort the versions in descending order. Once a user has chosen a version and provisioned their infrastructure, the field will block them from selecting any version older than their original selection.
 
 **Example**
 
 ```yaml title="schema"
-database:
-  properties:
-    version:
-      title: Version
-      description: The server version.
-      type: string
-      enum:
-        - "4.2"
-        - "4.0"
-        - "3.6"
+type: object
+title: Example Infrastructure Schema
+description: An example schema that shows the versioningDropdown implementation
+properties:
+  version:
+    title: Version
+    description: The server version.
+    type: string
+    enum:
+      - '4.2'
+      - '4.0'
+      - '3.6'
 ```
 
 ```yaml title="uiSchema"
-database:
-  ui:order:
-    - version
-    - "*"
-  version:
-    ui:field: versioningDropdown
+version:
+  ui:field: versioningDropdown
+```
+
+### Deploy-Locked Dropdown
+
+The `deployLockedDropdown` is a select menu that disabled specific items once the infrastructure has been deployed. Provide an ordered list to the field via the `schema` and provide a `disableType` to the `uiSchema` of either `higher` or `lower`. The field will initially allow the user to select any of the values. Once a value is selected and the package is deployed, the dropdown will disable all values either above or below the selected value, depending on the provided `disableType`.
+
+**Props**
+
+External props passed through the `uiSchema`
+
+| Name        | Required | Type   | Default | Example             | Description                                                                             |
+| ----------- | -------- | ------ | ------- | ------------------- | --------------------------------------------------------------------------------------- |
+| disableType | false    | string | lower   | `lower` or `higher` | Determines which direction to disable dropdown items once the package has been deployed |
+
+**Example**
+
+```yaml title="schema"
+type: object
+title: Deploy-Locked Dropdown Example
+description: An example schema that shows the deployLockedDropdown field implementation.
+properties:
+  deployLockedDropdown:
+    type: string
+    title: Deploy-Locked Dropdown
+    description: A dropdown that will disable values once the package is deployed.
+    enum:
+      - '64 GB'
+      - '32 GB'
+      - '16 GB'
+      - '8 GB'
+      - '4 GB'
+      - '2 GB'
+```
+
+```yaml title="uiSchema"
+deployLockedDropdown:
+  ui:field: deployLockedDropdown
+  disableType: lower
 ```
