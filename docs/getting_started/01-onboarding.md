@@ -35,9 +35,9 @@ The default terminal on MacOS is Terminal. You can find it in the Applications f
 
 **Windows**
 
-For Windows, we highly recommend installing [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install). WSL (Windows Subsystem for Linux) is a compatibility layer for running Linux binary executables natively on Windows. WSL2 is the latest version of WSL and is a full Linux kernel built by Microsoft.
+For Windows, we highly recommend installing [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install). WSL (*Windows Subsystem for Linux*) is a compatibility layer for running Linux binary executables natively on Windows. WSL2 is the latest version of WSL and is a full Linux kernel built by Microsoft.
 
-In regards to a terminal to use, the Windows Terminal app on the Windows Store is a great option as it integrates well with WSL. You can find it [here](https://apps.microsoft.com/store/detail/windows-terminal/9N0DX20HK701?hl=en-us&gl=us&activetab=pivot%3Aoverviewtab). (Requires Windows 10 version 19041 or higher)
+In regards to a terminal to use, the Windows Terminal app on the Windows Store is a great option as it integrates well with WSL. You can find it [here](https://apps.microsoft.com/store/detail/windows-terminal/9N0DX20HK701?hl=en-us&gl=us&activetab=pivot%3Aoverviewtab). (*Requires Windows 10 version 19041 or higher*)
 
 ### Install Docker
 
