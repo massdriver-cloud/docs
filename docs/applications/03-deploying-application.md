@@ -1,8 +1,8 @@
 ---
-id: applications-deploying-application
-slug: /applications/deploying-application
-title: Deploying
-sidebar_label: Deploying
+id: applications-deploy
+slug: /applications/deploy
+title: Deploy
+sidebar_label: Deploy
 ---
 
 Once an application bundle has been published to the Massdriver Bundle Manager, it can be connected and configured via the UI and then deployed via UI or CLI.
@@ -47,7 +47,7 @@ Finally attach the credential you created in the previous step:
 
 **Design and deploy infrastructure for your application**:
 
-If you followed the guide in the [previous section](/applications/getting-started) your application will depend on a Kubernetes Cluster and PostgreSQL.
+If you followed the guide in the [previous section](/applications/create) your application will depend on a Kubernetes Cluster and PostgreSQL.
 
 Add and connect the following resources from the bundle sidebar. To expand the sidebar click the "package" icon.
 

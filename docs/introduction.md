@@ -33,7 +33,7 @@ We fully dogfood Massdriver, and all of [our bundles](https://github.com/orgs/ma
 ## Getting started
 
 * [Developing Custom Infrastructure Components](/bundles/walk-through)
-* [Running Applications on Massdriver](/applications/getting-started)
+* [Running Applications on Massdriver](/applications/create)
 
 We've got some great getting started tutorials on YouTube.
 

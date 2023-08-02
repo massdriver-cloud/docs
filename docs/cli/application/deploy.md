@@ -29,4 +29,4 @@ mass app deploy ecomm-prod-api
 mass app deploy ecomm-prod-api-x12g
 ```
 
-For more info see [deploying](https://docs.massdriver.cloud/applications/deploying-application).
+For more info see [deploying](/docs/applications/03-deploying-application.md).
