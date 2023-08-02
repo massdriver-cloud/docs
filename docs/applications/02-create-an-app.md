@@ -1,8 +1,8 @@
 ---
-id: applications-getting-started
-slug: /applications/getting-started
-title: Getting Started
-sidebar_label: Getting Started
+id: applications-create
+slug: /applications/create
+title: Create
+sidebar_label: Create
 ---
 
 :::note

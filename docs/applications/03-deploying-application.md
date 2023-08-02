@@ -1,8 +1,8 @@
 ---
-id: applications-deploying-application
-slug: /applications/deploying-application
-title: Deploying
-sidebar_label: Deploying
+id: applications-deploy
+slug: /applications/deploy
+title: Deploy
+sidebar_label: Deploy
 ---
 
 Once an application bundle has been published to the Massdriver Bundle Manager, it can be connected and configured via the UI and then deployed via UI or CLI.
