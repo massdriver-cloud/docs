@@ -65,7 +65,7 @@ You can install the Mass CLI by following the instructions [here](/docs/cli/00-o
 
 ## Setting Massdriver environment variables
 
-The Mass CLI uses environment variables to authenticate with the Massdriver platform. You can set these environment variables by following the instructions [here](/docs/cli/00-overview.md#setup).
+The Mass CLI uses environment variables to authenticate with the Massdriver platform. You can set these environment variables by following the instructions [here](/docs/cli/00-overview.md###setup).
 
 For ease of use, it's recommended to set these environment variables in your shell's profile. For example, if you're using bash, you can add the following to your `~/.bashrc` file:
 
