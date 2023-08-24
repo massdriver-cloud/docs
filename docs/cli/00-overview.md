@@ -9,6 +9,14 @@ The Mass CLI is a powerful command line interface for interacting with the Massd
 
 ## Installation
 
+### Brew Installation
+
+To install the Mass CLI using [Homebrew](https://formulae.brew.sh/formula/massdriver), run the following command:
+
+```bash
+brew install massdriver
+```
+
 ### Manual Installation
 
 To install (or update) the Mass CLI manually, download the latest release from the [Mass CLI releases page](https://github.com/massdriver-cloud/mass/releases).
