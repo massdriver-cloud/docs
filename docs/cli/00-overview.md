@@ -17,6 +17,16 @@ To install the Mass CLI using [Homebrew](https://formulae.brew.sh/formula/massdr
 brew install massdriver
 ```
 
+### Go Installation
+
+To install using go:
+
+```shell
+go install github.com/massdriver-cloud/mass@latest
+```
+
+Make sure that your `$GOPATH/bin` is in your path.
+
 ### Manual Installation
 
 To install (or update) the Mass CLI manually, download the latest release from the [Mass CLI releases page](https://github.com/massdriver-cloud/mass/releases).
