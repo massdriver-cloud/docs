@@ -55,7 +55,7 @@ wal_level = logical
 max_replication_slots = 10
 ```
 
-This process is about 9 steps and takes a matter of minutes **not including your dump/restore time**.
+This whole upgrade/migration process is a few step that takes a matter of minutes **not including your dump/restore time**.
 
 ### 1. Put your application in Maintenance Mode
 
@@ -69,23 +69,23 @@ Its important to stop the application from receiving new requests because we don
 
 Connect to your _old database_ and run pg_dump:
 
-```shell title="Dump Old Database"
+```shell title="Dump old database"
 pg_dump -U YOUR_USER -F t YOUR_DATABASE > YOUR_DATABASE-dump.tar
 ```
 
 ### 3. Create publication & replication slot on your _old database_
 
-```shell title="Connect to psql"
+```shell title="Connect to psql on your old database"
 psql -U YOUR_USER -d YOUR_DATABASE
 ```
 
-```sql title="Create publication"
+```sql title="Create publication on your old database"
 CREATE PUBLICATION pub_pg_AN_IDENTIFIER_FOR_YOUR_MIGRATION_migration FOR ALL TABLES;
 ```
 
 `FOR ALL TABLES` will publish changes for all tables, you can also set specific tables for replication.
 
-```sql title="Create replication slot"
+```sql title="Create replication slot on your old database"
 SELECT pg_create_logical_replication_slot('sub_pg_AN_IDENTIFIER_FOR_YOUR_MIGRATION_migration', 'pgoutput');
 ```
 
@@ -98,22 +98,22 @@ SELECT pg_create_logical_replication_slot('sub_pg_AN_IDENTIFIER_FOR_YOUR_MIGRATI
 
 This is the end your first and longest downtime. Records will still be written to your _old database_, but also queued to be published to your replication slot.
 
-### 5. pg_restore to your _new database_
+### 5. pg\_restore to your _new database_
 
 Above we dumped our database to `YOUR_DATABASE-dump.tar`. This will need
 
-```shell
+```shell title="Restore dump to your new database"
 pg_restore -d YOUR_DATABASE YOUR_DATABASE-dump.tar --no-owner --role=YOUR_ROLE -C -U YOUR_ROLE;
 ```
 
 ### 6. Create a paused subscription on your _new database_
 
 
-```shell title="Connect to psql on your _new database_"
+```shell title="Connect to psql on your new database"
 psql -U YOUR_ROLE -d YOUR_DATABASE;
 ```
 
-```sql
+```sql title="Create a replication subscription from your new database"
 CREATE SUBSCRIPTION sub_pg_AN_IDENTIFIER_FOR_YOUR_MIGRATION_migration 
   CONNECTION 'dbname=YOUR_OLD_DATABASE host=YOUR_OLD_HOST user=YOUR_OLD_ROLE password=YOUR_OLD_PASSWORD' 
   PUBLICATION pub_pg_AN_IDENTIFIER_FOR_YOUR_MIGRATION_migration WITH (copy_data = false, create_slot=false, enabled=true, slot_name=sub_pg_AN_IDENTIFIER_FOR_YOUR_MIGRATION_migration);
@@ -128,14 +128,13 @@ A few notes on the `WITH` options here:
 
 ### 7. Check replication status between databases
 
-
 You should now be able to run queries on your _old database_  and _new database_. Results may be different as replication catches up.
 
 You can estimate the replication time by getting a few **log sequence numbers** (LSN) from both databases:
 
 Connect to your _old database_ through `psql` and run the following to get the current WAL LSN:
 
-```sql title="Old database current WAL LSN"
+```sql title="Get current WAL LSN from old database"
 select pg_current_wal_lsn();
 ```
 
@@ -149,7 +148,7 @@ pg_current_wal_lsn
 
 Connect to your _new database_ through `psql` and run the following to get the most recently received LSN:
 
-```sql title="New database most recent LSN"
+```sql title="Get most recent LSN from new database"
 select * from  pg_stat_subscription;
 ```
 
@@ -179,13 +178,13 @@ select '0/25A97D0'::pg_lsn - '0/25A97D0'::pg_lsn size_bytes;
 
 This number should continue to go down, and based on the speed at which it does can give you an idea of how close to in sync your databases are.
 
-### 8. Database promotion Cutover your application to the new database
+### 8. Promote new database and cutover your application to the new database
 
 The promotion process will introduce your next downtime. You'll want as minimal replication lag as possible.
 
 The promotion process is pretty straightforward:
 
-1. Put any applications that write to your source database in maintenance mode. This will be your second brief, **downtime**.
+1. Put any applications that write to your source database in maintenance mode. This will be your second, brief **downtime**.
 2. Check the replication and subscription status and drop the subscription
 3. Copy sequence data from the source to destination database
 4. Change the applications database connection info to the new database
@@ -195,7 +194,7 @@ First, let's put the application in maintenance mode (**DOWNTIME BEGINS**)
 
 Check the current WAL LSN on your _old database_:
 
-```sql title="Old database current WAL LSN"
+```sql title="Get current WAL LSN from old database"
 select pg_current_wal_lsn();
 ```
 
@@ -209,7 +208,7 @@ pg_current_wal_lsn
 
 Check that the last LSN acknowledged matches on your _new database_:
 
-```sql
+```sql title="Get the latest LSN reported from by new database"
 select latest_end_lsn from pg_stat_subscription where subname = 'sub_pg_AN_IDENTIFIER_FOR_YOUR_MIGRATION_migration';
 -- -[ RECORD 1 ]--+----------
 -- latest_end_lsn | 0/25A97D0
@@ -226,7 +225,7 @@ select '0/25A97D0'::pg_lsn - '0/25A97D0'::pg_lsn size_bytes;
 
 Once the two values match you can drop the SUBSCRIPTION on your **new database**:
 
-```sql
+```sql title="Drop subscription from new database"
 DROP SUBSCRIPTION sub_pg_AN_IDENTIFIER_FOR_YOUR_MIGRATION_migration;
 ```
 
@@ -240,7 +239,7 @@ Sequences **are not** replicated with logical replication. Skipping this step wi
 
 Run the following command on both databases to see the differnces in sequence data:
 
-```sql
+```sql title="Display sequence data on both databases"
 SELECT sequencename, last_value
 FROM pg_sequences
 ORDER BY last_value DESC NULLS LAST, sequencename;
@@ -248,11 +247,11 @@ ORDER BY last_value DESC NULLS LAST, sequencename;
 
 Run the following command to dump your sequence data from your _old database_:
 
-```shell
+```shell title="Dump old database sequence data"
 psql -h OLD_DB_HOST -U OLD_DB_USER -XAtqc 'SELECT $$select setval($$ || quote_literal(sequencename) || $$, $$ || last_value || $$); $$ AS sql FROM pg_sequences' OLD_DB_NAME > sequences.sql
 ```
 
-```shell
+```shell title="Restore sequence data to new database"
 cat sequences.sql | psql -h NEW_DB_HOST -U NEW_DB_USER NEW_DB_NAME
 ```
 
