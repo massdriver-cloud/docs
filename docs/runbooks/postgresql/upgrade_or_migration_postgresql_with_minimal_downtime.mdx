@@ -1,0 +1,290 @@
+# Migrating or Upgrading PostgreSQL with Minimal Downtime
+
+This runbook is based on this [webinar](https://www.youtube.com/watch?v=hd0WlFls9b8). 
+
+There is an accompanying [tutorial](https://github.com/massdriver-cloud/webinar-postgresql-logical-replication) that runs in docker compose that can be used for practice.
+
+This runbook can be used for:
+
+* Performing major version upgrades of PostgreSQL 12+ with minimal downtime
+* Performing cloud migrations of PostgreSQL 12+ with minimal downtime
+
+:::note
+
+This tutorial assumes both PostgreSQL databases are in the same network. 
+
+If they are not you'll need to set up a VPN tunnel between your networks during your migration.
+
+A great option is [tailscale](https://tailscale.com/kb/1017/install/). We'll be posting a tunneling runbook soon!
+
+:::
+
+## Upgrading / Migrating Postgres with Logical Replication
+
+PostgreSQL logical replication is a data synchronization method that enables the replication of individual database changes (such as inserts, updates, and deletes) in a fine-grained manner between two PostgreSQL databases. It uses a publish-subscribe model, allowing changes from a source database's specified tables to be captured, transformed into a logical representation, and then applied to target databases.
+
+With logical replication there are two options for getting your existing data into the destination database:
+
+* Using `copy_data = true` with the replication subscription
+* Using `copy_data = false` and performing pg_dump/pg_restore
+
+This tutorial will use the `copy_data = false` option and a pg_dump/pg_restore as it is more efficient for large databases.
+
+This is the recommended approach for large data sets especially migrating or upgrading across networks. It can be time and resource consuming to replicate 100GB between something like Heroku and AWS RDS. This requires additional steps and brief downtime to prepare.
+
+Pros:
+* Controlled Replication: You have control over when the replication process occurs. This can help you manage the impact on server resources.
+* Reduced Network Traffic: As replication is not continuous, there's less ongoing network traffic compared to real-time replication.
+
+Cons:
+* Complexity: Manual dump and restore processes involve more steps and potential for errors, especially with large datasets.
+* Data Lag: Data replication is not immediate, resulting in data lag between the source and target databases.
+
+:::warning
+If you have a small database we suggest dump/restore if you can tolerate downtime, otherwise for small databases that *cannot* tolerate downtime the tutorial has a walkthrough of `copy_data = true`.
+:::
+
+To perform logical replication we'll need to make sure the WAL level (`wal_level`) is set to `logical`.
+
+The Write-Ahead Log (WAL) in PostgreSQL is a transaction log that records changes to the database in a sequential manner. 
+
+It serves as a reliable mechanism to ensure data durability, high availability, and crash recovery by allowing the replay of logged changes to reconstruct the database to a consistent state in the event of system failures.
+
+Ensure that your WAL level is set to `logical` and that you have ample replication slots. **10** is a great setting for many upgrades/migrations.
+
+```conf title="postgresql.conf"
+wal_level = logical
+max_replication_slots = 10
+```
+
+This process is about 9 steps to get the databases in sync:
+
+1. Put your application in maintenance mode. This will be the beginning of the first **downtime** 
+2. Use pg_dump to make a backup of your _old database_
+3. Create publication & replication slot on your _old database_
+4. Bring your application out of maintenance mode.
+5. pg_restore to your _new database_
+6. Create paused subscription on your _new database_
+7. Enable the subscription on your _new database_ to start receiving updates
+8. Check replication status between databases
+9. Cutover your application to the new database
+
+### 1. Put your application in Maintenance Mode
+
+To get started put your application into maintenance mode. This will be the first and probably longest of two downtimes. 
+
+Its important to stop the application from receiving new requests because we don't want records written between the time the database dump is taken and the replication slot is created.
+
+
+### 2. Use pg_dump to make a backup of your _old database_
+
+Connect to PG12 and run pg_dump:
+
+```shell title="Dump Old Database"
+pg_dump -U YOUR_USER -F t YOUR_DATABASE > YOUR_DATABASE-dump.tar
+```
+
+### 3. Create publication & replication slot on your _old database_
+
+Create a publication on PG 12:
+```shell title="Connect to psql"
+psql -U YOUR_USER -d YOUR_DATABASE
+```
+
+```sql title="Create publication and replication slot"
+CREATE PUBLICATION pub_pg_AN_IDENTIFIER_FOR_YOUR_MIGRATION_migration FOR ALL TABLES;
+SELECT pg_create_logical_replication_slot('sub_pg_AN_IDENTIFIER_FOR_YOUR_MIGRATION_migration', 'pgoutput');
+```
+
+* `FOR ALL TABLES` will publish changes for all tables, you can also set specific tables for replication.
+* `pgoutput` is an output format for the pub/sub mechanism.
+
+
+### 4. Bring your application out of maintenance mode.
+
+Restart the Spree API:
+
+```shell
+docker compose start spree
+```
+
+
+### 5. pg_restore to your _new database_
+
+Copy dump to PG 15 container:
+
+```shell
+# Copy schema dump to local filesystem
+docker cp postgres12:/store-dump.tar .
+
+# Copy schema dump to PG15
+docker cp ./store-dump.tar postgres15:/store-dump.tar
+```
+
+Connect to PG 15 and restore:
+
+```shell
+docker compose exec postgres15 bash
+pg_restore -d pg15_db /store-dump.tar --no-owner --role=pg15_user -C -U pg15_user;
+
+psql -U pg15_user -d store;
+```
+
+### 6. Create paused subscription on your _new database_
+
+
+Create a subscription on PG 15:
+
+```sql
+CREATE SUBSCRIPTION sub_pg_AN_IDENTIFIER_FOR_YOUR_MIGRATION_migration 
+  CONNECTION 'dbname=store host=postgres12 user=pg12_user password=pg12_password' 
+  PUBLICATION pub_pg_AN_IDENTIFIER_FOR_YOUR_MIGRATION_migration WITH (copy_data = false, create_slot=false, enabled=false, slot_name=sub_pg_AN_IDENTIFIER_FOR_YOUR_MIGRATION_migration);
+```
+
+### 7. Enable the subscription on your _new database_ to start receiving updates
+
+At this point the snapshot is loaded on PG 15, but replication has not started. 
+
+**Add and edit some records in the Spree admin dashboard to simulate users and we'll see replication in a moment.** In the meantime, you can see the record lag by running `SELECT COUNT(*) from spree_products;` in both databases as you add records in the UI.
+
+On the PG 15 instance enable the subscription:
+
+```sql
+ALTER SUBSCRIPTION sub_pg_AN_IDENTIFIER_FOR_YOUR_MIGRATION_migration ENABLE;
+```
+
+### 8. STATUS
+
+
+You should now be able to run queries on PG 12 and PG 15 and get the same results, for example: `SELECT COUNT(*) from spree_products;`
+
+Now let's see what Postgres thinks.
+
+Connect to PG 12 source database:
+
+```shell
+docker compose exec postgres12 bash
+```
+
+Check the current WAL LSN:
+
+```sql
+select pg_current_wal_lsn();
+```
+
+Check the values of the log sequence numbers (LSN)
+```
+pg_current_wal_lsn
+--------------------
+0/25A97D0
+```
+
+Let's check the LSN received on the PG 15 instance.
+
+```shell
+docker compose exec postgres15 bash
+```
+
+```sql
+select * from  pg_stat_subscription;
+```
+
+```
+-[ RECORD 1 ]---------+------------------------------
+subid                 | 26874
+subname               | sub_pg_AN_IDENTIFIER_FOR_YOUR_MIGRATION_migration
+pid                   | 1781
+relid                 |
+received_lsn          | 0/25A97D0 <-- Last LSN received
+last_msg_send_time    | 2023-08-09 04:10:25.602431+00
+last_msg_receipt_time | 2023-08-09 04:10:25.602842+00
+latest_end_lsn        | 0/25A97D0 <-- Last LSN reported back to publisher
+latest_end_time       | 2023-08-09 04:10:25.602431+00
+```
+
+Looks like they're in sync! Its time to "promote" to PG 15.
+
+### 9. Database promotion Cutover your application to the new database
+
+The promotion process is pretty straightforward:
+
+1. Put any applications that write to your source database in maintenance mode. This will be your second, potentially brief, **downtime**.
+2. Check the replication and subscription status and drop the subscription
+3. Copy sequence data from the source to destination database
+4. Change the applications database connection info to the new database
+5. Bring your application back up
+
+First, let's put the application in maintenance mode (**DOWNTIME BEGINS**)
+
+```shell
+docker compose stop spree
+```
+
+Check the current WAL LSN on **PG 12**:
+
+```sql
+select pg_current_wal_lsn();
+-- -[ RECORD 1 ]--+----------
+-- pg_current_wal_lsn | 0/25A97D0
+```
+
+Check that the last LSN acknowledged matches on **PG 15**:
+
+```sql
+select latest_end_lsn from pg_stat_subscription where subname = 'sub_pg_AN_IDENTIFIER_FOR_YOUR_MIGRATION_migration';
+-- -[ RECORD 1 ]--+----------
+-- latest_end_lsn | 0/25A97D0
+```
+
+**Note:** Another great tool for monitoring replication is [PG Metrics](https://pgmetrics.io/docs/index.html).
+
+Once the two values match you can drop the SUBSCRIPTION on **PG 15**:
+
+```sql
+DROP SUBSCRIPTION sub_pg_AN_IDENTIFIER_FOR_YOUR_MIGRATION_migration;
+```
+
+**Important!** Now you'll need to sync the sequence data between PG 12 and PG 15. Sequences in PostgreSQL are database objects that provide a way to generate unique numeric values, often used for auto-incrementing primary keys in tables. Sequences **are not** replicated with logical replication. Skipping this step will result potentially conflicting primary key values for auto incrementing keys.
+
+
+Run the following command on both databases to see the differnces in sequence data:
+
+```sql
+SELECT sequencename, last_value
+FROM pg_sequences
+ORDER BY last_value DESC NULLS LAST, sequencename;
+```
+
+Run the following command from th PG 15's shell or an instance that can access both databases:
+
+```shell
+psql -h postgres12 -U pg12_user -XAtqc 'SELECT $$select setval($$ || quote_literal(sequencename) || $$, $$ || last_value || $$); $$ AS sql FROM pg_sequences' store > sequences.sql
+
+cat sequences.sql | psql -h postgres15 -U pg15_user store
+```
+
+If your application has materialized views, those will need to be manually refreshed as they are not automatically refreshed
+
+Its time to point the application at the upgraded database.
+
+Find the following line in `docker-compose.yml` and comment it out:
+
+`DATABASE_URL: postgres://pg12_user:pg12_password@postgres12:5432/store`
+
+Uncomment
+
+`DATABASE_URL: postgres://pg15_user:pg15_password@postgres15:5432/store`
+
+```shell
+docker compose up spree -d
+docker compose stop postgres12
+```
+
+You should be on Postgres 15!
+
+Tear it all down:
+
+```shell
+docker compose down --remove-orphans --volumes
+```
+
