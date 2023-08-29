@@ -8,6 +8,7 @@ module.exports = {
   projectName: 'docs',
   themeConfig: {
     image: 'img/opengraph-md.png',
+    metadata: [{ name: 'twitter:card', content: 'summary' }],
     announcementBar: {
       id: 'were_hiring',
       content:
