@@ -246,15 +246,19 @@ FROM pg_sequences
 ORDER BY last_value DESC NULLS LAST, sequencename;
 ```
 
-Run the following command from the PG 15's shell or an instance that can access both databases:
+Run the following command to dump your sequence data from your _old database_:
 
 ```shell
-psql -h postgres12 -U pg12_user -XAtqc 'SELECT $$select setval($$ || quote_literal(sequencename) || $$, $$ || last_value || $$); $$ AS sql FROM pg_sequences' store > sequences.sql
-
-cat sequences.sql | psql -h postgres15 -U pg15_user store
+psql -h OLD_DB_HOST -U OLD_DB_USER -XAtqc 'SELECT $$select setval($$ || quote_literal(sequencename) || $$, $$ || last_value || $$); $$ AS sql FROM pg_sequences' OLD_DB_NAME > sequences.sql
 ```
 
-If your application has materialized views, those will need to be manually refreshed as they are not automatically refreshed
+```shell
+cat sequences.sql | psql -h NEW_DB_HOST -U NEW_DB_USER NEW_DB_NAME
+```
+
+:::note
+If your application has materialized views, those will need to be manually refreshed as they are not automatically refreshed.
+:::
 
 Its time to point the application at the upgraded database.
 
