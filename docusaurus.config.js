@@ -7,6 +7,7 @@ module.exports = {
   organizationName: 'massdriver-cloud',
   projectName: 'docs',
   themeConfig: {
+    image: 'img/opengraph-md.png',
     announcementBar: {
       id: 'were_hiring',
       content:
