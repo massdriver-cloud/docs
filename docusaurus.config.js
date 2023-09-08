@@ -137,4 +137,11 @@ module.exports = {
       },
     ],
   ],
+  scripts: [
+    {
+      src:
+        '/js/chatwoot.js',
+      async: true,
+    },
+  ],
 };
