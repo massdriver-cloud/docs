@@ -73,35 +73,6 @@ You'll need to export your key to the following environment variable:
 export MASSDRIVER_API_KEY=fookey9000!
 ```
 
-## Commands
+### See the Commands
 
-### Applications
-
-* `mass app configure` - [Configures applications](/cli/application/configure) on Massdriver
-* `mass app deploy` - [Deploys applications](/cli/application/deploy) to Massdriver
-* `mass app patch` - [Patches application configuration](/cli/application/patch) on Massdriver
-
-### Bundles
-
-* `mass bundle new` - Interactive wizard to create a new bundle from a template
-* `mass bundle build` - Hydrates a bundle with necessary schema files and validates the `massdriver.yaml` file
-* `mass bundle publish` - Publishes a bundle to your Massdriver organization
-* `mass bundle lint` - Validates a bundle's `massdriver.yaml` file
-* `mass bundle template list` - [Lists](/cli/bundle/template-list) all available bundle templates
-* `mass bundle template refresh` - [Refreshes the list](/cli/bundle/template-refresh) of available bundle templates
-
-### Image
-
-* `mass image push` - [Builds and pushes an image](/cli/image/push) to a cloud image registry (e.g. ACR, ECR, or GCR)
-
-### Infrastructure
-
-* `mass infra configure` - [Configures infrastructure](/cli/infrastructure/configure) on Massdriver
-* `mass infra deploy` - [Deploys infrastructure](/cli/infrastructure/deploy) to Massdriver
-* `mass infra patch` - [Patches infrastructure configuration](/cli/infrastructure/patch) on Massdriver
-
-### Preview
-
-* `mass pv decommission` - [Decommissions an initialized preview](/cli/preview/decommission) in your project
-* `mass pv deploy` - [Deploys a preview](/cli/preview/deploy) in your project
-* `mass pv init` - [Generates a preview](/cli/preview/init) config file
+* [mass](/cli/commands/mass)	 - Massdriver Cloud CLI
