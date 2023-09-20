@@ -21,6 +21,7 @@ Massdriver is a visual internal developer platform (IDP) that enables engineers 
 * **Integrated Monitoring and Alerting**: Infrastructure ships with common sense metrics and thresholds that can be customized. Feel free to cancel PagerDuty - we'll wake you up for free!
 * **Naming and tagging conventions**: All resources managed by Massdriver have a consistent naming and tagging convention. One less bikeshed to paint.
 * **Fast-tracked compliance**: Correct infrastructure diagrams, activity logs, bundle source code access, resource manifests, and change/deployment history. Everything a compliance auditor desires in their extremely exciting life.
+* **Infinitely Extensible**: Extend the platform with the open-source infrastructure-as-code tools your team is familiar with, like [OpenTofu](https://www.massdriver.cloud/partners/opentofu), Terraform, Helm, and Pulumi (coming soon).
 
 Massdriver includes 50+ infrastructure and application bundles designed by industry experts focusing on security and best practices with support for AWS, GCP, Azure, and Kubernetes (in cloud or on-prem).
 
