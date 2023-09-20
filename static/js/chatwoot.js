@@ -6,6 +6,9 @@
   g.async = true;
   s.parentNode.insertBefore(g, s);
   g.onload = function () {
+    window.chatwootSettings = {
+      baseDomain: '.massdriver.cloud'
+    }
     window.chatwootSDK.run({
       websiteToken: 'cDAFbF5VKKES8UhqFBsDCwuF',
       baseUrl: BASE_URL
