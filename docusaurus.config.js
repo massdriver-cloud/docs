@@ -12,7 +12,7 @@ module.exports = {
     announcementBar: {
       id: 'were_hiring',
       content:
-        "🎉 We're hiring! Check out our <a target='_blank' rel='noopener noreferrer' href='https://www.ycombinator.com/companies/massdriver/jobs'>open roles.</a>",
+        "🎉 We are proud to support the launch of <a target='_blank' rel='noopener noreferrer' href='https://www.massdriver.cloud/partners/opentofu'>OpenTofu</a>, an open-source alternative to Terraform's widely used infrastructure-as-code provisioning tool.",
       backgroundColor: '#fafbfc',
       textColor: '#091E42',
       isCloseable: false,
