@@ -1,0 +1,29 @@
+name: gen-cli-docs
+
+on:
+  workflow_dispatch
+jobs:
+  gen-docs:
+    name: generate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download and Generate
+        id: download_mass
+        run: |
+          curl -L $(curl -s https://api.github.com/repos/massdriver-cloud/mass/releases/latest | grep 'browser_.*linux-amd64' | cut -d\" -f4) | tar xvzf - -C /usr/bin
+          mass docs -d docs/cli/commands
+          if [ -z "$(git status --porcelain --untracked-files=no)" ]; then
+            echo "No changes in the generated command docs"
+            exit 0
+          fi
+
+          echo "code_word=launch" >> $GITHUB_OUTPUT
+          echo "Generated docs changes, opening pr"
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        if: ${{ steps.download_mass.outputs.code_word == 'launch' }}
+        with:
+          committer: GitHub <noreply@github.com>
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          add-paths: docs/cli/commands/*.md
