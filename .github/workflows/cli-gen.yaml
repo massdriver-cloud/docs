@@ -11,8 +11,8 @@ jobs:
       - name: Download and Generate
         id: download_mass
         run: |
-          curl -L $(curl -s https://api.github.com/repos/massdriver-cloud/mass/releases/latest | grep 'browser_.*linux-amd64' | cut -d\" -f4) | tar xvzf - -C /usr/bin
-          mass docs -d docs/cli/commands
+          curl -L $(curl -s https://api.github.com/repos/massdriver-cloud/mass/releases/latest | grep 'browser_.*linux-amd64' | cut -d\" -f4) | tar xvzf - -C .
+          ./mass docs -d docs/cli/commands
           if [ -z "$(git status --porcelain --untracked-files=no)" ]; then
             echo "No changes in the generated command docs"
             exit 0
