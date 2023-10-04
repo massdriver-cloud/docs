@@ -113,6 +113,15 @@ module.exports = {
         homepage: "./docs/swapi.md",
       },
     ],
+    [
+      "posthog-docusaurus",
+      {
+        apiKey: "phc_BZ07WXSgkr8JqwgfZoZOga1C7twF2jOcCc6rmaQF2aY",
+        appUrl: "https://app.posthog.com", // optional
+        enableInDevelopment: false, // optional
+        // other options are passed to posthog-js init as is
+      },
+    ],
   ],
   presets: [
     [
@@ -141,11 +150,6 @@ module.exports = {
     {
       src:
         '/js/chatwoot.js',
-      async: true,
-    },
-    {
-      src:
-        '/js/posthog.js',
       async: true,
     },
   ],
