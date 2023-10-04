@@ -143,5 +143,10 @@ module.exports = {
         '/js/chatwoot.js',
       async: true,
     },
+    {
+      src:
+        '/js/posthog.js',
+      async: true,
+    },
   ],
 };
