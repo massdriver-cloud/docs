@@ -5,7 +5,7 @@ title: Massdriver Docs
 sidebar_label: Introduction
 ---
 
-Massdriver is a visual internal developer platform (IDP) that enables engineers to deploy production-ready cloud infrastructure and applications in minutes.
+Massdriver is a visual cloud-native development tool that enables engineers to deploy production-ready internal platforms with self-service control over infrastructure **and** applications in minutes.
 
 **Features that Teams Love:**
 
