@@ -6,6 +6,7 @@ sidebar_label: Onboarding
 ---
 
 In this section, we will cover the basics of getting started with the platform. We will cover the following topics:
+
 * Setting up your cloud credentials in Massdriver
 * Installing pre-requisite tools
 * Installing the Mass CLI
@@ -13,7 +14,7 @@ In this section, we will cover the basics of getting started with the platform. 
 
 :::note
 
-You'll need to have created your Massdriver account and organization to complete this onboarding process. If you haven't done so already, you can create your account [here](https://app.massdriver.cloud/register).
+You'll need to have created your Massdriver account and organization to complete this onboarding process. If you haven't done so already, you can create a **free** account [here](https://app.massdriver.cloud/register).
 
 Also, for any help with any of these steps, please feel free to reach out to us on [Slack](https://join.slack.com/t/massdrivercommunity/shared_invite/zt-1smvckvdj-jVFpBG2jF5XiYzX2njDCWA).
 
