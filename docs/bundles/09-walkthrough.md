@@ -28,7 +28,7 @@ The [Massdriver CLI](https://github.com/massdriver-cloud/mass) is open sourced. 
 In a terminal, use the massdriver CLI to generate a bundle template:
 
 ```shell-session
-mass bundle generate
+mass bundle new
 ```
 
 The CLI will walk you through this process by asking a series of questions about the bundle. Answer the questions with the following answers:
