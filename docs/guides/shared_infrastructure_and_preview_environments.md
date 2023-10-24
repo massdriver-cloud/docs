@@ -1,6 +1,8 @@
 # Sharing Infrastructure
 
-Shared projects in Massdriver are a mechanism that enables sharing an environments artifacts with other projects. Shared projects facilitate collaboration, resource management, and operational governance across different teams or departments within an organization. When it comes to networking and container orchestration clusters, shared resources between projects brings several benefits:
+Shared projects in Massdriver are a mechanism that enables sharing environments' artifacts with other projects.
+
+Shared projects facilitate collaboration, resource management, and operational governance across different teams or departments within an organization. When it comes to networking and container orchestration clusters, shared resources between projects brings several benefits:
 
 * **Resource Sharing and Segmentation**: Shared projects allow different teams to share resources and network configurations without compromising on isolation and security. This is crucial in a multi-tenant environment where various teams or applications need to coexist without interfering with each other.
 
@@ -44,12 +46,10 @@ TODO: screen shot
 
 Add an AWS VPC and an EKS Cluster and provision both. These resources can be shared with other projects. Teams will be able to use and deploy to them, but not configure or manage these resources.
 
-Click the "+" button and create a production version of your resources.
-
-Deploy the resources.
+From here you could click the "+" button to add a production environment, an EU environment, or however your team chooses to managed and isolate infrastructure.
 
 :::important
-Teams can share _anything_ between projects. If you had a internal bug tracking service, it could be provisioned once in this shared environment and exposed to other application projects.
+Teams can share _anything_ between projects. If you had a internal bug tracking service, it could be provisioned once in a shared environment and exposed to other application projects.
 :::
 
 ## Using Shared Infrastructure
