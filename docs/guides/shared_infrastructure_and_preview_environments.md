@@ -6,6 +6,8 @@ Shared projects facilitate collaboration, resource management, and operational g
 
 * **Resource Sharing and Segmentation**: Shared projects allow different teams to share resources and network configurations without compromising on isolation and security. This is crucial in a multi-tenant environment where various teams or applications need to coexist without interfering with each other.
 
+**Separation of Concern**: The team that owns a resource, may not be the same team(s) that use the resource. This is particularly true as organizations grow and teams become more specialized. Shared resources allow one team to have complete control of resource management while allowing other teams to utilize necessary resources.
+
 * **Centralized Network Management**: By having a shared project for networking resources, organizations can centralize the management and control of network configurations, firewalls, and routing policies. This centralized approach ensures consistency, eases management overhead, and helps in enforcing network policies across multiple projects and teams.
 
 * **Cost Efficiency**: Utilizing shared VPCs (Virtual Private Clouds) within shared projects can lead to cost savings as resources like subnets and network routes can be re-used across different projects, thereby reducing the overhead associated with managing multiple VPCs.
@@ -84,7 +86,7 @@ If you need to configure environment defaults for any custom resource types, ple
 
 ### Using Remote References
 
-Remote reference uses the shared resource, but allows a developer to make a new environment and provision there own if the use case permits. The resource appears as a package on the canvas.
+Remote reference uses the shared resource, but allows a developer to make a new environment and provision their own if the use case permits. The resource appears as a package on the canvas.
 
 ## Advanced Scenarios
 
