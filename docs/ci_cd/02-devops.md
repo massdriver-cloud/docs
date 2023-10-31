@@ -19,6 +19,8 @@ Before getting started, you'll need:
 
 :::
 
+## Applications
+
 ## Publish your application
 
 Before you can set up an Azure DevOps Pipeline to deploy your application, first you'll need to publish it to Massdriver and create a package. You can do this by following the [Create App](/applications/create) guide.
@@ -102,6 +104,50 @@ When this DevOps Pipeline runs, it will:
 * Build and push your image to your Azure container repository
 * Update the tag in your application package
 * Redeploy your application in Massdriver with the updated tag
+
+## Infrastructure
+
+### Set secrets
+
+| Name | Description | Type | Notes |
+| --- | --- | --- | --- |
+| `MASSDRIVER_ORG_ID` | Your Massdriver organization ID | secret | Copy your [Organization ID](/concepts/organizations#find-your-organization-id) |
+| `MASSDRIVER_API_KEY` | Your Massdriver API key | secret | Create a [Service Account](/platform/service-accounts) |
+
+### Workflow file
+
+To set up the pipeline, create a new pipeline and select where your code is, then select your repository. When selecting a template, select `Starter Pipeline`. You can then use this example below as a starting point:
+
+```yaml title="azure-pipelines.yml"
+trigger:
+  branches:
+    include:
+    - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  MASSDRIVER_ORG_ID: $(MASSDRIVER_ORG_ID)
+  MASSDRIVER_API_KEY: $(MASSDRIVER_API_KEY)
+
+stages:
+- stage: PublishToMassdriver
+  jobs:
+  - job: publish
+    steps:
+    - checkout: self
+
+    - task: mass-cli-install@0
+      displayName: 'Install Massdriver CLI'
+
+    - task: mass-bundle-publish@0
+    displayName: 'Publish Bundle'
+    inputs:
+      buildDirectory: './massdriver' # Path to massdriver.yaml file
+```
+
+## FAQs
 
 ### Where can I find my secrets, project, target, and manifest names?
 
