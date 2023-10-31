@@ -21,13 +21,13 @@ Before getting started, you'll need:
 
 ## Publish your application
 
-Before you can set up a GitHub Action to deploy your application, first you'll need to publish it to Massdriver and create a package. You can do this by following the [Create App](/applications/create) guide.
+Before you can set up an Azure DevOps Pipeline to deploy your application, first you'll need to publish it to Massdriver and create a package. You can do this by following the [Create App](/applications/create) guide.
 
 After you publish your application, you'll need to create a package. You can do this by dragging your application out from the bundle bar in the Massdriver canvas. Fill in the fields of your application and click **Save**. 
 
 ## Set secrets and vars
 
-Once you've published your application, you'll need to set the following secrets and vars in your GitHub repository:
+Once you've published your application, you'll need to set the following variables in your Azure DevOps Pipeline:
 
 | Name | Description | Type | Notes |
 | --- | --- | --- | --- |
@@ -40,9 +40,9 @@ Once you've published your application, you'll need to set the following secrets
 
 ## Workflow file
 
-To set up the GitHub Action, create a new file named `deploy.yaml` in the `.github/workflows` directory of your GitHub repository. You can use this workflow below as a starting point:
+To set up the pipeline, create a new pipeline and select where your code is, then select your repository. When selecting a template, select `Starter Pipeline`. You can then use this example below as a starting point:
 
-```yaml title=".github/workflows/deploy.yaml"
+```yaml title="azure-pipelines.yml"
 trigger:
   branches:
     include:
