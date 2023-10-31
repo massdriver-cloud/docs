@@ -248,7 +248,7 @@ Add Kubernetes and Postgres to your canvas, connect, and [deploy](/applications/
 
 ![Published Application](./published-application.png)
 
-If you would like to automatically publish your application bundle in CI/CD, see the [GitHub Actions guide](/bundles/github-action).
+If you would like to automatically publish your application bundle in CI/CD, see the [GitHub Actions guide](/ci-cd/github-action).
 
 :::info
 

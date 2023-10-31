@@ -42,4 +42,4 @@ mass bundle publish
 
 3. Drag your bundle into the Massdriver UI to deploy it
 
-Need continuous deployment? Check out the [GitHub Action](/bundles/github-action) to publish your bundle to your Massdriver organization.
+Need continuous deployment? Check out the [GitHub Action](/ci-cd/github-action) to publish your bundle to your Massdriver organization.
