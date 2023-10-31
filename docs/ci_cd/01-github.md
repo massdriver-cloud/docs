@@ -1,6 +1,6 @@
 ---
-id: ci-cd-github
-slug: /ci-cd/github
+id: ci-cd-github-action
+slug: /ci-cd/github-action
 title: GitHub Action
 sidebar_label: GitHub Action
 ---

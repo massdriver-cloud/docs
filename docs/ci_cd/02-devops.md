@@ -1,6 +1,6 @@
 ---
-id: ci-cd-devops
-slug: /ci-cd/devops
+id: ci-cd-azure-devops
+slug: /ci-cd/azure-devops
 title: Azure DevOps Pipeline
 sidebar_label: Azure DevOps Pipeline
 ---
