@@ -1,19 +1,21 @@
 ---
-id: applications-container-repositories-github
-slug: /applications/container-repositories/github
-title: GitHub Action
-sidebar_label: GitHub Action
+id: ci-cd-devops
+slug: /ci-cd/devops
+title: Azure DevOps Pipeline
+sidebar_label: Azure DevOps Pipeline
 ---
 
-# GitHub Action
+# Azure DevOps Pipeline
 
-This guide will walk you through the process of setting up a GitHub Action to build, push, and deploy app changes to your chosen cloud container repository.
+This guide will walk you through the process of setting up an Azure DevOps Pipeline to build, push, and deploy app changes to your Azure container repository.
 
 :::note
 
 Before getting started, you'll need:
 - A Massdriver account 
 - A Massdriver [service account](/platform/service-accounts)
+- An Azure DevOps repository with your application code
+- The [Mass CLI extension](https://marketplace.visualstudio.com/items?itemName=Massdriver.mass-cli) for Azure DevOps
 
 :::
 
@@ -41,54 +43,63 @@ Once you've published your application, you'll need to set the following secrets
 To set up the GitHub Action, create a new file named `deploy.yaml` in the `.github/workflows` directory of your GitHub repository. You can use this workflow below as a starting point:
 
 ```yaml title=".github/workflows/deploy.yaml"
-name: Deploy to Massdriver
-on:
-  push:
-    branches: [main]
+trigger:
+  branches:
+    include:
+    - main
 
-jobs:
-  push_and_deploy:
-    runs-on: ubuntu-latest
-    env:
-      MASSDRIVER_ORG_ID: ${{ secrets.MASSDRIVER_ORG_ID }}
-      MASSDRIVER_API_KEY: ${{ secrets.MASSDRIVER_API_KEY }}
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  MASSDRIVER_ORG_ID: $(MASSDRIVER_ORG_ID)
+  MASSDRIVER_API_KEY: $(MASSDRIVER_API_KEY)
+
+stages:
+- stage: DeployToMassdriver
+  jobs:
+  - job: push_and_deploy
     steps:
-      - uses: actions/checkout@v4
-      - name: Install Massdriver CLI
-        uses: massdriver-cloud/actions@v4
-      - name: Push Image
-        uses: massdriver-cloud/actions/image_push@v4
-        with:
-          namespace: ${{ vars.NAMESPACE }}
-          image-name: ${{ vars.IMAGE_NAME }}
-          artifact: ${{ secrets.MASSDRIVER_ARTIFACT_ID }}
-          region: ${{ vars.REGION }}
-          image-tag: ${{ github.sha }}
-          build-context: ./ # path to Dockerfile
-      - name: Publish Bundle 
-        uses: massdriver-cloud/actions/bundle_publish@v4
-        with:
-          build-directory: ./massdriver # path to massdriver config directory, contains massdriver.yaml
-      - name: Set Image Version 
-        uses: massdriver-cloud/actions/app_patch@v4
-        with:
-          project: <insert-project-abbreviation-here>
-          env: <insert-environment-abbreviation-here>
-          manifest: <insert-manifest-abbreviation-here>
-          set: |
-            <insert-image-tag-path> = "${{ github.sha }}"
-      - name: Deploy App
-        uses: massdriver-cloud/actions/app_deploy@v4
-        with:
-          project: <insert-project-abbreviation-here>
-          env: <insert-environment-abbreviation-here>
-          manifest: <insert-manifest-abbreviation-here>
+    - checkout: self
+
+    - task: mass-cli-install@0
+      displayName: 'Install Massdriver CLI'
+
+    - task: mass-image-push@0
+      displayName: 'Push Image'
+      inputs:
+        namespace: $(NAMESPACE)
+        imageName: $(IMAGE_NAME)
+        artifact: $(MASSDRIVER_ARTIFACT_ID)
+        region: $(REGION)
+        imageTag: $(Build.SourceVersion) # Sets image tag to git commit sha
+        buildContext: './' # Path to Dockerfile
+
+    - task: mass-bundle-publish@0
+      displayName: 'Publish Bundle'
+      inputs:
+        buildDirectory: './massdriver' # Path to massdriver.yaml file
+
+    - task: mass-app-patch@0
+      displayName: 'Set Image Version'
+      inputs:
+        project: <insert-project-name-here>
+        env: <insert-environment-name-here>
+        manifest: <insert-manifest-name-here>
+        set: '.image.tag="$(Build.SourceVersion)"'
+
+    - task: mass-app-deploy@0
+      displayName: 'Deploy App'
+      inputs:
+        project: <insert-project-name-here>
+        env: <insert-environment-name-here>
+        manifest: <insert-manifest-name-here>
 ```
 
 This example is configured to trigger on pushes to the repository's `main` branch. Be sure to update the trigger to match your branching and git workflow process.
 
-When this GitHub Action runs, it will:
-* Build and push your image to your cloud container repository
+When this DevOps Pipeline runs, it will:
+* Build and push your image to your Azure container repository
 * Update the tag in your application package
 * Redeploy your application in Massdriver with the updated tag
 
@@ -119,8 +130,8 @@ runtime:
         - tag
       properties:
         tag:
-          title: ECR image tag
-          description: Specific version of the container to pull on each deployment of the lambda function.
+          title: ACR image tag
+          description: Specific version of the container to pull.
           type: string
           default: latest
 ```
@@ -128,7 +139,5 @@ Then your image tag path would be `.runtime.image.tag`.
 
 ### I have subdirectories in my repository. How do I set the build context?
 
-* If your `Dockerfile` is in a subdirectory, you can update the `build-context` to point to that directory. For example, if your `Dockerfile` is in the `./app` directory, you can set the `build-context` to `./app`.
-* If your `massdriver.yaml` file is in a subdirectory, you can update the `build-directory` to point to that directory. For example, if your `massdriver.yaml` file is in the `./app/massdriver` directory, you can set the `build-directory` to `./app/massdriver`.
-
-View the Massdriver GitHub Actions on the [GitHub Marketplace](https://github.com/marketplace/actions/massdriver-actions).
+* If your `Dockerfile` is in a subdirectory, you can update the `buildContext` to point to that directory. For example, if your `Dockerfile` is in the `./app` directory, you can set the `buildContext` to `./app`.
+* If your `massdriver.yaml` file is in a subdirectory, you can update the `buildDirectory` to point to that directory. For example, if your `massdriver.yaml` file is in the `./app/massdriver` directory, you can set the `buildDirectory` to `./app/massdriver`.
