@@ -12,7 +12,7 @@ This guide will walk you through the process of setting up a GitHub Action to bu
 :::note
 
 Before getting started, you'll need:
-- A Massdriver account 
+- A Massdriver [account](https://app.massdriver.cloud/register)
 - A Massdriver [service account](/platform/service-accounts)
 - A GitHub repository with your application code
 

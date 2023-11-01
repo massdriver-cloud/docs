@@ -12,7 +12,7 @@ This guide will walk you through the process of setting up an Azure DevOps Pipel
 :::note
 
 Before getting started, you'll need:
-- A Massdriver account 
+- A Massdriver [account](https://app.massdriver.cloud/register)
 - A Massdriver [service account](/platform/service-accounts)
 - An Azure DevOps repository with your application code
 - The [Mass CLI extension](https://marketplace.visualstudio.com/items?itemName=Massdriver.mass-cli) for Azure DevOps
