@@ -1,4 +1,9 @@
-# Sharing Infrastructure
+---
+id: guides-sharing-infrastructure
+slug: /guides/sharing-infrastructure
+title: Sharing Infrastructure between Projects and Environments
+sidebar_label: Sharing Infrastructure
+---
 
 Massdriver supports sharing resources across environments and projects. Sharing resources facilitate collaboration, resource management, and operational governance across different teams or departments within an organization. 
 
@@ -213,7 +218,7 @@ Add two VPC bundles to the canvas and a peering bundle.
 
 Clicking on the artifact handles you can select VPCs from your Shared Infrastructure project. Here I will peer our US VPC to our EU VPC.
 
-![Peering VPCs in Massdriver](./shared_infrastructure_and_preview_environments/vpc-peering.gif)
+![Peering VPCs in Massdriver](./sharing_infrastructure/vpc-peering.gif)
 
 ## Advanced Scenarios
 
