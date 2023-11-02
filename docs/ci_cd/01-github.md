@@ -1,6 +1,6 @@
 ---
-id: applications-container-repositories-github
-slug: /applications/container-repositories/github
+id: ci-cd-github-action
+slug: /ci-cd/github-action
 title: GitHub Action
 sidebar_label: GitHub Action
 ---
@@ -12,18 +12,21 @@ This guide will walk you through the process of setting up a GitHub Action to bu
 :::note
 
 Before getting started, you'll need:
-- A Massdriver account 
+- A Massdriver [account](https://app.massdriver.cloud/register)
 - A Massdriver [service account](/platform/service-accounts)
+- A GitHub repository with your application code
 
 :::
 
-## Publish your application
+## Applications
+
+### Publish your application
 
 Before you can set up a GitHub Action to deploy your application, first you'll need to publish it to Massdriver and create a package. You can do this by following the [Create App](/applications/create) guide.
 
 After you publish your application, you'll need to create a package. You can do this by dragging your application out from the bundle bar in the Massdriver canvas. Fill in the fields of your application and click **Save**. 
 
-## Set secrets and vars
+### Set secrets and vars
 
 Once you've published your application, you'll need to set the following secrets and vars in your GitHub repository:
 
@@ -36,7 +39,7 @@ Once you've published your application, you'll need to set the following secrets
 | `IMAGE_NAME` | The image name of your build | variable | If it does not exist paired with the `NAMESPACE`, then it will be created for you |
 | `REGION` | The region where your cloud container repository is located | variable | Must be a valid cloud region. For example: `eastus` for Azure, or `us-west-1` for AWS. |
 
-## Workflow file
+### Workflow file
 
 To set up the GitHub Action, create a new file named `deploy.yaml` in the `.github/workflows` directory of your GitHub repository. You can use this workflow below as a starting point:
 
@@ -91,6 +94,51 @@ When this GitHub Action runs, it will:
 * Build and push your image to your cloud container repository
 * Update the tag in your application package
 * Redeploy your application in Massdriver with the updated tag
+
+## Infrastructure
+
+## Publish your bundle
+
+Before you can set up a GitHub Action to automate publishing your bundle, first you'll need to manually publish it to Massdriver and create a package. You can do this by following the [Bundle Creation Walkthrough](/bundles/walk-through) guide.
+
+After you publish your bundle, you'll need to create a package. You can do this by dragging your bundle out from the bundle bar in the Massdriver canvas. Fill in the fields of your bundle and click **Save**. 
+
+### Set secrets
+
+| Name | Description | Type | Notes |
+| --- | --- | --- | --- |
+| `MASSDRIVER_ORG_ID` | Your Massdriver organization ID | secret | Copy your [Organization ID](/concepts/organizations#find-your-organization-id) |
+| `MASSDRIVER_API_KEY` | Your Massdriver API key | secret | Create a [Service Account](/platform/service-accounts) |
+
+### Workflow file
+
+To set up the GitHub Action, create a new file named `publish.yaml` in the `.github/workflows` directory of your GitHub repository. You can use this workflow below as a starting point:
+
+```yaml title=".github/workflows/publish.yaml"
+name: Publish to Massdriver
+on:
+  push:
+    branches: [main]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      MASSDRIVER_ORG_ID: ${{ secrets.MASSDRIVER_ORG_ID }}
+      MASSDRIVER_API_KEY: ${{ secrets.MASSDRIVER_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Massdriver CLI
+        uses: massdriver-cloud/actions@v4
+      - name: Publish Bundle 
+        uses: massdriver-cloud/actions/bundle_publish@v4
+        with:
+          build-directory: ./ # path to massdriver config directory, contains massdriver.yaml
+```
+
+This example is configured to trigger on pushes to the repository's `main` branch. Be sure to update the trigger to match your branching and git workflow process.
+
+## FAQs
 
 ### Where can I find my secrets, project, target, and manifest names?
 
