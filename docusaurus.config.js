@@ -12,7 +12,7 @@ module.exports = {
     announcementBar: {
       id: 'were_hiring',
       content:
-        "🎉 We are proud to support the launch of <a target='_blank' rel='noopener noreferrer' href='https://www.massdriver.cloud/partners/opentofu'>OpenTofu</a>, an open-source alternative to Terraform.",
+        "✨ Join us for <a target='_blank' rel='noopener noreferrer' href='https://www.massdriver.cloud/events/launch-week-01'>Launch Week</a>! We're launching 3 new features Dec 11-14 + a fireside chat with Kelsey Hightower on December 15th!",
       backgroundColor: '#fafbfc',
       textColor: '#091E42',
       isCloseable: false,
