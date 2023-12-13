@@ -1,3 +1,10 @@
+---
+id: bundle-spec
+slug: /bundles
+title: The Massdriver Bundle Spec 
+sidebar_label: Bundle Development
+---
+
 # The Massdriver Bundle Spec
 
 ## Sumary
