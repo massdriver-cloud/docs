@@ -11,15 +11,21 @@ This tutorial will walk you through the process of building your own custom bund
 
 ### Generate Massdriver API Token
 
-You will need a Massdriver API token for this tutorial. You can generate one under [Organization > API Keys](https://app.massdriver.cloud/organization/api-keys). It’s easiest to set this in your environment as MASSDRIVER_API_KEY, though it can also be passed manually to all commands.
+You will need a Massdriver API token for this tutorial. You can generate one under [Settings > Service Accounts](https://app.massdriver.cloud/service-accounts). It’s easiest to set this in your environment as `MASSDRIVER_API_KEY`, though it can also be passed manually to all commands.
 
 ```shell-session
 export MASSDRIVER_API_KEY=your-key-here
 ```
 
+You will also need to set your Massdriver Org ID in your environment as `MASSDRIVER_ORG_ID`. You can find your Org ID in the [Settings > Service Accounts](https://app.massdriver.cloud/service-accounts) page, and then clicking the **Copy organization ID** button.
+
+```shell-session
+export MASSDRIVER_ORG_ID=your-org-id-here
+```
+
 ### Download the Massdriver CLI
 
-The [Massdriver CLI](https://github.com/massdriver-cloud/mass) is open sourced. You can download the most recent available version for your operating system and platform on the [release page](https://github.com/massdriver-cloud/mass/releases). Untar the package and add it to your path.
+The [Massdriver CLI](https://docs.massdriver.cloud/cli/overview) is open sourced. You can download the most recent available version for your operating system and platform. Be sure to add the CLI to your `$PATH`.
 
 ## Write the Bundle
 
@@ -28,7 +34,7 @@ The [Massdriver CLI](https://github.com/massdriver-cloud/mass) is open sourced. 
 In a terminal, use the massdriver CLI to generate a bundle template:
 
 ```shell-session
-mass bundle generate
+mass bundle new
 ```
 
 The CLI will walk you through this process by asking a series of questions about the bundle. Answer the questions with the following answers:
@@ -67,7 +73,7 @@ Technically, this is all the terraform we need to create a SNS topic! However, w
 
 Connections are the dependencies your bundle has on other bundles. This is enforced through Massdriver's type system, and specifically through the concept of artifacts. For example, a bundle that requires an AWS VPC network, such as an RDS database, would need to declare a massdriver/aws-vpc artifact as a connection.
 
-Most bundles will require at least one connection for authentication into the service where the bundle will provision resources. In this case, we need a massdriver/aws-iam-role connection. Open the `massdriver.yaml` file, scroll down to the `connections` section and update it to be the following:
+Most bundles will require at least one connection for authentication into the service where the bundle will provision resources. In this case, we need a `massdriver/aws-iam-role` connection. Open the `massdriver.yaml` file, scroll down to the `connections` section and update it to be the following:
 
 ```yaml title="./massdriver.yaml"
 connections:
@@ -78,11 +84,10 @@ connections:
       $ref: massdriver/aws-iam-role
 ```
 
-
-This `connections` block is technically a yaml-formated JSON Schema block. We are declaring that this SNS bundle has exactly one dependency, named `aws_authentication`, it is required, and its type is a massdriver/aws-iam-role.
+This `connections` block is technically a yaml-formatted JSON Schema block. We are declaring that this SNS bundle has exactly one dependency, named `aws_authentication`, it is required, and its type is a `massdriver/aws-iam-role`.
 
 :::note
-Massdriver has open sourced all of our artifact definitions so users can see the full structure. https://github.com/massdriver-cloud/artifact-definitions
+Massdriver has open sourced all of our [artifact definitions](/docs/concepts/02-artifact-definitions.md) so users can see the full structure: https://github.com/massdriver-cloud/artifact-definitions
 :::
 
 ### Specify Parameters
@@ -120,7 +125,8 @@ For the `aws_region` parameter, we are referencing a Massdriver managed type whi
 We are also creating a boolean field named `fifo`. We will use this boolean in a later step to determine whether to enable or disable the FIFO configuration of the SNS topic.
 
 ### Specify Artifacts
-Artifacts are the types that are created and exported by your bundle, allowing other bundles to connect to it. This block is very similar to the connections block, except artifacts are bundle “outputs”, whereas connections are bundle “imports”.
+
+[Artifacts](/docs/concepts/03-artifacts.md) are the types that are created and exported by your bundle, allowing other bundles to connect to it. This block is very similar to the connections block, except artifacts are bundle “outputs”, whereas connections are bundle “imports”.
 
 In this case, we are exporting exactly one required artifact, an aws-sns-topic.
 
@@ -181,7 +187,7 @@ Now that params are defined, we need to do the same thing for connections. First
 
 ### Download the Artifact
 
-This option is easier for complex artifacts (like networks or cloud infrastructure) but it doesn’t always work for authentication artifacts since you need local credentials to assume AWS roles (if you followed our guide for importing your AWS IAM Role credential, you likely don’t have permission to assume the role). First you would provision the resource you need using Massdriver (like an AWS VPC), then you would visit the [artifacts page](https://app.massdriver.cloud/artifacts) in the Massdriver console, navigate to the artifact for the bundle you just provisioned, and click the “Download Raw” button. This will download a JSON formatted version of your artifact. Open the file and copy the contents directly `_connections.auto.tfvars.json` file like this:
+This option is easier for complex artifacts (like networks or cloud infrastructure) but it doesn’t always work for authentication artifacts since you need local credentials to assume AWS roles (if you followed our guide for importing your AWS IAM Role credential, you likely don’t have permission to assume the role). First you would provision the resource you need using Massdriver (like an AWS VPC), then you would visit the [artifacts page](https://app.massdriver.cloud/artifacts) in the Massdriver console, navigate to the artifact for the bundle you just provisioned, and click the **Download Raw** button. This will download a JSON formatted version of your artifact. Open the file and copy the contents directly `_connections.auto.tfvars.json` file like this:
 
 ```json
 {
