@@ -12,7 +12,7 @@ module.exports = {
     announcementBar: {
       id: 'were_hiring',
       content:
-        "✨ Join us for <a target='_blank' rel='noopener noreferrer' href='https://www.massdriver.cloud/events/launch-week-01'>Launch Week</a>! We're launching 3 new features Dec 11-14 + a fireside chat with Kelsey Hightower on December 15th!",
+      "🎉 We are excited to announce <a target='_blank' rel='noopener noreferrer' href='https://www.massdriver.cloud/partners/opentofu'>OpenTofu</a>, an open-source alternative to Terraform, is now <a target='_blank' rel='noopener noreferrer' href='https://www.linuxfoundation.org/press/opentofu-announces-general-availability'>stable!</a>",
       backgroundColor: '#fafbfc',
       textColor: '#091E42',
       isCloseable: false,
