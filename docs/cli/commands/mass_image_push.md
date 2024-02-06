@@ -21,7 +21,7 @@ Build and push an image:
 mass image push massdriver-cloud/massdriver \
     --region us-east-1 \
     --artifact xxxx \
-    --tag v1
+    --image-tag v1
 ```
 
 Push an existing image and tag without building:
