@@ -247,6 +247,8 @@ resource "massdriver_artifact" "artifact_definition_name" {
 }
 ```
 
+To confirm that your custom artifact definition is working as expected for your bundle, run the `mass bundle lint` and `mass bundle build` commands to check for any issues. When you're ready to publish your bundle changes, `mass bundle publish` will publish your bundle to your Bundle Catalog.
+
 ## Wrapping Up
 
 And there you have it! Creating your own artifact definitions in Massdriver opens up a world of customization for your cloud infrastructure projects. By following these steps, you're well on your way to tailoring Massdriver to your project's unique requirements. If you've got any questions or need a hand, don't hesitate to reach out to our team. We're here to help you make the most of Massdriver's powerful features. Happy crafting!
