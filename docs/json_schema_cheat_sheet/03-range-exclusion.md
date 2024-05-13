@@ -5,7 +5,7 @@ title: Range Exclusion
 sidebar_label: Range Exclusion
 ---
 
-Cloud APIs have quirks :shrug: and its occassionally necessary to not permit some values in a range.
+Cloud APIs have quirks :shrug: and its occasionally necessary to not permit some values in a range.
 
 ```yaml
 title: Range Exclusion Example

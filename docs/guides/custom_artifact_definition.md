@@ -5,11 +5,11 @@ title: Crafting Custom Artifact Definitions
 sidebar_label: Custom Artifact Definition
 ---
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Am2_CJAsuSQ?si=GUf7QR1qBRRJFBeC" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 # Crafting Custom Artifact Definitions
 
 In this guide, we're going to walk through the steps to create your own custom artifact definitions in Massdriver. This is for those moments when the existing definitions just don't cut it for your unique needs. Let's demystify the process and make it as straightforward as possible. And, just in case you're looking for a primer on what artifacts and artifact definitions actually are, make sure to check out our dedicated docs for [artifacts](../concepts/03-artifacts.md) and [artifact definitions](../concepts/02-artifact-definitions.md).
-
-Want a video walkthrough? Check out our [YouTube video](https://www.youtube.com/watch?v=Am2_CJAsuSQ)!
 
 ## How to Create Your Own Custom Artifact Definition
 

@@ -105,7 +105,7 @@ Abbreviation: ecomm
 
 ![Create Ecomm Environment](/img/ui/project-create-ecomm.png)
 
-Next, we'll create the a staging environment for the Ecommerce Team's workloads.
+Next, we'll create the a staging environment for the E-commerce Team's workloads.
 
 Click "Create Environment" and set the following values:
 
@@ -203,7 +203,7 @@ This allows your team to start using Massdriver without allow Massdriver to mana
 
 If you need help migrating your database into the platform, please reach out in our [community slack](https://join.slack.com/t/massdrivercommunity/shared_invite/zt-1sxag35w2-eYw7gatS1hwlH2y8MCmwXA).
 
-Alternatively, check out ["Upgrading PostgreSQL Versions with Minimal Downtime"](https://www.youtube.com/watch?v=hd0WlFls9b8). This approach works for migration across clouds as well as upgrading Postgres with minimal interuptions.
+Alternatively, check out ["Upgrading PostgreSQL Versions with Minimal Downtime"](https://www.youtube.com/watch?v=hd0WlFls9b8). This approach works for migration across clouds as well as upgrading Postgres with minimal interruptions.
 
 We also have a runbook on [restoring snapshots across AWS RDS instances](http://localhost:3000/runbook/aws/migrating-rds-databases).
 :::
