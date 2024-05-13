@@ -105,7 +105,7 @@ Abbreviation: ecomm
 
 ![Create Ecomm Environment](/img/ui/project-create-ecomm.png)
 
-Next, we'll create the a staging environment for the Ecommerce Team's workloads.
+Next, we'll create the a staging environment for the E-commerce Team's workloads.
 
 Click "Create Environment" and set the following values:
 

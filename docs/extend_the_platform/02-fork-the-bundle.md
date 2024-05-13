@@ -38,7 +38,6 @@ Local environment variables to export:
 2. Using the Massdriver CLI, build the bundle and publish it to your Massdriver organization
 
 ```bash
-mass bundle build
 mass bundle publish
 ```
 

@@ -210,6 +210,6 @@ WIP
 
 :::note
 
-WIP - Definining useful presets using JSON Schema examples
+WIP - Defining useful presets using JSON Schema examples
 
 :::

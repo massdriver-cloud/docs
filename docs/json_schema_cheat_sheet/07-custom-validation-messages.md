@@ -19,7 +19,7 @@ read_capacity:
       maxiumum: "must be less than 3000."
 ```
 
-This example is overly simple. The stock validation messages for maximum and minimum are exactly this. However in situations with really complex regular expression matching, a simple message for the user will always be more useful than returing the regular expression and making a user parse it, which is the default behavior for RJSF.
+This example is overly simple. The stock validation messages for maximum and minimum are exactly this. However in situations with really complex regular expression matching, a simple message for the user will always be more useful than returning the regular expression and making a user parse it, which is the default behavior for RJSF.
 
 Here is an example of a GCP GRN.
 
@@ -27,8 +27,8 @@ Here is an example of a GCP GRN.
 ---
 grn:
   type: string
-  title: "GCP Resoruce Name (GRN)"
-  description: "Resrouce identifier provider by GCP"
+  title: "GCP Resource Name (GRN)"
+  description: "Resource identifier provider by GCP"
   examples:
     - "projects/my-project/global/networks/my-global-network"
     - "projects/my-project/regions/us-west2/subnetworks/my-subnetwork"
