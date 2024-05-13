@@ -5,6 +5,8 @@ title: How to fork a Massdriver bundle
 sidebar_label: Fork the bundle!
 ---
 
+<iframe width="560" height="315" src="https://youtu.be/mjTZlOPdKhQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
 Forking a Massdriver bundle is useful to test contributions to official Massdriver bundles or to make changes to a bundle and publish as a private bundle in your Massdriver organization. This guide will walk you through the process of forking a Massdriver bundle and publishing it to your Massdriver organization.
 
 ## Forking a Massdriver bundle
