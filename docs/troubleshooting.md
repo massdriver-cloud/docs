@@ -14,7 +14,7 @@ This guide will help you troubleshoot common issues you might encounter while us
 :::
 
 <details>
-<summary><h3>Bundle deployment failure</h3></summary>
+<summary><h4>Provisioning Failed: error</h4></summary>
 
 When a bundle deployment fails, the first thing to do is to check the error message. You can do that by clicking **View Error Details** on the deployment drawer or clicking on the failed state of the bundle (examples below).
 
@@ -35,7 +35,7 @@ When a bundle alarm is triggered, that means that the threshold you set for the 
 </details>
 
 <details>
-<summary>Save/Deploy buttons aren't working</summary>
+<summary><h4>Save/Deploy buttons aren't working</h4></summary>
 
 There are a few reasons why the save/deploy buttons might not be working. Here are a few things to check:
 * Reload browser as you might have been logged out
@@ -56,7 +56,7 @@ params:
 </details>
 
 <details>
-<summary>Missing Configuration for Required Attribute</summary>
+<summary><h4>Provisioning Failed: Missing Configuration for Required Attribute</h4></summary>
 
 ```
 Details
@@ -122,7 +122,7 @@ resource "massdriver_artifact" "bucket" {
 </details>
 
 <details>
-<summary>Provisioning Failed is blank</summary>
+<summary><h4>Provisioning Failed window is blank</h4></summary>
 
 If you see a blank window where the provisioning failed message should be, it means that the deployment failed before the provisioning step. This is likely due to a misconfigured `massdriver.yaml`. Some things to check are:
 * Lint your `massdriver.yaml` file to ensure there are no syntax errors using `mass bundle lint`
@@ -158,7 +158,7 @@ connections:
 </details>
 
 <details>
-<summary>There are upstream resources dependent on the resource you are trying to delete</summary>
+<summary><h4>There are upstream resources dependent on the resource you are trying to delete</h4></summary>
 
 If you are trying to delete a resource that has upstream resources dependent on it, you will see an error message like the one below:
 
@@ -168,7 +168,7 @@ What this means is that the bundle you're trying to decommission has other bundl
 </details>
 
 <details>
-<summary>Provisioning Failed: data.terraform.deletion_violations</summary>
+<summary><h4>Provisioning Failed: data.terraform.deletion_violations</h4></summary>
 
 If you see `data.terraform.deletion_violations` in the provisioning failed message, it means that the change you are deploying will delete a resource that is listed in the `validations.json` file of the bundle. This file is used to prevent the **accidental** deletion of resources that are critical to the bundle's operation based on a change to the bundle's configuration.
 
