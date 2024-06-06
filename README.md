@@ -2,7 +2,7 @@
 
 ### Enabling Pre-commit
 
-This repo includes Terraform pre-commit hooks.
+This repo includes pre-commit hooks, use 'em!
 
 [Install precommmit](https://pre-commit.com/index.html#installation) on your system.
 
