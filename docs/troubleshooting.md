@@ -1,7 +1,7 @@
 ---
 id: troubleshooting
 slug: /
-title: Massdriver Docs
+title: Troubleshooting
 sidebar_label: Troubleshooting
 ---
 
