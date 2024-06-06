@@ -14,7 +14,7 @@ This guide will help you troubleshoot common issues you might encounter while us
 :::
 
 <details>
-<summary><h6>Bundle deployment failure</h6></summary>
+<summary><h1>Bundle deployment failure</h1></summary>
 
 When a bundle deployment fails, the first thing to do is to check the error message. You can do that by clicking **View Error Details** on the deployment drawer or clicking on the failed state of the bundle (examples below).
 
@@ -28,7 +28,7 @@ If you can't figure out the issue, please reach out to us on the [community Slac
 </details>
 
 <details>
-<summary><h5>Bundle alarm is triggerred</h5></summary>
+<summary><h2>Bundle alarm is triggerred</h2></summary>
 
 When a bundle alarm is triggered, that means that the threshold you set for the metric has been met. You can check the alarm details by clicking on your bundle and viewing either the **Details** tab or the **Monitor** tab.
 ![Alarm details](./img/alarm.png)
