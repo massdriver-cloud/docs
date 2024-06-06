@@ -14,7 +14,7 @@ This guide will help you troubleshoot common issues you might encounter while us
 :::
 
 <details>
-<summary>Bundle deployment failure</summary>
+<summary><h6>Bundle deployment failure</h6></summary>
 
 When a bundle deployment fails, the first thing to do is to check the error message. You can do that by clicking **View Error Details** on the deployment drawer or clicking on the failed state of the bundle (examples below).
 
@@ -28,7 +28,7 @@ If you can't figure out the issue, please reach out to us on the [community Slac
 </details>
 
 <details>
-<summary>Bundle alarm is triggerred</summary>
+<summary><h5>Bundle alarm is triggerred</h5></summary>
 
 When a bundle alarm is triggered, that means that the threshold you set for the metric has been met. You can check the alarm details by clicking on your bundle and viewing either the **Details** tab or the **Monitor** tab.
 ![Alarm details](./img/alarm.png)
@@ -71,7 +71,7 @@ Code: permission = each.value
 
 This issue is related to Massdriver's MDXC provider failing to assign the declared permission to the application's identity.
 
-### Fix
+**Fix**
 * This error message could be referring to an outdated `massdriver-application` module. To fix this, update the module ref in `src/main.tf` of your application template to the newest [SHA](https://github.com/massdriver-cloud/terraform-modules/commits/main/). Then, run `mass bundle publish` to publish your changes to Massdriver. Lastly, redeploy your application to apply the changes.
 * There could also be IAM policies declared in your `massdriver.yaml` file that the upstream bundle does not support or can't find. Be sure to review the `env/policies` block in your `massdriver.yaml` compared to the `src/_artifacts.tf` file in your upstream bundle for available policies.
 
