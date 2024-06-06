@@ -1,6 +1,6 @@
 ---
 id: troubleshooting
-slug: /
+slug: /troubleshooting
 title: Troubleshooting
 sidebar_label: Troubleshooting
 ---
@@ -58,14 +58,16 @@ params:
 <details>
 <summary>Missing Configuration for Required Attribute</summary>
 
-> **Details**</br>
-> Must set a configuration value for the permission attribute as the provider has marked it as required.Refer to the provider documentation or contact the provider developers for additional information about configurable attributes that are required.
-> 
-> **Error Range**</br>
-> Filename: .terraform/modules/helm.application/massdriver-application/main.tf</br>
-> Start Line: 63</br>
-> Context: resource "mdxc_application_permission" "main"</br>
-> Code: permission = each.value
+```
+Details
+Must set a configuration value for the permission attribute as the provider has marked it as required.Refer to the provider documentation or contact the provider developers for additional information about configurable attributes that are required.
+ 
+Error Range
+Filename: .terraform/modules/helm.application/massdriver-application/main.tf
+Start Line: 63
+Context: resource "mdxc_application_permission" "main"
+Code: permission = each.value
+```
 
 This issue is related to Massdriver's MDXC provider failing to assign the declared permission to the application's identity.
 
