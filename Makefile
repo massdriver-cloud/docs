@@ -28,4 +28,4 @@ sync-cli-docs: # Generate CLI docs
 
 .PHONY: sync-authz-docs
 sync-authz-docs: 
-	cp ${MDPATH}/adrs/0013* ./docs/concepts/99-authorization.md
+	cp ${MDPATH}/adrs/0013* ./docs/security/02-authorization.md

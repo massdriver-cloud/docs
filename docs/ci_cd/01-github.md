@@ -13,7 +13,7 @@ This guide will walk you through the process of setting up a GitHub Action to bu
 
 Before getting started, you'll need:
 - A Massdriver [account](https://app.massdriver.cloud/register)
-- A Massdriver [service account](/concepts/service-accounts)
+- A Massdriver [service account](/security/service-accounts)
 - A GitHub repository with your application code
 
 :::
@@ -33,7 +33,7 @@ Once you've published your application, you'll need to set the following secrets
 | Name                     | Description                                                 | Type     | Notes                                                                                  |
 | ------------------------ | ----------------------------------------------------------- | -------- | -------------------------------------------------------------------------------------- |
 | `MASSDRIVER_ORG_ID`      | Your Massdriver organization ID                             | secret   | Copy your [Organization ID](/concepts/organizations#find-your-organization-id)         |
-| `MASSDRIVER_API_KEY`     | Your Massdriver API key                                     | secret   | Create a [Service Account](/concepts/service-accounts)                                 |
+| `MASSDRIVER_API_KEY`     | Your Massdriver API key                                     | secret   | Create a [Service Account](/security/service-accounts)                                 |
 | `MASSDRIVER_ARTIFACT_ID` | The ID of the authentication artifact in Massdriver         | secret   | Copy your [Artifact ID](/concepts/artifacts#artifact-id)                               |
 | `NAMESPACE`              | The namespace of your build                                 | variable | If it does not exist paired with the `IMAGE_NAME`, then it will be created for you     |
 | `IMAGE_NAME`             | The image name of your build                                | variable | If it does not exist paired with the `NAMESPACE`, then it will be created for you      |
@@ -108,7 +108,7 @@ After you publish your bundle, you'll need to create a package. You can do this 
 | Name                 | Description                     | Type   | Notes                                                                          |
 | -------------------- | ------------------------------- | ------ | ------------------------------------------------------------------------------ |
 | `MASSDRIVER_ORG_ID`  | Your Massdriver organization ID | secret | Copy your [Organization ID](/concepts/organizations#find-your-organization-id) |
-| `MASSDRIVER_API_KEY` | Your Massdriver API key         | secret | Create a [Service Account](/concepts/service-accounts)                         |
+| `MASSDRIVER_API_KEY` | Your Massdriver API key         | secret | Create a [Service Account](/security/service-accounts)                         |
 
 ### Workflow file
 

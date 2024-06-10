@@ -23,7 +23,7 @@ To finish this guide you will need:
 
 * A connected cloud (AWS, Azure, or GCP)
 * A domain name registered with your cloud
-* A [Service Account](/concepts/service-accounts)
+* A [Service Account](/security/service-accounts)
 
 :::
 
