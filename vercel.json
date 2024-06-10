@@ -1,0 +1,44 @@
+{
+  "redirects": [
+    {
+      "source": "/platform/service-accounts",
+      "destination": "/concepts/service-accounts",
+      "permanent": true
+    },
+    {
+      "source": "/platform/dns-zones",
+      "destination": "/dns/dns-zones",
+      "permanent": true
+    },
+    {
+      "source": "/platform/custom-dns/route53",
+      "destination": "/dns/custom-dns/route53",
+      "permanent": true
+    },
+    {
+      "source": "/platform/custom-dns/google",
+      "destination": "/dns/custom-dns/google",
+      "permanent": true
+    },
+    {
+      "source": "/platform/custom-dns/cloudflare",
+      "destination": "/dns/custom-dns/cloudflare",
+      "permanent": true
+    },
+    {
+      "source": "/platform/custom-dns/namecheap",
+      "destination": "/dns/custom-dns/namecheap",
+      "permanent": true
+    },
+    {
+      "source": "/platform/custom-dns/godaddy",
+      "destination": "/dns/custom-dns/godaddy",
+      "permanent": true
+    },
+    {
+      "source": "/platform/custom-dns/squarespace",
+      "destination": "/dns/custom-dns/squarespace",
+      "permanent": true
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 ---
 id: platform-custom-dns-cloudflare
-slug: /platform/custom-dns/cloudflare
+slug: /dns/custom-dns/cloudflare
 title: Cloudflare
 sidebar_label: Cloudflare
 ---

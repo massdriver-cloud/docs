@@ -1,6 +1,6 @@
 ---
 id: platform-custom-dns-squarespace
-slug: /platform/custom-dns/squarespace
+slug: /dns/custom-dns/squarespace
 title: Squarespace
 sidebar_label: Squarespace
 ---

@@ -1,6 +1,6 @@
 ---
 id: platform-custom-dns-godaddy
-slug: /platform/custom-dns/godaddy
+slug: /dns/custom-dns/godaddy
 title: GoDaddy
 sidebar_label: GoDaddy
 ---

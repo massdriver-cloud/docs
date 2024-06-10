@@ -1,8 +1,8 @@
 ---
-id: platform-custom-dns-namecheap
-slug: /platform/custom-dns/namecheap
-title: Namecheap
-sidebar_label: Namecheap
+id: platform-custom-dns-route53
+slug: /dns/custom-dns/route53
+title: AWS Route 53
+sidebar_label: AWS Route 53
 ---
 
 ## Get cloud DNS nameservers:
@@ -25,10 +25,10 @@ sidebar_label: Namecheap
 4. Select the **NS** domain record
 5. Copy the name servers in **Data**
 
-## Add nameservers in Namecheap
-1. Log into [Namecheap dashboard](https://www.namecheap.com/myaccount/login/)
-2. Navigate to **Domain List** -> **Manage**
-3. In the **Domain** section, under **Nameservers**, select **Custom DNS**
+## Add nameservers in Route53
+1. Log into [AWS Console](https://aws.amazon.com/console/)
+2. Navigate to **Services** -> **Network & Content Deliver** -> **Route 53** -> **Registered Domains** -> **Your domain**
+3. Click on **Add or edit name servers**
 4. Add the nameservers from the previous step
 5. Test your DNS configuration (it may take a few minutes to propagate):
 ```bash
@@ -36,7 +36,8 @@ nslookup -type=SOA yourdomain.com 8.8.8.8
 nslookup -type=NS yourdomain.com 8.8.8.8
 ```
 
-### Remove nameservers in Namecheap
-1. Log into [Namecheap dashboard](https://www.namecheap.com/myaccount/login/)
-2. Navigate to **Domain List** -> **Manage**
-3. In the **Domain** section, under **Nameservers**, select **Namecheap BasicDNS**
+### Remove nameservers in Route53
+1. Log into [AWS Console](https://aws.amazon.com/console/)
+2. Navigate to **Services** -> **Network & Content Deliver** -> **Route 53** -> **Registered Domains** -> **Your domain**
+3. Click on **Add or edit name servers**
+4. Remove the nameservers from the previous step

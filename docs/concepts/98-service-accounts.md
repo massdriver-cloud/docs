@@ -1,6 +1,6 @@
 ---
 id: platform-service-accounts
-slug: /platform/service-accounts
+slug: /concepts/service-accounts
 title: Service Accounts
 sidebar_label: Service Accounts
 ---

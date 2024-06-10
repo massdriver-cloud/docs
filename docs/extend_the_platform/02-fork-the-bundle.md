@@ -29,7 +29,7 @@ Forking a Massdriver bundle is useful to test contributions to official Massdriv
 This step requires the use of the Massdriver CLI. If you haven't already, [install the Massdriver CLI](/cli/overview).
 
 Local environment variables to export:
-* Create a [Service Account](/platform/service-accounts) and export the `MASSDRIVER_API_KEY` environment variable to the value of your Service Account key.
+* Create a [Service Account](/concepts/service-accounts) and export the `MASSDRIVER_API_KEY` environment variable to the value of your Service Account key.
 * Copy your [Organization ID](/concepts/organizations) and export the `MASSDRIVER_ORG_ID` environment variable to the value of your Organization UUID.
 
 :::

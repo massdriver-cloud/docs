@@ -22,11 +22,11 @@ To create a DNS zone (or link an exising one):
 4. Fill out the form and click **Submit**
 
 ## Add your cloud DNS zone to your domain registrar
-* [AWS Route 53](/platform/custom-dns/route53)
-* [Google Domains](/platform/custom-dns/google)
-* [Cloudflare](/platform/custom-dns/cloudflare)
-* [NameCheap](/platform/custom-dns/namecheap)
-* [GoDaddy](/platform/custom-dns/godaddy)
+* [AWS Route 53](/dns/custom-dns/route53)
+* [Google Domains](/dns/custom-dns/google)
+* [Cloudflare](/dns/custom-dns/cloudflare)
+* [NameCheap](/dns/custom-dns/namecheap)
+* [GoDaddy](/dns/custom-dns/godaddy)
 
 :::note
 If your domain registar is not listed, please [let us know](https://roadmap.massdriver.cloud) by leaving feedback! 
