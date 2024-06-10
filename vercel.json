@@ -2,7 +2,7 @@
   "redirects": [
     {
       "source": "/platform/service-accounts",
-      "destination": "/concepts/service-accounts",
+      "destination": "/security/service-accounts",
       "permanent": true
     },
     {
