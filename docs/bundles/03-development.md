@@ -206,7 +206,28 @@ Massdriver maintains a terraform provider with a resource ([massdriver_artifact]
 
 **JQ extraction**
 
-Massdriver provisioners have the ability to convert provisioning inputs (params, connections) and outputs (provsioner-specific) into an artifact using the powerful `jq` syntax for JSON querying and manipulation. Refer to the documentation on each provisioner for more information about creating artifacts using this method.
+Massdriver provisioners have the ability to convert provisioning inputs (params, connections) and outputs (provsioner-specific) into an artifact using the powerful `jq` syntax for JSON querying and manipulation. Using this method, you can create a file named `artifact_<name>.jq` at the top level of the provisioner step. The `<name>` field refers to the name of the artifact in the `massdriver.yaml` file. The structure of the file should reflect the artifact structure, with `jq` syntax supported for querying. The input data will be a JSON object with the input params under a top level `params` key, connections under a `connections` key, and the outputs of the provisioning run under an `outputs` key.
+
+Below is an example of an artifact file using this method:
+
+```json title="./src/artifact_foo.jq"
+{
+  "data": {
+    "value": .outputs.someblock.somevalue,
+    "another": .connections.database.data.field
+  },
+  "specs": {
+    "version": .params.version
+  }
+}
+```
+
+In this example, we are creating the content for an artifact named `foo` that must be declared in the `massdriver.yaml` file. The artifact will be created as follows:
+* The `.data.value` field will be set to the value of `someblock.somevalue` from the provisioning output
+* The `.data.another` field is being set to the `.data.field` value from the incoming connection named `database`
+* The `.spec.version` field will be set to the value of the top-level parameter named `version`
+
+Refer to the documentation on each provisioner for more information on the structure of the provisioner outputs.
 
 ### Imported Artifacts
 
