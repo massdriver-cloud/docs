@@ -192,9 +192,50 @@ If you generated your bundle using `mass bundle new` a `.gitignore` file should 
 
 ## Artifacts
 
-:::note
+[Artifacts](/concepts/artifacts) are outputs of a bundle that adhere to a specific type ([artifact definition](/concepts/artifact-definitions)) and can be attached to other bundles.
 
-WIP : `terraform-provider-massdriver` & [Artifact Definitions](https://github.com/massdriver-cloud/artifact-definitions)
+There are two types of artifacts: provisioned and imported.
+
+### Provisioned Artifacts
+
+Provisioned artifacts are created during the deployment process, and therefore cannot be altered or removed outside of a provisioning run. Massdriver provides tooling to simplify the process of creating provisioned artifacts.
+
+**Massdriver Terraform Provider**:
+
+Massdriver maintains a terraform provider with a resource ([massdriver_artifact](https://registry.terraform.io/providers/massdriver-cloud/massdriver/latest/docs/resources/massdriver_artifact)) for creating provisioned artifacts within a terraform based bundle. Refer to the terraform provider documentation for more information.
+
+**JQ extraction**
+
+Massdriver provisioners have the ability to convert provisioning inputs (params, connections) and outputs (provsioner-specific) into an artifact using the powerful `jq` syntax for JSON querying and manipulation. Using this method, you can create a file named `artifact_<name>.jq` at the top level of the provisioner step. The `<name>` field refers to the name of the artifact in the `massdriver.yaml` file. The structure of the file should reflect the artifact structure, with `jq` syntax supported for querying. The input data will be a JSON object with the input params under a top level `params` key, connections under a `connections` key, and the outputs of the provisioning run under an `outputs` key.
+
+Below is an example of an artifact file using this method:
+
+```json title="./src/artifact_foo.jq"
+{
+  "data": {
+    "value": .outputs.someblock.somevalue,
+    "another": .connections.database.data.field
+  },
+  "specs": {
+    "version": .params.version
+  }
+}
+```
+
+In this example, we are creating the content for an artifact named `foo` that must be declared in the `massdriver.yaml` file. The artifact will be created as follows:
+* The `.data.value` field will be set to the value of `someblock.somevalue` from the provisioning output
+* The `.data.another` field is being set to the `.data.field` value from the incoming connection named `database`
+* The `.spec.version` field will be set to the value of the top-level parameter named `version`
+
+Refer to the documentation on each provisioner for more information on the structure of the provisioner outputs.
+
+### Imported Artifacts
+
+Imported artifacts are created outside of the deployment process in the Massdriver platform. This type of artifact is useful for representing existing infrastructure that isn't managed by Massdriver, but you would like to connect to it with bundles managed inside the Massdriver platform.
+
+The easiest way to create an imported artifact is to use the [`mass artifact import`](/cli/commands/mass_artifact_import) command in the CLI.
+
+###
 
 :::
 

@@ -17,6 +17,30 @@ To install the Mass CLI using [Homebrew](https://formulae.brew.sh/formula/massdr
 brew install massdriver
 ```
 
+<details>
+    <summary>Installing a specific version</summary>
+
+To install a specific version of the Mass CLI, follow these steps:
+
+
+1. Find the version you want to install from the [Mass CLI homebrew-core commit history](https://github.com/Homebrew/homebrew-core/commits/HEAD/Formula/m/massdriver.rb)
+2. Copy the commit hash of the version you want to install. **NOTE:** Copy the commit hash for `massdriver: update x.y.z bottle` commit.
+3. Run the following command to install the specific version:
+
+*(If you have already installed the Mass CLI, you will need to uninstall it first using `brew uninstall massdriver`)*
+
+```bash
+curl -L https://raw.githubusercontent.com/Homebrew/homebrew-core/<commit-hash-here>/Formula/m/massdriver.rb > massdriver.rb && brew install massdriver.rb
+```
+
+If you want to pin the version you installed, run the following command:
+
+```bash
+brew pin massdriver
+```
+
+</details>
+
 ### Go Installation
 
 To install using go:
