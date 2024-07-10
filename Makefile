@@ -1,7 +1,7 @@
 MDPATH?=../massdriver
 CLIPATH?=../cli
 
-all: sync-cli-docs sync-gql-docs
+all: sync-cli-docs sync-gql-docs sync-authz-docs
 
 .PHONY: sync-gql-docs
 sync-gql-docs: # Generate GraphQL docs
@@ -25,3 +25,7 @@ dev:
 .PHONY: sync-cli-docs
 sync-cli-docs: # Generate CLI docs
 	rsync -a ${CLIPATH}/cmd/helpdocs/ ./docs/cli/
+
+.PHONY: sync-authz-docs
+sync-authz-docs: 
+	cp ${MDPATH}/adrs/0013* ./docs/security/02-authorization.md

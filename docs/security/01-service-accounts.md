@@ -1,6 +1,6 @@
 ---
-id: platform-service-accounts
-slug: /platform/service-accounts
+id: security-service-accounts
+slug: /security/service-accounts
 title: Service Accounts
 sidebar_label: Service Accounts
 ---

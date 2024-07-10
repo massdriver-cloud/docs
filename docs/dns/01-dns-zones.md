@@ -1,6 +1,6 @@
 ---
 id: platform-dns-zones
-slug: /platform/dns-zones
+slug: /dns/dns-zones
 title: DNS Zones
 sidebar_label: DNS Zones
 ---

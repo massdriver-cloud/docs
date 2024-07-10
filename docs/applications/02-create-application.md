@@ -10,7 +10,7 @@ sidebar_label: Create
 Before getting started you'll need:
 
 * [Massdriver CLI](https://github.com/massdriver-cloud/mass/releases)
-* [Service Account key](/platform/service-accounts)
+* [Service Account key](/security/service-accounts)
 * A containerized application. Quick start application examples are available [here](https://github.com/massdriver-cloud/application-examples#source-code-for-example-applications).
 
 :::

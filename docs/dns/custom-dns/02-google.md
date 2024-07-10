@@ -1,6 +1,6 @@
 ---
 id: platform-custom-dns-google
-slug: /platform/custom-dns/google
+slug: /dns/custom-dns/google
 title: Google Domains
 sidebar_label: Google Domains
 ---

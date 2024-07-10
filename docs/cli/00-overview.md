@@ -89,7 +89,7 @@ export MASSDRIVER_ORG_ID=your-org-id
 3. Give the service account a name
 4. Click the 'clipboard' icon.
 
-![](../platform/service-accounts.png)
+![](../security/service-accounts.png)
 
 You'll need to export your key to the following environment variable:
 
