@@ -1,42 +1,37 @@
 ---
-id: getting-started-onboarding
-slug: /getting-started/onboarding
-title: Onboarding
-sidebar_label: Onboarding
+id: getting-started-prerequisites
+slug: /getting-started/prerequisites
+title: Prerequisites
+sidebar_label: Prerequisites
 ---
 
 In this section, we will cover the basics of getting started with the platform. We will cover the following topics:
 
-* Setting up your cloud credentials in Massdriver
-* Installing pre-requisite tools
-* Installing the Mass CLI
-* Setting Massdriver environment variables
+- Installing prerequisite tools
+- Installing the Mass CLI
+- Setting Massdriver environment variables
 
 :::note
 
-You'll need to have created your Massdriver account and organization to complete this onboarding process. If you haven't done so already, you can create a **free** account [here](https://app.massdriver.cloud/register).
+You'll need to have created your Massdriver account and organization to complete this guide. If you haven't done so already, you can create a **free** account [here](https://app.massdriver.cloud/register).
 
 Also, for any help with any of these steps, please feel free to reach out to us on [Slack](https://join.slack.com/t/massdrivercommunity/shared_invite/zt-1smvckvdj-jVFpBG2jF5XiYzX2njDCWA).
 
 :::
 
-## Setting up your cloud credentials in Massdriver
-
-Massdriver uses your cloud credentials to provision resources on your behalf. You can set up your cloud credentials by following the instructions in the cloud provider you want [here](https://app.massdriver.cloud/organization/credentials).
-
-## Installing pre-requisite tools
+## Installing prerequisite tools
 
 ### Install terminal
 
 You'll need a terminal to run commands in. We'll be using a terminal to run Mass CLI commands for managing your application bundle.
 
-**MacOS**
+**Linux/MacOS**
 
-The default terminal on MacOS is Terminal. You can find it in the Applications folder. The MacOS Terminal will work fine for this tutorial.
+The default terminal on MacOS is Terminal. You can find it in the Applications folder. The MacOS Terminal will work fine for this tutorial. If you're using Linux, you can use the default terminal for your distribution.
 
 **Windows**
 
-For Windows, we highly recommend installing [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install). WSL (*Windows Subsystem for Linux*) is a compatibility layer for running Linux binary executables natively on Windows. WSL2 is the latest version of WSL and is a full Linux kernel built by Microsoft.
+For Windows, we highly recommend installing [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install). WSL (_Windows Subsystem for Linux_) is a compatibility layer for running Linux binary executables natively on Windows. WSL2 is the latest version of WSL and is a full Linux kernel built by Microsoft.
 
 :::note
 
@@ -44,11 +39,11 @@ Docker does not support WSL1. If you need to update your WSL version from WSL1 t
 
 :::
 
-In regards to a terminal to use, the Windows Terminal app on the Windows Store is a great option as it integrates well with WSL. You can find it [here](https://apps.microsoft.com/store/detail/windows-terminal/9N0DX20HK701?hl=en-us&gl=us&activetab=pivot%3Aoverviewtab). (*Requires Windows 10 version 19041 or higher*)
+In regards to a terminal to use, the Windows Terminal app on the Windows Store is a great option as it integrates well with WSL. You can find it [here](https://apps.microsoft.com/store/detail/windows-terminal/9N0DX20HK701?hl=en-us&gl=us&activetab=pivot%3Aoverviewtab). (_Requires Windows 10 version 19041 or higher_)
 
 ### Install Docker
 
-Massdriver uses Docker images to run applications. Our Mass CLI tool also uses the Docker Daemon for the `mass image push` command. 
+Massdriver uses Docker images to run applications. Our Mass CLI tool also uses the Docker Daemon for the `mass image push` command.
 
 You can install Docker Desktop by following the instructions [here](https://docs.docker.com/get-docker/).
 
@@ -56,7 +51,7 @@ You can install Docker Desktop by following the instructions [here](https://docs
 
 An IDE of some type is also required. We'll be using an IDE to work in your application's source directory to create a Dockerfile and set your app's environment variables in Massdriver.
 
-We recommend [VS Code](https://code.visualstudio.com/). 
+We recommend [VS Code](https://code.visualstudio.com/).
 
 ### Install Git
 
@@ -80,3 +75,5 @@ For ease of use, it's recommended to set these environment variables in your she
 echo 'export MASSDRIVER_API_KEY=<your-api-key>' >> ~/.bashrc
 echo 'export MASSDRIVER_ORG_ID=<your-org-id>' >> ~/.bashrc
 ```
+
+You are now ready to move onto setting up your Cloud Provider credentials. You can find the next section [here](/docs/getting_started/02-credentials.md).
