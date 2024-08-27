@@ -178,7 +178,7 @@ Once finished, click the **Submit** button in Massdriver to create your credenti
 11. Select **New client secret**
 12. Set the description to `platform`, set expiration date, and click **Add**
 
-![Massdriver example 4](./azurespcreate4.png "Massdriver example 4")
+![Massdriver example 4](./azure-spcreate4.png "Massdriver example 4")
 
 1. Copy the **Value** password and paste into Massdriver under **Client Secret**. <span style="color:red">**Do not use the Secret ID**</span>.
 
