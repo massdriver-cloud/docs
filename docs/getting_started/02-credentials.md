@@ -5,7 +5,12 @@ title: Credentials
 sidebar_label: Credentials
 ---
 
-Follow the specific cloud and preferred method to create the necessary credentials below:
+import UUIDProvider, { UUIDContext } from '@site/src/components/UUIDFetcher';
+import UUID from '@site/src/components/UUID';
+
+<UUIDProvider>
+
+follow the specific cloud and preferred method to create the necessary credentials below:
 
 ## AWS
 
@@ -23,10 +28,10 @@ To keep your environment secure, Massdriver uses a role with a trust policy to a
 
 ### Create a role with a trust policy
 
-Run the following command with the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html). Fill in the `{{ROLE NAME}}`. Save it for importing the role in to Massdriver.
+Run the following command with the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html). Replace `<UUID HERE>` with <UUID />. Save it for importing the role in to Massdriver.
 
 ```bash
-aws iam create-role --role-name={{ROLE_NAME}} --description="Massdriver Cloud Provisioning Role" --assume-role-policy-document='{"Version":"2012-10-17","Statement":[{"Sid":"MassdriverCloudProvisioner","Effect":"Allow","Principal":{"AWS":["308878630280"]},"Action":"sts:AssumeRole","Condition":{"StringEquals":{ "sts:ExternalId":"{{EXTERNAL_ID}}"}}}]}'
+aws iam create-role --role-name=massdriver-provisioner --description="Massdriver Cloud Provisioning Role" --assume-role-policy-document='{"Version":"2012-10-17","Statement":[{"Sid":"MassdriverCloudProvisioner","Effect":"Allow","Principal":{"AWS":["308878630280"]},"Action":"sts:AssumeRole","Condition":{"StringEquals":{ "sts:ExternalId":"<UUID HERE>"}}}]}'
 ```
 
 ### Assign the role administrator privileges
@@ -65,23 +70,7 @@ To keep your environment secure, Massdriver uses a role with a trust policy to a
 ![roles](./aws-another-account.png)
 
 6. For the account ID enter `308878630280`. This is the Massdriver account which contains the role that will use the one you are creating now
-7. Check the Require external ID box and enter `{{EXTERNAL_ID}}`.
-
-<div id="external-id">`{{EXTERNAL_ID}}`</div>
-
-<script>
-  fetch('https://www.uuidgenerator.net/api/version4')
-    .then(response => response.text())
-    .then(uuid => {
-      const placeholder = '{{EXTERNAL_ID}}';
-      document.getElementById('external-id').innerHTML = document.getElementById('external-id').innerHTML.replace(placeholder, uuid);
-    })
-    .catch(error => {
-      document.getElementById('external-id').textContent = 'Failed to fetch UUID';
-      console.error('Error fetching UUID:', error);
-    });
-</script>
-
+7. Check the Require external ID box and enter <UUID />.
 8. Make sure that the Require MFA option is unchecked
 
 ![roles](./aws-settings.png)
@@ -108,7 +97,7 @@ arn:aws:iam::YOUR_AWS_ACCOUNT_ID:role/ROLE_NAME
 ```
 
 16. If you haven't already paste your external ID in to the appropriate field
-17. Submit the role to Massdriver and head to the [projects page](/projects) to begin provisioning infrastruture.
+17. Submit the role to Massdriver and head to the projects page to begin provisioning infrastruture.
 
 </details>
 
@@ -180,7 +169,7 @@ Once finished, click the **Submit** button in Massdriver to create your credenti
 
 ![Massdriver example 4](./azure-spcreate4.png "Massdriver example 4")
 
-1. Copy the **Value** password and paste into Massdriver under **Client Secret**. <span style="color:red">**Do not use the Secret ID**</span>.
+1. Copy the **Value** password and paste into Massdriver under **Client Secret**. <span style={{ color: 'red' }}>**Do not use the Secret ID**</span>.
 
 ![Massdriver example 5](./azure-spcreate6.png "Massdriver example 5")
 
@@ -221,3 +210,5 @@ Once finished, click the **Submit** button in Massdriver to create your credenti
 <summary>Console</summary>
 
 </details>
+
+</UUIDProvider>
