@@ -17,11 +17,6 @@ Follow the specific cloud and preferred method to create the necessary credentia
 <details>
 <summary>CLI</summary>
 
-</details>
-
-<details>
-<summary>Console</summary>
-
 ### How Massdriver uses your role
 
 To keep your environment secure, Massdriver uses a role with a trust policy to access your AWS account for provisioning and monitoring of your infrastructure. The account that assumes this role is private and has no access from the public internet.
@@ -45,6 +40,75 @@ aws iam attach-role-policy --role-name={{ROLE_NAME}} --policy-arn arn:aws:iam::a
 ## Import role to Massdriver
 
 In the form to the left, name the credential as your AWS account for use within Massdriver and fill in both the aws arn as `arn:aws:iam::YOUR_AWS_ACCOUNT_ID:role/{{ROLE_NAME}}` and the external ID. Click submit and head to the projects page to start building your infrastructure.
+
+</details>
+
+<details>
+
+<summary>Console</summary>
+
+### How Massdriver uses your role
+
+To keep your environment secure, Massdriver uses a role with a trust policy to access your AWS account for provisioning and monitoring of your infrastructure. The account that assumes this role is private and has no access from the public internet.
+
+### Create a role
+
+1. Sign in to the [AWS Management Console](https://aws.amazon.com/console/)
+2. In the search bar, type `IAM` and select the IAM service
+3. In the left-hand menu, select `Roles`
+4. Click `Create role`
+
+![roles](/docs/getting_started/img/aws-select-roles.png)
+
+5. Select `Another AWS account` for the role type
+
+![roles](/docs/getting_started/img/aws-another-account.png)
+
+6. For the account ID enter `308878630280`. This is the Massdriver account which contains the role that will use the one you are creating now
+7. Check the Require external ID box and enter `{{EXTERNAL_ID}}`.
+
+<div id="external-id">`{{EXTERNAL_ID}}`</div>
+
+<script>
+  fetch('https://www.uuidgenerator.net/api/version4')
+    .then(response => response.text())
+    .then(uuid => {
+      const placeholder = '{{EXTERNAL_ID}}';
+      document.getElementById('external-id').innerHTML = document.getElementById('external-id').innerHTML.replace(placeholder, uuid);
+    })
+    .catch(error => {
+      document.getElementById('external-id').textContent = 'Failed to fetch UUID';
+      console.error('Error fetching UUID:', error);
+    });
+</script>
+
+8. Make sure that the Require MFA option is unchecked
+
+![roles](/docs/getting_started/img/aws-settings.png)
+
+9. Click "Next: Permissions"
+10. Select the `AdministratorAccess` policy
+
+![roles](/docs/getting_started/img/aws-policy.png)
+
+11. Select `Next: Tags`
+12. Add a tag with the key `massdriver`
+
+![roles](/docs/getting_started/img/aws-tags.png)
+
+13. Add a name and a description to the role. Save the role name for entry in to the form to the left
+
+![roles](/docs/getting_started/img/aws-review.png)
+
+14. In Massdriver, name the credential as your AWS account
+15. Paste the AWS arn for the role in the appropriate field with the format:
+
+```bash
+arn:aws:iam::YOUR_AWS_ACCOUNT_ID:role/ROLE_NAME
+```
+
+16. If you haven't already paste your external ID in to the appropriate field
+17. Submit the role to Massdriver and head to the [projects page](/projects) to begin provisioning infrastruture.
 
 </details>
 
