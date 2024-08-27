@@ -22,6 +22,30 @@ Follow the specific cloud and preferred method to create the necessary credentia
 <details>
 <summary>Console</summary>
 
+### How Massdriver uses your role
+
+To keep your environment secure, Massdriver uses a role with a trust policy to access your AWS account for provisioning and monitoring of your infrastructure. The account that assumes this role is private and has no access from the public internet.
+
+### Create a role with a trust policy
+
+Run the following command with the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html). Fill in the `{{ROLE NAME}}`. Save it for importing the role in to Massdriver.
+
+```bash
+aws iam create-role --role-name={{ROLE_NAME}} --description="Massdriver Cloud Provisioning Role" --assume-role-policy-document='{"Version":"2012-10-17","Statement":[{"Sid":"MassdriverCloudProvisioner","Effect":"Allow","Principal":{"AWS":["308878630280"]},"Action":"sts:AssumeRole","Condition":{"StringEquals":{ "sts:ExternalId":"{{EXTERNAL_ID}}"}}}]}'
+```
+
+### Assign the role administrator privileges
+
+Fill in the role name used above and run this command to give Massdriver administrator privileges.
+
+```bash
+aws iam attach-role-policy --role-name={{ROLE_NAME}} --policy-arn arn:aws:iam::aws:policy/AdministratorAccess
+```
+
+## Import role to Massdriver
+
+In the form to the left, name the credential as your AWS account for use within Massdriver and fill in both the aws arn as `arn:aws:iam::YOUR_AWS_ACCOUNT_ID:role/{{ROLE_NAME}}` and the external ID. Click submit and head to the projects page to start building your infrastructure.
+
 </details>
 
 ## Azure
