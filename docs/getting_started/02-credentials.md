@@ -58,11 +58,11 @@ To keep your environment secure, Massdriver uses a role with a trust policy to a
 3. In the left-hand menu, select `Roles`
 4. Click `Create role`
 
-![roles](/img/aws-select-roles.png)
+![roles](/aws-select-roles.png)
 
 5. Select `Another AWS account` for the role type
 
-![roles](/img/aws-another-account.png)
+![roles](/aws-another-account.png)
 
 6. For the account ID enter `308878630280`. This is the Massdriver account which contains the role that will use the one you are creating now
 7. Check the Require external ID box and enter `{{EXTERNAL_ID}}`.
@@ -84,21 +84,21 @@ To keep your environment secure, Massdriver uses a role with a trust policy to a
 
 8. Make sure that the Require MFA option is unchecked
 
-![roles](/img/aws-settings.png)
+![roles](/aws-settings.png)
 
 9. Click "Next: Permissions"
 10. Select the `AdministratorAccess` policy
 
-![roles](/img/aws-policy.png)
+![roles](/aws-policy.png)
 
 11. Select `Next: Tags`
 12. Add a tag with the key `massdriver`
 
-![roles](/docs/getting_started/img/aws-tags.png)
+![roles](/aws-tags.png)
 
 13. Add a name and a description to the role. Save the role name for entry in to the form to the left
 
-![roles](/img/aws-review.png)
+![roles](/aws-review.png)
 
 14. In Massdriver, name the credential as your AWS account
 15. Paste the AWS arn for the role in the appropriate field with the format:
@@ -158,13 +158,13 @@ Once finished, click the **Submit** button in Massdriver to create your credenti
 3. Select **App registration**
 4. Select **New registration**
 
-![Massdriver example 1](/img/azure-spcreate1.png "Massdriver example 1")
+![Massdriver example 1](/azure-spcreate1.png "Massdriver example 1")
 
 5. Name your application: `massdriver-service-principal`
 6. Select **Accounts in this organization directory only**
 7. Leave **Redirect URI** blank
 
-![Massdriver example 2](/img/azure-spcreate2.png "Massdriver example 2")
+![Massdriver example 2](/azure-spcreate2.png "Massdriver example 2")
 
 8. Click **Register**
 9. On the Overview menu, copy the following values and paste them into Massdriver:
@@ -172,17 +172,17 @@ Once finished, click the **Submit** button in Massdriver to create your credenti
 - Application (client) ID &rarr; **Client ID**
 - Directory (tenant) ID &rarr; **Tenant ID**
 
-![Massdriver example 3](/img/azure-spcreate3.png "Massdriver example 3")
+![Massdriver example 3](/azure-spcreate3.png "Massdriver example 3")
 
 10. Select **Certificates & secrets** on the left
 11. Select **New client secret**
 12. Set the description to `platform`, set expiration date, and click **Add**
 
-![Massdriver example 4](/img/azurespcreate4.png "Massdriver example 4")
+![Massdriver example 4](/azurespcreate4.png "Massdriver example 4")
 
 1. Copy the **Value** password and paste into Massdriver under **Client Secret**. <span style="color:red">**Do not use the Secret ID**</span>.
 
-![Massdriver example 5](/img/azure-spcreate6.png "Massdriver example 5")
+![Massdriver example 5](/azure-spcreate6.png "Massdriver example 5")
 
 ### Assign subscription Owner the service principal
 
