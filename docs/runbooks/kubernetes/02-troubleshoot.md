@@ -1,12 +1,12 @@
 ---
 id: troubleshoot
 slug: /runbooks/kubernetes/troubleshoot
-title: Troubleshoot Kubernetes
-sidebar_label: Troubleshoot Kubernetes
+title: Troubleshoot Alarms
+sidebar_label: Troubleshoot Alarms
 ---
 
 :::note
-For information on accessing your Kubernetes cluster running in Massdriver, please check out this [guide](./01-kubernetes-access.md).
+For information on accessing your Kubernetes cluster running in Massdriver, please check out this [guide](./01-access.md).
 :::
 
 ## Troubleshooting Kubernetes
