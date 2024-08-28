@@ -6,6 +6,7 @@ sidebar_label: Credentials
 ---
 
 import UUIDProvider, { UUIDContext } from '@site/src/components/UUIDFetcher';
+import UUIDLink from '@site/src/components/UUIDLink';
 import UUID from '@site/src/components/UUID';
 
 <UUIDProvider>
@@ -16,6 +17,38 @@ follow the specific cloud and preferred method to create the necessary credentia
 
 <details>
 <summary>One Click Role</summary>
+
+## How Massdriver uses your role
+
+To keep your environment secure, Massdriver uses a role with a trust policy to access your AWS account for provisioning and monitoring of your infrastructure. The account that assumes this role is private and has no access from the public internet.
+
+## Step 1
+
+### Click the quick add button
+
+todo: add UUID into URL somehow
+
+This <UUIDLink /> will run a hosted CloudFormation stack on AWS which will create a new role in your account with the permissions required to provision infrastructure in Massdriver. The external ID for the role (required to prevent confused deputy attacks) will be auto populated in the CloudFormation stack. Do not change this value in the form to the left.
+
+## Step 2
+
+### Run the CloudFormation stack
+
+The button will take you to the AWS console and allow you to approve of the resource creation. Click the `Create stack` button to provision the role.
+
+![roles](./img/aws-quick-add-1.png)
+
+## Step 3
+
+### Copy the role ARN to Massdriver
+
+Once the CloudFormation stack has completed its task select the outputs tab and copy the value of the `CustomProvisioningRoleArn` output. Paste this value in to the form on the left in the field marked **AWS ARN**.
+
+![roles](./img/aws-quick-add-2.png)
+
+## Step 4
+
+Submit the role to Massdriver by clicking the save button and head to the [projects page](/projects) to begin provisioning infrastruture.
 
 </details>
 
@@ -63,31 +96,31 @@ To keep your environment secure, Massdriver uses a role with a trust policy to a
 3. In the left-hand menu, select `Roles`
 4. Click `Create role`
 
-![roles](./aws-select-roles.png)
+![roles](./img/aws-select-roles.png)
 
 5. Select `Another AWS account` for the role type
 
-![roles](./aws-another-account.png)
+![roles](./img/aws-another-account.png)
 
 6. For the account ID enter `308878630280`. This is the Massdriver account which contains the role that will use the one you are creating now
 7. Check the Require external ID box and enter <UUID />.
 8. Make sure that the Require MFA option is unchecked
 
-![roles](./aws-settings.png)
+![roles](./img/aws-settings.png)
 
 9. Click "Next: Permissions"
 10. Select the `AdministratorAccess` policy
 
-![roles](./aws-policy.png)
+![roles](./img/aws-policy.png)
 
 11. Select `Next: Tags`
 12. Add a tag with the key `massdriver`
 
-![roles](./aws-tags.png)
+![roles](./img/aws-tags.png)
 
 13. Add a name and a description to the role. Save the role name for entry in to the form to the left
 
-![roles](./aws-review.png)
+![roles](./img/aws-review.png)
 
 14. In Massdriver, name the credential as your AWS account
 15. Paste the AWS arn for the role in the appropriate field with the format:
@@ -147,13 +180,13 @@ Once finished, click the **Submit** button in Massdriver to create your credenti
 3. Select **App registration**
 4. Select **New registration**
 
-![Massdriver example 1](./azure-spcreate1.png "Massdriver example 1")
+![Massdriver example 1](./img/azure-spcreate1.png "Massdriver example 1")
 
 5. Name your application: `massdriver-service-principal`
 6. Select **Accounts in this organization directory only**
 7. Leave **Redirect URI** blank
 
-![Massdriver example 2](./azure-spcreate2.png "Massdriver example 2")
+![Massdriver example 2](./img/azure-spcreate2.png "Massdriver example 2")
 
 8. Click **Register**
 9. On the Overview menu, copy the following values and paste them into Massdriver:
@@ -161,17 +194,17 @@ Once finished, click the **Submit** button in Massdriver to create your credenti
 - Application (client) ID &rarr; **Client ID**
 - Directory (tenant) ID &rarr; **Tenant ID**
 
-![Massdriver example 3](./azure-spcreate3.png "Massdriver example 3")
+![Massdriver example 3](./img/azure-spcreate3.png "Massdriver example 3")
 
 10. Select **Certificates & secrets** on the left
 11. Select **New client secret**
 12. Set the description to `platform`, set expiration date, and click **Add**
 
-![Massdriver example 4](./azure-spcreate4.png "Massdriver example 4")
+![Massdriver example 4](./img/azure-spcreate4.png "Massdriver example 4")
 
 1. Copy the **Value** password and paste into Massdriver under **Client Secret**. <span style={{ color: 'red' }}>**Do not use the Secret ID**</span>.
 
-![Massdriver example 5](./azure-spcreate6.png "Massdriver example 5")
+![Massdriver example 5](./img/azure-spcreate6.png "Massdriver example 5")
 
 ### Assign subscription Owner the service principal
 
