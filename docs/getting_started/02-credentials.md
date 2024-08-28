@@ -8,6 +8,7 @@ sidebar_label: Credentials
 import UUIDProvider, { UUIDContext } from '@site/src/components/UUIDFetcher';
 import UUIDLink from '@site/src/components/UUIDLink';
 import UUID from '@site/src/components/UUID';
+import DynamicCodeBlock from '@site/src/components/DynamicCodeBlock';
 
 <UUIDProvider>
 
@@ -26,9 +27,7 @@ To keep your environment secure, Massdriver uses a role with a trust policy to a
 
 ### Click the quick add button
 
-todo: add UUID into URL somehow
-
-This <UUIDLink /> will run a hosted CloudFormation stack on AWS which will create a new role in your account with the permissions required to provision infrastructure in Massdriver. The external ID for the role (required to prevent confused deputy attacks) will be auto populated in the CloudFormation stack. Do not change this value in the form to the left.
+Click <b><UUIDLink /></b> to run a hosted CloudFormation stack on AWS which will create a new role in your account with the permissions required to provision infrastructure in Massdriver. The external ID for the role (required to prevent confused deputy attacks) will be auto populated in the CloudFormation stack. Do not change this value in the form to the left.
 
 ## Step 2
 
@@ -61,11 +60,9 @@ To keep your environment secure, Massdriver uses a role with a trust policy to a
 
 ### Create a role with a trust policy
 
-Run the following command with the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html). Replace `<UUID HERE>` with <UUID />. Save it for importing the role in to Massdriver.
+Run the following command with the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html). Save it for importing the role in to Massdriver.
 
-```bash
-aws iam create-role --role-name=massdriver-provisioner --description="Massdriver Cloud Provisioning Role" --assume-role-policy-document='{"Version":"2012-10-17","Statement":[{"Sid":"MassdriverCloudProvisioner","Effect":"Allow","Principal":{"AWS":["308878630280"]},"Action":"sts:AssumeRole","Condition":{"StringEquals":{ "sts:ExternalId":"<UUID HERE>"}}}]}'
-```
+<DynamicCodeBlock />
 
 ### Assign the role administrator privileges
 
@@ -102,8 +99,8 @@ To keep your environment secure, Massdriver uses a role with a trust policy to a
 
 ![roles](./img/aws-another-account.png)
 
-6. For the account ID enter `308878630280`. This is the Massdriver account which contains the role that will use the one you are creating now
-7. Check the Require external ID box and enter <UUID />.
+6. For the account ID enter **308878630280**. This is the Massdriver account which contains the role that will use the one you are creating now
+7. Check the Require external ID box and enter <b><UUID /></b>.
 8. Make sure that the Require MFA option is unchecked
 
 ![roles](./img/aws-settings.png)
