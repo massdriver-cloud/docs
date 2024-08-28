@@ -7,7 +7,7 @@ const UUIDLink = () => {
 
   return (
     <a href={url} target="_blank" rel="noopener noreferrer">
-      button
+      here
     </a>
   );
 };
