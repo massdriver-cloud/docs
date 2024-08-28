@@ -1,11 +1,11 @@
 ---
-id: kubernetes-access
-slug: /runbooks/kubernetes/kubernetes-access
-title: Accessing Kubernetes
-sidebar_label: Accessing Kubernetes
+id: access
+slug: /runbooks/kubernetes/access
+title: Setup Access with KubeConfig and Kubectl
+sidebar_label: Setup Access with KubeConfig and Kubectl
 ---
 
-In this section, we will cover how to access your Kubernetes cluster using a _kubeconfig_ file and a tool called `kubectl`.
+This guide will cover how to access your Kubernetes cluster using a _kubeconfig_ file and a tool called `kubectl`.
 
 ## Prerequisites
 
