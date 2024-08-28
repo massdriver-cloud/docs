@@ -8,46 +8,42 @@ sidebar_label: Credentials
 import UUIDProvider, { UUIDContext } from '@site/src/components/UUIDFetcher';
 import UUIDLink from '@site/src/components/UUIDLink';
 import UUID from '@site/src/components/UUID';
-import DynamicCodeBlock from '@site/src/components/DynamicCodeBlock';
+import { DynamicTrustPolicy, DynamicRolePrivileges, DynamicServicePrincipal } from '@site/src/components/DynamicCodeBlock';
+import CredentialProvider, { AWSRoleInput, AWSRole, AzurePrincipalInput, AzurePrincipal, AzureSubscriptionInput, AzureSubscription, GCPAccountInput, GCPAccount } from '@site/src/components/CredentialInput';
 
 <UUIDProvider>
+<CredentialProvider>
 
-follow the specific cloud and preferred method to create the necessary credentials below:
+Follow the specific cloud and preferred method to create the necessary credentials below:
 
 ## AWS
 
 <details>
 <summary>One Click Role</summary>
 
-## How Massdriver uses your role
+### How Massdriver uses your role
 
 To keep your environment secure, Massdriver uses a role with a trust policy to access your AWS account for provisioning and monitoring of your infrastructure. The account that assumes this role is private and has no access from the public internet.
 
-## Step 1
-
 ### Click the quick add button
 
-Click <b><UUIDLink /></b> to run a hosted CloudFormation stack on AWS which will create a new role in your account with the permissions required to provision infrastructure in Massdriver. The external ID for the role (required to prevent confused deputy attacks) will be auto populated in the CloudFormation stack. Do not change this value in the form to the left.
+<AWSRoleInput /><br />
 
-## Step 2
+Click **<UUIDLink />** to run a hosted CloudFormation stack on AWS which will create a new role in your account with the permissions required to provision infrastructure in Massdriver. The external ID for the role (required to prevent confused deputy attacks) will be unique and auto-generated in the URL for the CloudFormation stack. Do not change this value in the URL.
 
 ### Run the CloudFormation stack
 
-The button will take you to the AWS console and allow you to approve of the resource creation. Click the `Create stack` button to provision the role.
+Once you are in your AWS console, review the resource creation. Click the `Create stack` button to provision the role.
 
 ![roles](./img/aws-quick-add-1.png)
 
-## Step 3
-
 ### Copy the role ARN to Massdriver
 
-Once the CloudFormation stack has completed its task select the outputs tab and copy the value of the `CustomProvisioningRoleArn` output. Paste this value in to the form on the left in the field marked **AWS ARN**.
+Once the CloudFormation stack has completed its task, select the outputs tab and copy the value of the `CustomProvisioningRoleArn` output. Paste the value into the **AWS ARN** field in the credentials creation form.
 
 ![roles](./img/aws-quick-add-2.png)
 
-## Step 4
-
-Submit the role to Massdriver by clicking the save button and head to the projects page to begin provisioning infrastruture.
+Add **<AWSRole />** to the `Credential Name` field. Click `Create` to add the credential to Massdriver and head to the projects page to start building your infrastructure.
 
 </details>
 
@@ -60,21 +56,21 @@ To keep your environment secure, Massdriver uses a role with a trust policy to a
 
 ### Create a role with a trust policy
 
-Run the following command with the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html). Save it for importing the role in to Massdriver.
+<AWSRoleInput /><br />
 
-<DynamicCodeBlock />
+Run the following command with the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) to create an IAM Role with a trust policy (the external ID is unique and auto-generated):
+
+<DynamicTrustPolicy />
 
 ### Assign the role administrator privileges
 
-Fill in the role name used above and run this command to give Massdriver administrator privileges.
+Run this command to give Massdriver administrator privileges:
 
-```bash
-aws iam attach-role-policy --role-name={{ROLE_NAME}} --policy-arn arn:aws:iam::aws:policy/AdministratorAccess
-```
+<DynamicRolePrivileges />
 
-## Import role to Massdriver
+### Import role to Massdriver
 
-In the form to the left, name the credential as your AWS account for use within Massdriver and fill in both the aws arn as `arn:aws:iam::YOUR_AWS_ACCOUNT_ID:role/{{ROLE_NAME}}` and the external ID. Click submit and head to the projects page to start building your infrastructure.
+Insert **<AWSRole />** in the `Credential Name` field. Then set `AWS ARN` as **arn:aws:iam::YOUR_AWS_ACCOUNT_ID:role/<AWSRole />** and **<UUID />** as the `External ID`. Click `Create` and head to the projects page to start building your infrastructure.
 
 </details>
 
@@ -88,6 +84,8 @@ To keep your environment secure, Massdriver uses a role with a trust policy to a
 
 ### Create a role
 
+<AWSRoleInput /><br />
+
 1. Sign in to the [AWS Management Console](https://aws.amazon.com/console/)
 2. In the search bar, type `IAM` and select the IAM service
 3. In the left-hand menu, select `Roles`
@@ -100,12 +98,12 @@ To keep your environment secure, Massdriver uses a role with a trust policy to a
 ![roles](./img/aws-another-account.png)
 
 6. For the account ID enter **308878630280**. This is the Massdriver account which contains the role that will use the one you are creating now
-7. Check the Require external ID box and enter <b><UUID /></b>.
-8. Make sure that the Require MFA option is unchecked
+7. Check the Require external ID box and enter **<UUID />**.
+8. Make sure that the `Require MFA` option is **unchecked**
 
 ![roles](./img/aws-settings.png)
 
-9. Click "Next: Permissions"
+9. Click `Next: Permissions`
 10. Select the `AdministratorAccess` policy
 
 ![roles](./img/aws-policy.png)
@@ -115,19 +113,15 @@ To keep your environment secure, Massdriver uses a role with a trust policy to a
 
 ![roles](./img/aws-tags.png)
 
-13. Add a name and a description to the role. Save the role name for entry in to the form to the left
+13. Set `Role name` to **<AWSRole />** and add a description to the role
 
 ![roles](./img/aws-review.png)
 
-14. In Massdriver, name the credential as your AWS account
-15. Paste the AWS arn for the role in the appropriate field with the format:
+14. Set `Credential Name` to **<AWSRole />**
+15. Paste the AWS ARN for the role in the `AWS ARN` field: **arn:aws:iam::YOUR_AWS_ACCOUNT_ID:role/<AWSRole />**
 
-```bash
-arn:aws:iam::YOUR_AWS_ACCOUNT_ID:role/ROLE_NAME
-```
-
-16. If you haven't already paste your external ID in to the appropriate field
-17. Submit the role to Massdriver and head to the projects page to begin provisioning infrastruture.
+16. Paste **<UUID />** in to the `External ID` field
+17. Click `Create` to add the credential to Massdriver and head to the projects page to start building your infrastructure.
 
 </details>
 
@@ -140,7 +134,9 @@ arn:aws:iam::YOUR_AWS_ACCOUNT_ID:role/ROLE_NAME
 
 To get started, you'll need the [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli) installed locally on your machine. The Azure Cloud Shell available in the Azure Portal does **not** have the ability to grant the service principal the required permissions.
 
-2. Obtain your **subscription ID**
+<AzurePrincipalInput /><br />
+
+1. Obtain your **subscription ID**
 
 Paste this script into the command-line to list your subscriptions:
 
@@ -148,22 +144,23 @@ Paste this script into the command-line to list your subscriptions:
 az account list --output table
 ```
 
-Copy the value of the `SubscriptionId` and `TenantId` you want to use and paste it into Massdriver under **Subscription ID** and **Tenant ID**, and also store the `SubscriptionId` for the next step.
+Insert the subscription ID below
 
-3. Paste this script in the command-line to create an Azure service principal, and replace `<mySubscriptionID>` with the subscription ID you copied from the last step:
+<AzureSubscriptionInput /><br />
 
-```bash
-az ad sp create-for-rbac --name massdriver-service-principal \
-                         --role owner \
-                         --scopes /subscriptions/<mySubscriptionID>
-```
+2. Paste this script in the command-line to create an Azure service principal:
 
-4. Copy the following attributes and paste them into Massdriver:
+<DynamicServicePrincipal />
 
+3. Copy the outputs and paste them into Massdriver:
+
+- <AzurePrincipal /> &rarr; <b>Credential Name</b>
 - appId &rarr; **Client ID**
 - password &rarr; **Client Secret**
+- <AzureSubscription /> &rarr; <b>SubscriptionId</b>
+- tenant &rarr; **Tenant ID**
 
-Once finished, click the **Submit** button in Massdriver to create your credential.
+Once finished, click the `Create` button in Massdriver to create your credential.
 
 </details>
 
@@ -241,4 +238,5 @@ Once finished, click the **Submit** button in Massdriver to create your credenti
 
 </details>
 
+</CredentialProvider>
 </UUIDProvider>
