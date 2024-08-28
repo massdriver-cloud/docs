@@ -29,9 +29,9 @@ const DynamicRolePrivileges = () => {
 };
 
 const DynamicServicePrincipal = () => {
-  const { credName, accountId } = useContext(CredentialContext);
+  const { credName, subscriptionId } = useContext(CredentialContext);
 
-  const code = `az ad sp create-for-rbac --name ${credName} --role contributor --scopes /subscriptions/${accountId}`;
+  const code = `az ad sp create-for-rbac --name ${credName} --role contributor --scopes /subscriptions/${subscriptionId}`;
 
   return (
     <pre>
@@ -40,4 +40,47 @@ const DynamicServicePrincipal = () => {
   );
 };
 
-export { DynamicTrustPolicy, DynamicRolePrivileges, DynamicServicePrincipal };
+const DynamicServiceAccount = () => {
+  const { credName } = useContext(CredentialContext);
+
+  const code = `gcloud iam service-accounts create ${credName} --description="Massdriver Service Account" --display-name=${credName}`;
+
+  return (
+    <pre>
+      <code>{code}</code>
+    </pre>
+  );
+};
+
+const DynamicProjectPolicy = () => {
+  const { credName, projectId } = useContext(CredentialContext);
+
+  const code = `gcloud projects add-iam-policy-binding ${projectId} --member=serviceAccount:${credName}@${projectId}.iam.gserviceaccount.com --role=roles/owner`;
+
+  return (
+    <pre>
+      <code>{code}</code>
+    </pre>
+  );
+};
+
+const DynamicAccountKeys = () => {
+  const { credName, projectId } = useContext(CredentialContext);
+
+  const code = `gcloud iam service-accounts keys create md-${credName}-key.json --iam-account=${credName}@${projectId}.iam.gserviceaccount.com`;
+
+  return (
+    <pre>
+      <code>{code}</code>
+    </pre>
+  );
+};
+
+export {
+  DynamicTrustPolicy,
+  DynamicRolePrivileges,
+  DynamicServicePrincipal,
+  DynamicServiceAccount,
+  DynamicProjectPolicy,
+  DynamicAccountKeys,
+};
