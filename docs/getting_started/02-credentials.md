@@ -47,7 +47,7 @@ Once the CloudFormation stack has completed its task select the outputs tab and 
 
 ## Step 4
 
-Submit the role to Massdriver by clicking the save button and head to the [projects page](/projects) to begin provisioning infrastruture.
+Submit the role to Massdriver by clicking the save button and head to the projects page to begin provisioning infrastruture.
 
 </details>
 
