@@ -40,7 +40,14 @@ _You can also specify other kubeconfig files by setting the `--kubeconfig` flag 
 
 ### Get cluster information
 
-Pods:
+**General**:
+
+```bash
+kubectl get namespaces  # Lists all namespaces
+kubectl api-resources   # Lists all resources in the cluster
+```
+
+**Pods**:
 
 ```bash
 kubectl get pods                 # Lists all pods in default namespace
@@ -54,7 +61,7 @@ kubectl logs <pod-name>          # Shows logs of a specific pod
 kubectl logs -f <pod-name>       # Shows logs of a specific pod and follows the logs
 ```
 
-Services:
+**Services**:
 
 ```bash
 kubectl get services                    # Lists all services in default namespace
@@ -62,11 +69,19 @@ kubectl get services -n <namespace>     # Lists all services in a specific names
 kubectl describe service <service-name> # Describes a specific service
 ```
 
-Nodes:
+**Nodes**:
 
 ```bash
 kubectl get nodes                   # Lists all nodes
 kubectl describe node <node-name>   # Describes a specific node
+```
+
+**Deployments**:
+
+```bash
+kubectl get deployments                        # Lists all deployments in default namespace
+kubectl get deployments -n <namespace>         # Lists all deployments in a specific namespace
+kubectl describe deployment <deployment-name>  # Describes a specific deployment
 ```
 
 ### Accessing cluster resources
@@ -75,4 +90,5 @@ kubectl describe node <node-name>   # Describes a specific node
 kubectl exec -it <pod-name> -- sh       # Executes a shell in a specific pod
 kubectl exec -it <pod-name> -- env      # Prints environment variables of a specific pod
 kubectl port-forward <pod-name> 8080:80 # Forwards a local port to a port on a specific pod
+kubectl apply -f <file.yaml>            # Applies a configuration file to the cluster
 ```
