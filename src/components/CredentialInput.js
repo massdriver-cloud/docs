@@ -39,7 +39,7 @@ export const AWSRoleInput = () => {
 
   return (
     <div>
-      Enter a friendly name for your AWS role here:
+      Enter a friendly name for your AWS role here:{" "}
       <input
         type="text"
         onChange={(e) => setCredName(e.target.value)}
@@ -60,7 +60,7 @@ export const AzurePrincipalInput = () => {
 
   return (
     <div>
-      Enter a friendly name for your Azure service principal:
+      Enter a friendly name for your Azure service principal here:{" "}
       <input
         type="text"
         onChange={(e) => setCredName(e.target.value)}
@@ -81,7 +81,7 @@ export const AzureSubscriptionInput = () => {
 
   return (
     <div>
-      Paste your Azure subscription ID here:
+      Paste your Azure subscription ID here:{" "}
       <input
         type="text"
         onChange={(e) => setSubscriptionId(e.target.value)}
@@ -102,7 +102,7 @@ export const AzureTenantInput = () => {
 
   return (
     <div>
-      Paste your Azure tenant ID here:
+      Paste your Azure tenant ID here:{" "}
       <input
         type="text"
         onChange={(e) => setTenantId(e.target.value)}
@@ -123,7 +123,7 @@ export const AzureClientInput = () => {
 
   return (
     <div>
-      Paste your Azure client ID here:
+      Paste your Azure client ID here:{" "}
       <input
         type="text"
         onChange={(e) => setClientId(e.target.value)}
@@ -144,7 +144,7 @@ export const AzureClientSecretInput = () => {
 
   return (
     <div>
-      Paste your Azure client secret value here:
+      Paste your Azure client secret value here:{" "}
       <input
         type="text"
         onChange={(e) => setClientSecret(e.target.value)}
@@ -165,7 +165,7 @@ export const GCPAccountInput = () => {
 
   return (
     <div>
-      Enter a friendly name for your GCP service account here:
+      Enter a friendly name for your GCP service account here:{" "}
       <input
         type="text"
         onChange={(e) => setCredName(e.target.value)}
@@ -186,7 +186,7 @@ export const GCPProjectInput = () => {
 
   return (
     <div>
-      Paste your GCP project ID here:
+      Paste your GCP project ID here:{" "}
       <input
         type="text"
         onChange={(e) => setProjectId(e.target.value)}
