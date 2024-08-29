@@ -18,7 +18,7 @@ This guide will cover how to access your Kubernetes cluster using a _kubeconfig_
 2. Click on the deployment and open the `Details` tab
 3. Under **Artifacts**, click the download button and then click `Kube Config`
 
-![Download kubeconfig](./kubeconfig-download.png)
+![Download kubeconfig](./kubeconfig-download.gif)
 
 ## Setting KUBECONFIG environment variable
 
