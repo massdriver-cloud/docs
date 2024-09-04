@@ -9,10 +9,12 @@ import UUIDProvider, { UUIDContext } from '@site/src/components/UUIDFetcher';
 import UUIDLink from '@site/src/components/UUIDLink';
 import UUID from '@site/src/components/UUID';
 import { DynamicTrustPolicy, DynamicRolePrivileges, DynamicServicePrincipal, DynamicServiceAccount, DynamicProjectPolicy, DynamicAccountKeys } from '@site/src/components/DynamicCodeBlock';
-import CredentialProvider, { AWSRoleInput, AWSRole, AzurePrincipalInput, AzurePrincipal, AzureSubscriptionInput, AzureSubscription, AzureTenantInput, AzureTenant, AzureClientInput, AzureClient, AzureClientSecretInput, AzureClientSecret, GCPAccountInput, GCPAccount, GCPProjectInput, GCPProject } from '@site/src/components/CredentialInput';
+import DocInputProvider from '@site/src/components/DocInputProvider';
+import DocInput from '@site/src/components/DocInput';
+import DisplayDocInput from '@site/src/components/DisplayDocInput';
 
 <UUIDProvider>
-<CredentialProvider>
+<DocInputProvider>
 
 Follow the specific cloud and preferred method to create the necessary credentials below:
 
@@ -27,7 +29,12 @@ To keep your environment secure, Massdriver uses a role with a trust policy to a
 
 ### Click the quick add button
 
-<AWSRoleInput /><br />
+<DocInput
+    fieldName='awsRoleName'
+    placeholder='massdriver-provisioner'
+    label='Enter a friendly name for your AWS role here: '
+    initialValue='massdriver-provisioner'
+/><br />
 
 Click **<UUIDLink />** to run a hosted CloudFormation stack on AWS which will create a new role in your account with the permissions required to provision infrastructure in Massdriver. The external ID for the role (required to prevent confused deputy attacks) will be unique and auto-generated in the URL for the CloudFormation stack. Do not change this value in the URL.
 
@@ -37,13 +44,17 @@ Once you are in your AWS console, review the resource creation. Click the `Creat
 
 ![roles](./img/aws-quick-add-1.png)
 
-### Copy the role ARN to Massdriver
+### Import rol to Massdriver
 
-Once the CloudFormation stack has completed its task, select the outputs tab and copy the value of the `CustomProvisioningRoleArn` output. Paste the value into the **AWS ARN** field in the credentials creation form.
+Once the CloudFormation stack has completed its task, select the outputs tab and copy the value of the `CustomProvisioningRoleArn` output.
 
 ![roles](./img/aws-quick-add-2.png)
 
-Add **<AWSRole />** to the `Credential Name` field. Click `Create` to add the credential to Massdriver and head to the projects page to start building your infrastructure.
+- Paste the ARN into the `AWS ARN` field.
+- Set <DisplayDocInput fieldName='awsRoleName' /> as the `Credential Name`.
+- Set **<UUID />** as the `External ID`.
+
+Click `Create` to add the credential to Massdriver and head to the projects page to start building your infrastructure.
 
 </details>
 
@@ -56,7 +67,12 @@ To keep your environment secure, Massdriver uses a role with a trust policy to a
 
 ### Create a role with a trust policy
 
-<AWSRoleInput /><br />
+<DocInput
+    fieldName='awsRoleName'
+    placeholder='massdriver-provisioner'
+    label='Enter a friendly name for your AWS role here: '
+    initialValue='massdriver-provisioner'
+/><br />
 
 Run the following command with the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) to create an IAM Role with a trust policy (the external ID is unique and auto-generated):
 
@@ -70,7 +86,11 @@ Run this command to give Massdriver administrator privileges:
 
 ### Import role to Massdriver
 
-Insert **<AWSRole />** in the `Credential Name` field. Then set `AWS ARN` as **arn:aws:iam::YOUR_AWS_ACCOUNT_ID:role/<AWSRole />** and **<UUID />** as the `External ID`. Click `Create` and head to the projects page to start building your infrastructure.
+- Set **<DisplayDocInput fieldName='awsRoleName' />** in the `Credential Name` field.
+- Set **arn:aws:iam::YOUR_AWS_ACCOUNT_ID:role/<DisplayDocInput fieldName='awsRoleName' />** as `AWS ARN`.
+- Set **<UUID />** as the `External ID`.
+
+Click `Create` and head to the projects page to start building your infrastructure.
 
 </details>
 
@@ -84,7 +104,12 @@ To keep your environment secure, Massdriver uses a role with a trust policy to a
 
 ### Create a role
 
-<AWSRoleInput /><br />
+<DocInput
+  fieldName='awsRoleName'
+  placeholder='massdriver-provisioner'
+  label='Enter a friendly name for your AWS role here: '
+  initialValue='massdriver-provisioner'
+/><br />
 
 1. Sign in to the [AWS Management Console](https://aws.amazon.com/console/)
 2. In the search bar, type `IAM` and select the IAM service
@@ -113,12 +138,12 @@ To keep your environment secure, Massdriver uses a role with a trust policy to a
 
 ![roles](./img/aws-tags.png)
 
-13. Set `Role name` to **<AWSRole />** and add a description to the role
+13. Set `Role name` to **<DisplayDocInput fieldName='awsRoleName' />** and add a description to the role
 
 ![roles](./img/aws-review.png)
 
-14. Set `Credential Name` to **<AWSRole />**
-15. Paste the AWS ARN for the role in the `AWS ARN` field: **arn:aws:iam::YOUR_AWS_ACCOUNT_ID:role/<AWSRole />**
+14. Set `Credential Name` to **<DisplayDocInput fieldName='awsRoleName' />**
+15. Paste the AWS ARN for the role in the `AWS ARN` field: **arn:aws:iam::YOUR_AWS_ACCOUNT_ID:role/<DisplayDocInput fieldName='awsRoleName' />**
 
 16. Paste **<UUID />** in to the `External ID` field
 17. Click `Create` to add the credential to Massdriver and head to the projects page to start building your infrastructure.
@@ -134,7 +159,12 @@ To keep your environment secure, Massdriver uses a role with a trust policy to a
 
 To get started, you'll need the [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli) installed locally on your machine. The Azure Cloud Shell available in the Azure Portal does **not** have the ability to grant the service principal the required permissions.
 
-<AzurePrincipalInput /><br />
+<DocInput
+  fieldName='azureServicePrincipalName'
+  placeholder='massdriver-provisioner'
+  label='Enter a friendly name for your Azure service principal here: '
+  initialValue='massdriver-provisioner'
+/><br />
 
 1. Obtain your **subscription ID**
 
@@ -144,7 +174,12 @@ Paste this script into the command-line to list your subscriptions:
 az account list --output table
 ```
 
-<AzureSubscriptionInput /><br />
+<DocInput
+  fieldName='azureSubscriptionId'
+  placeholder='12345678-1234-1234-1234-123456789012'
+  label='Enter your Azure subscription ID here: '
+  initialValue=''
+/><br />
 
 2. Paste this script in the command-line to create an Azure service principal:
 
@@ -152,10 +187,10 @@ az account list --output table
 
 3. Copy the outputs and paste them into Massdriver:
 
-- <AzurePrincipal /> &rarr; <b>Credential Name</b>
+- <DisplayDocInput fieldName='azureServicePrincipalName' /> &rarr; <b>Credential Name</b>
 - appId &rarr; **Client ID**
 - password &rarr; **Client Secret**
-- <AzureSubscription /> &rarr; <b>SubscriptionId</b>
+- <DisplayDocInput fieldName='azureSubscriptionId' /> &rarr; <b>SubscriptionId</b>
 - tenant &rarr; **Tenant ID**
 
 Once finished, click the `Create` button in Massdriver to create your credential.
@@ -167,7 +202,12 @@ Once finished, click the `Create` button in Massdriver to create your credential
 
 ### Registering the service principal app in Azure AD
 
-<AzurePrincipalInput /><br />
+<DocInput
+  fieldName='azureServicePrincipalName'
+  placeholder='massdriver-provisioner'
+  label='Enter a friendly name for your Azure service principal here: '
+  initialValue='massdriver-provisioner'
+/><br />
 
 1. Sign into your Azure account through the [Azure portal](https://portal.azure.com/)
 2. Search for and select `Microsoft Entra ID`
@@ -176,7 +216,7 @@ Once finished, click the `Create` button in Massdriver to create your credential
 
 ![Massdriver example 1](./img/azure-spcreate1.png "Massdriver example 1")
 
-5. Name your application: **<AzurePrincipal />**
+5. Name your application: **<DisplayDocInput fieldName='azureServicePrincipalName' />**
 6. Select `Accounts in this organization directory only`
 7. Leave `Redirect URI` blank
 
@@ -184,9 +224,17 @@ Once finished, click the `Create` button in Massdriver to create your credential
 
 8. Click `Register`
 9. In the `Overview` menu, copy the `Application (client) ID`
-10. <AzureClientInput />
+10. <DocInput
+      fieldName='azureClientId'
+      placeholder='12345678-1234-1234-1234-123456789012'
+      label='Enter your Azure service principal client ID here: '
+    /><br />
 11. Copy the `Directory (tenant) ID`
-12. <AzureTenantInput /><br />
+12. <DocInput
+      fieldName='azureTenantId'
+      placeholder='12345678-1234-1234-1234-123456789012'
+      label='Enter your Azure tenant ID here: '
+    /><br />
 
 ![Massdriver example 3](./img/azure-spcreate3.png "Massdriver example 3")
 
@@ -197,7 +245,11 @@ Once finished, click the `Create` button in Massdriver to create your credential
 ![Massdriver example 4](./img/azure-spcreate4.png "Massdriver example 4")
 
 16. Copy the `Value` password. <span style={{ color: 'red' }}>**Do not use the Secret ID**</span>
-17. <AzureClientSecretInput /><br />
+17. <DocInput
+      fieldName='azureClientSecret'
+      placeholder='super-secret-password'
+      label='Enter your Azure service principal client secret here: '
+    /><br />
 
 ![Massdriver example 5](./img/azure-spcreate6.png "Massdriver example 5")
 
@@ -206,11 +258,15 @@ Once finished, click the `Create` button in Massdriver to create your credential
 1. In the Azure portal, search for and select `Subscription`
 2. Select the subscription you want to use in Massdriver
 3. In the Overview menu, copy your `Subscription ID`
-4. <AzureSubscriptionInput />
+4. <DocInput
+     fieldName='azureSubscriptionId'
+     placeholder='12345678-1234-1234-1234-123456789012'
+     label='Enter your Azure subscription ID here: '
+   /><br />
 5. Select `Access control (IAM)`
 6. Select `Add` > `Add role assignment`
 7. Select `Privileged Administrator Roles` tab and then the `Owner` role and click `Next`
-8. Select `Select members`, search for **<AzurePrincipal />**, click on the service principal, and then click `Select` at the bottom, then `Next`
+8. Select `Select members`, search for **<DisplayDocInput fieldName='azureServicePrincipalName' />**, click on the service principal, and then click `Select` at the bottom, then `Next`
 9. Select `Allow user to assign all roles except privileged administrator roles` and click `Next` then `Review + assign` twice to finish.
 
 ### Adding the Azure service principal to your Massdriver organization
@@ -220,11 +276,11 @@ Once finished, click the `Create` button in Massdriver to create your credential
 3. Select `Azure Service Principal`
 4. Fill in the fields as guided below:
 
-- Credential Name (**<AzurePrincipal />**)
-- Client ID (**<AzureClient />**)
-- Client Secret (**<AzureClientSecret />**)
-- Subscription ID (**<AzureSubscription />**)
-- Tenant ID (**<AzureTenant />**)
+- Credential Name (**<DisplayDocInput fieldName='azureServicePrincipalName' />**)
+- Client ID (**<DisplayDocInput fieldName='azureClientId' />**)
+- Client Secret (**<DisplayDocInput fieldName='azureClientSecret' />**)
+- Subscription ID (**<DisplayDocInput fieldName='azureSubscriptionId' />**)
+- Tenant ID (**<DisplayDocInput fieldName='azureTenantId' />**)
 
 Click `Create` to add the credential to Massdriver and head to the projects page to start building your infrastructure.
 
@@ -237,7 +293,12 @@ Click `Create` to add the credential to Massdriver and head to the projects page
 
 ### Create the service account
 
-<GCPAccountInput /><br />
+<DocInput
+  fieldName='gcpServiceAccountName'
+  placeholder='massdriver-provisioner'
+  label='Enter a friendly name for your GCP service account here: '
+  initialValue='massdriver-provisioner'
+/><br />
 
 Using [GCloud CLI](https://cloud.google.com/sdk/docs/install), paste the following command in a terminal to create a service account for Massdriver to use:
 
@@ -245,7 +306,11 @@ Using [GCloud CLI](https://cloud.google.com/sdk/docs/install), paste the followi
 
 ### Assign the service account the owner role
 
-<GCPProjectInput /><br />
+<DocInput
+  fieldName='gcpProjectId'
+  placeholder='my-project-id'
+  label='Enter your GCP project ID here: '
+/><br />
 
 Paste the following command to assign the service account the `owner` role:
 
@@ -259,7 +324,7 @@ Massdriver needs a service account key to access the GCP API. To create one past
 
 Attach the `.json` file created in the above command in to the `Artifact Data` field on the form.
 
-Set the `Credential Name` to **<GCPAccount />** and click `Create` to add the credential to Massdriver. Head to the projects page to start building your infrastructure.
+Set the `Credential Name` to **<DisplayDocInput fieldName='gcpServiceAccountName' />** and click `Create` to add the credential to Massdriver. Head to the projects page to start building your infrastructure.
 
 </details>
 
@@ -268,7 +333,12 @@ Set the `Credential Name` to **<GCPAccount />** and click `Create` to add the cr
 
 ### Create a service account
 
-<GCPAccountInput /><br />
+<DocInput
+  fieldName='gcpServiceAccountName'
+  placeholder='massdriver-provisioner'
+  label='Enter a friendly name for your GCP service account here: '
+  initialValue='massdriver-provisioner'
+/><br />
 
 1. Log in to the [Google Cloud Console](https://console.cloud.google.com/) and navigate to the IAM/Service Accounts page.
 
@@ -280,8 +350,8 @@ Set the `Credential Name` to **<GCPAccount />** and click `Create` to add the cr
 
 3. Fill in the form with the following details:
 
-- Service account name: **<GCPAccount />**
-- Service account ID: **<GCPAccount />**
+- Service account name: **<DisplayDocInput fieldName='gcpServiceAccountName' />**
+- Service account ID: **<DisplayDocInput fieldName='gcpServiceAccountName' />**
 - Service account description: **Massdriver Service Account** (optional)
 
 4. Click `Create and Continue`
@@ -312,9 +382,9 @@ Set the `Credential Name` to **<GCPAccount />** and click `Create` to add the cr
 
 Attach the `.json` file created in the above step in to the `Artifact Data` field on the form.
 
-Set the `Credential Name` to **<GCPAccount />** and click `Create` to add the credential to Massdriver. Head to the projects page to start building your infrastructure.
+Set the `Credential Name` to **<DisplayDocInput fieldName='gcpServiceAccountName' />** and click `Create` to add the credential to Massdriver. Head to the projects page to start building your infrastructure.
 
 </details>
 
-</CredentialProvider>
+</DocInputProvider>
 </UUIDProvider>
