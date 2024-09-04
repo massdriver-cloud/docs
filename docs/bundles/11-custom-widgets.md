@@ -13,24 +13,23 @@ When implementing a `Custom Widget/Field`, you must define both the `schema` and
 
 ### Schema & UiSchema Pairing
 
-Here is an example, using the `schema` and `uiSchema` to display a custom `ContainerRepositoriesDropdown` `field`:
+Here is an example, using the `schema` and `uiSchema` to display a custom `DnsZonesDropdown` `field`:
 
 ```yaml title="schema"
 type: object
-title: Filtered Container Repositories & DNS Zones schema
+title: DNS Zones schema
 description:
-  A dummy schema to show how to filter the dnsZones and container repositories
-  widgets.
+  A dummy schema to show how to use custom fields.
 properties:
-  containerRepositories: # <-- This is where you define the property name
+  dnsZones: # <-- This is where you define the property name
     type: string
-    title: Container Repositories
-    description: A list of Container Repositories configured with Massdriver.
+    title: DNS Zones
+    description: A list of DNS Zones configured with Massdriver.
 ```
 
 ```yaml title="uiSchema"
-containerRepositories: # <-- Use the name defined in the properties object. If it is a nested property, follow the same path here
-  ui:field: 'containerRepositoriesDropdown' # <-- Here we define the ui:field and match it to the name given to our custom field
+dnsZones: # <-- Use the name defined in the properties object. If it is a nested property, follow the same path here
+  ui:field: 'dnsZonesDropdown' # <-- Here we define the ui:field and match it to the name given to our custom field
 ```
 
 :::note
@@ -122,7 +121,7 @@ properties:
 
 :::note
 
-All custom Widgets/Fields have their **Component Name** in `PascalCase` and their **Identifying Name** (the one used in the `uiSchema`) in `camelCase`. Example: `ContainerRepositoriesDropdown` is the component name and `containerRepositoriesDropdown` is the identifying name used in the `uiSchema`.
+All custom Widgets/Fields have their **Component Name** in `PascalCase` and their **Identifying Name** (the one used in the `uiSchema`) in `camelCase`. Example: `DnsZonesDropdown` is the component name and `dnsZonesDropdown` is the identifying name used in the `uiSchema`.
 
 :::
 
