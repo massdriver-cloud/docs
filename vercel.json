@@ -39,6 +39,11 @@
       "source": "/platform/custom-dns/squarespace",
       "destination": "/dns/custom-dns/squarespace",
       "permanent": true
+    },
+    {
+      "source": "/getting-started/onboarding",
+      "destination": "/getting-started/prerequisites",
+      "permanent": true
     }
   ]
 }
