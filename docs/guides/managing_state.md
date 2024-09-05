@@ -58,18 +58,18 @@ echo 'terraform {
 
 Initialize your OpenTofu module:
 
-<CodeBlock language="bash">
+```bash
 tofu init
-</CodeBlock>
+```
 
 ### 3. Pull Existing State
 
 If you need to pull your state to inspect or edit:
 
-<CodeBlock language="bash">
-tofu init <br />
-tofu state pull &gt; terraform.tfstate
-</CodeBlock>
+```bash
+tofu init
+tofu state pull > terraform.tfstate
+```
 
 ### 5. Importing Resources into State
 
@@ -80,23 +80,24 @@ The [`tofu import`](https://opentofu.org/docs/cli/import/) command allows you to
 1. Identify the resource to be imported.
 2. Use the `tofu import` command to add the resource to your state:
 
-   <CodeBlock language="bash">
-   tofu import aws_instance.example i-1234567890abcdef0
-   </CodeBlock>
+```bash
+tofu import aws_instance.example i-1234567890abcdef0
+```
 
 3. Verify the resource has been imported:
 
-   <CodeBlock language="bash">
-   tofu state list
-   </CodeBlock>
+```bash
+tofu state list
+```
 
 ### 6. Removing resources from state
 
 The [`tofu state rm`](https://opentofu.org/docs/cli/commands/state/rm/) command is used to remove a resource from the state. This command is useful when you want to delete a resource that was previously imported or created using OpenTofu. However, it's important to note that if you remove a resource from the state, you should also update the corresponding code to avoid any conflicts or unintended changes.
 
-<CodeBlock language="bash">
+```bash
 tofu state rm aws_instance.example
-</CodeBlock>
+```
+
 </TabItem>
 
 <TabItem value="Terraform" label="Terraform">
@@ -134,18 +135,18 @@ echo 'terraform {
 
 Initialize your Terraform module:
 
-<CodeBlock language="bash">
+```bash
 terraform init
-</CodeBlock>
+```
 
 ### 3. Pull Existing State
 
 If you need to pull your state to inspect or edit:
 
-<CodeBlock language="bash">
-terraform init <br />
-terraform state pull &gt; terraform.tfstate
-</CodeBlock>
+```bash
+terraform init
+terraform state pull > terraform.tfstate
+```
 
 ### 5. Importing Resources into State
 
@@ -156,23 +157,24 @@ The `terraform import` command allows you to specify the resource type and the r
 1. Identify the resource to be imported.
 2. Use the `terraform import` command to add the resource to your state:
 
-   <CodeBlock language="bash">
-   terraform import aws_instance.example i-1234567890abcdef0
-   </CodeBlock>
+```bash
+terraform import aws_instance.example i-1234567890abcdef0
+```
 
 3. Verify the resource has been imported:
 
-   <CodeBlock language="bash">
-   terraform state list
-   </CodeBlock>
+```bash
+terraform state list
+```
 
 ### 6. Removing resources from state
 
 The [`terraform state rm`](https://developer.hashicorp.com/terraform/cli/commands/state/rm) command is used to remove a resource from the state. This command is useful when you want to delete a resource that was previously imported or created using Terraform. However, it's important to note that if you remove a resource from the state, you should also update the corresponding code to avoid any conflicts or unintended changes.
 
-<CodeBlock language="bash">
+```bash
 terraform state rm aws_instance.example
-</CodeBlock>
+```
+
 </TabItem>
 </Tabs>
 
@@ -186,34 +188,34 @@ terraform state rm aws_instance.example
 
 1. Pull the state from your S3 bucket:
 
-<CodeBlock language="bash">
-   tofu state pull > terraform.tfstate
+```bash
+tofu state pull > terraform.tfstate
 
-   # or
-   # aws s3 cp s3://your-bucket-name/path/terraform.tfstate .
-  </CodeBlock>
+# or
+# aws s3 cp s3://your-bucket-name/path/terraform.tfstate
+```
 
 2. Push the state to Massdriver's state storage:
-  
-   Make sure that your OpenTofu / Terraform backend is configured for the HTTP backend:
 
-  Replace <code>backend "s3"</code> with:
+Make sure that your OpenTofu backend is configured for the HTTP backend:
 
-   <CodeBlock language="terraform">
-   terraform {
-     backend "http" {}
-   }   
-  </CodeBlock>
+Replace `backend "s3"` with:
 
-<CodeBlock language="bash">
+```terraform
+terraform {
+  backend "http" {}
+}
+```
+
+```bash
 tofu state push
-</CodeBlock>
+```
 
 3. Verify the state has been successfully migrated:
 
-<CodeBlock language="bash">
-   tofu state list
-</CodeBlock>
+```bash
+tofu state list
+```
 
 </TabItem>
 
@@ -221,24 +223,35 @@ tofu state push
 
 1. Pull the state from your S3 bucket:
 
-<CodeBlock language="bash">
-   terraform state pull > terraform.tfstate
+```bash
+terraform state pull > terraform.tfstate
 
-   # or
-   # aws s3 cp s3://your-bucket-name/path/terraform.tfstate .
-  </CodeBlock>
+# or
+# aws s3 cp s3://your-bucket-name/path/terraform.tfstate
+```
 
 2. Push the state to Massdriver's state storage:
 
-<CodeBlock language="bash">
+Make sure that your Terraform backend is configured for the HTTP backend:
+
+Replace `backend "s3"` with:
+
+```terraform
+terraform {
+  backend "http" {}
+}
+```
+
+```bash
 terraform state push
-</CodeBlock>
+```
 
 3. Verify the state has been successfully migrated:
 
-<CodeBlock language="bash">
-   terraform state list
-</CodeBlock>
+```bash
+terraform state list
+```
+
 </TabItem>
 </Tabs>
 </TabItem>
@@ -250,54 +263,66 @@ terraform state push
 
 1. Pull the state from Terraform Cloud:
 
-<CodeBlock language="bash">
-   terraform login <br />
-   terraform state pull &gt; terraform.tfstate
-</CodeBlock>
+```bash
+terraform login
+tofu state pull > terraform.tfstate
+```
 
 2. Push the state to Massdriver:
-  
-  Make sure that your OpenTofu backend is configured for the HTTP backend:
 
-  Replace `backend "remote"` or [cloud](https://developer.hashicorp.com/terraform/language/settings/backends/remote) with:
+Make sure that your OpenTofu backend is configured for the HTTP backend:
 
-   ```hcl
-   terraform {
-     backend "http" {}
-   }   
-   ```
-  
-<CodeBlock language="bash">
-   tofu state push
-</CodeBlock>
+Replace `backend "remote"` or [cloud](https://developer.hashicorp.com/terraform/language/settings/backends/remote) with:
+
+```terraform
+terraform {
+  backend "http" {}
+}
+```
+
+```bash
+tofu state push
+```
 
 3. Confirm the migration:
 
-<CodeBlock language="bash">
-   tofu state list
-</CodeBlock>
+```bash
+tofu state list
+```
+
 </TabItem>
 
 <TabItem value="Terraform" label="Terraform">
 
 1. Pull the state from Terraform Cloud:
 
-<CodeBlock language="bash">
-   terraform login <br />
-   terraform state pull &gt; terraform.tfstate
-</CodeBlock>
+```bash
+terraform login
+terraform state pull > terraform.tfstate
+```
 
 2. Push the state to Massdriver:
 
-<CodeBlock language="bash">
+Make sure that your Terraform backend is configured for the HTTP backend:
+
+Replace `backend "remote"` or [cloud](https://developer.hashicorp.com/terraform/language/settings/backends/remote) with:
+
+```terraform
+terraform {
+  backend "http" {}
+}
+```
+
+```bash
 terraform state push
-</CodeBlock>
+```
 
 3. Confirm the migration:
 
-<CodeBlock language="bash">
-   terraform state list
-</CodeBlock>
+```bash
+terraform state list
+```
+
 </TabItem>
 </Tabs>
 </TabItem>
@@ -309,55 +334,69 @@ terraform state push
 
 1. Download the state file from Azure Blob Storage:
 
-
 ```bash
-terraform state pull > terraform.tfstate
+tofu state pull > terraform.tfstate
 
-   # or 
-   # az storage blob download --container-name your-container --name terraform.tfstate --file terraform.tfstate
+# or
+# az storage blob download --container-name your-container --name terraform.tfstate --file terraform.tfstate
 ```
 
 2. Push the state to Massdriver:
-  
-  Make sure that your OpenTofu / Terraform backend is configured for the HTTP backend:
 
-   Replace `backend "azurerm"` with:
+Make sure that your OpenTofu backend is configured for the HTTP backend:
 
-   ```hcl
-   terraform {
-     backend "http" {}
-   }   
+Replace `backend "azurerm"` with:
 
-<CodeBlock language="bash">
-   tofu state push
-</CodeBlock>
+```terraform
+terraform {
+  backend "http" {}
+}
+```
+
+```bash
+tofu state push
+```
 
 3. Verify the migration:
 
-<CodeBlock language="bash">
-   tofu state list
-</CodeBlock>
-</TabItem>
+```bash
+tofu state list
+```
 
+</TabItem>
 <TabItem value="Terraform" label="Terraform">
 
 1. Download the state file from Azure Blob Storage:
 
 ```bash
-az storage blob download --container-name your-container --name terraform.tfstate --file terraform.tfstate
+terraform state pull > terraform.tfstate
+
+# or
+# az storage blob download --container-name your-container --name terraform.tfstate --file terraform.tfstate
 ```
 
 2. Push the state to Massdriver:
 
-<CodeBlock language="bash">
+Make sure that your Terraform backend is configured for the HTTP backend:
+
+Replace `backend "azurerm"` with:
+
+```terraform
+terraform {
+  backend "http" {}
+}
+```
+
+```bash
 terraform state push
-</CodeBlock>
+```
 
 3. Verify the migration:
 
-<CodeBlock language="bash">
-   terraform state list
-</CodeBlock>
+```bash
+terraform state list
+```
+
 </TabItem>
 </Tabs>
 </TabItem>
