@@ -5,6 +5,9 @@ title: Database
 sidebar_label: Database
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 <details>
 <summary><h4>Postgres</h4></summary>
 
@@ -52,11 +55,17 @@ We will start by configuring the Azure infrastructure using Massdriver.
 
    - Use the Heroku CLI to create a backup of your current database:
 
-# [Postgres](#tab/postgres)
-
+<Tabs>
+<TabItem value="bash" label="Heroku CLI">
 ```bash
 heroku pg:backups capture --app <your-heroku-app-name>
 ```
+</TabItem>
+<TabItem value="mysql" label="MySQL">
+```bash
+heroku pg:backups capture --app <your-heroku-app-name>
+```
+</TabItem>
 
 # [MySQL](#tab/mysql)
 
