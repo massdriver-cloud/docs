@@ -67,7 +67,7 @@ If you need to pull your state to inspect or edit:
 
 <CodeBlock language="bash">
 tofu init <br />
-tofu state pull &gt; tofu.tfstate
+tofu state pull &gt; terraform.tfstate
 </CodeBlock>
 
 ### 5. Importing Resources into State
@@ -186,7 +186,7 @@ terraform state rm aws_instance.example
 1. Pull the state from your S3 bucket:
 
 ```bash
-aws s3 cp s3://your-bucket-name/tofu.tfstate .
+aws s3 cp s3://your-bucket-name/terraform.tfstate .
 ```
 
 2. Push the state to Massdriver's state storage:
@@ -235,7 +235,7 @@ terraform state push
 
 <CodeBlock language="bash">
    terraform login <br />
-   terraform state pull &gt; tofu.tfstate
+   terraform state pull &gt; terraform.tfstate
 </CodeBlock>
 
 2. Push the state to Massdriver:
@@ -283,7 +283,7 @@ terraform state push
 1. Download the state file from Azure Blob Storage:
 
 ```bash
-az storage blob download --container-name your-container --name tofu.tfstate --file tofu.tfstate
+az storage blob download --container-name your-container --name terraform.tfstate --file terraform.tfstate
 ```
 
 2. Push the state to Massdriver:
