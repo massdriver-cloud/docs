@@ -52,15 +52,23 @@ We will start by configuring the Azure infrastructure using Massdriver.
 
    - Use the Heroku CLI to create a backup of your current database:
 
-   ```bash
-   heroku pg:backups capture --app <your-heroku-app-name>
-   ```
+# [Postgres](#tab/postgres)
 
-   - Once the backup is complete, download it:
+```bash
+heroku pg:backups capture --app <your-heroku-app-name>
+```
 
-   ```bash
-   heroku pg:backups:download --app <your-heroku-app-name>
-   ```
+# [MySQL](#tab/mysql)
+
+```bash
+heroku pg:backups capture --app <your-heroku-app-name>
+```
+
+- Once the backup is complete, download it:
+
+```bash
+heroku pg:backups:download --app <your-heroku-app-name>
+```
 
 2. **Verify the Backup**:
 
