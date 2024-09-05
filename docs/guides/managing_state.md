@@ -74,7 +74,7 @@ tofu state pull &gt; tofu.tfstate
 
 To import an existing resource into state, you can use the `tofu import` command. This command is useful when you have existing infrastructure that was not created using OpenTofu, but you want to manage it using automation going forward.
 
-The `tofu import` command allows you to specify the resource type and the resource ID. Importing a resource into OpenTofu state enables you to manage its lifecycle, apply changes, and track its state using OpenTofu commands and workflows.
+The [`tofu import`](https://opentofu.org/docs/cli/import/) command allows you to specify the resource type and the resource ID. Importing a resource into OpenTofu state enables you to manage its lifecycle, apply changes, and track its state using OpenTofu commands and workflows.
 
 1. Identify the resource to be imported.
 2. Use the `tofu import` command to add the resource to your state:
@@ -91,7 +91,7 @@ The `tofu import` command allows you to specify the resource type and the resour
 
 ### 6. Removing resources from state
 
-The `tofu state rm` command is used to remove a resource from the OpenTofu state. This command is useful when you want to delete a resource that was previously imported or created using OpenTofu. However, it's important to note that if you remove a resource from the state, you should also update the corresponding code to avoid any conflicts or unintended changes.
+The [`tofu state rm`](https://opentofu.org/docs/cli/commands/state/rm/) command is used to remove a resource from the OpenTofu state. This command is useful when you want to delete a resource that was previously imported or created using OpenTofu. However, it's important to note that if you remove a resource from the state, you should also update the corresponding code to avoid any conflicts or unintended changes.
 
 <CodeBlock language="bash">
 tofu state rm aws_instance.example
@@ -148,7 +148,7 @@ terraform state pull &gt; terraform.tfstate
 
 ### 5. Importing Resources into State
 
-To import an existing resource into state, you can use the `terraform import` command. This command is useful when you have existing infrastructure that was not created using Terraform, but you want to manage it using automation going forward.
+To import an existing resource into state, you can use the [`terraform import`](https://developer.hashicorp.com/terraform/cli/commands/import) command. This command is useful when you have existing infrastructure that was not created using Terraform, but you want to manage it using automation going forward.
 
 The `terraform import` command allows you to specify the resource type and the resource ID. Importing a resource into Terraform state enables you to manage its lifecycle, apply changes, and track its state using Terraform commands and workflows.
 
@@ -167,7 +167,7 @@ The `terraform import` command allows you to specify the resource type and the r
 
 ### 6. Removing resources from state
 
-The `terraform state rm` command is used to remove a resource from the Terraform state. This command is useful when you want to delete a resource that was previously imported or created using Terraform. However, it's important to note that if you remove a resource from the state, you should also update the corresponding code to avoid any conflicts or unintended changes.
+The [`terraform state rm`](https://developer.hashicorp.com/terraform/cli/commands/state/rm) command is used to remove a resource from the Terraform state. This command is useful when you want to delete a resource that was previously imported or created using Terraform. However, it's important to note that if you remove a resource from the state, you should also update the corresponding code to avoid any conflicts or unintended changes.
 
 <CodeBlock language="bash">
 terraform state rm aws_instance.example
