@@ -36,8 +36,9 @@ export TF_HTTP_PASSWORD=${MASSDRIVER_SERVICE_ACCOUNT_TOKEN}
 # Your package friendly ID available from your details panel (without the four character suffix -xxxx)
 export MASSDRIVER_PACKAGE_ID="YOUR-PACKAGE-SLUG"
 
+
 # Massdriver supports putting multiple IaC tools into the same "bundle".
-# Put the name of the step your terraform is in here.
+# Put the name of the step your OpenTofu is in here.
 export MASSDRIVER_PACKAGE_STEP_NAME="the-step-name-in-your-package"
 
 export TF_HTTP_ADDRESS="https://api.massdriver.cloud/state/${MD_PKG_SLUG}/${MASSDRIVER_PACKAGE_STEP_NAME}"
@@ -72,9 +73,9 @@ tofu state pull &gt; terraform.tfstate
 
 ### 5. Importing Resources into State
 
-To import an existing resource into state, you can use the `tofu import` command. This command is useful when you have existing infrastructure that was not created using OpenTofu, but you want to manage it using automation going forward.
+To import an existing resource into state, you can use the [`tofu import`](https://opentofu.org/docs/cli/import/) command. This command is useful when you have existing infrastructure that was not created using OpenTofu, but you want to manage it using automation going forward.
 
-The [`tofu import`](https://opentofu.org/docs/cli/import/) command allows you to specify the resource type and the resource ID. Importing a resource into OpenTofu state enables you to manage its lifecycle, apply changes, and track its state using OpenTofu commands and workflows.
+The [`tofu import`](https://opentofu.org/docs/cli/import/) command allows you to specify the resource type and the resource ID. Importing a resource into state enables you to manage its lifecycle, apply changes, and track its state using commands and workflows.
 
 1. Identify the resource to be imported.
 2. Use the `tofu import` command to add the resource to your state:
@@ -91,7 +92,7 @@ The [`tofu import`](https://opentofu.org/docs/cli/import/) command allows you to
 
 ### 6. Removing resources from state
 
-The [`tofu state rm`](https://opentofu.org/docs/cli/commands/state/rm/) command is used to remove a resource from the OpenTofu state. This command is useful when you want to delete a resource that was previously imported or created using OpenTofu. However, it's important to note that if you remove a resource from the state, you should also update the corresponding code to avoid any conflicts or unintended changes.
+The [`tofu state rm`](https://opentofu.org/docs/cli/commands/state/rm/) command is used to remove a resource from the state. This command is useful when you want to delete a resource that was previously imported or created using OpenTofu. However, it's important to note that if you remove a resource from the state, you should also update the corresponding code to avoid any conflicts or unintended changes.
 
 <CodeBlock language="bash">
 tofu state rm aws_instance.example
@@ -113,7 +114,7 @@ export TF_HTTP_PASSWORD=${MASSDRIVER_SERVICE_ACCOUNT_TOKEN}
 export MASSDRIVER_PACKAGE_ID="YOUR-PACKAGE-SLUG"
 
 # Massdriver supports putting multiple IaC tools into the same "bundle".
-# Put the name of the step your terraform is in here.
+# Put the name of the step your Terraform is in here.
 export MASSDRIVER_PACKAGE_STEP_NAME="the-step-name-in-your-package"
 
 export TF_HTTP_ADDRESS="https://api.massdriver.cloud/state/${MD_PKG_SLUG}/${MASSDRIVER_PACKAGE_STEP_NAME}"
@@ -150,7 +151,7 @@ terraform state pull &gt; terraform.tfstate
 
 To import an existing resource into state, you can use the [`terraform import`](https://developer.hashicorp.com/terraform/cli/commands/import) command. This command is useful when you have existing infrastructure that was not created using Terraform, but you want to manage it using automation going forward.
 
-The `terraform import` command allows you to specify the resource type and the resource ID. Importing a resource into Terraform state enables you to manage its lifecycle, apply changes, and track its state using Terraform commands and workflows.
+The `terraform import` command allows you to specify the resource type and the resource ID. Importing a resource into state enables you to manage its lifecycle, apply changes, and track its state using commands and workflows.
 
 1. Identify the resource to be imported.
 2. Use the `terraform import` command to add the resource to your state:
@@ -167,7 +168,7 @@ The `terraform import` command allows you to specify the resource type and the r
 
 ### 6. Removing resources from state
 
-The [`terraform state rm`](https://developer.hashicorp.com/terraform/cli/commands/state/rm) command is used to remove a resource from the Terraform state. This command is useful when you want to delete a resource that was previously imported or created using Terraform. However, it's important to note that if you remove a resource from the state, you should also update the corresponding code to avoid any conflicts or unintended changes.
+The [`terraform state rm`](https://developer.hashicorp.com/terraform/cli/commands/state/rm) command is used to remove a resource from the state. This command is useful when you want to delete a resource that was previously imported or created using Terraform. However, it's important to note that if you remove a resource from the state, you should also update the corresponding code to avoid any conflicts or unintended changes.
 
 <CodeBlock language="bash">
 terraform state rm aws_instance.example
@@ -185,11 +186,24 @@ terraform state rm aws_instance.example
 
 1. Pull the state from your S3 bucket:
 
-```bash
-aws s3 cp s3://your-bucket-name/terraform.tfstate .
-```
+<CodeBlock language="bash">
+   tofu state pull > terraform.tfstate
+
+   # or
+   # aws s3 cp s3://your-bucket-name/path/terraform.tfstate .
+  </CodeBlock>
 
 2. Push the state to Massdriver's state storage:
+  
+   Make sure that your OpenTofu / Terraform backend is configured for the HTTP backend:
+
+  Replace <code>backend "s3"</code> with:
+
+   <CodeBlock language="terraform">
+   terraform {
+     backend "http" {}
+   }   
+  </CodeBlock>
 
 <CodeBlock language="bash">
 tofu state push
@@ -207,9 +221,12 @@ tofu state push
 
 1. Pull the state from your S3 bucket:
 
-```bash
-aws s3 cp s3://your-bucket-name/terraform.tfstate .
-```
+<CodeBlock language="bash">
+   terraform state pull > terraform.tfstate
+
+   # or
+   # aws s3 cp s3://your-bucket-name/path/terraform.tfstate .
+  </CodeBlock>
 
 2. Push the state to Massdriver's state storage:
 
@@ -239,7 +256,17 @@ terraform state push
 </CodeBlock>
 
 2. Push the state to Massdriver:
+  
+  Make sure that your OpenTofu backend is configured for the HTTP backend:
 
+  Replace `backend "remote"` or [cloud](https://developer.hashicorp.com/terraform/language/settings/backends/remote) with:
+
+   ```hcl
+   terraform {
+     backend "http" {}
+   }   
+   ```
+  
 <CodeBlock language="bash">
    tofu state push
 </CodeBlock>
@@ -282,11 +309,24 @@ terraform state push
 
 1. Download the state file from Azure Blob Storage:
 
+
 ```bash
-az storage blob download --container-name your-container --name terraform.tfstate --file terraform.tfstate
+terraform state pull > terraform.tfstate
+
+   # or 
+   # az storage blob download --container-name your-container --name terraform.tfstate --file terraform.tfstate
 ```
 
 2. Push the state to Massdriver:
+  
+  Make sure that your OpenTofu / Terraform backend is configured for the HTTP backend:
+
+   Replace `backend "azurerm"` with:
+
+   ```hcl
+   terraform {
+     backend "http" {}
+   }   
 
 <CodeBlock language="bash">
    tofu state push
