@@ -7,9 +7,7 @@ sidebar_label: Database
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-
-<details>
-<summary><h4>Postgres</h4></summary>
+import CodeBlock from '@theme/CodeBlock';
 
 ## Introduction
 
@@ -56,18 +54,17 @@ We will start by configuring the Azure infrastructure using Massdriver.
    - Use the Heroku CLI to create a backup of your current database:
 
 <Tabs>
-<TabItem value="bash" label="Heroku CLI">
-```bash
-heroku pg:backups capture --app <your-heroku-app-name>
-```
+<TabItem value="postgres" label="Postgres">
+<CodeBlock language="bash">
+heroku pg:backups capture --app your-heroku-app-name
+</CodeBlock>
 </TabItem>
 <TabItem value="mysql" label="MySQL">
-```bash
-heroku pg:backups capture --app <your-heroku-app-name>
-```
+<CodeBlock language="bash">
+heroku mysql:backups capture --app your-heroku-app-name
+</CodeBlock>
 </TabItem>
-
-# [MySQL](#tab/mysql)
+</Tabs>
 
 ```bash
 heroku pg:backups capture --app <your-heroku-app-name>
@@ -208,5 +205,3 @@ heroku pg:backups:download --app <your-heroku-app-name>
 ## Conclusion
 
 You have now successfully migrated your database from Heroku to Azure using Massdriver. By leveraging Massdriver’s bundles, secure private network access, and Kubernetes as a jump box, this process can be streamlined, ensuring a secure and efficient database migration.
-
-</details>
