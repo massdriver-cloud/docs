@@ -5,6 +5,8 @@ title: Credentials
 sidebar_label: Credentials
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 import UUIDProvider, { UUIDContext } from '@site/src/components/UUIDFetcher';
 import UUIDLink from '@site/src/components/UUIDLink';
 import UUID from '@site/src/components/UUID';
@@ -20,14 +22,14 @@ Follow the specific cloud and preferred method to create the necessary credentia
 
 ## AWS
 
-<details>
-<summary>One Click Role</summary>
+<Tabs>
+<TabItem value="One Click Role" label="One Click Role">
 
 ### How Massdriver uses your role
 
 To keep your environment secure, Massdriver uses a role with a trust policy to access your AWS account for provisioning and monitoring of your infrastructure. The account that assumes this role is private and has no access from the public internet.
 
-### Click the quick add button
+### One click role creation
 
 <DocInput
     fieldName='awsRoleName'
@@ -56,10 +58,9 @@ Once the CloudFormation stack has completed its task, select the outputs tab and
 
 Click `Create` to add the credential to Massdriver and head to the projects page to start building your infrastructure.
 
-</details>
+</TabItem>
 
-<details>
-<summary>CLI</summary>
+<TabItem value="AWS CLI" label="AWS CLI">
 
 ### How Massdriver uses your role
 
@@ -92,11 +93,9 @@ Run this command to give Massdriver administrator privileges:
 
 Click `Create` and head to the projects page to start building your infrastructure.
 
-</details>
+</TabItem>
 
-<details>
-
-<summary>Console</summary>
+<TabItem value="AWS Console" label="AWS Console">
 
 ### How Massdriver uses your role
 
@@ -148,12 +147,13 @@ To keep your environment secure, Massdriver uses a role with a trust policy to a
 16. Paste **<UUID />** in to the `External ID` field
 17. Click `Create` to add the credential to Massdriver and head to the projects page to start building your infrastructure.
 
-</details>
+</TabItem>
+</Tabs>
 
 ## Azure
 
-<details>
-<summary>CLI</summary>
+<Tabs>
+<TabItem value="Azure CLI" label="Azure CLI">
 
 ### Install Azure CLI
 
@@ -195,10 +195,9 @@ az account list --output table
 
 Once finished, click the `Create` button in Massdriver to create your credential.
 
-</details>
+</TabItem>
 
-<details>
-<summary>Console</summary>
+<TabItem value="Azure Portal" label="Azure Portal">
 
 ### Registering the service principal app in Azure AD
 
@@ -284,12 +283,13 @@ Once finished, click the `Create` button in Massdriver to create your credential
 
 Click `Create` to add the credential to Massdriver and head to the projects page to start building your infrastructure.
 
-</details>
+</TabItem>
+</Tabs>
 
 ## GCP
 
-<details>
-<summary>CLI</summary>
+<Tabs>
+<TabItem value="gcloud CLI" label="gcloud CLI">
 
 ### Create the service account
 
@@ -300,7 +300,7 @@ Click `Create` to add the credential to Massdriver and head to the projects page
   initialValue='massdriver-provisioner'
 /><br />
 
-Using [GCloud CLI](https://cloud.google.com/sdk/docs/install), paste the following command in a terminal to create a service account for Massdriver to use:
+Using [gcloud CLI](https://cloud.google.com/sdk/docs/install), paste the following command in a terminal to create a service account for Massdriver to use:
 
 <DynamicServiceAccount />
 
@@ -326,10 +326,9 @@ Attach the `.json` file created in the above command in to the `Artifact Data` f
 
 Set the `Credential Name` to **<DisplayDocInput fieldName='gcpServiceAccountName' />** and click `Create` to add the credential to Massdriver. Head to the projects page to start building your infrastructure.
 
-</details>
+</TabItem>
 
-<details>
-<summary>Console</summary>
+<TabItem value="Google Cloud Console" label="Google Cloud Console">
 
 ### Create a service account
 
@@ -384,7 +383,8 @@ Attach the `.json` file created in the above step in to the `Artifact Data` fiel
 
 Set the `Credential Name` to **<DisplayDocInput fieldName='gcpServiceAccountName' />** and click `Create` to add the credential to Massdriver. Head to the projects page to start building your infrastructure.
 
-</details>
+</TabItem>
+</Tabs>
 
 </DocInputProvider>
 </UUIDProvider>
