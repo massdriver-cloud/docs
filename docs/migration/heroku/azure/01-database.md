@@ -21,7 +21,7 @@ Before starting, ensure you have the following:
 - [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli#troubleshooting-the-heroku-cli)
 - [Massdriver CLI](/docs/cli/00-overview.md)
 - Azure Kubernetes Service (AKS) cluster up and running
-- Azure Postgres database instance up and running
+- Azure database service up and running
 
 ---
 
@@ -49,22 +49,12 @@ We will start by configuring the Azure infrastructure using Massdriver.
 
 ## Step 2: Back Up Your Heroku Database
 
-1. **Create a Backup of Your Heroku Postgres Database**:
-
-   - Use the Heroku CLI to create a backup of your current database:
-
 <Tabs>
 <TabItem value="postgres" label="Postgres">
-<CodeBlock language="bash">
-heroku pg:backups capture --app your-heroku-app-name
-</CodeBlock>
-</TabItem>
-<TabItem value="mysql" label="MySQL">
-<CodeBlock language="bash">
-heroku mysql:backups capture --app your-heroku-app-name
-</CodeBlock>
-</TabItem>
-</Tabs>
+
+1. **Create a Backup of Your [Heroku Postgres](https://devcenter.heroku.com/categories/heroku-postgres) Database**:
+
+- Use the Heroku CLI to create a backup of your current database:
 
 ```bash
 heroku pg:backups capture --app <your-heroku-app-name>
@@ -78,12 +68,68 @@ heroku pg:backups:download --app <your-heroku-app-name>
 
 2. **Verify the Backup**:
 
-   - After downloading the backup (usually named `latest.dump`), verify its contents using the `pg_restore` command:
+- After downloading the backup (usually named `latest.dump`), verify its contents using the `pg_restore` command:
 
-   ```bash
-   pg_restore --list latest.dump
-   ```
+```bash
+pg_restore --list latest.dump
+```
 
+</TabItem>
+<TabItem value="mssql" label="MSSQL">
+
+1. **Create a Backup of Your [MSSQL](https://devcenter.heroku.com/articles/mssql) Database**:
+
+- Set up env vars:
+
+```bash
+rg=heroku-mssql-backup
+location=westus
+saname=herokumssqlbackup
+containername=herokumssqlbackup
+```
+
+- Create an Azure Blob to store the backup:
+
+```bash
+az group create --name $rg --location $location
+```
+
+```bash
+az storage account create --name $saname --resource-group $rg --location $location --sku Standard_LRS
+```
+
+```bash
+az storage container create --account-name $saname --name $containername
+```
+
+```bash
+az storage account show-connection-string --name $saname --resource-group $rg --output tsv
+```
+
+> [!IMPORTANT]
+> The output of the `az storage account show-connection-string` command will output the entire connection string, however the MSSQL addon only requires the `DefaultEndpointsProtocol`, `AccountName`, `AccountKey`, and `EndpointSuffix` values. You can remove the rest of the connection string.
+
+> [!attention]
+> The output of the `az storage account show-connection-string` command will output the entire connection string, however the MSSQL addon only requires the `DefaultEndpointsProtocol`, `AccountName`, `AccountKey`, and `EndpointSuffix` values. You can remove the rest of the connection string.
+
+- Access your MSSQL database addon on Heroku:
+
+```bash
+heroku addons:open mssql -a <your-heroku-app-name>
+```
+
+- For each database you want to backup and restore, click on the database name and then click on the `Backup/Restore` link. Click on the `Using Your own Azure Blob` tab and then `Private Container`. Fill in the container name and connection string values from the previous steps, then click `Save`. Click `Create Backup` to start the backup process.
+
+2. **Verify the Backup**:
+
+- After the backup is complete, you can run the following to show the backup in your Azure Blob:
+
+```bash
+az storage blob list --account-name $saname --container-name $containername --output table
+```
+
+</TabItem>
+</Tabs>
 ---
 
 ## Step 3: Configure Kubernetes Cluster on Azure
