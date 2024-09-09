@@ -33,7 +33,7 @@ export MASSDRIVER_PACKAGE_ID="YOUR-PACKAGE-SLUG"
 # Put the name of the step your OpenTofu / Terraform is in here.
 export MASSDRIVER_PACKAGE_STEP_NAME="the-step-name-in-your-package"
 
-export TF_HTTP_ADDRESS="https://api.massdriver.cloud/state/${MD_PKG_SLUG}/${MASSDRIVER_PACKAGE_STEP_NAME}"
+export TF_HTTP_ADDRESS="https://api.massdriver.cloud/state/${MASSDRIVER_PACKAGE_ID}/${MASSDRIVER_PACKAGE_STEP_NAME}"
 export TF_HTTP_LOCK_ADDRESS=${TF_HTTP_ADDRESS}
 export TF_HTTP_UNLOCK_ADDRESS=${TF_HTTP_ADDRESS}
 ```
