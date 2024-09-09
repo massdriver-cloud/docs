@@ -113,8 +113,9 @@ az storage container create --account-name $saname --name $containername
 az storage account show-connection-string --name $saname --resource-group $rg --output tsv
 ```
 
-> [!IMPORTANT]
-> The output of the `az storage account show-connection-string` command will output the entire connection string, however the MSSQL addon only requires the `DefaultEndpointsProtocol`, `AccountName`, `AccountKey`, and `EndpointSuffix` values. You can remove the rest of the connection string.
+:::caution
+The output of the `az storage account show-connection-string` command will output the entire connection string, however the MSSQL addon only requires the `DefaultEndpointsProtocol`, `AccountName`, `AccountKey`, and `EndpointSuffix` values. You can remove the rest of the connection string.
+:::
 
 - Access your MSSQL database addon on Heroku:
 
