@@ -109,9 +109,6 @@ az storage account show-connection-string --name $saname --resource-group $rg --
 > [!IMPORTANT]
 > The output of the `az storage account show-connection-string` command will output the entire connection string, however the MSSQL addon only requires the `DefaultEndpointsProtocol`, `AccountName`, `AccountKey`, and `EndpointSuffix` values. You can remove the rest of the connection string.
 
-> [!attention]
-> The output of the `az storage account show-connection-string` command will output the entire connection string, however the MSSQL addon only requires the `DefaultEndpointsProtocol`, `AccountName`, `AccountKey`, and `EndpointSuffix` values. You can remove the rest of the connection string.
-
 - Access your MSSQL database addon on Heroku:
 
 ```bash
@@ -130,6 +127,7 @@ az storage blob list --account-name $saname --container-name $containername --ou
 
 </TabItem>
 </Tabs>
+
 ---
 
 ## Step 3: Configure Kubernetes Cluster on Azure
