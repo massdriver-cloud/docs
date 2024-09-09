@@ -54,16 +54,22 @@ We will start by configuring the Azure infrastructure using Massdriver.
 
 1. **Create a Backup of Your [Heroku Postgres](https://devcenter.heroku.com/categories/heroku-postgres) Database**:
 
+- Set up env vars:
+
+```bash
+herokuappname=<your-heroku-app-name>
+```
+
 - Use the Heroku CLI to create a backup of your current database:
 
 ```bash
-heroku pg:backups capture --app <your-heroku-app-name>
+heroku pg:backups capture --app $herokuappname
 ```
 
 - Once the backup is complete, download it:
 
 ```bash
-heroku pg:backups:download --app <your-heroku-app-name>
+heroku pg:backups:download --app $herokuappname
 ```
 
 2. **Verify the Backup**:
@@ -82,6 +88,7 @@ pg_restore --list latest.dump
 - Set up env vars:
 
 ```bash
+herokuappname=<your-heroku-app-name>
 rg=heroku-mssql-backup
 location=westus
 saname=herokumssqlbackup
@@ -112,7 +119,7 @@ az storage account show-connection-string --name $saname --resource-group $rg --
 - Access your MSSQL database addon on Heroku:
 
 ```bash
-heroku addons:open mssql -a <your-heroku-app-name>
+heroku addons:open mssql -a $herokuappname
 ```
 
 - For each database you want to backup and restore, click on the database name and then click on the `Backup/Restore` link. Click on the `Using Your own Azure Blob` tab and then `Private Container`. Fill in the container name and connection string values from the previous steps, then click `Save`. Click `Create Backup` to start the backup process.
