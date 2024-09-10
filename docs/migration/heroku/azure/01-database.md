@@ -20,8 +20,8 @@ Before starting, ensure you have the following:
 - [Massdriver account](https://app.massdriver.cloud/register)
 - [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli#troubleshooting-the-heroku-cli)
 - [Massdriver CLI](/docs/cli/00-overview.md)
-- Azure Kubernetes Service (AKS) cluster up and running
-- Azure database service up and running
+- Azure Kubernetes Service (AKS) bundle up and running
+- Azure database bundle up and running
 
 ---
 
@@ -147,12 +147,7 @@ az storage blob list --account-name $saname --container-name $containername --ou
 
 2. **Access the Kubernetes Cluster**:
 
-   - Download the kubeconfig file from Massdriver and connect to the cluster from your local environment:
-
-   ```bash
-   export KUBECONFIG=<path-to-kubeconfig>
-   kubectl get nodes
-   ```
+   - Download the kubeconfig file from Massdriver and connect to the cluster by following this [guide](/docs/runbooks/kubernetes/01-access.md).
 
 3. **Set Up a Jump Box Pod for Database Migration**:
 
