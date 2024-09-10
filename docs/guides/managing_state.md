@@ -78,15 +78,15 @@ The `tofu import` command allows you to specify the resource type and the resour
 1. Identify the resource to be imported.
 2. Use the `tofu import` command to add the resource to your state:
 
-```bash
-tofu import aws_instance.example i-1234567890abcdef0
-```
+   ```bash
+   tofu import aws_instance.example i-1234567890abcdef0
+   ```
 
 3. Verify the resource has been imported:
 
-```bash
-tofu state list
-```
+   ```bash
+   tofu state list
+   ```
 
 ### 5. Removing resources from state
 
@@ -154,15 +154,15 @@ The `terraform import` command allows you to specify the resource type and the r
 1. Identify the resource to be imported.
 2. Use the `terraform import` command to add the resource to your state:
 
-```bash
-terraform import aws_instance.example i-1234567890abcdef0
-```
+   ```bash
+   terraform import aws_instance.example i-1234567890abcdef0
+   ```
 
 3. Verify the resource has been imported:
 
-```bash
-terraform state list
-```
+   ```bash
+   terraform state list
+   ```
 
 ### 5. Removing resources from state
 
