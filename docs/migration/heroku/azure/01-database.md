@@ -19,7 +19,6 @@ Before starting, ensure you have the following:
 
 - [Massdriver account](https://app.massdriver.cloud/register)
 - [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli#troubleshooting-the-heroku-cli)
-- [Massdriver CLI](/docs/cli/00-overview.md)
 - Azure Kubernetes Service (AKS) bundle up and running
 - Azure database bundle up and running
 

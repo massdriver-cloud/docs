@@ -16,6 +16,7 @@ Before starting, ensure you have the following:
 - [Mass CLI](/docs/cli/00-overview.md)
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 - [Docker](https://docs.docker.com/get-docker/)
+- [Massdriver account](https://app.massdriver.cloud/register)
 - A deployed Azure Kubernetes Service (AKS) cluster
 
 ---
