@@ -11,6 +11,9 @@ This guide provides a step-by-step process for migrating an application hosted o
 
 The guide covers all essential steps of the migration process, from configuring infrastructure on Azure to deploying the application and its dependencies, such as databases and caches, in a secure and efficient manner. It is designed to address common pain points associated with migrating from Heroku, such as managing environment configurations, handling database migrations, and ensuring the smooth setup of CI/CD pipelines.
 
+For a demo of the migration process, watch the following video:
+<iframe width="560" height="315" src="https://www.youtube.com/embed/YRTs2MYXEoM?si=shoKcDORIvidXQLD" title="Migrate from Heroku to Azure using Massdriver" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ## Why Migrate from Heroku to Azure?
 
 Heroku offers a streamlined environment for application hosting, but its limitations often drive developers to consider cloud platforms like Azure. Common reasons for migrating from Heroku to Azure include:

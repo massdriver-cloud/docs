@@ -13,8 +13,6 @@ import CodeBlock from '@theme/CodeBlock';
 
 This guide walks you through migrating a Postgres database from Heroku to Azure using Massdriver, with an emphasis on using private network access to enhance security. We’ll use Azure’s services, and Massdriver will handle most of the infrastructure setup and orchestration.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/YRTs2MYXEoM?si=shoKcDORIvidXQLD" title="Migrate from Heroku to Azure using Massdriver" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
 ## Prerequisites
 
 Before starting, ensure you have the following:
@@ -242,6 +240,12 @@ Coming soon...
 :::note
 The [`haiku-havoc-hero`](https://github.com/mclacore/haiku-havoc-hero) pod includes tools like `heroku`, `aws`, `az`, and `gcloud` by default. You can specify the specific database tooling you need in the manifest file.
 :::
+
+4. **Deploy the Jump Box Pod**:
+
+   ```bash
+   kubectl apply -f haiku-havoc-hero.yaml
+   ```
 
 ---
 
