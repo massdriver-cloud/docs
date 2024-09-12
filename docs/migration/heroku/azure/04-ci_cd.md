@@ -18,6 +18,7 @@ For a video guide on setting up GitHub Actions for Massdriver, watch the video b
 ## Prerequisites
 
 - Your application code must be hosted in version control in a public or private repository, e.g. GitHub or Azure Repos.
+- [Massdriver account](https://app.massdriver.cloud/register)
 
 ---
 

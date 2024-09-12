@@ -19,6 +19,7 @@ Before starting, ensure you have the following:
 - [redis-cli](https://redis.io/docs/latest/operate/oss_and_stack/install/install-redis/)
 - [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
 - [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
+- [Massdriver account](https://app.massdriver.cloud/register)
 - Azure Cache for Redis deployed with **Premium**, **Enterprise**, or **Enterprise Flash** tiers ([Supported tiers for import/export](https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-how-to-import-export-data#which-tiers-support-importexport))
 - Azure Kubernetes Service (AKS) cluster within the same virtual network as the Azure Cache for Redis instance
 
