@@ -13,6 +13,8 @@ import CodeBlock from '@theme/CodeBlock';
 
 This guide walks you through migrating a Postgres database from Heroku to Azure using Massdriver, with an emphasis on using private network access to enhance security. We’ll use Azure’s services, and Massdriver will handle most of the infrastructure setup and orchestration.
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/YRTs2MYXEoM?si=shoKcDORIvidXQLD" title="Migrate from Heroku to Azure using Massdriver" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ## Prerequisites
 
 Before starting, ensure you have the following:
@@ -81,6 +83,13 @@ pg_restore --list latest.dump
 ```
 
 </TabItem>
+
+<TabItem value="mysql" label="MySQL">
+</TabItem>
+
+<TabItem value="mongodb" label="MongoDB">
+</TabItem>
+
 <TabItem value="mssql" label="MSSQL">
 
 1. **Create a Backup of Your [MSSQL](https://devcenter.heroku.com/articles/mssql) Database**:
@@ -151,48 +160,158 @@ az storage blob list --account-name $saname --container-name $containername --ou
 
 3. **Set Up a Jump Box Pod for Database Migration**:
 
-   - Deploy a pod in AKS with the required tools (e.g., `psql`, `curl`, `Heroku CLI`). You can create a custom Docker image or use an existing Postgres Docker image.
-   - Example `kubectl` command to deploy a jump box pod:
+   - Create a new file called `haiku-havoc-hero.yaml` with the following content:
 
-   ```bash
-   kubectl run jumpbox --image=postgres --restart=Never -- bash
+<Tabs>
+<TabItem value="postgres" label="Postgres">
+
+   ```yaml
+   apiVersion: v1
+   kind: Pod
+   metadata:
+     name: haiku-havoc-hero
+     namespace: default
+   spec:
+      containers:
+         - name: postgres
+           image: mclacore/haiku-havoc-hero:postgres-v1
+           env:
+             - name: POSTGRES_PASSWORD
+               value: password
    ```
+
+</TabItem>
+<TabItem value="mysql" label="MySQL">
+
+   ```yaml
+   apiVersion: v1
+   kind: Pod
+   metadata:
+     name: haiku-havoc-hero
+     namespace: default
+   spec:
+      containers:
+         - name: mysql
+           image: mclacore/haiku-havoc-hero:mysql-v1
+           env:
+             - name: MYSQL_ROOT_PASSWORD
+               value: password
+   ```
+
+</TabItem>
+<TabItem value="mongodb" label="MongoDB">
+
+   ```yaml
+   apiVersion: v1
+   kind: Pod
+   metadata:
+     name: haiku-havoc-hero
+     namespace: default
+   spec:
+      containers:
+         - name: mongo
+           image: mclacore/haiku-havoc-hero:mongo-v1 
+   ```
+
+</TabItem>
+<TabItem value="mssql" label="MSSQL">
+
+   ```yaml
+   apiVersion: v1
+   kind: Pod
+   metadata:
+     name: haiku-havoc-hero
+     namespace: default
+   spec:
+      containers:
+         - name: mssql
+           image: mclacore/haiku-havoc-hero:mssql-v1 
+           env:
+             - name: PATH
+               value: "/opt/mssql-tools/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/tmp/google-cloud-sdk/bin"
+   ```
+
+</TabItem>
+</Tabs>
+
+:::note
+The [`haiku-havoc-hero`](https://github.com/mclacore/haiku-havoc-hero) pod includes tools like `heroku`, `aws`, `az`, and `gcloud` by default. You can specify the specific database tooling you need in the manifest file.
+:::
 
 ---
 
 ## Step 4: Migrate Database to Azure
 
-1. **Prepare Kubernetes as a Jump Box**:
+1. **Use Kubernetes as a Jump Box**:
 
    - Once your jump box pod is running, `exec` into it:
 
    ```bash
-   kubectl exec -it jumpbox -- bash
+   kubectl exec -it haiku-havoc-hero -c <container-name> -- bash
    ```
 
-2. **Restore the Backup in the Azure Postgres Database**:
+2. **Restore the Backup**:
 
-   - First, log into the Azure Postgres instance from the jump box using the credentials from Massdriver:
+<Tabs>
+<TabItem value="postgres" label="Postgres">
+
+- Setup your environment variables:
 
    ```bash
-   psql -h <azure-postgres-host> -U <username> -d postgres
+   herokuappname=<your-heroku-app-name>
+   pgrg=<azure postgres resource group>
+   pgname=<azure postgres name>
+   database=<database-name>
    ```
 
-   - Now, run the restore command to import your Heroku backup:
+- Log into Heroku with interactive (`-i`) mode and use your Heroku API key as the password:
 
    ```bash
-   pg_restore --verbose --no-owner --host=<azure-postgres-host> --port=5432 --username=<username> --dbname=<database-name> latest.dump
+   heroku login -i
    ```
 
-   - Use the credentials provided by Massdriver, and be sure the private network access configuration is active to ensure secure communication between the database and the jump box.
+- Download the backup from Heroku:
+
+   ```bash
+   heroku pg:backups:download --app $herokuappname
+   ```
+
+- Log into Azure CLI and set `FQDN` and `username` environment variables:
+
+   ```bash
+   az login
+   ```
+
+   ```bash
+   fqdn=$(az postgres flexible-server show --resource-group $pgrg --name $pgname --query "fullyQualifiedDomainName" --output tsv)
+   ```
+
+   ```bash
+   username=$(az postgres flexible-server show --resource-group $pgrg --name $pgname --query "administratorLogin" --output tsv)
+   ```
+
+- Restore the backup to Azure Postgres:
+
+   ```bash
+   pg_restore --verbose --no-owner -h $fqdn -U $username -d $database latest.dump
+   ```
 
 3. **Verify the Migration**:
 
    - Once the migration is complete, connect to the Azure Postgres instance and verify that the data has been transferred correctly:
 
    ```bash
-   psql -h <azure-postgres-host> -U <username> -d <database-name>
+   psql -h $fqdn -U $username -d $database -c "\dt"
    ```
+
+</TabItem>
+<TabItem value="mysql" label="MySQL">
+</TabItem>
+<TabItem value="mongodb" label="MongoDB">
+</TabItem>
+<TabItem value="mssq'" label="MSSQL">
+</TabItem>
+</Tabs>
 
 ---
 
@@ -203,49 +322,13 @@ az storage blob list --account-name $saname --container-name $containername --ou
    - Once you have verified that the migration is successful, clean up the jump box pod:
 
    ```bash
-   kubectl delete pod jumpbox
+   kubectl delete pod haiku-havoc-hero
    ```
 
 2. **Update Application Environment**:
-   - Update your application's environment variables in Azure with the new database credentials and ensure that the private network access settings are applied to the entire application stack.
-   - Use Massdriver’s UI to inject these variables directly into your application bundles.
 
----
-
-## Step 6: Set Up Continuous Integration for Future Deployments
-
-1. **GitHub Actions for Database Migration**:
-
-   - Automate future database migrations by adding a GitHub Action. This action can trigger the `pg_dump` command on Heroku and then restore the dump to Azure Postgres.
-   - Example GitHub Action:
-
-   ```yaml
-   name: Database Migration
-
-   on:
-     push:
-       branches:
-         - main
-
-   jobs:
-     migrate-db:
-       runs-on: ubuntu-latest
-       steps:
-         - name: Checkout code
-           uses: actions/checkout@v2
-
-         - name: Install Heroku CLI
-           run: curl https://cli-assets.heroku.com/install.sh | sh
-
-         - name: Perform DB Backup on Heroku
-           run: heroku pg:backups capture --app <your-heroku-app-name>
-
-         - name: Download DB Backup
-           run: heroku pg:backups:download --app <your-heroku-app-name>
-
-         - name: Restore Backup to Azure Postgres
-           run: pg_restore --verbose --no-owner --host=<azure-postgres-host> --port=5432 --username=<username> --dbname=<database-name> latest.dump
-   ```
+   - Check out our [guide](/docs/applications/02-create-application.md#environment-variable-examples) on setting up environment variables in your `massdriver.yaml` file for your application to connect to the new Azure Postgres database.
+   - We also have a [video guide](https://www.youtube.com/watch?v=seRBnT-Axfw) on deplying a 3 tier web architecture on Azure with AKS that goes over setting up environment variables.
 
 ---
 
