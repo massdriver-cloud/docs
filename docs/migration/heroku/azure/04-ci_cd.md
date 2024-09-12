@@ -12,6 +12,9 @@ import TabItem from '@theme/TabItem';
 
 This guide explains how to migrate your CI/CD pipeline from Heroku to Massdriver, including continuous integration (CI) and continuous deployment (CD) to Azure services.
 
+For a video guide on setting up GitHub Actions for Massdriver, watch the video below:
+<iframe width="560" height="315" src="https://www.youtube.com/embed/rABbB0MMQPg?si=MtHAmUVQLEfdGKUK" title="Scripting with Massdriver" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ## Prerequisites
 
 - Your application code must be hosted in version control in a public or private repository, e.g. GitHub or Azure Repos.
