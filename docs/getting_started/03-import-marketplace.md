@@ -14,9 +14,9 @@ This guide will walk you through how to import a template from the [Massdriver T
 ## Prerequisites
 
 - A [Massdriver](https://app.massdriver.cloud) account
-- Org Admin role of a Massdriver [organization](/docs/concepts/10-organizations.md)
+- `Org Admin` role of a Massdriver [organization](/docs/concepts/10-organizations.md)
 
-## Deploy a template
+## Import a template
 
 ### Step 1: Find a template
 
@@ -34,13 +34,15 @@ When you're ready, click `Add to Library` to add the template to your organizati
 
 ![Import template](./img/library-import-template.gif)
 
-### Step 3: Customize the template
+## Deploy a template
+
+### Step 1: Customize the template
 
 You can download and customize your template before deploying it. Click on `Download bundle src` button from the `Bundle Catalog`. This will download a zip file containing the template source code.
 
 ![Download template](./img/library-download-template.gif)
 
-### Step 4: Deploy the template
+### Step 2: Deploy the template
 
 Once you have customized the template to your liking, you can deploy it to your cloud provider. Open the `Bundle Catalog` and drag your bundle out onto the canvas.
 
@@ -48,11 +50,13 @@ Once you have customized the template to your liking, you can deploy it to your 
 
 Once you've configured the template, click `Deploy` to deploy the template to your cloud provider.
 
-### Step 5: Store your custom template in source control
+## Next steps
+
+### Store your custom template in source control
 
 After you have customized and deployed your template, it is a good practice to store your template in source control (e.g. GitHub, Azure Repos, etc.). This will allow you to track changes to your template over time and collaborate with others.
 
-### Step 6: Integrate CI/CD
+### Integrate CI/CD
 
 You can integrate CD pipelines with your source control to automatically publish changes to your infrastructure. This will help you maintain a consistent and reliable infrastructure.
 
