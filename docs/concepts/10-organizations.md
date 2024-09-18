@@ -19,7 +19,7 @@ To find your organization ID, hover over your organization name logo in the top 
 
 ### Use your organization ID in the Massdriver CLI
 
-To use your organization ID in the Massdriver CLI, export the `MASSDRIVER_ORG_ID` environment variable to the value of your Organization UUID.
+To use your organization ID in the Massdriver CLI, export the `MASSDRIVER_ORG_ID` environment variable to the value of your organization ID.
 
 ```bash
 export MASSDRIVER_ORG_ID=your-org-id

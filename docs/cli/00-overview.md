@@ -71,11 +71,11 @@ In order to execute commands against your Massdriver organization, you must set 
 
 #### Find your organization ID
 
-To find your organization ID, hover over your organization name logo in the top left corner of the Massdriver UI and click the copy button next to your organization ID.
+To find your organization slug, hover over your organization name logo in the top left corner of the Massdriver UI and click the copy button next to your organization slug.
 
 #### Use your organization ID in the Massdriver CLI
 
-To use your organization ID in the Massdriver CLI, export the `MASSDRIVER_ORG_ID` environment variable to the value of your Organization UUID.
+To use your organization slug in the Massdriver CLI, export the `MASSDRIVER_ORG_ID` environment variable to the value of your organization slug.
 
 ```bash
 export MASSDRIVER_ORG_ID=your-org-id

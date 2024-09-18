@@ -30,7 +30,7 @@ This step requires the use of the Massdriver CLI. If you haven't already, [insta
 
 Local environment variables to export:
 * Create a [Service Account](/security/service-accounts) and export the `MASSDRIVER_API_KEY` environment variable to the value of your Service Account key.
-* Copy your [Organization ID](/concepts/organizations) and export the `MASSDRIVER_ORG_ID` environment variable to the value of your Organization UUID.
+* Copy your [Organization ID](/concepts/organizations) and export the `MASSDRIVER_ORG_ID` environment variable to the value of your Organization ID.
 
 :::
 
