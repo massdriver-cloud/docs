@@ -1,6 +1,11 @@
 {
   "redirects": [
     {
+      "source": "/workshops/opentofu-foundations",
+      "destination": "https://streamyard.com/watch/7jMwSnDp7h2X",
+      "permanent": false
+    },
+    {
       "source": "/platform/service-accounts",
       "destination": "/security/service-accounts",
       "permanent": true
