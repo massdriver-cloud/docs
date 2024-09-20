@@ -1,6 +1,10 @@
-# Creating a Bundle from an OpenTofu Module
+# Create a Bundle from an OpenTofu Module
 
-This guide provides step-by-step instructions on how to create a new bundle in Massdriver from an existing OpenTofu module. Be sure to complete the [prerequisites](https://docs.massdriver.cloud/getting-started/prerequisites) in order to complete this guide.
+If you already have existing Infrastructure-as-Code (IaC) modules you'd like to deploy and manage through Massdriver, you'll need to import the IaC into a Massdriver [bundle](https://docs.massdriver.cloud/concepts/bundles). Fortunately, the Massdriver CLI makes it easy to create bundles from existing IaC. To demonstrate, this guide provides step-by-step instructions on how to create a new bundle in Massdriver from an existing OpenTofu module.
+
+:::note
+Be sure to complete the [prerequisites](https://docs.massdriver.cloud/getting-started/prerequisites) in order to complete this guide.
+:::
 
 ## Step 1: Create a New Massdriver Bundle
 
