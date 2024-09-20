@@ -54,7 +54,7 @@ Once you've configured the template, click `Deploy` to deploy the template to yo
 
 ### Store your custom template in source control
 
-After you have customized and deployed your template, it is a good practice to store your template in source control (e.g. GitHub, Azure Repos, etc.). This will allow you to track changes to your template over time and collaborate with others.
+After you have [customized](#step-1-customize-the-template) and [deployed](#step-2-deploy-the-template) your template, it is a good practice to store your template in source control (e.g. GitHub, Azure Repos, etc.). This will allow you to track changes to your template over time and collaborate with others.
 
 ### Integrate CI/CD
 
