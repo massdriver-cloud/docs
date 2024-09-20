@@ -13,7 +13,7 @@ In Massdriver, naming conventions for cloud resources are managed for you. The p
 
 ### Package Alarms
 
-Packages can also integrate monitors and alarms into Massdriver's notification system. In the example below, a number of Cloudwatch Alarms are visible for RDS Postgres.
+Packages can also integrate monitors and alarms into Massdriver's notification system. In the example below, a number of Cloudwatch Alarms are visible for Aurora Postgres.
 
 ![Packages](./img/packages-alarms.gif)
 

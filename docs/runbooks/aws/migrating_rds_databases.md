@@ -10,7 +10,6 @@ import TabItem from '@theme/TabItem';
 
 There are a number of options for migrating databases on AWS. This runbook takes a safe approach that will incur _downtime_, but provides a risk-free rollback mechanism.
 
-
 :::note
 Before getting started, RDS supports in-place major version upgrades by simply changing the major version. Through the Massdriver UI, you can simply pick the new version and click "deploy." 
 

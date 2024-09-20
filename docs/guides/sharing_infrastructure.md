@@ -78,9 +78,9 @@ This tutorial uses:
 * [SOC2 / HIPAA compliant AWS VPC](https://massdriver.cloud/marketplace/aws-vpc) bundle 
 * [SOC2 / HIPAA compliant AWS EKS Cluster](https://www.massdriver.cloud/marketplace/aws-eks-cluster) bundle
 
-Click the **bundle button**:
+Open the **Bundle Catalog**:
 
-![Bundle button](/img/ui/bundle-bar-button.png)
+![Bundle button](./sharing_infrastructure/bundle-bar-button.gif)
 
 Then drag both bundles from the bundle sidebar onto your project canvas.
 
@@ -156,13 +156,13 @@ In our ECommerce Project we'll set up two environment defaults.
 
 Click the cloud icon on the top bar and select your network.
 
-![](/img/ui/environment-set-default-network.gif)
+![](./sharing_infrastructure/environment-set-default-network.gif)
 
 **Set the Kubernetes Cluster to use for all apps in this project:**
 
 Click the Kubernetes logo and select your cluster.
 
-![](/img/ui/environment-kubernetes-environment-default.gif)
+![](./sharing_infrastructure/environment-kubernetes-environment-default.gif)
 
 :::note
 By default only VPCs, Kubernetes clusters, and cloud credentials can be environment defaults. Other resource types can be configured as defaults (i.e.: spark clusters).
@@ -187,7 +187,7 @@ In this scenario we would add a Kubernetes cluster to our application project.
 
 In production, we'd deploy a cluster owned by the ECommerce Team. In preview environments we could "replace" the Kubernetes box on our diagram with the Kubernetes cluster shared from the Shared Infrastructure project.
 
-![Setting a Remote Reference](/img/ui/package-set-remote-reference.gif)
+![Setting a Remote Reference](./sharing_infrastructure/package-set-remote-reference.gif)
 
 **Example 2:**
 
@@ -216,7 +216,7 @@ To peer networks using remote reference, we suggest making a "Peering" project s
 
 Add two VPC bundles to the canvas and a peering bundle.
 
-Clicking on the artifact handles you can select VPCs from your Shared Infrastructure project. Here I will peer our US VPC to our EU VPC.
+Here I will peer our US VPC to our EU VPC.
 
 ![Peering VPCs in Massdriver](./sharing_infrastructure/vpc-peering.gif)
 

@@ -67,16 +67,16 @@ Massdriver recommends (and follows) the following naming convention for bundles:
 
 **Bad names**:
 
-* rds
-* aws-rds
+* `rds`
+* `aws-rds`
 
 **Good names**:
 
-* aws-rds-mysql
-* aws-rds-postgres
-* aws-sns-pubsub-topic
-* aws-sqs-pubsub-subscription
-* aws-lambda-pubsub-subscriber
+* `aws-rds-mysql`
+* `aws-rds-postgres`
+* `aws-sns-pubsub-topic`
+* `aws-sqs-pubsub-subscription`
+* `aws-lambda-pubsub-subscriber`
 
 ## Massdriver Metadata
 
