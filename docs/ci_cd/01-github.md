@@ -140,14 +140,12 @@ This example is configured to trigger on pushes to the repository's `main` branc
 
 ## FAQs
 
-### Where can I find my secrets, project, target, and manifest names?
+### Where can I find my secrets, project, environment, and manifest names?
 
 * [Secrets & vars](#set-secrets-and-vars)
-* [Projects](/concepts/projects) are found on the Projects page of Massdriver
-* [Environments](/concepts/environments) are found listed inside your project
-* [Manifests](/concepts/manifests) are the abbreviated name of your bundle or application
+* `Project`, `environment`, and `manifest` names are found in the `Massdriver package name`:
 
-![Manifest Name](manifest.png)
+![Slug Name](slug.png)
 
 ### Where can I find my image tag path?
 

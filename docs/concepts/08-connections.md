@@ -14,3 +14,9 @@ A dotted line indicates that an [artifact](#artifact) _has not_ been provisioned
 A solid line indicates that an [artifact](#artifact) _has_ been provisioned for the connection.
 
 ![Connections](./img/connections.png)
+
+To remove a connection, click the **X** on the connection line.
+
+:::caution
+Removing a connection **without decommissioning the dependent manifest** may result in an inconsistent state resulting in orphaned resources.
+:::
