@@ -9,9 +9,11 @@ Organizations are the top-level entity in Massdriver. They are the primary way t
 
 ## Invite a user to your organization
 
-To invite a user to your organization, click on `Users` in the sidebar, under `Organization Settings`.
-
-Enter the email of the user you wish to invite and click `Invite`.
+To invite a user to your organization:
+- click on `Groups` in the sidebar
+- click on a group (e.g., `E-Commerce Team`)
+- under `Users`, click `Add`
+- enter the email of the user you wish to invite and click `Add User`.
 
 ## Find your organization ID
 
