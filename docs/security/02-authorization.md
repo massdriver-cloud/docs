@@ -8,7 +8,6 @@ This documentation provides an overview of the roles within Massdriver and the c
 All organization members are granted the "organization viewer" role, allowing them to:
 
 - acceptGroupInvitation
-- addServiceAccountToGroup
 - applicationBundleTemplates
 - artifactDefinition
 - artifactDefinitions
@@ -72,14 +71,11 @@ In addition to the [organization viewer](#organization-viewer) permissions, "org
 ### Project Viewer
 "Project viewer" roles allow views on specific project-related GraphQL operations:
 
-- assignRemoteReference
 - compareDeployments
 - deployPreviewEnvironment
 - deployment
 - deployments
 - environment
-- disconnectImportedResources
-- downloadArtifact
 - getPackageByNamingConvention
 - grantGroupAccess
 - importResources
@@ -111,6 +107,7 @@ In addition to the [project viewer](#project-viewer) permissions, a "project adm
 - deleteWatchedMetricPackageAlarm
 - deployPackage
 - disconnectImportedResources
+- downloadArtifact
 - linkManifests
 - setDefaultSecretForPreviewEnvironments
 - setManifestPosition
