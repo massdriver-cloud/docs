@@ -50,20 +50,20 @@ jobs:
       MASSDRIVER_ORG_ID: ${{secrets.MASSDRIVER_ORG_ID}}
     steps:
     - name: Checkout code
-    uses: actions/checkout@v4
+      uses: actions/checkout@v4
 
     - name: Install Massdriver CLI
-    uses: massdriver-cloud/actions/setup@v5.1
+      uses: massdriver-cloud/actions/setup@v5.1
 
     # Deploy preview environment when PR is opened/updated
     - name: Deploy Preview Environment
-    if: github.event.action != 'closed'
-    uses: massdriver-cloud/actions/preview_deploy@v5.1
+      if: github.event.action != 'closed'
+      uses: massdriver-cloud/actions/preview_deploy@v5.1
 
     # Decommission preview environment when PR is closed/merged
     - name: Decommission Preview Environment
-    if: github.event.action == 'closed'
-    uses: massdriver-cloud/actions/preview_decommission@v5.1
+      if: github.event.action == 'closed'
+      uses: massdriver-cloud/actions/preview_decommission@v5.1
 ```
 
 ### Open a Pull Request to Create a Temporary Environment
