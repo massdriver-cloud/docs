@@ -118,6 +118,23 @@ You can securely pass secrets to your applications within the configuration file
 
 ### Using Remote References for Resource Sharing
 
+Massdriver allows you to use remote references to include only a portion of the project canvas in your preview environments. This feature is detailed in our [Sharing Infrastructure Guide](https://docs.massdriver.cloud/guides/sharing-infrastructure).
+
+#### Sharing Resources Among Preview Environments
+
+By using remote references, you can share resources like Kubernetes clusters among multiple preview environments. This approach minimizes costs and reduces the time required to set up new environments.
+
+- **Cost Efficiency**: Sharing a single staging cluster across preview environments avoids the overhead of provisioning separate clusters for each pull request.
+- **Faster Deployment**: Reusing existing resources speeds up the deployment process, allowing developers to test changes more quickly.
+- **Consistent Environment**: Ensures all preview environments are running in a consistent infrastructure setup.
+
+#### Additional Use Cases
+
+- **Shared Databases**: Connect preview environments to a shared database populated with test data.
+- **Common Networking**: Use a shared virtual network to maintain consistent network policies.
+- **Centralized Monitoring**: Aggregate logs and metrics from all preview environments into a shared monitoring service.
+
+**Example Configuration using remote references for networking and compute from another project:**
 
 ```js
 {
@@ -163,22 +180,6 @@ You can securely pass secrets to your applications within the configuration file
   }
 }
 ```
-
-Massdriver allows you to use remote references to include only a portion of the project canvas in your preview environments. This feature is detailed in our [Sharing Infrastructure Guide](https://docs.massdriver.cloud/guides/sharing-infrastructure).
-
-#### Sharing Resources Among Preview Environments
-
-By using remote references, you can share resources like Kubernetes clusters among multiple preview environments. This approach minimizes costs and reduces the time required to set up new environments.
-
-- **Cost Efficiency**: Sharing a single staging cluster across preview environments avoids the overhead of provisioning separate clusters for each pull request.
-- **Faster Deployment**: Reusing existing resources speeds up the deployment process, allowing developers to test changes more quickly.
-- **Consistent Environment**: Ensures all preview environments are running in a consistent infrastructure setup.
-
-#### Additional Use Cases
-
-- **Shared Databases**: Connect preview environments to a shared database populated with test data.
-- **Common Networking**: Use a shared virtual network to maintain consistent network policies.
-- **Centralized Monitoring**: Aggregate logs and metrics from all preview environments into a shared monitoring service.
 
 
 ## CI Integration
