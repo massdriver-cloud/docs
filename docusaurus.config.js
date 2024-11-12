@@ -121,7 +121,7 @@ module.exports = {
         enableInDevelopment: false, // optional
         // other options are passed to posthog-js init as is
       },
-    ],
+    ]
   ],
   presets: [
     [
