@@ -14,28 +14,28 @@ Preview Environments are essential for validating changes in a production-like s
 
 ### Basic Setup
 
-To enable Preview Environments, follow these steps:
+First, initialize your preview configuration using the Massdriver CLI:
 
-1. **Initialize Configuration**: Use the Massdriver CLI to generate a `preview.json` configuration file for your project.
+```shell
+mass project list
+mass preview init $projectSlug
+```
 
-   ```shell
-   mass project list
-   mass preview init $projectSlug
-   ```
+You'll be prompted to select the credentials you want to use for your preview environment and this will generate a `preview.json` configuration file for your project with a set of default parameters for each of the packages in your project.
 
-2. **Set Parameters**: Edit the `preview.json` file to set the parameters, remote references, and secrets for your preview environment.
+Next, edit the `preview.json` file to set the parameters, remote references, and secrets for your preview environment.
 
-3. **Commit to GitHub**: Add the generated configuration file to your GitHub repository.
+Add the configuration to your repository:
 
-   ```shell
-   git add preview.json
-   git commit -m "Add Massdriver configuration"
-   git push origin main
-   ```
+```shell
+git add preview.json
+git commit -m "Add Massdriver configuration"
+git push origin main
+```
 
-4. **Set Up GitHub Actions**: Configure a GitHub Actions workflow that interacts with Massdriver to deploy your preview environments. Here's a basic example:
+Finally, set up your GitHub Actions workflow to manage preview environments:
 
-   ```yaml
+```yaml
 name: Preview Environments
 
 on:
@@ -49,22 +49,22 @@ jobs:
       MASSDRIVER_API_KEY: ${{secrets.MASSDRIVER_API_KEY}}
       MASSDRIVER_ORG_ID: ${{secrets.MASSDRIVER_ORG_ID}}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout code
+    uses: actions/checkout@v4
 
-      - name: Install Massdriver CLI
-        uses: massdriver-cloud/actions/setup@v5.1
+    - name: Install Massdriver CLI
+    uses: massdriver-cloud/actions/setup@v5.1
 
-      # Deploy preview environment when PR is opened/updated
-      - name: Deploy Preview Environment
-        if: github.event.action != 'closed'
-        uses: massdriver-cloud/actions/preview_deploy@v5.1
+    # Deploy preview environment when PR is opened/updated
+    - name: Deploy Preview Environment
+    if: github.event.action != 'closed'
+    uses: massdriver-cloud/actions/preview_deploy@v5.1
 
-      # Decommission preview environment when PR is closed/merged
-      - name: Decommission Preview Environment
-        if: github.event.action == 'closed'
-        uses: massdriver-cloud/actions/preview_decommission@v5.1
-   ```
+    # Decommission preview environment when PR is closed/merged
+    - name: Decommission Preview Environment
+    if: github.event.action == 'closed'
+    uses: massdriver-cloud/actions/preview_decommission@v5.1
+```
 
 ### Open a Pull Request to Create a Temporary Environment
 
@@ -76,11 +76,19 @@ With the setup complete, opening a pull request will trigger the GitHub Actions 
 
 Massdriver's configuration files support bash interpolation of environment variables. This is useful for incorporating dynamic values like pull request numbers into hostnames or resource identifiers.
 
-```yaml
-app:
-  params:
-    hostname: "preview-${{ env.PULL_REQUEST_NUMBER }}.example.com"
-```
+```js
+{
+  "projectSlug": "your-project-slug",
+  // other project configuration here
+  "packages": {
+    "app": {
+      "params": {
+        "hostname": "preview-${SOME_UNIQUE_ENV_VAR_VALUE}.example.com"
+      }
+    }
+  }
+}
+```  
 
 In the example above, `${{ env.PULL_REQUEST_NUMBER }}` is replaced with the actual pull request number, ensuring each preview environment has a unique hostname.
 
@@ -88,14 +96,73 @@ In the example above, `${{ env.PULL_REQUEST_NUMBER }}` is replaced with the actu
 
 You can securely pass secrets to your applications within the configuration file. Massdriver ensures that sensitive information is handled securely throughout the deployment process.
 
-```yaml
-app:
-  secrets:
-    - name: STRIPE_KEY
-      value: ${{ secrets.STRIPE_KEY }}
-```
+```js
+{
+  "projectSlug": "your-project-slug",
+  // other project configuration here
+  "packages": {
+    "app": {
+      "params": {
+        // your params here
+      },
+      "secrets": [
+        {
+          "name": "FOOBAR",
+          "value": "${SOME_ENV_VAR}"
+        }
+      ]
+    }
+  }
+}
+```        
 
 ### Using Remote References for Resource Sharing
+
+
+```js
+{
+  "projectSlug": "your-project-slug",
+  "credentials": [
+    // your credential references here
+  ],
+  "packages": {
+    "vpc": {
+      "remoteReferences": [
+        {
+          "artifactId": "your-artifact-id",
+          "field": "network"
+        }
+      ]
+    },
+    "cluster": {
+      "remoteReferences": [
+        {
+          "artifactId": "your-artifact-id",
+          "field": "compute"
+        }
+      ]
+    },
+    "rds": {
+      "params": {
+        "engine": "postgresql",
+        "version": "14.3"
+      }
+    },
+    "app": {
+      "params": {
+        "image": "example:${SOME_ENV_VAR}",
+        "hostname": "preview-${SOME_ENV_VAR}.example.com"
+      },
+      "secrets": [
+        {
+          "name": "FOOBAR",
+          "value": "${SOME_ENV_VAR}"
+        }
+      ]
+    }
+  }
+}
+```
 
 Massdriver allows you to use remote references to include only a portion of the project canvas in your preview environments. This feature is detailed in our [Sharing Infrastructure Guide](https://docs.massdriver.cloud/guides/sharing-infrastructure).
 
@@ -113,52 +180,12 @@ By using remote references, you can share resources like Kubernetes clusters amo
 - **Common Networking**: Use a shared virtual network to maintain consistent network policies.
 - **Centralized Monitoring**: Aggregate logs and metrics from all preview environments into a shared monitoring service.
 
-## Example Configuration File
 
-Below is an example of a Massdriver configuration file (`preview.json`) for a project with network referenced from another project, utilizing preview environments:
+## CI Integration
 
-```yaml
-projectSlug: your-project-slug
-credentials: []
-packages:
-  vpc:
-    remoteReferences:
-      - artifactId: your-artifact-id
-        field: network
-  cluster:
-    remoteReferences:
-      - artifactId: your-artifact-id
-        field: compute
-  rds:
-    params:
-      engine: postgresql
-      version: 14.3
-  app:
-    params:
-      image: example:${}
-      hostname: "preview-${}.example.com"
-    secrets:
-      - name: FOOBAR
-        value: ${{ secrets.STRIPE_KEY }}
-```
+Preview environments can be integrated with any CI system. While GitHub integration works out of the box, you can use preview environments with any CI platform by providing a JSON file with the required pull request metadata.
 
-**Notes:**
-
-- Replace `your-project-slug` with your actual project slug.
-- Update `your-artifact-id` with the ID of the shared resource you want to reference.
-- `${{ env.PULL_REQUEST_NUMBER }}` will be interpolated with the pull request number at runtime.
-- `${{ secrets.STRIPE_KEY }}` should reference a secret stored securely in your repository's secret store.
-
-## How ???
-
-
-```json
-{
-  "pull_request": {
-    "title": "My Preview Environment",
-    "number": 1337
-  }
-}
+When using the `mass preview deploy` command, pass your CI context file using the `--ci-context` flag:
 
 ## Conclusion
 
