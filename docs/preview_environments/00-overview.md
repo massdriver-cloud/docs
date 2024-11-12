@@ -155,8 +155,8 @@ packages:
 ```json
 {
   "pull_request": {
-    "title": "I am a preview environment.",
-    "number": 3
+    "title": "My Preview Environment",
+    "number": 1337
   }
 }
 
