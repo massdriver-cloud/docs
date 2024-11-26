@@ -18,8 +18,7 @@ Here is an example, using the `schema` and `uiSchema` to display a custom `DnsZo
 ```yaml title="schema"
 type: object
 title: DNS Zones schema
-description:
-  A dummy schema to show how to use custom fields.
+description: A dummy schema to show how to use custom fields.
 properties:
   dnsZones: # <-- This is where you define the property name
     type: string
@@ -371,15 +370,21 @@ version:
 
 ### Deploy-Locked Dropdown
 
-The `deployLockedDropdown` is a select menu that disabled specific items once the infrastructure has been deployed. Provide an ordered list to the field via the `schema` and provide a `disableType` to the `uiSchema` of either `higher` or `lower`. The field will initially allow the user to select any of the values. Once a value is selected and the package is deployed, the dropdown will disable all values either above or below the selected value, depending on the provided `disableType`.
+The `deployLockedDropdown` is a select menu that disabled specific items once the infrastructure has been deployed. Provide an ordered list to the field via the `schema` and provide a `disableType` to the `uiSchema` of either `higher`, `lower`, or an object specifying both `higher` and `lower` parameters. The field will initially allow the user to select any of the values. Once a value is selected and the package is deployed, the dropdown will disable values depending on the provided `disableType`.
+
+- If you supply `disableType` with `higher`, then all values higher in the list than the current value will be disabled.
+- If you supply `disableType` with `lower`, then all values lower in the list than the current value will be disabled.
+- If you supply `disableType` with an object, then all values outside of the supplied range will be disabled. (ie. `{higher: 2, lower: 2}` will allow the user to select two values above and below the current value.)
+  - Supplying an object containing a value of true will disable all values for that "side". (ie. `{higher: 2, lower: true}` will allow the user to select two values above the current and nothing else.)
+  - Supplying an object missing a key will enable all values for that "side". (ie. `{higher: 2}` will allow the user to select two values above the current, or any value lower than it.)
 
 **Props**
 
 External props passed through the `uiSchema`
 
-| Name        | Required | Type   | Default | Example             | Description                                                                             |
-| ----------- | -------- | ------ | ------- | ------------------- | --------------------------------------------------------------------------------------- |
-| disableType | false    | string | lower   | `lower` or `higher` | Determines which direction to disable dropdown items once the package has been deployed |
+| Name        | Required | Type                         | Default | Example                                    | Description                                                                            |
+| ----------- | -------- | ---------------------------- | ------- | ------------------------------------------ | -------------------------------------------------------------------------------------- |
+| disableType | false    | `lower`, `higher`, or object | `lower` | `lower`, `higher`, `{lower: 2, higher: 2}` | Determines what dropdown items should be accessible once the package has been deployed |
 
 **Example**
 
@@ -405,4 +410,12 @@ properties:
 deployLockedDropdown:
   ui:field: deployLockedDropdown
   disableType: lower
+```
+
+```yaml title="uiSchema"
+deployLockedDropdown:
+  ui:field: deployLockedDropdown
+  disableType:
+    higher: 2
+    lower: true
 ```
