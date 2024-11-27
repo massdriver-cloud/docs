@@ -12,7 +12,7 @@ A **provisioner** is a Docker image designed to execute infrastructure-as-code (
 * [OpenTofu](/provisioners/opentofu)
 * [Terraform](/provisioners/terraform)
 * [Helm](/provisioners/helm)
-* [Bicep](/provisioenrs/bicep)
+* [Bicep](/provisioners/bicep)
 
 :::note
 Massdriver also supports the use of custom, private, provisioners for our customers. Please contact us for more information.
