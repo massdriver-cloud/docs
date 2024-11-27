@@ -2,7 +2,7 @@
   "redirects": [
     {
       "source": "/workshops/opentofu-foundations",
-      "destination": "https://streamyard.com/watch/hyuAHbNGrCYi",
+      "destination": "https://github.com/massdriver-cloud/opentofu-foundations",
       "permanent": false
     },
     {
