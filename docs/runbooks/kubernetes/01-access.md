@@ -15,8 +15,8 @@ This guide will cover how to access your Kubernetes cluster using a _kubeconfig_
 ## Downloading your kubeconfig file
 
 1. In Massdriver, navigate to the Kubernetes cluster you want to access
-2. Click on the deployment and open the `Details` tab
-3. Under **Artifacts**, click the download button and then click `Kube Config`
+2. Click on the deployment and open the `Artifacts` tab
+3. Click the download button and then click `Kube Config`
 
 ![Download kubeconfig](./kubeconfig-download.gif)
 
