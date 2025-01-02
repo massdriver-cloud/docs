@@ -28,6 +28,10 @@ The following configuration options are available:
 | `kubernetes_cluster` | object | `.connections.kubernetes_cluster` | `jq` path to a `massdriver/kubernetes-cluster` connection for authentication to Kubernetes |
 | `namespace` | string | `"default"` | Kubernetes namespace to install the chart into. Defaults to the `default` namespace |
 | `release_name` | string | (package name) | Specifies the release name for the helm chart. Defaults to the Massdriver package name if not specified. |
+| `debug` | boolean | `true` | Enables the `--debug` flag for Helm (verbose output) |
+| `wait` | boolean | `true` | Enables the `--wait` flag for Helm (waits for pods, PVCs, services, etc. to be ready before marking the release as successful)  |
+| `wait_for_jobs` | string | `true` | Enables the `--wait-for-jobs` flag for Helm (waits for jobs to complete before marking the release as successful) |
+| `timeout` | integer | 300 | Sets the `--timeout` flag for Helm (how long to wait for release to complete before marking as failed) |
 | `checkov.enable` | boolean | `true` | Enables Checkov policy evaluation. If `false`, Checkov will not be run. |
 | `checkov.quiet` | boolean | `true` | Only display failed checks if `true` (adds the `--quiet` flag). |
 | `checkov.halt_on_failure` | boolean | `false` | Halt provisioning run and mark deployment as failed on a policy failure (removes the `--soft-fail` flag). |
