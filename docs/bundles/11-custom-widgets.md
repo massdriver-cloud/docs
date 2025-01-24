@@ -344,7 +344,22 @@ dropzone:
 
 ### Versioning Dropdown
 
-The `versioningDropdown` field is used to block users from downgrading versions. By providing it a list of versions, the field will automatically sort the versions in descending order. Once a user has chosen a version and provisioned their infrastructure, the field will block them from selecting any version older than their original selection.
+The `versioningDropdown` field is used to restrict users abilities to change versions. By providing it a list of versions, the field will automatically sort the versions in descending order. Once a user has chosen a version and provisioned their infrastructure, the field will block them from changing to certain versions. By default, the field will block users from downgrading. You can also set an `upgradeConstraint` and a `downgradeConstraint` via the `uiSchema`.
+
+These constraints can have the following values:
+
+- `all` - Disables all versions
+- `none` - Disables no versions
+- `minor` Disables all but minor versions
+
+**Props**
+
+External props passed through the `uiSchema`
+
+| Name                | Required | Type   | Default | Example                | Description                                        |
+| ------------------- | -------- | ------ | ------- | ---------------------- | -------------------------------------------------- |
+| upgradeConstraint   | false    | string | `none`  | `all`, `none`, `minor` | A constraint on the ability to upgrade versions.   |
+| downgradeConstraint | false    | string | `all`   | `all`, `none`, `minor` | A constraint on the ability to downgrade versions. |
 
 **Example**
 
@@ -361,11 +376,15 @@ properties:
       - '4.2'
       - '4.0'
       - '3.6'
+      - '3.2'
+      - '3.0'
 ```
 
 ```yaml title="uiSchema"
 version:
   ui:field: versioningDropdown
+  upgradeConstraint: all # Blocks the user from being able to upgrade
+  downgradeConstraint: minor # Only allows the user to downgrade minor versions
 ```
 
 ### Deploy-Locked Dropdown
