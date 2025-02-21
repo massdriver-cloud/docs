@@ -12,7 +12,7 @@ module.exports = {
     announcementBar: {
       id: 'were_hiring',
       content:
-        "⭐ &nbsp;Interested in being part of our on-prem pilot program? <a target='_blank' rel='noopener noreferrer' href='https://calendly.com/d/cnpj-pb3-qp4/on-prem-pilot-program-consultation'>Schedule a consultation for details</a>",
+        "⭐ &nbsp;Take a look at our latest post! <a target='_blank' rel='noopener noreferrer' href='https://www.massdriver.cloud/blogs/the-case-for-abstractions-in-iac'>The Case for Abstractions in IaC</a>",
       backgroundColor: 'var(--ifm-color-primary-lightest)',
       textColor: '#091E42',
       isCloseable: false
