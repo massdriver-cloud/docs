@@ -84,7 +84,7 @@ export MASSDRIVER_ORG_ID=your-org-id
 
 #### Setting The Serivce Account
 
-1. Visit the [Service Accounts page](https://app.massdriver.cloud/organization/api-keys)
+1. Visit the [Service Accounts page](https://app.massdriver.cloud/service-accounts)
 2. Click 'Add Service Account'
 3. Give the service account a name
 4. Click the 'clipboard' icon.
