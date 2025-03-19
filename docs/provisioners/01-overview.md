@@ -52,7 +52,7 @@ steps:
     config:
       region: .connections.foo.specs.region
       resource_group: @text 'foo'
-      delete_resource_group: true
+      delete_resource_group: 'true'
 ```
 
 ---
