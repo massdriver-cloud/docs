@@ -28,6 +28,7 @@ The following configuration options are available:
 | `azure_service_principal` | object | `.connections.azure_service_principal` | `jq` path to a `massdriver/azure-service-principal` connection for authentication to Azure |
 | `region` | string | `"eastus"` | Azure region to deploy template resources into. Defaults to `"eastus"`. |
 | `resource_group` | string | (package name) | Specifies the resource group name. Defaults to the Massdriver package name if not specified. |
+| `create_resource_group` | boolean | `true` | Determines whether the resource group will be created during provisioning. If this is set to `false`, the resource group must already exist in Azure. |
 | `delete_resource_group` | boolean | `true` | Determines whether the resource group will be deleted during decommissioning. |
 | `checkov.enable` | boolean |  `true` | Enables Checkov policy evaluation. If `false`, Checkov will not be run. |
 | `checkov.quiet` | boolean |  `true` | Only display failed checks if `true` (adds the `--quiet` flag). |
