@@ -106,20 +106,18 @@ If you choose to fully render the artifact in Terraform, it would be similar to:
 
 ```hcl
 output "artifact_bucket" {
-  value = jsonencode(
-    {
-      data = {
-        infrastructure = {
-          arn = aws_s3_bucket.main.arn
-        }
-      }
-      specs = {
-        aws = {
-          region = var.region
-        }
+  value = {
+    data = {
+      infrastructure = {
+        arn = aws_s3_bucket.main.arn
       }
     }
-  )
+    specs = {
+      aws = {
+        region = var.region
+      }
+    }
+  }
 }
 ```
 
