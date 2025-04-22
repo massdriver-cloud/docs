@@ -28,12 +28,17 @@ The following configuration options are available:
 | `azure_service_principal` | object | `.connections.azure_service_principal` | `jq` path to a `massdriver/azure-service-principal` connection for authentication to Azure |
 | `region` | string | `"eastus"` | Azure region to deploy template resources into. Defaults to `"eastus"`. |
 | `resource_group` | string | (package name) | Specifies the resource group name. Defaults to the Massdriver package name if not specified. |
+| `scope` | string | `"group"` | Sets the [Azure Resource Manager deployment scope](https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/deploy-cli#deployment-scope). Currently supports `group` and `sub`. For more information, refer to the [Deployment Scope](#deployment-scope) section. |
 | `complete` | boolean | `true` | Sets the [Azure Resource Manager deployment mode](https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/deployment-modes) to "Complete" (sets the `--mode Complete` flag). If this is set to `false`, deployment mode will be "Incremental". Only applies to steps with scope `group`. For more information, refer to the [Deployment Mode](#deployment-mode) section |
 | `create_resource_group` | boolean | `true` | Determines whether the resource group will be created during provisioning. If this is set to `false`, the resource group must already exist in Azure. |
 | `delete_resource_group` | boolean | `true` | Determines whether the resource group will be deleted during decommissioning. |
 | `checkov.enable` | boolean |  `true` | Enables Checkov policy evaluation. If `false`, Checkov will not be run. |
 | `checkov.quiet` | boolean |  `true` | Only display failed checks if `true` (adds the `--quiet` flag). |
 | `checkov.halt_on_failure` | boolean |  `false` | Halt provisioning run and mark deployment as failed on a policy failure (removes the `--soft-fail` flag). |
+
+### Deployment Scope
+
+[Azure Resource Manager supports 4 deployment scopes](https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/deploy-cli#deployment-scope): [resource group](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deploy-to-resource-group?tabs=azure-cli), [subscription](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deploy-to-subscription?tabs=azure-cli), [management group](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deploy-to-management-group?tabs=azure-cli) and [tenant](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deploy-to-tenant?tabs=azure-cli). The default scope is `group` for Azure resource group. Review the configuration settings to determine the valid and required settings for each scope.
 
 ### Deployment Mode
 
