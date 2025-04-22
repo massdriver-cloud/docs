@@ -51,7 +51,7 @@ steps:
     skip_on_delete: true
     config:
       region: .connections.foo.specs.region
-      resource_group: "@text 'foo'"
+      resource_group: '@text "foo"'
       delete_resource_group: 'true'
 ```
 
