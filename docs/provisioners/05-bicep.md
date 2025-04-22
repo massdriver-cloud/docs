@@ -28,12 +28,29 @@ The following configuration options are available:
 | `azure_service_principal` | object | `.connections.azure_service_principal` | `jq` path to a `massdriver/azure-service-principal` connection for authentication to Azure |
 | `region` | string | `"eastus"` | Azure region to deploy template resources into. Defaults to `"eastus"`. |
 | `resource_group` | string | (package name) | Specifies the resource group name. Defaults to the Massdriver package name if not specified. |
+| `scope` | string | `"group"` | Sets the [Azure Resource Manager deployment scope](https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/deploy-cli#deployment-scope). Currently supports `group` and `sub`. For more information, refer to the [Deployment Scope](#deployment-scope) section. |
+| `complete` | boolean | `true` | Sets the [Azure Resource Manager deployment mode](https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/deployment-modes) to "Complete" (sets the `--mode Complete` flag). If this is set to `false`, deployment mode will be "Incremental". Only applies to steps with scope `group`. For more information, refer to the [Deployment Mode](#deployment-mode) section |
 | `create_resource_group` | boolean | `true` | Determines whether the resource group will be created during provisioning. If this is set to `false`, the resource group must already exist in Azure. |
 | `delete_resource_group` | boolean | `true` | Determines whether the resource group will be deleted during decommissioning. |
 | `checkov.enable` | boolean |  `true` | Enables Checkov policy evaluation. If `false`, Checkov will not be run. |
 | `checkov.quiet` | boolean |  `true` | Only display failed checks if `true` (adds the `--quiet` flag). |
 | `checkov.halt_on_failure` | boolean |  `false` | Halt provisioning run and mark deployment as failed on a policy failure (removes the `--soft-fail` flag). |
 
+### Deployment Scope
+
+[Azure Resource Manager supports 4 deployment scopes](https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/deploy-cli#deployment-scope): [resource group](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deploy-to-resource-group?tabs=azure-cli), [subscription](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deploy-to-subscription?tabs=azure-cli), [management group](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deploy-to-management-group?tabs=azure-cli) and [tenant](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deploy-to-tenant?tabs=azure-cli). The default scope is `group` for Azure resource group. Review the configuration settings to determine the valid and required settings for each scope.
+
+### Deployment Mode
+
+[Azure Resource Manager supports 2 deployment modes](https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/deployment-modes) for the resource group deployment scope: Incremental and Complete. It is important to understand the benefits and drawbacks to each approach and how they impact bundle design and deployment.
+
+#### Complete
+
+In [Complete](https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/deployment-modes#complete-mode) mode, Resource Manager deletes resources that exist in the resource group but aren't specified in the bicep template. This feature imparts full resource lifecycle management (including cleanup) into the bicep template. However, if two bicep templates are deployed to the same resource group then "Complete" mode will cause each deployment to delete the other template's resources since the other template's resource declarations don't exist in the current template. For this reason, Massdriver **strongly** recommends designing bundles to each have their own resource group and use deployment mode "Complete". This approach prevents accidental deletions across bundles, while retaining full lifecycle management.
+
+#### Incremental
+
+In [Incremental](https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/deployment-modes#incremental-mode) mode, Resource manager will only ever create resources, never deleting them. This allows a bicep template to share a resource group without deleting resources from other templates. However, this also means that the lifecycle of resources isn't fully managed by the bicep template: only creations are managed, not deletions. This requires the user to manually clean up resources that are no longer needed (or specified in the template). It also means the "decommission" action in Massdriver effectively performs no action in Azure besides deleting the deployment group entry, leaving all resources to be cleaned up by the user.
 
 ## Inputs
 
