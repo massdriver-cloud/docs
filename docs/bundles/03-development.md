@@ -233,7 +233,7 @@ Refer to the documentation on each provisioner for more information on the struc
 
 Imported artifacts are created outside of the deployment process in the Massdriver platform. This type of artifact is useful for representing existing infrastructure that isn't managed by Massdriver, but you would like to connect to it with bundles managed inside the Massdriver platform.
 
-Check out [this guide](../guides/import-artifact.md) for how to import artifacts.
+Check out [this guide](../guides/artifacts/import-artifact) for how to import artifacts.
 
 ###
 
