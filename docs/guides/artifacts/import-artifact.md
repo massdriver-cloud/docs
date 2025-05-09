@@ -89,7 +89,7 @@ We'll also need a custom artifact that meets that schema, populated with actual 
 
 :::note
 
-If you haven't already, be sure to install the [CLI](../cli/00-overview.md).
+If you haven't already, be sure to install the [CLI](/cli/00-overview).
 
 :::
 
