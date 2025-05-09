@@ -1,6 +1,16 @@
 {
   "redirects": [
     {
+      "source": "/guides/import-artifact",
+      "destination": "/guides/artifacts/import-artifact",
+      "permanent": true
+    },
+    {
+      "source": "/guides/custom-artifact-definition",
+      "destination": "/guides/artifacts/custom-artifact-definition",
+      "permanent": true
+    },
+    {
       "source": "/workshops/opentofu-foundations",
       "destination": "https://github.com/massdriver-cloud/opentofu-foundations",
       "permanent": false

@@ -1,6 +1,5 @@
 ---
-id: custom-artifact-definition
-slug: /guides/custom-artifact-definition
+slug: /guides/artifacts/custom-artifact-definition
 title: Crafting Custom Artifact Definitions
 sidebar_label: Custom Artifact Definition
 ---
@@ -9,7 +8,7 @@ sidebar_label: Custom Artifact Definition
 
 # Crafting Custom Artifact Definitions
 
-In this guide, we're going to walk through the steps to create your own custom artifact definitions in Massdriver. This is for those moments when the existing definitions just don't cut it for your unique needs. Let's demystify the process and make it as straightforward as possible. And, just in case you're looking for a primer on what artifacts and artifact definitions actually are, make sure to check out our dedicated docs for [artifacts](../concepts/03-artifacts.md) and [artifact definitions](../concepts/02-artifact-definitions.md).
+In this guide, we're going to walk through the steps to create your own custom artifact definitions in Massdriver. This is for those moments when the existing definitions just don't cut it for your unique needs. Let's demystify the process and make it as straightforward as possible. And, just in case you're looking for a primer on what artifacts and artifact definitions actually are, make sure to check out our dedicated docs for [artifacts](../../concepts/03-artifacts.md) and [artifact definitions](../../concepts/02-artifact-definitions.md).
 
 ## How to Create Your Own Custom Artifact Definition
 
@@ -19,7 +18,7 @@ Check out the Massdriver [artifact definitions GitHub repo](https://github.com/m
 
 ### Step 2: Getting Started
 
-With the [Massdriver CLI](../cli/00-overview.md), you've got the toolkit you need to forge your own definitions. It's usually easier to tweak an existing one than to start from scratch:
+With the [Massdriver CLI](../../cli/00-overview.md), you've got the toolkit you need to forge your own definitions. It's usually easier to tweak an existing one than to start from scratch:
 
 1. **Pick a Starting Point**: Hunt down an existing artifact definition that's close to what you need, or use this starting template:
 ```json artifact-definition-name.json

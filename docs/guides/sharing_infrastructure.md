@@ -1,5 +1,4 @@
 ---
-id: guides-sharing-infrastructure
 slug: /guides/sharing-infrastructure
 title: Sharing Infrastructure between Projects and Environments
 sidebar_label: Sharing Infrastructure

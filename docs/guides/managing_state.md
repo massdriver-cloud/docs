@@ -1,5 +1,4 @@
 ---
-id: guides-managing-state
 slug: /guides/managing-state
 title: Managing OpenTofu and Terraform State in Massdriver
 sidebar_label: Managing State
