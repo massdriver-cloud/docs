@@ -97,17 +97,13 @@ For more information about bundle configuration, see [Bundle Configuration](#TOD
 
 The lifecycle of artifact connections spans from initial package linking to final data injection. Through distinct phases of type validation and data exchange, artifact definitions ensure type safety and data integrity across your deployment pipeline.
 
-### Nominal Typing (Simple Explanation)
-When you connect two packages in the UI, the system creates a "link" based on the artifact type definitions. This is like declaring a variable type in programming - it ensures the packages are compatible before any actual data is exchanged.
+### Nominal Typing
 
-### Nominal Typing (Technical Details)
-When a downstream package is attached to a package that has not yet emitted an artifact of that type, the UI draws a dotted line and links the resource fields based on the nominal type of the schema. This is analogous to class inheritance in object-oriented programming, where compatibility is determined by type definitions rather than actual data.
+When you connect two packages in the Massdriver UI, the system first checks if their artifact types are compatible—this is called **nominal typing**. Think of it like declaring variable types in programming: the system uses the artifact definition schemas to validate that the source and destination can be linked, even before any actual data is exchanged. Technically, when a downstream package is attached to an upstream package that hasn't yet emitted an artifact, the UI draws a dotted line to represent this "type-level" connection. The link is based solely on the artifact type definitions (the schema), similar to how class inheritance works in object-oriented programming—compatibility is determined by the type, not the data.
 
-### Structural Matching (Simple Explanation)
-After an upstream package completes provisioning and emits its artifact data, the link becomes "connected". This means the actual artifact data (like connection strings, security groups, etc.) is now available and will be injected into downstream packages during deployment.
+### Structural Matching
 
-### Structural Matching (Technical Details)
-When an upstream package emits an artifact after provisioning, the links become "connected" (represented by a solid line in the graph). At this point, the artifact data is validated against the schema and injected into your downstream connected packages at deploy time.
+Once the upstream package completes provisioning and emits its artifact data, the connection moves from type-level to data-level validation—this is **structural matching**. At this point, the system checks that the actual artifact data produced matches the expected schema. If it does, the link becomes "connected" (shown as a solid line in the UI), and the real artifact data (like connection strings, security groups, etc.) is injected into the downstream package during deployment. This ensures that not only are the types compatible, but the actual data structure and content are valid and ready for use in your deployment pipeline.
 
 ### Linking Process
 The connection lifecycle follows these steps:
