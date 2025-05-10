@@ -188,18 +188,16 @@ In this case, the input to the `artifact_storage_account.jq` template file would
     "secrets": {},
     "outputs": {
         "artifact_storage_account": {
-            "value": {
-                "data": {
-                    "infrastructure": {
-                        "ari": "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/resource-group-name/providers/Microsoft.Storage/storageAccounts/storageaccountname",
-                        "endpoint": "https://storageaccountname.blob.core.windows.net/"
-                    },
-                    "security": {}
+            "data": {
+                "infrastructure": {
+                    "ari": "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/resource-group-name/providers/Microsoft.Storage/storageAccounts/storageaccountname",
+                    "endpoint": "https://storageaccountname.blob.core.windows.net/"
                 },
-                "specs": {
-                    "azure": {
-                        "region": "eastus"
-                    }
+                "security": {}
+            },
+            "specs": {
+                "azure": {
+                    "region": "eastus"
                 }
             }
         }
@@ -210,7 +208,7 @@ In this case, the input to the `artifact_storage_account.jq` template file would
 Thus, the `artifact_storage_account.jq` file would simply be:
 
 ```jq artifact_storage_account.jq
-.outputs.artifact_storage_account.value
+.outputs.artifact_storage_account
 ```
 
 #### Build Artifact in JQ Template
@@ -246,14 +244,8 @@ In this case, the input to the `artifact_storage_account.jq` template file would
     "envs": {},
     "secrets": {},
     "outputs": {
-        "storageAccountEndpoint": {
-            "type": "String",
-            "value": "https://storageaccountname.blob.core.windows.net/"
-        },
-        "storageAccountId": {
-            "type": "String",
-            "value": "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/resource-group-name/providers/Microsoft.Storage/storageAccounts/storageaccountname"
-        }
+        "storageAccountEndpoint": "https://storageaccountname.blob.core.windows.net/",
+        "storageAccountId": "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/resource-group-name/providers/Microsoft.Storage/storageAccounts/storageaccountname"
     }
 }
 ```
@@ -264,8 +256,8 @@ Now the artifact structure must be built through the `artifact_storage_account.j
 {
     "data":  {
         "infrastructure": {
-            "ari": .outputs.storageAccountId.value,
-            "endpoint": .outputs.storageAccountEndpoint.value
+            "ari": .outputs.storageAccountId,
+            "endpoint": .outputs.storageAccountEndpoint
         },
         "security": {}
     },
