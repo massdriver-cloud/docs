@@ -9,7 +9,7 @@ A **package alarm** is a monitoring mechanism that allows you to track the healt
 
 ## Relationship to Packages
 
-* **Cardinality**: A package can have multiple alarms associated with it. Each alarm monitors a specific metric or condition for that package’s resources.
+* **Cardinality**: A package can have multiple alarms associated with it. Each alarm monitors a specific metric or condition for that package's resources.
 * **Lifecycle**: Package alarms are created, updated, and deleted along with their associated packages. When a package is decommissioned, its alarms are automatically cleaned up.
 
 ## Supported Cloud Alarm Services
@@ -58,7 +58,7 @@ Package alarms can be integrated with your Massdriver canvas through an automati
 
 To integrate alarms with your canvas:
 
-1. **Configure** your cloud provider’s alarm/alert service to send notifications to the package’s webhook URL.
+1. **Configure** your cloud provider's alarm/alert service to send notifications to the package's webhook URL.
 2. **Triggering** an alarm will instruct Massdriver to:
 
    * Update the alarm state in the system
@@ -68,11 +68,21 @@ To integrate alarms with your canvas:
 
 ## Cloud Provider Integration Examples
 
-For each major cloud platform, you can use Terraform to connect their native alarm/alerting services to Massdriver. The following examples illustrate how to configure an alarm in AWS CloudWatch, Google Cloud Monitoring, Azure Monitor, and Prometheus Alertmanager. In each case, the cloud provider sends alarm notifications to Massdriver’s webhook, and a `massdriver_package_alarm` resource registers the alarm in the Massdriver system.
+For each major cloud platform, you can use Terraform to connect their native alarm/alerting services to Massdriver. The following examples illustrate how to configure an alarm in AWS CloudWatch, Google Cloud Monitoring, Azure Monitor, and Prometheus Alertmanager. In each case, the cloud provider sends alarm notifications to Massdriver's webhook, and a `massdriver_package_alarm` resource registers the alarm in the Massdriver system.
 
 ### AWS (CloudWatch Alarms) + Massdriver
 
+> **Official Modules:**
+> - [alarm_channel](https://github.com/massdriver-cloud/terraform-modules/tree/main/aws/alarm-channel)
+> - [cloudwatch_alarm](https://github.com/massdriver-cloud/terraform-modules/tree/main/aws/cloudwatch-alarm)
+
 ```hcl
+# AWS SNS Topic for CloudWatch Alarm notifications
+resource "aws_sns_topic" "main" {
+  # Name for the SNS topic (required)
+  name = "${var.md_metadata.name_prefix}-alarms"
+}
+
 # AWS SNS Topic Subscription for Massdriver Webhook
 resource "aws_sns_topic_subscription" "main" {
   # string: Webhook endpoint URL
@@ -133,6 +143,10 @@ resource "massdriver_package_alarm" "aws_package_alarm" {
 
 ### GCP (Cloud Monitoring) + Massdriver
 
+> **Official Modules:**
+> - [alarm_channel](https://github.com/massdriver-cloud/terraform-modules/tree/main/gcp/alarm-channel)
+> - [metric_alarm](https://github.com/massdriver-cloud/terraform-modules/tree/main/gcp-metric-alarm)
+
 ```hcl
 # GCP Webhook Notification Channel
 resource "google_monitoring_notification_channel" "webhook" {
@@ -190,6 +204,10 @@ resource "massdriver_package_alarm" "gcp_package_alarm" {
 ```
 
 ### Azure (Monitor Alerts) + Massdriver
+
+> **Official Modules:**
+> - [alarm_channel](https://github.com/massdriver-cloud/terraform-modules/tree/main/azure/alarm-channel)
+> - [monitor_metric_alarm](https://github.com/massdriver-cloud/terraform-modules/tree/main/azure/monitor-metrics-alarm)
 
 ```hcl
 # Azure Action Group with webhook receiver
@@ -250,6 +268,10 @@ resource "massdriver_package_alarm" "azure_package_alarm" {
 ```
 
 ### Alertmanager (Kubernetes) + Massdriver
+
+> **Official Modules:**
+> - [alarm_channel](https://github.com/massdriver-cloud/terraform-modules/tree/main/k8s/alarm-channel)
+> - [prometheus_alarm](https://github.com/massdriver-cloud/terraform-modules/tree/main/k8s/prometheus-alarm)
 
 ```hcl
 # Alertmanager ConfigMap with webhook receiver configuration
@@ -328,7 +350,7 @@ curl -X POST \
 1. **Required Parameters**:
 
    * `display_name`: A human-readable name for the alarm
-   * `cloud_resource_id`: The cloud provider’s unique identifier for the alarm
+   * `cloud_resource_id`: The cloud provider's unique identifier for the alarm
 
      * AWS format: `arn:aws:cloudwatch:<region>:<account-id>:alarm:<alarm-name>`
      * Azure format: `/subscriptions/<subscription-id>/providers/Microsoft.AlertsManagement/alerts/<alert-id>`
@@ -339,7 +361,7 @@ curl -X POST \
    * `metric`: Object containing metric details
 
      * `name`: The specific metric being monitored (e.g., `"CPUUtilization"`)
-     * `namespace`: The cloud provider’s metric namespace (e.g., `"AWS/EC2"`)
+     * `namespace`: The cloud provider's metric namespace (e.g., `"AWS/EC2"`)
      * `statistic`: The statistical aggregation for the metric (e.g., `"Average"`, `"Sum"`, `"Maximum"`)
      * `dimensions`: An array of key/value pairs identifying the resource (e.g., an Instance ID)
    * `comparison_operator`: One of `"GREATER_THAN"`, `"LESS_THAN"`, `"GREATER_THAN_OR_EQUAL_TO"`, or `"LESS_THAN_OR_EQUAL_TO"`
@@ -350,9 +372,9 @@ curl -X POST \
 
 1. **Alarm Configuration**
 
-   * Set appropriate thresholds based on your application’s normal performance range.
+   * Set appropriate thresholds based on your application's normal performance range.
    * Use multiple evaluation periods (data points) to avoid false positives from transient spikes.
-   * Include meaningful alarm descriptions so it’s clear what condition is being monitored.
+   * Include meaningful alarm descriptions so it's clear what condition is being monitored.
 
 2. **Notification Management**
 
