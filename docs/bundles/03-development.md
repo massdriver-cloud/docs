@@ -235,22 +235,104 @@ Imported artifacts are created outside of the deployment process in the Massdriv
 
 Check out [this guide](../guides/import-artifact.md) for how to import artifacts.
 
-###
-
-:::
-
-## Local Provider Overrides
-
-:::note
-
-WIP
-
-:::
-
 ## Preset Configurations
 
-:::note
+Presets allow you to provide pre-configured example configurations for your Massdriver bundle's parameters. These presets appear as selectable options in the Massdriver UI, making it easier for users to get started with recommended or common configurations. Presets are defined in your `massdriver.yaml` file under the `params.examples` key.
 
-WIP - Defining useful presets using JSON Schema examples
+### Why Use Presets?
 
-:::
+- **Onboarding:** Help users quickly deploy with best-practice or common configurations.
+- **Documentation:** Show real-world use cases directly in the UI.
+- **Consistency:** Encourage standardization across environments or teams.
+
+### How Presets Work
+
+Each preset in the `params.examples` array consists of:
+- A `__name`: The friendly label shown in the UI dropdown.
+- The rest of the object: The actual configuration object that matches your bundle's parameter JSON schema for parameters.
+
+When a user selects a preset in the UI, the parameter form is automatically populated with the values from the preset, which they can then further customize if needed.
+
+### Example: Adding Presets to `massdriver.yaml`
+
+Below are example snippets showing how to add presets to your bundle configuration.
+
+#### Example 1: Minimal Example
+
+```yaml
+params:
+  examples:
+    - __name: Default
+      foo: bar
+      enabled: true
+```
+
+#### Example 2: S3 Bucket Presets
+
+```yaml
+params:
+  examples:
+    - __name: Logging Bucket
+      bucket_type: logging
+      versioning: true
+      lifecycle_rules:
+        - id: expire-logs
+          enabled: true
+          expiration_days: 30
+    - __name: CDN Assets Bucket
+      bucket_type: cdn
+      versioning: false
+      cors:
+        - allowed_origins: ["*"]
+          allowed_methods: ["GET"]
+```
+
+#### Example 3: Aurora MySQL Bundle
+
+This example is taken from the [AWS Aurora MySQL bundle](https://github.com/massdriver-cloud/aws-aurora-mysql/blob/main/massdriver.yaml).
+
+```yaml
+params:
+  examples:
+    - __name: Development
+      backup:
+        skip_final_snapshot: true
+        retention_period: 1
+      observability:
+        enabled_cloudwatch_logs_exports: []
+        enhanced_monitoring_interval: 0
+        performance_insights_retention_period: 0
+      networking:
+        subnet_type: internal
+      availability:
+        min_replicas: 0
+      database:
+        instance_class: db.t4g.medium
+        deletion_protection: false
+    - __name: Production
+      backup:
+        skip_final_snapshot: false
+        retention_period: 35
+      observability:
+        enabled_cloudwatch_logs_exports:
+          - audit
+          - error
+          - general
+          - slowquery
+        enhanced_monitoring_interval: 60
+        performance_insights_retention_period: 372
+      networking:
+        subnet_type: internal
+      availability:
+        min_replicas: 2
+      database:
+        instance_class: db.r6g.2xlarge
+        deletion_protection: true
+```
+
+### Tips for Creating Presets
+
+- **Be Descriptive:** Use clear `__name` values to help users understand the intent of each preset.
+- **Cover Common Use Cases:** Include presets for production, development, and any other common scenarios.
+- **Validate Values:** Ensure the preset object matches your bundle's parameter JSON schema.
+- **Keep It Up to Date:** Update presets as your bundle evolves or as best practices change.
