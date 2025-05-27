@@ -91,7 +91,7 @@ artifacts:
       $ref: massdriver/aws-rds-postgres
 ```
 
-For more information about bundle configuration, see [Bundle Configuration](#TODO).
+For more information about bundle configuration, see [Bundle Configuration](/bundles/configuration).
 
 ## Artifact Lifecycle and Connection Phases
 
@@ -113,8 +113,6 @@ The connection lifecycle follows these steps:
 3. The system ensures no cyclical links are created
 4. Each destination field can only have one active link at a time
 
-For more details about the linking process, see [Manifest Linking](#TODO).
-
 ## Schema Location
 
 All JSON schemas are hosted at:
@@ -132,7 +130,6 @@ Artifact definitions are used to:
 4. Define validation rules for connections
 5. Enable type checking between connected components
 
-For examples of common artifact definition patterns, see [Common Patterns](#TODO).
 
 ## Best Practices
 
@@ -142,4 +139,4 @@ For examples of common artifact definition patterns, see [Common Patterns](#TODO
 4. Include proper validation rules in the schema
 5. Document any special requirements or constraints
 
-For a complete guide to creating artifact definitions, see [Creating Artifact Definitions](#TODO). 
+For a complete guide to creating artifact definitions, see [Creating Artifact Definitions](/guides/custom-artifact-definition). 
