@@ -13,22 +13,28 @@ When implementing a `Custom Widget/Field`, you must define both the `schema` and
 
 ### Schema & UiSchema Pairing
 
-Here is an example, using the `schema` and `uiSchema` to display a custom `DnsZonesDropdown` `field`:
+Here is an example, using the `schema` and `uiSchema` to display a custom `versioningDropdown` `field`:
 
 ```yaml title="schema"
 type: object
-title: DNS Zones schema
+title: Versioning schema
 description: A dummy schema to show how to use custom fields.
 properties:
-  dnsZones: # <-- This is where you define the property name
+  version: # <-- This is where you define the property name
     type: string
-    title: DNS Zones
-    description: A list of DNS Zones configured with Massdriver.
+    title: Version
+    description: A list of valid Versions.
+    enum:
+      - '4.2'
+      - '4.0'
+      - '3.6'
+      - '3.2'
+      - '3.0'
 ```
 
 ```yaml title="uiSchema"
-dnsZones: # <-- Use the name defined in the properties object. If it is a nested property, follow the same path here
-  ui:field: 'dnsZonesDropdown' # <-- Here we define the ui:field and match it to the name given to our custom field
+versions: # <-- Use the name defined in the properties object. If it is a nested property, follow the same path here
+  ui:field: 'versioningDropdown' # <-- Here we define the ui:field and match it to the name given to our custom field
 ```
 
 :::note
@@ -120,7 +126,7 @@ properties:
 
 :::note
 
-All custom Widgets/Fields have their **Component Name** in `PascalCase` and their **Identifying Name** (the one used in the `uiSchema`) in `camelCase`. Example: `DnsZonesDropdown` is the component name and `dnsZonesDropdown` is the identifying name used in the `uiSchema`.
+All custom Widgets/Fields have their **Component Name** in `PascalCase` and their **Identifying Name** (the one used in the `uiSchema`) in `camelCase`. Example: `VersioningDropdown` is the component name and `versioningDropdown` is the identifying name used in the `uiSchema`.
 
 :::
 
@@ -206,71 +212,6 @@ properties:
 duration:
   ui:field: conversionFieldTime
   unit: Milliseconds
-```
-
-### DNS Zones
-
-The `DnsZonesDropdown` is an asynchronous dropdown field that queries for and populates with an organization's DNS Zones currently connected with Massdriver. Once selected, the DNS Zone's `cloudProviderId` will be added to the `formData`. This dropdown also supports external filtering via a `cloud` type. Pass a specific `cloud` (`aws`, `gcp`, or `azure`) externally via the `uiSchema` to control what the `DnsZonesDropdown` displays.
-
-**Props**
-
-External props passed through the `uiSchema`
-
-| Name  | Required | Type   | Default   | Example               | Description                                                                     |
-| ----- | -------- | ------ | --------- | --------------------- | ------------------------------------------------------------------------------- |
-| cloud | False    | string | undefined | `aws`, `gcp`, `azure` | A string that, if provided, constrains the contents of the field by cloud type. |
-
-**Example**
-
-```yaml title="schema"
-type: object
-title: Dns Zones schema
-description: An example schema that shows the dnsZonesDropdown field implementation.
-properties:
-  dnsZones:
-    type: string
-    title: DNS Zones
-    description: A list of DNS Zones configured with Massdriver.
-```
-
-```yaml title="uiSchema"
-dnsZones:
-  ui:field: dnsZonesDropdown
-  cloud: azure
-```
-
-### Supported Cloud Locations (Regions)
-
-The `SupportedCloudLocationsDropdown` is an asynchronous dropdown field that queries for and populates with all the supported locations given a specific cloud. Once selected, the plaintext `location` will be added to the `formData`.
-
-Most of the time, you will be fine passing a given cloud provider as the `cloudService` (`aws`, `gcp`, `azure`). Only pass something else if the thing you are implementing has differing locations from the default list of locations supported by that cloud provider. If this is the case, be sure to reach out for support first as the `cloudService` that you are trying to implement may not be supported in the `cloudLocations` query yet.
-
-**Props**
-External props passed through the `uiSchema`
-
-| Name         | Required | Type   | Default   | Example                                   | Description                                                                                 |
-| ------------ | -------- | ------ | --------- | ----------------------------------------- | ------------------------------------------------------------------------------------------- |
-| cloudService | True     | string | undefined | `aws`, `gcp`, `azure`, `ECR`, `GAR`, etc. | A string that is used in the query to get all the supported locations for a specific cloud. |
-
-**Example**
-
-```yaml title="schema"
-type: object
-title: Locations schema
-description:
-  An example schema that shows the supportedCloudLocationsDropdown field
-  implementation.
-properties:
-  locations:
-    type: string
-    title: Locations
-    description: A list of supported locations for this cloud service.
-```
-
-```yaml title="uiSchema"
-locations:
-  ui:field: supportedCloudLocationsDropdown
-  cloudService: ECR
 ```
 
 ### Azure Instance Types
