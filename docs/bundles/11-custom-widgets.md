@@ -214,47 +214,6 @@ duration:
   unit: Milliseconds
 ```
 
-### Azure Instance Types
-
-The `InstanceTypesDropdown` is an asynchronous dropdown field that queries for and populates a list of supported instance types for a region in Azure. In order to do that, an argument must be supplied that informs Massdriver how to find
-the region, either by way of connections or params schemas.
-
-**Props**
-
-External props passed through the `uiSchema`
-
-| Name    | Required | Type   | Default   | Example                                                                       | Description                                                                                               |
-| ------- | -------- | ------ | --------- | ----------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| query   | True     | string | undefined | `connections.azure_virtual_network.specs.azure.region`, `params.region`, etc. | A string that is used in the query to get all the `supported instance types` for a specific Azure region. |
-| service | True     | string | undefined | `Microsoft.DBforPostgreSQL`                                                   | A string that is used in the query to get all the `supported instance types` for a specific Azure region. |
-
-**Example**
-
-```yaml title="schema"
-type: object
-title: Sku
-description: An example schema that shows the InstanceTypesDropdown
-  field implementation.
-properties:
-  sku_name:
-    type: string
-    title: Name
-    description: Name of the desired Azure Sku.
-    default: ''
-  region:
-    type: string
-    title: Region
-    descripton: 'The region to deploy to'
-    default: ''
-```
-
-```yaml title="uiSchema"
-sku_name:
-  ui:field: InstanceTypesDropdown
-  query: connections.azure_virtual_network.specs.azure.region
-  service: Microsoft.DBforPostgreSQL
-```
-
 ### Dropzone
 
 The `Dropzone` field is a file dropzone. Once a file is added, the parsed `binary string` for that file will be added to the `formData`.
