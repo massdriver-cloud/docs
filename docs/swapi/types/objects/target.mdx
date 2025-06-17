@@ -39,7 +39,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-No description
+A deployment environment where bundles can be deployed
 
 
 ```graphql
@@ -67,35 +67,35 @@ type Target {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>Target.<b>id</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
-
+Unique identifier
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Target.<b>name</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
-
+Name of the target
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Target.<b>slug</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
-
+URL-friendly identifier
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Target.<b>description</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
-
+Description of the target
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Target.<b>mode</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>TargetMode</b></code>](/swapi/types/enums/target-mode.mdx) <Badge class="badge badge--secondary " text="enum"/> 
-
+Operation mode of the target
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Target.<b>deletable</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>TargetDeletionLifecycle!</b></code>](/swapi/types/objects/target-deletion-lifecycle.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> 
-
+Information about whether the target can be deleted
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Target.<b>createdAt</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/swapi/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
-
+When the target was created
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Target.<b>updatedAt</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/swapi/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
-
+When the target was last updated
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Target.<b>diagram</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Diagram</b></code>](/swapi/types/objects/diagram.mdx) <Badge class="badge badge--secondary " text="object"/> 
@@ -107,19 +107,19 @@ Manifests for this target's package
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Target.<b>project</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Project</b></code>](/swapi/types/objects/project.mdx) <Badge class="badge badge--secondary " text="object"/> 
-
+The project this target belongs to
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Target.<b>packages</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Package]</b></code>](/swapi/types/objects/package.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
-
+Packages deployed to this target
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Target.<b>connections</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[TargetConnection]</b></code>](/swapi/types/objects/target-connection.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
-
+Connections configured for this target
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Target.<b>defaultConnections</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[DefaultTargetConnection]</b></code>](/swapi/types/objects/default-target-connection.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
-
+Default connections for this target
 
 
 

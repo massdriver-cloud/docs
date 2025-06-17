@@ -39,7 +39,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-No description
+A deployed instance of a bundle in the context of its manifest
 
 
 ```graphql
@@ -72,11 +72,11 @@ type Package {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>Package.<b>id</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
-
+Unique identifier
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Package.<b>namePrefix</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
-
+Prefix for resource names
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Package.<b>params</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>JSON!</b></code>](/swapi/types/scalars/json.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
@@ -84,15 +84,15 @@ Package configuration parameters
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Package.<b>status</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PackageStatus!</b></code>](/swapi/types/enums/package-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> 
-
+Current status of the package
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Package.<b>createdAt</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/swapi/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
-
+When the package was created
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Package.<b>updatedAt</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/swapi/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
-
+When the package was last updated
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Package.<b>alarms</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Alarm]</b></code>](/swapi/types/objects/alarm.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
@@ -104,7 +104,7 @@ Secret configuration for application packages
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Package.<b>activeDeployment</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Deployment</b></code>](/swapi/types/objects/deployment.mdx) <Badge class="badge badge--secondary " text="object"/> 
-
+Currently active deployment for this package
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Package.<b>decommissionable</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PackageDeletionLifecycle!</b></code>](/swapi/types/objects/package-deletion-lifecycle.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> 
