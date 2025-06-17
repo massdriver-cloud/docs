@@ -35,14 +35,3 @@ Replace `org_slug` and `service_account.secret` with your actual organization sl
 ## GraphQL Playground
 
 You can explore and test the API using the [GraphQL Playground](https://api.massdriver.cloud/api/graphiql). This playground uses your logged-in user session and does **not** require a service account key.
-
-## Available Operations
-
-Use the navigation menu to explore the available:
-- Queries
-- Mutations
-- Types
-- Input Types
-- Enums
-- Scalars
-
