@@ -39,7 +39,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-No description
+A reusable infrastructure component that packages IaC modules, policies, runbooks, and cloud dependencies into a deliverable software component
 
 
 ```graphql
@@ -72,15 +72,15 @@ type Bundle {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>id</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
-
+Unique identifier
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>name</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
-
+Name of the bundle
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>version</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
-
+Version of the bundle
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>icon</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
@@ -88,7 +88,7 @@ Icon SVG
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>specVersion</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
-
+Version of the bundle specification
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>type</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
@@ -100,7 +100,7 @@ Private bundle or public template
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>description</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
-
+Description of the bundle
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>ref</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> 
@@ -112,23 +112,23 @@ Replaced with sourceUrl
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>sourceUrl</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
-
+URL to the source code repository
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>paramsSchema</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>JSON!</b></code>](/swapi/types/scalars/json.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
-
+JSON schema for bundle parameters
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>connectionsSchema</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>JSON!</b></code>](/swapi/types/scalars/json.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
-
+JSON schema for bundle connections
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>artifactsSchema</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>JSON!</b></code>](/swapi/types/scalars/json.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
-
+JSON schema for bundle artifacts
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>uiSchema</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>JSON!</b></code>](/swapi/types/scalars/json.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
-
+JSON schema for bundle UI configuration
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>operatorGuide</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Markdown</b></code>](/swapi/types/scalars/markdown.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
@@ -136,15 +136,15 @@ The operator guide for the bundle in markdown.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>createdAt</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/swapi/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
-
+When the bundle was created
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>updatedAt</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/swapi/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
-
+When the bundle was last updated
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>deletable</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BundleDeletionLifecycle!</b></code>](/swapi/types/objects/bundle-deletion-lifecycle.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> 
-
+Information about whether the bundle can be deleted
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>fqn</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
