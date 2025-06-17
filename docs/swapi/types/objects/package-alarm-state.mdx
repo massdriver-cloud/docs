@@ -1,0 +1,86 @@
+---
+id: package-alarm-state
+title: PackageAlarmState
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+No description
+
+
+```graphql
+type PackageAlarmState {
+  id: ID!
+  status: AlarmStatus!
+  message: String!
+  notification: JSON!
+  occurredAt: DateTime!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PackageAlarmState.<b>id</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Unique identifier for this alarm state record.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PackageAlarmState.<b>status</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AlarmStatus!</b></code>](/swapi/types/enums/alarm-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> 
+The current status of the alarm (OK, ALARM, or INSUFFICIENT&#x005F;DATA).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PackageAlarmState.<b>message</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Message describing the current state or reason for the alarm.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PackageAlarmState.<b>notification</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>JSON!</b></code>](/swapi/types/scalars/json.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Raw notification data from the cloud provider that triggered this state change.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PackageAlarmState.<b>occurredAt</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/swapi/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+ISO 8601 timestamp when this state change occurred.
+
+
+
+
+
+
+### Member Of
+
+[`Alarm`](/swapi/types/objects/alarm.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

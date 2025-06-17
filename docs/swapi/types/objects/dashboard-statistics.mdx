@@ -1,0 +1,91 @@
+---
+id: dashboard-statistics
+title: DashboardStatistics
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Statistics and metrics including bundle usage, deployment history, and active alarms.
+
+
+```graphql
+type DashboardStatistics {
+  bundleStatistics: [BundleStatistic]
+  environmentStatistics: [EnvironmentStatistic]
+  deploymentStatistics: [DeploymentStatistic]
+  recentAlarms: [RecentAlarm]
+  recentInfrastructureDeployments: [RecentDeployment]
+  recentApplicationDeployments: [RecentDeployment]
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>DashboardStatistics.<b>bundleStatistics</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[BundleStatistic]</b></code>](/swapi/types/objects/bundle-statistic.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+Returns usage and cost metrics for each infrastructure module (bundle) across your organization. For each bundle, it provides total number of environments using the bundle, total number of package instances deployed, and total accumulated costs since inception.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DashboardStatistics.<b>environmentStatistics</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[EnvironmentStatistic]</b></code>](/swapi/types/objects/environment-statistic.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+Shows cost trends for each environment by comparing two 30-day periods. The current period (last 30 days) is compared to the previous period (days 31-60) to calculate cost changes. A positive growth rate indicates rising costs, while a negative rate shows cost reduction.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DashboardStatistics.<b>deploymentStatistics</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[DeploymentStatistic]</b></code>](/swapi/types/objects/deployment-statistic.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+Provides deployment reliability metrics per infrastructure module over the last 30 days.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DashboardStatistics.<b>recentAlarms</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[RecentAlarm]</b></code>](/swapi/types/objects/recent-alarm.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+Displays the 10 most recent infrastructure alarm status changes, ordered by when they occurred. This gives immediate visibility into potential issues across your infrastructure.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DashboardStatistics.<b>recentInfrastructureDeployments</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[RecentDeployment]</b></code>](/swapi/types/objects/recent-deployment.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+Shows the 10 most recent infrastructure changes, ordered by when the deployment was created. This panel provides visibility into the latest infrastructure modifications across your environments.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DashboardStatistics.<b>recentApplicationDeployments</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[RecentDeployment]</b></code>](/swapi/types/objects/recent-deployment.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+Shows the 10 most recent application changes, ordered by when the deployment was created. This panel provides visibility into the latest application modifications across your environments.
+
+
+
+
+
+
+### Member Of
+
+[`Organization`](/swapi/types/objects/organization.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

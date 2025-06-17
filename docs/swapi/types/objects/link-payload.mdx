@@ -1,0 +1,76 @@
+---
+id: link-payload
+title: LinkPayload
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+No description
+
+
+```graphql
+type LinkPayload {
+  successful: Boolean!
+  messages: [ValidationMessage]
+  result: Link
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>LinkPayload.<b>successful</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/swapi/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Indicates if the mutation completed successfully or not.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>LinkPayload.<b>messages</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ValidationMessage]</b></code>](/swapi/types/objects/validation-message.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+A list of failed validations. May be blank or null if mutation succeeded.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>LinkPayload.<b>result</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Link</b></code>](/swapi/types/objects/link.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The object created/updated/deleted by the mutation. May be null if mutation failed.
+
+
+
+
+
+
+### Returned By
+
+[`linkManifests`](/swapi/operations/mutations/link-manifests.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`unlinkManifests`](/swapi/operations/mutations/unlink-manifests.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

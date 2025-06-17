@@ -1,0 +1,139 @@
+---
+id: project
+title: Project
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+No description
+
+
+```graphql
+type Project {
+  id: ID
+  name: String
+  description: String
+  slug: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  organization: Organization
+  targets: [Target] @deprecated
+  environments: [Environment]
+  manifests: [Manifest]
+  deletable: ProjectDeletionLifecycle!
+  defaultParams: JSON
+  diagram: Diagram
+  cost: Cost
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>Project.<b>id</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Project.<b>name</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Project.<b>description</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Project.<b>slug</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Project.<b>createdAt</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/swapi/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Project.<b>updatedAt</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/swapi/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Project.<b>organization</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Organization</b></code>](/swapi/types/objects/organization.mdx) <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Project.<b>targets</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Target]</b></code>](/swapi/types/objects/target.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+:::warning[DEPRECATED]
+
+use `environments`
+
+:::
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Project.<b>environments</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Environment]</b></code>](/swapi/types/objects/environment.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Project.<b>manifests</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Manifest]</b></code>](/swapi/types/objects/manifest.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Project.<b>deletable</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ProjectDeletionLifecycle!</b></code>](/swapi/types/objects/project-deletion-lifecycle.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Project.<b>defaultParams</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>JSON</b></code>](/swapi/types/scalars/json.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Project.<b>diagram</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Diagram</b></code>](/swapi/types/objects/diagram.mdx) <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Project.<b>cost</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cost</b></code>](/swapi/types/objects/cost.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Cloud provider costs for this project
+
+
+
+
+
+
+### Returned By
+
+[`project`](/swapi/operations/queries/project.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`projects`](/swapi/operations/queries/projects.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+
+### Member Of
+
+[`Environment`](/swapi/types/objects/environment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Permission`](/swapi/types/objects/permission.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ProjectPayload`](/swapi/types/objects/project-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Target`](/swapi/types/objects/target.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

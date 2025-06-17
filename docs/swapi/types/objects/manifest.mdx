@@ -1,0 +1,130 @@
+---
+id: manifest
+title: Manifest
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+No description
+
+
+```graphql
+type Manifest {
+  id: ID!
+  name: String!
+  slug: String!
+  suffix: String!
+  description: String
+  position: GraphPosition
+  secretFields: [SecretField]
+  deletable: ManifestDeletionLifecycle!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  bundle: Bundle!
+  packages: [Package]
+  linkableFields: [LinkableField]
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>Manifest.<b>id</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Manifest.<b>name</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Manifest.<b>slug</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Manifest.<b>suffix</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Manifest.<b>description</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Manifest.<b>position</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GraphPosition</b></code>](/swapi/types/objects/graph-position.mdx) <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Manifest.<b>secretFields</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[SecretField]</b></code>](/swapi/types/objects/secret-field.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+Fields & values for managing default secret values in preview environments.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Manifest.<b>deletable</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ManifestDeletionLifecycle!</b></code>](/swapi/types/objects/manifest-deletion-lifecycle.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Manifest.<b>createdAt</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/swapi/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Manifest.<b>updatedAt</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/swapi/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Manifest.<b>bundle</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Bundle!</b></code>](/swapi/types/objects/bundle.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Manifest.<b>packages</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Package]</b></code>](/swapi/types/objects/package.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Manifest.<b>linkableFields</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[LinkableField]</b></code>](/swapi/types/objects/linkable-field.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+
+
+
+
+### Returned By
+
+[`manifest`](/swapi/operations/queries/manifest.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+
+### Member Of
+
+[`Environment`](/swapi/types/objects/environment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Link`](/swapi/types/objects/link.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ManifestPayload`](/swapi/types/objects/manifest-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ManifestRecommendation`](/swapi/types/objects/manifest-recommendation.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ManifestResource`](/swapi/types/objects/manifest-resource.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Package`](/swapi/types/objects/package.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PackageResource`](/swapi/types/objects/package-resource.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Project`](/swapi/types/objects/project.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Target`](/swapi/types/objects/target.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

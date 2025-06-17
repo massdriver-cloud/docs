@@ -1,0 +1,75 @@
+---
+id: deployment-log-stream-log
+title: DeploymentLogStreamLog
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+No description
+
+
+```graphql
+type DeploymentLogStreamLog {
+  content: String!
+  metadata: DeploymentLogStreamLogMetadata!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentLogStreamLog.<b>content</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentLogStreamLog.<b>metadata</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DeploymentLogStreamLogMetadata!</b></code>](/swapi/types/objects/deployment-log-stream-log-metadata.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+
+
+
+
+### Returned By
+
+[`deploymentLogStream`](/swapi/operations/subscriptions/deployment-log-stream.mdx)  <Badge class="badge badge--secondary badge--relation" text="subscription"/>
+
+### Member Of
+
+[`DeploymentLogStream`](/swapi/types/objects/deployment-log-stream.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

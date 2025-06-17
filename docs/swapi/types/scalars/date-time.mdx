@@ -1,0 +1,61 @@
+---
+id: date-time
+title: DateTime
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+The `DateTime` scalar type represents a date and time in the UTC
+timezone. The DateTime appears in a JSON response as an ISO8601 formatted
+string, including UTC timezone ("Z"). The parsed date and time string will
+be converted to UTC if there is an offset.
+
+
+```graphql
+scalar DateTime
+```
+
+
+
+
+
+
+
+
+### Member Of
+
+[`Account`](/swapi/types/objects/account.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Artifact`](/swapi/types/objects/artifact.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ArtifactDefinition`](/swapi/types/objects/artifact-definition.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Bundle`](/swapi/types/objects/bundle.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Connection`](/swapi/types/objects/connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Deployment`](/swapi/types/objects/deployment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`DeploymentLogStreamLogMetadata`](/swapi/types/objects/deployment-log-stream-log-metadata.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Environment`](/swapi/types/objects/environment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentConnection`](/swapi/types/objects/environment-connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Group`](/swapi/types/objects/group.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Link`](/swapi/types/objects/link.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Manifest`](/swapi/types/objects/manifest.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Organization`](/swapi/types/objects/organization.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`OrganizationBilling`](/swapi/types/objects/organization-billing.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Package`](/swapi/types/objects/package.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PackageAlarmState`](/swapi/types/objects/package-alarm-state.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Project`](/swapi/types/objects/project.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`RecentAlarm`](/swapi/types/objects/recent-alarm.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`RecentDeployment`](/swapi/types/objects/recent-deployment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`SecretMetadata`](/swapi/types/objects/secret-metadata.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Target`](/swapi/types/objects/target.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`TargetConnection`](/swapi/types/objects/target-connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

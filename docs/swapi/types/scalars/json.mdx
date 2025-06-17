@@ -1,0 +1,60 @@
+---
+id: json
+title: JSON
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+The `JSON` scalar type represents arbitrary json string data, represented as UTF-8
+character sequences. The Json type is most often used to represent a free-form
+human-readable json string.
+
+
+```graphql
+scalar JSON
+```
+
+
+
+
+
+
+
+
+### Member Of
+
+[`Artifact`](/swapi/types/objects/artifact.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ArtifactDefinition`](/swapi/types/objects/artifact-definition.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ArtifactUpdateParams`](/swapi/types/inputs/artifact-update-params.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`AuditLog`](/swapi/types/objects/audit-log.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Bundle`](/swapi/types/objects/bundle.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Changeset`](/swapi/types/objects/changeset.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`configurePackage`](/swapi/operations/mutations/configure-package.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`createArtifact`](/swapi/operations/mutations/create-artifact.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`Deployment`](/swapi/types/objects/deployment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Package`](/swapi/types/objects/package.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PackageAlarmState`](/swapi/types/objects/package-alarm-state.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PreviewEnvironmentInput`](/swapi/types/inputs/preview-environment-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`Project`](/swapi/types/objects/project.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

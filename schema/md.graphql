@@ -13,53 +13,16 @@ type TargetConnection {
   updatedAt: DateTime
 }
 
-"A cloud provider region"
-type CloudRegion {
-  "Region's human-friendly name, e.g.: US West 2"
-  name: String!
+enum AlarmStatus {
+  "The metric is within normal operating parameters and below the alarm threshold."
+  OK
 
-  "Region's code, e.g.: us-west-2"
-  code: String!
+  "The metric has exceeded the configured threshold and triggered the alarm condition."
+  ALARM
 
-  "Restrictions on use of this region."
-  restrictions: String
+  "There is not enough data collected yet to determine the alarm state. This typically occurs when an alarm is first created or after a period of no data."
+  INSUFFICIENT_DATA
 }
-
-type DnsZone {
-  id: ID
-  name: String
-  cloud: String
-  location: String
-  cloudProviderId: ID
-}
-
-type ApplicationBundle {
-  bundle: Bundle!
-  zip: String!
-}
-
-input WatchedMetricAlarmInput {
-  threshold: Float!
-  comparisonOperator: ComparisonOperator!
-  periodMinutes: Int!
-}
-
-type DisconnectResourcesResult {
-  failed: [ImportableResource]
-  untagged: [ProviderResource]
-}
-
-type PackageAlarmMetric {
-  name: String!
-  namespace: String!
-  statistic: String
-  dimensions: [Dimension]
-  externalResourceId: String
-  timeSeries: [Sample]
-  metricDefinitionId: ID!
-}
-
-union Metric = PackageAlarmMetric | WatchedMetric
 
 "Indicates whether the artifact is used to fetch cloud cost data"
 enum CloudCostStatus {
@@ -77,11 +40,6 @@ enum CloudCostStatus {
 
   "Eligable to be used for fetching cloud costs but is not in use"
   INACTIVE
-}
-
-enum ComparisonOperator {
-  GREATER_THAN
-  LESS_THAN
 }
 
 type AccountMembership {
@@ -104,7 +62,22 @@ type RootSubscriptionType {
     id: ID!
   ): DeploymentLogStreamLog
   deploymentProgress(organizationId: ID!, packageId: ID!): ProvisioningLifecycleEvents
-  packageAlerts(organizationId: ID!, packageId: ID!): PackageAlert
+  nodeDeleted(organizationId: ID!, projectId: ID!): DeletedNode
+  nodeCreated(organizationId: ID!, projectId: ID!): Node
+  nodeUpdated(organizationId: ID!, projectId: ID!): Node
+  linkCreated(organizationId: ID!, projectId: ID!): Link
+  linkDeleted(organizationId: ID!, projectId: ID!): Link
+  nodeContextCreated(organizationId: ID!, environmentId: ID!): NodeContext
+  nodeContextDeleted(organizationId: ID!, environmentId: ID!): NodeContext
+  linkContextUpdated(organizationId: ID!, environmentId: ID!): LinkContext
+  linkContextCreated(organizationId: ID!, environmentId: ID!): LinkContext
+  linkContextDeleted(organizationId: ID!, environmentId: ID!): LinkContext
+  packageAlarms(organizationId: ID!, packageId: ID!): Alarm
+}
+
+enum ArtifactDefinitionUiConnectionOrientation {
+  LINK
+  ENVIRONMENT_DEFAULT
 }
 
 """
@@ -119,12 +92,30 @@ type Summary {
 }
 
 type AuditLog {
+  id: ID!
+  payload: JSON!
   occurredAt: String!
   resourceId: ID!
   resourceType: String!
   action: String!
   actor: Actor!
-  parent: AuditLogParent
+}
+
+type PackageAlarmState {
+  "Unique identifier for this alarm state record."
+  id: ID!
+
+  "The current status of the alarm (OK, ALARM, or INSUFFICIENT_DATA)."
+  status: AlarmStatus!
+
+  "Message describing the current state or reason for the alarm."
+  message: String!
+
+  "Raw notification data from the cloud provider that triggered this state change."
+  notification: JSON!
+
+  "ISO 8601 timestamp when this state change occurred."
+  occurredAt: DateTime!
 }
 
 type ManifestResource {
@@ -204,6 +195,7 @@ type RecentDeployment {
   id: ID!
   packageSlug: String!
   projectSlug: String!
+  environmentSlug: String!
   packageId: ID!
   projectId: ID!
   environmentId: ID!
@@ -224,12 +216,19 @@ input ArtifactsInput {
   filter: ArtifactsFilters
 }
 
+type ArtifactDefinitionUiInstructions {
+  label: String!
+  content: Markdown!
+}
+
 type TargetDeletionLifecyclePackageError {
   package: Package!
   message: String!
 }
 
 type DeploymentLogStreamLogMetadata {
+  step: String!
+  timestamp: DateTime!
   index: Int!
 }
 
@@ -250,6 +249,7 @@ type RecentAlarm {
   id: ID!
   displayName: String!
   projectSlug: String!
+  environmentSlug: String!
   projectId: ID!
   environmentId: ID!
   packageSlug: String!
@@ -258,35 +258,10 @@ type RecentAlarm {
   occurredAt: DateTime!
 }
 
-type ProviderResource {
-  id: ID!
-
-  "Name the provisioner refers to this resource by"
-  provisionerResourceName: String!
-
-  "Internal set ID for collections"
-  provisionerResourceKey: String
-
-  "Cloud provider resource ID"
-  providerResourceId: ID!
-
-  "Provisioner resource type. E.g.: terraform `aws_s3_bucket`, kubernetes `apps\/v1\/Deployment`"
-  provisionerResourceType: String!
-
-  createdAt: DateTime!
-
-  updatedAt: DateTime!
-}
-
 enum EnvironmentMode {
   PREVIEW
   DEMO
   STANDARD
-}
-
-type Compliance {
-  name: String!
-  badge: String!
 }
 
 """
@@ -378,13 +353,8 @@ type Project {
   cost: Cost
 }
 
-type AuditLogParent {
-  id: ID!
-  type: AuditLogFilterOption!
-}
-
 "Deployment and resource lifecycle events"
-union ProvisioningLifecycleEvents = DeploymentLifecycleEvent | ResourceLifecycleEvent
+union ProvisioningLifecycleEvents = DeploymentLifecycleEvent
 
 type PaginatedArtifacts {
   "A cursor to the next page of items in the list."
@@ -417,14 +387,6 @@ type Permission {
 input Credential {
   artifactDefinitionType: String!
   artifactId: ID!
-}
-
-type ImportableResource {
-  providerResourceId: ID!
-  metadata: JSON
-  tags: [Tag]
-  region: String
-  error: String
 }
 
 type Target {
@@ -464,16 +426,6 @@ type ServiceAccount {
   name: String!
   description: String
   active: Boolean!
-}
-
-input ImportResourcesInput {
-  region: String!
-  providerResourceId: String!
-}
-
-"DNS Zone filters"
-input DnsZoneInput {
-  filter: DnsZoneFilters
 }
 
 "Arguments required to get container repositories"
@@ -550,11 +502,6 @@ type PackageResource {
   deployments: [Deployment]
 }
 
-type ResourceLifecycleState {
-  id: ID!
-  resources: [ResourceLifecycleEvent!]!
-}
-
 type AuditLogResponse {
   events: [AuditLog]!
   cursor: String
@@ -593,10 +540,6 @@ type InvitationPayload {
   result: Invitation
 }
 
-input ImportableResourcesInput {
-  filter: ImportableResourcesInputFilter!
-}
-
 type EnvironmentConnectionPayload {
   "Indicates if the mutation completed successfully or not."
   successful: Boolean!
@@ -606,16 +549,6 @@ type EnvironmentConnectionPayload {
 
   "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
   result: EnvironmentConnection
-}
-
-input ContainerRepositoriesInput {
-  location: String!
-}
-
-"Supported cloud information"
-type Cloud {
-  regions: [CloudRegion]
-  services: [CloudService]
 }
 
 type ArtifactPayload {
@@ -653,6 +586,9 @@ type Package {
 
   updatedAt: DateTime!
 
+  "Cloud alarms configured through IaC for this package"
+  alarms: [Alarm]
+
   "Secret configuration for application packages"
   secretFields: [SecretField]
 
@@ -664,12 +600,6 @@ type Package {
   manifest: Manifest!
 
   paramsSchema: JSON!
-
-  providerResources: [ProviderResource]
-
-  metricDefinitions(input: MetricDefinitionsInput): [MetricDefinition]
-
-  watchedMetrics: [WatchedMetric]
 
   "The target this package will be deployed to"
   target: Target!
@@ -684,9 +614,6 @@ type Package {
   "Artifacts provisioned by this package"
   artifacts: [Artifact]
 
-  "Current alarms for this package"
-  packageAlerts: [PackageAlert]
-
   "Artifacts from a remote source like another project or a resource not managed by massdriver"
   remoteReferences: [RemoteReference]
 
@@ -694,38 +621,36 @@ type Package {
   cost: Cost
 }
 
+type Node {
+  manifestId: ID!
+  name: String!
+  type: String!
+  positionX: Int!
+  positionY: Int!
+  artifactHandles: [Handle]!
+  connectionHandles: [Handle]!
+}
+
 type BundleDeletionLifecycle {
   result: Boolean!
   messages: [BundleDeletionLifecycleError]
 }
 
-type ImportResourcesResult {
-  failed: [ImportableResource]
-  tagged: [ProviderResource]
+type NodeContext {
+  manifestId: ID!
+  packageId: ID!
+  packageSlug: String!
+}
+
+type LinkContext {
+  id: ID!
+  environmentId: ID!
+  isConnection: Boolean
 }
 
 type Cost {
   monthly: Summary
   daily: Summary
-}
-
-type WatchedMetric {
-  id: ID!
-  name: String!
-  namespace: String!
-  statistic: String
-  dimensions: [Dimension]
-  externalResourceId: String
-  package: Package!
-  packageAlarm: PackageAlert
-  metricDefinitionId: ID!
-  timeSeries: [Sample]
-}
-
-"Metric definition filters"
-input MetricDefinitionsFilters {
-  "If set to true, excludes watched metrics on the package from metric definitions. Defaults to false"
-  excludeWatchedMetrics: Boolean
 }
 
 input GraphPositionParams {
@@ -735,9 +660,6 @@ input GraphPositionParams {
 
 "Artifact definition filters"
 input ArtifactDefinitionFilters {
-  "The service for which to get compatible artifact definitions"
-  service: String
-
   "Whether to get credential or non-credential artifact definitions"
   isCredential: Boolean
 }
@@ -754,8 +676,6 @@ enum PermissionAccessLevel {
 type RootQueryType {
   me: Account
 
-  applicationBundleTemplates(organizationId: ID!): [ApplicationBundleTemplate]
-
   artifactDefinitions(
     "List all artifact definitions"
     organizationId: ID!
@@ -767,7 +687,7 @@ type RootQueryType {
   defaultableTargetConnectionGroups(
     "List defaultable target connections by group"
     organizationId: ID!
-  ): [DefaultableTargetConnectionGroup]
+  ): [DefaultableTargetConnectionGroup] @deprecated(reason: "Use defaultable_environment_connection_groups instead.")
 
   defaultableEnvironmentConnectionGroups(
     "List defaultable environment connections by group"
@@ -791,14 +711,25 @@ type RootQueryType {
   "Connection data for an artifact rendered in requested format"
   downloadArtifact(organizationId: ID!, artifactId: ID!, format: DownloadFormat!): RenderedArtifact
 
-  auditLogs(organizationId: ID!, cursor: String, filter: AuditLogFilter): AuditLogResponse
+  auditLog(id: ID!, organizationId: ID!): AuditLog
 
-  "Deprecated, use compare_environments instead"
-  compareTargets(organizationId: ID!, fromTargetId: ID!, toTargetId: ID!): Changeset @deprecated(reason: "use compare_environments instead")
+  auditLogs(
+    organizationId: ID!
+
+    cursor: String
+
+    filter: AuditLogFilter
+
+    "Number of events per page. Defaults to 50."
+    pageSize: Int
+  ): AuditLogResponse
 
   compareEnvironments(organizationId: ID!, fromEnvironmentId: ID!, toEnvironmentId: ID!): Changeset
 
   compareDeployments(organizationId: ID!, fromDeploymentId: ID!, toDeploymentId: ID!): Changeset
+
+  "Marketplace Blueprints"
+  templates(organizationId: ID!): [Bundle]
 
   bundles(organizationId: ID!): [Bundle]
 
@@ -813,17 +744,7 @@ type RootQueryType {
 
   bundleSourceCode(organizationId: ID!, id: ID!): BundleSource
 
-  cloud(
-    "Clouds supported by Massdriver"
-    organizationId: ID!
-
-    "Cloud identifier (aws, gcp, or azure)"
-    id: String!
-  ): Cloud!
-
-  containerRepository(organizationId: ID!, artifactId: ID!, input: ContainerRepositoryInput!): ContainerRepositoryAuth
-
-  containerRepositories(organizationId: ID!, artifactId: ID!, input: ContainerRepositoriesInput!): [ContainerRepository]
+  containerRepository(organizationId: ID!, artifactId: ID!, input: ContainerRepositoryInput!): ContainerRepositoryAuth @deprecated(reason: "This function will be removed in the near future.")
 
   "Find bundles and manifests that provide a dependency."
   recommendManifestDependencies(
@@ -867,21 +788,13 @@ type RootQueryType {
     id: ID!
   ): DeploymentLogStream
 
-  resourceLifecycleState(
-    organizationId: ID!
+  nodes(organizationId: ID!, projectId: ID!): [Node]
 
-    "Deployment ID"
-    id: ID!
-  ): ResourceLifecycleState
+  links(organizationId: ID!, projectId: ID!): [Link]
 
-  dnsZones(
-    organizationId: ID!
+  nodeContexts(organizationId: ID!, environmentId: ID!): [NodeContext]
 
-    "Filter DNS Zone results"
-    input: DnsZoneInput
-  ): [DnsZone]
-
-  cloudDnsZones(organizationId: ID!, location: String!, artifactId: ID!): [DnsZone]
+  linkContexts(organizationId: ID!, environmentId: ID!): [LinkContext]
 
   environment(
     organizationId: ID!
@@ -902,13 +815,8 @@ type RootQueryType {
   "list all groups for an organization"
   groups(organizationId: ID!): [Group]
 
-  importableResources(organizationId: ID!, artifactId: ID!, input: ImportableResourcesInput!): [ImportableResource]
-
   "Gets all VM instance types for a given region"
   instanceTypes(organizationId: ID!, artifactId: ID!, packageId: ID!, input: InstanceTypeInput!): [InstanceType]
-
-  "Gets supported regions for cloud services"
-  supportedLocations(organizationId: ID!, cloudService: String!): LocationList
 
   manifest(
     organizationId: ID!
@@ -950,8 +858,6 @@ type RootQueryType {
 
   serviceAccounts(organizationId: ID!): [ServiceAccount]
 
-  subscriptionPlans: [SubscriptionPlan]
-
   "Deprecated, use environment instead"
   target(
     organizationId: ID!
@@ -959,23 +865,6 @@ type RootQueryType {
     "Target ID or slug"
     id: ID!
   ): Target @deprecated(reason: "deprecated, use environment instead")
-
-  metricTimeSeries(organizationId: ID!, packageId: ID!, metricDefinitionId: ID!): [Sample]
-}
-
-type PackageAlertState {
-  status: AlarmState!
-  message: String
-  notification: JSON
-  occurredAt: String
-}
-
-"A cloud provider service identifier"
-type CloudService {
-  name: String!
-
-  "Services cloud specified identifier"
-  code: String!
 }
 
 """
@@ -985,10 +874,6 @@ string, including UTC timezone ("Z"). The parsed date and time string will
 be converted to UTC if there is an offset.
 """
 scalar DateTime
-
-input MetricDefinitionsInput {
-  filter: MetricDefinitionsFilters
-}
 
 type Manifest {
   id: ID!
@@ -1053,11 +938,6 @@ enum OrganizationBillingStatus {
   PAYMENT_FAILED
 }
 
-type BundleStatistics {
-  estimatedDeploymentTime: Int
-  activeDeploymentCount: Int
-}
-
 "Bundle search filters"
 input BundleSearchFilters {
   "Search query"
@@ -1082,18 +962,71 @@ type ManifestRecommendation {
 }
 
 type ArtifactDefinition {
-  id: ID
-  name: String
+  id: ID!
+
+  createdAt: DateTime!
+
+  updatedAt: DateTime!
+
+  "The name of this type. Organization scoped: my-org\/aws-iam-role"
+  name: String!
+
+  access: ArtifactDefinitionAccess!
+
   url: String
-  type: String @deprecated(reason: "use `name` field")
+
   schema: JSON!
+
+  ui: ArtifactDefinitionUi
+
+  icon: String
+
+  label: String!
+
+  type: String @deprecated(reason: "use `name` field")
+
   exportFormats: [ArtifactDefinitionExportFormat]
-  fqn: String! @deprecated(reason: "use `name` field")
 }
 
 type PendingInvitation {
   id: ID!
   group: Group
+}
+
+"An alarm is a condition that triggers a notification. It is defined by a metric, a comparison operator, a threshold, and a period."
+type Alarm {
+  "Unique identifier for the alarm."
+  id: ID!
+
+  "The cloud provider's unique identifier for this alarm. Examples: AWS: 'arn:aws:cloudwatch:us-west-2:123456789012:alarm:test-alarm', Azure: '\/subscriptions\/...\/alerts\/12345678-1234-1234-1234-1234567890ab'"
+  cloudResourceId: String!
+
+  "Human-readable name for the alarm."
+  displayName: String!
+
+  "The cloud provider's metric namespace that categorizes the metric. Examples: AWS: 'AWS\/EC2', 'AWS\/RDS', Azure: 'Microsoft.Storage\/storageAccounts', GCP: 'cloudsql_database'"
+  namespace: String
+
+  "The specific metric being monitored. Examples: AWS: 'CPUUtilization', 'ApproximateNumberOfMessagesVisible', Azure: 'Transactions', 'allpercentprocessortime', GCP: 'cloudsql.googleapis.com\/database\/cpu\/utilization'"
+  name: String
+
+  "The statistical function applied to the metric data. Examples: AWS: 'Average', 'Sum', 'Maximum', Azure: 'Average', 'Total', 'Maximum', GCP: (typically not used)"
+  statistic: String
+
+  "Key-value pairs that identify the specific resource being monitored. Examples: AWS: [{'name': 'InstanceId', 'value': 'i-1234567890abcdef0'}], Azure: [{'name': 'ApiName', 'value': 'GetBlob'}]"
+  dimensions: [Dimension]!
+
+  "The operator used to compare the metric value against the threshold. Examples: GREATER_THAN, LESS_THAN"
+  comparisonOperator: String
+
+  "The value that triggers the alarm when crossed by the metric value. The comparison is made using the comparison_operator."
+  threshold: Float
+
+  "The time window in seconds over which the metric is evaluated."
+  period: Int
+
+  "The most recent state of the alarm. If no states exist, returns INSUFFICIENT_DATA. Otherwise, returns the most recent state based on occurred_at timestamp."
+  currentState: PackageAlarmState
 }
 
 type TargetDeletionLifecycle {
@@ -1109,26 +1042,6 @@ type ProjectDeletionLifecycle {
 type CostSample {
   amount: Float!
   currency: String!
-}
-
-type WatchedMetricPayload {
-  "Indicates if the mutation completed successfully or not."
-  successful: Boolean!
-
-  "A list of failed validations. May be blank or null if mutation succeeded."
-  messages: [ValidationMessage]
-
-  "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
-  result: WatchedMetric
-}
-
-type PlanLimit {
-  maxMembers: Int!
-  maxCloudAccounts: Int!
-  maxTargets: Int!
-  maxArtifactDefinitions: Int!
-  maxPublicBundles: Int!
-  maxPrivateBundles: Int!
 }
 
 type ProjectPayload {
@@ -1151,17 +1064,6 @@ type AccountMemberPayload {
 
   "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
   result: AccountMember
-}
-
-type DnsZonePayload {
-  "Indicates if the mutation completed successfully or not."
-  successful: Boolean!
-
-  "A list of failed validations. May be blank or null if mutation succeeded."
-  messages: [ValidationMessage]
-
-  "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
-  result: DnsZone
 }
 
 type CloudCostCredentialPayload {
@@ -1190,21 +1092,12 @@ type BundlePayload {
 enum DownloadFormat {
   RAW
   YAML
+  PEM
+  OVPN
 }
 
 type RenderedArtifact {
   renderedArtifact: String!
-}
-
-type ApplicationBundlePayload {
-  "Indicates if the mutation completed successfully or not."
-  successful: Boolean!
-
-  "A list of failed validations. May be blank or null if mutation succeeded."
-  messages: [ValidationMessage]
-
-  "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
-  result: ApplicationBundle
 }
 
 type DependencyRecommendations {
@@ -1213,9 +1106,17 @@ type DependencyRecommendations {
 }
 
 enum AuditLogActor {
+  "System actions and legacy events"
   SYSTEM
+
+  "Service account"
   SERVICE_ACCOUNT
+
+  "Account"
   ACCOUNT
+
+  "Deployment"
+  DEPLOYMENT
 }
 
 type OrganizationBilling {
@@ -1236,25 +1137,20 @@ type OrganizationBilling {
   "The date and time when the trial period ends. Timezone is UTC."
   trialEndsAt: DateTime!
 
-  "The URL to pay for the organization's subscription."
-  subscriptionManagementUrl: String!
-}
+  "The URL to manage the organization's subscription."
+  portalUrl: String!
 
-type Tag {
-  key: String!
-  value: String
+  "The plans available to the organization."
+  plans: [OrganizationBillingPlan]
+
+  "The URL to pay for the organization's subscription."
+  subscriptionManagementUrl: String! @deprecated(reason: "Use `organization_billing_plans` instead.")
 }
 
 enum TargetMode {
   PREVIEW
   DEMO
   STANDARD
-}
-
-type ApplicationBundleTemplate {
-  name: String!
-  displayName: String!
-  imageUrl: String
 }
 
 type RemoteReferencePayload {
@@ -1313,7 +1209,8 @@ type ManifestDeletionLifecyclePackageError {
 
 enum AuditLogFilterOption {
   PROJECT
-  TARGET
+  TARGET @deprecated(reason: "Use environment instead")
+  ENVIRONMENT
 }
 
 type RemoteReference {
@@ -1495,12 +1392,6 @@ input RemoteReferenceParams {
   field: String
 }
 
-"DNS Zone filters"
-input DnsZoneFilters {
-  "The cloud in which to filter by"
-  cloud: String
-}
-
 type Link {
   id: ID!
   srcField: String!
@@ -1508,8 +1399,16 @@ type Link {
   isConnection: Boolean
   createdAt: DateTime!
   updatedAt: DateTime!
+  srcId: ID!
+  destId: ID!
   srcManifest: Manifest!
   destManifest: Manifest!
+}
+
+type ArtifactDefinitionUi {
+  connectionOrientation: ArtifactDefinitionUiConnectionOrientation!
+  environmentDefaultGroup: String
+  instructions: [ArtifactDefinitionUiInstructions]!
 }
 
 type DeploymentLogStreamLog {
@@ -1533,34 +1432,9 @@ type ServiceAccountPayload {
   result: ServiceAccount
 }
 
-type ResourceLifecycleEvent {
-  "Provider resource type"
-  type: String!
-
-  "Internal resource name"
-  name: String!
-
-  key: String
-
-  status: String!
-
-  action: String!
-}
-
 type UnsettableResult {
   result: Boolean!
   messages: [String]
-}
-
-type ImportableResourcePayload {
-  "Indicates if the mutation completed successfully or not."
-  successful: Boolean!
-
-  "A list of failed validations. May be blank or null if mutation succeeded."
-  messages: [ValidationMessage]
-
-  "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
-  result: ImportResourcesResult
 }
 
 input PermissionGrantInput {
@@ -1570,6 +1444,11 @@ input PermissionGrantInput {
   accessLevel: PermissionAccessLevel!
 }
 
+enum ArtifactDefinitionAccess {
+  PUBLIC
+  PRIVATE
+}
+
 "A service account group membership"
 type ServiceAccountMember {
   id: ID!
@@ -1577,51 +1456,29 @@ type ServiceAccountMember {
   active: Boolean!
 }
 
-input ImportableResourcesInputFilter {
-  regions: [String!]!
-  resourceTypes: [String]
-  tags: [TagFilter]
-}
-
-"Error encountered during provisioning or decommissioning"
-type DeploymentError {
-  "Brief overview of error"
-  message: JSON
-
-  "Additional details of error"
-  details: JSON
-}
-
 input AuditLogFilter {
   id: ID
   type: AuditLogFilterOption
 }
 
-type MetricDefinition {
+type OrganizationBillingPlan {
+  "The name of the plan."
   name: String!
-  namespace: String!
-  statistic: String
-  dimensions: [Dimension]
-  externalResourceId: String
-  region: String
-  id: ID!
-}
 
-enum AlarmState {
-  OK
-  ALARM
-  INSUFFICIENT_DATA
-}
+  "The description of the plan."
+  description: String!
 
-type PackageAlarmPayload {
-  "Indicates if the mutation completed successfully or not."
-  successful: Boolean!
+  "The URL to pay for the plan."
+  url: String!
 
-  "A list of failed validations. May be blank or null if mutation succeeded."
-  messages: [ValidationMessage]
+  "The number of seats in the plan."
+  seats: Int!
 
-  "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
-  result: PackageAlert
+  "The price of the plan in cents."
+  price: Int!
+
+  "The frequency at which the organization is billed."
+  frequency: OrganizationBillingFrequency!
 }
 
 type SecretMetadataPayload {
@@ -1635,28 +1492,10 @@ type SecretMetadataPayload {
   result: SecretMetadata
 }
 
-type PackageAlert {
-  id: ID!
-  notification: JSON
-  occurredAt: String
-  providerResourceId: ID
-  displayName: String
-  comparisonOperator: ComparisonOperator
-  threshold: Float
-  periodMinutes: Int
-  metric: Metric
-  state: Boolean @deprecated(reason: "This field will be removed after cutover to the new package alert format")
-  packageAlertState: PackageAlertState
-}
-
 "Field that an artifact can be linked to on this manifest."
 type LinkableField {
   name: String!
   artifactDefinitions: [ArtifactDefinition]!
-}
-
-type LocationList {
-  locations: [String]
 }
 
 "Supported download formats"
@@ -1722,11 +1561,11 @@ type DeploymentLogStream {
   logs: [DeploymentLogStreamLog]
 }
 
-type Sample {
-  "Milliseconds since epoch"
-  timestamp: Int!
-
-  value: Float!
+type Handle {
+  fieldName: String!
+  type: String!
+  isLinkable: Boolean!
+  required: Boolean!
 }
 
 type Bundle {
@@ -1734,10 +1573,17 @@ type Bundle {
 
   name: String!
 
+  version: String
+
+  "Icon SVG"
+  icon: String
+
+  specVersion: String
+
   "Application or bundle"
   type: String!
 
-  "Public or private"
+  "Private bundle or public template"
   access: String!
 
   description: String
@@ -1761,11 +1607,7 @@ type Bundle {
 
   updatedAt: DateTime!
 
-  statistics: BundleStatistics!
-
   deletable: BundleDeletionLifecycle!
-
-  compliance: [Compliance]
 
   "The full name of the bundle"
   fqn: String!
@@ -1780,17 +1622,6 @@ type AccountMembershipPayload {
 
   "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
   result: AccountMembership
-}
-
-type DisconnectResourcePayload {
-  "Indicates if the mutation completed successfully or not."
-  successful: Boolean!
-
-  "A list of failed validations. May be blank or null if mutation succeeded."
-  messages: [ValidationMessage]
-
-  "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
-  result: DisconnectResourcesResult
 }
 
 input PreviewEnvironmentInput {
@@ -1808,9 +1639,6 @@ type Deployment {
   status: String!
 
   action: String!
-
-  "Errors encountered during deployment"
-  errors: [DeploymentError]
 
   message: String
 
@@ -1919,9 +1747,6 @@ type RootMutationType {
   "Revoke group permissions for a project"
   revokeGroupAccess(organizationId: ID!, groupId: ID!, permission: PermissionRevokeInput!): ProjectPayload
 
-  "Create an Application Bundle"
-  createApplicationBundle(organizationId: ID!, templateName: String!, params: JSON!): ApplicationBundlePayload
-
   "Create an artifact"
   createArtifact(organizationId: ID!, name: String!, type: String!, specs: JSON!, data: JSON!): ArtifactPayload
 
@@ -1971,9 +1796,6 @@ type RootMutationType {
     "Package ID, slug, or name prefix."
     id: ID
 
-    "By decomissioning with force, the package state will be set to 'decommissioned' even if the deployment fails. This may result in orphaned cloud resources that must be removed manually."
-    force: Boolean
-
     "Short message describing the reason for decomissioning the underlying resources"
     message: String
   ): DeploymentPayload
@@ -1992,12 +1814,6 @@ type RootMutationType {
   ): LinkPayload
 
   unlinkManifests(organizationId: ID!, linkId: ID!): LinkPayload
-
-  createDnsZone(organizationId: ID!, name: String!, location: String!, artifactId: ID!, cloud: String!): DnsZonePayload
-
-  connectDnsZone(organizationId: ID!, name: String!, location: String!, cloudProviderId: ID!, cloud: String!): DnsZonePayload
-
-  disconnectDnsZone(organizationId: ID!, id: ID!): DnsZonePayload
 
   "Create an environment"
   createEnvironment(organizationId: ID!, projectId: ID!, name: String!, slug: String!, description: String): EnvironmentPayload
@@ -2038,15 +1854,8 @@ type RootMutationType {
 
   deleteGroup(id: ID!, organizationId: ID!): GroupPayload
 
-  importResources(organizationId: ID!, packageId: ID!, artifactId: ID!, resources: [ImportResourcesInput!]!): ImportableResourcePayload
-
-  disconnectImportedResources(organizationId: ID!, packageId: ID!, artifactId: ID!, resources: [String!]!): DisconnectResourcePayload
-
   "Adds a bundle to a project"
   createManifest(organizationId: ID!, bundleId: ID!, projectId: ID!, name: String!, slug: String!, description: String): ManifestPayload
-
-  "Creates a manifest with an empty bundle which can be used to assign resources outside of Massdriver"
-  createImportableManifest(organizationId: ID!, projectId: ID!, name: String!, slug: String!, description: String): ManifestPayload
 
   "Update a manifest"
   updateManifest(organizationId: ID!, id: ID!, name: String!, description: String): ManifestPayload
@@ -2107,6 +1916,42 @@ type RootMutationType {
 
   "Create an organization"
   createOrganization(name: String!, slug: String!): OrganizationPayload
+
+  """
+  Reset a package to its initialized state. This is useful for:
+  - Forcing a stuck bundle off the canvas
+  - Redeploying a package from scratch
+  - Clearing state when destroy_state is true
+
+  The package's status will be set to INITIALIZED.
+
+  By default, the state will not be destroyed. If you want to destroy the state, set destroy_state to true.
+  By default, the params will not be cleared. If you want to clear the params, set clear_params to true.
+
+  This mutation is an escape hatch and can lose data. Please make sure to pull any state first.
+
+  [Read our manage state guide](https://docs.massdriver.cloud/guides/managing-state#3-pull-existing-state) on setting up your state backend.
+
+  ## OpenTofu
+
+  > tofu state pull > /somewhere/safe.tfstate
+
+  ## Terraform
+
+  > terraform state pull > /somewhere/safe.tfstate
+  """
+  resetPackage(
+    organizationId: ID!
+
+    "Package ID or {project.slug}-{environment.slug}-{manifest.slug} i.e.: ecomm-staging-database"
+    id: ID!
+
+    "Destroy the state of the package"
+    destroyState: Boolean!
+
+    "Clear the params of the package"
+    clearParams: Boolean!
+  ): PackagePayload
 
   "Update a Package's parameters"
   configurePackage(
@@ -2171,33 +2016,11 @@ type RootMutationType {
   "deprecated. Use deleteEnvironmentConnection instead"
   deleteTargetConnection(organizationId: ID!, id: ID!): TargetConnectionPayload @deprecated(reason: "use deleteEnvironmentConnection instead")
 
-  "Deprecated. Use createEnvironment instead"
-  createTarget(organizationId: ID!, projectId: ID!, name: String!, slug: String!, description: String): TargetPayload @deprecated(reason: "use createEnvironment instead")
-
   "Deprecated. use updateEnvironment instead"
   updateTarget(organizationId: ID!, id: ID!, name: String!, description: String): TargetPayload @deprecated(reason: "use updateEnvironment instead")
 
   "Deprecated. use deleteTarget instead"
   deleteTarget(organizationId: ID!, id: ID!): TargetPayload @deprecated(reason: "use deleteTarget instead")
-
-  watchMetric(
-    organizationId: ID!
-
-    "package ID"
-    id: ID!
-
-    metricDefinitionId: ID!
-  ): WatchedMetricPayload
-
-  unwatchMetric(organizationId: ID!, watchedMetricId: ID!): WatchedMetricPayload
-
-  watchMetricAndCreatePackageAlarm(
-    organizationId: ID!, packageId: ID!, metricDefinitionId: ID!, alarmInput: WatchedMetricAlarmInput!
-  ): WatchedMetricPayload
-
-  createWatchedMetricPackageAlarm(organizationId: ID!, watchedMetricId: ID!, input: WatchedMetricAlarmInput!): PackageAlarmPayload
-
-  deleteWatchedMetricPackageAlarm(organizationId: ID!, watchedMetricId: ID!): PackageAlarmPayload
 }
 
 type EnvironmentConnection {
@@ -2253,7 +2076,6 @@ enum PackageStatus {
   DECOMMISSIONED
   FAILED
   EXTERNAL
-  IMPORTED
 }
 
 type BundleStatistic {
@@ -2264,24 +2086,9 @@ type BundleStatistic {
   totalCost: Float!
 }
 
-input TagFilter {
-  key: String!
-  value: String
-}
-
 type EnvironmentDeletionLifecyclePackageError {
   package: Package!
   message: String!
-}
-
-type SubscriptionPlan {
-  id: ID!
-  name: String!
-  providerProductId: ID!
-  providerPriceId: ID!
-  price: Int!
-  planLimits: PlanLimit!
-  attribution: String!
 }
 
 type Organization {
@@ -2319,11 +2126,8 @@ type Connection {
   updatedAt: DateTime
 }
 
-type ContainerRepository {
-  name: String!
-  cloud: String!
-  location: String!
-  cloudProviderId: ID!
+type DeletedNode {
+  manifestId: ID!
 }
 
 input SetSecretValueInput {

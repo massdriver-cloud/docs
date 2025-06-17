@@ -1,0 +1,129 @@
+---
+id: artifact-definition
+title: ArtifactDefinition
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+No description
+
+
+```graphql
+type ArtifactDefinition {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  name: String!
+  access: ArtifactDefinitionAccess!
+  url: String
+  schema: JSON!
+  ui: ArtifactDefinitionUi
+  icon: String
+  label: String!
+  type: String @deprecated
+  exportFormats: [ArtifactDefinitionExportFormat]
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ArtifactDefinition.<b>id</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ArtifactDefinition.<b>createdAt</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/swapi/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ArtifactDefinition.<b>updatedAt</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/swapi/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ArtifactDefinition.<b>name</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+The name of this type. Organization scoped: my-org/aws-iam-role
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ArtifactDefinition.<b>access</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ArtifactDefinitionAccess!</b></code>](/swapi/types/enums/artifact-definition-access.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ArtifactDefinition.<b>url</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ArtifactDefinition.<b>schema</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>JSON!</b></code>](/swapi/types/scalars/json.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ArtifactDefinition.<b>ui</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ArtifactDefinitionUi</b></code>](/swapi/types/objects/artifact-definition-ui.mdx) <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ArtifactDefinition.<b>icon</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ArtifactDefinition.<b>label</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ArtifactDefinition.<b>type</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> 
+:::warning[DEPRECATED]
+
+use `name` field
+
+:::
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ArtifactDefinition.<b>exportFormats</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ArtifactDefinitionExportFormat]</b></code>](/swapi/types/objects/artifact-definition-export-format.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+
+
+
+
+### Returned By
+
+[`artifactDefinitions`](/swapi/operations/queries/artifact-definitions.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+
+### Member Of
+
+[`Artifact`](/swapi/types/objects/artifact.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`DefaultableEnvironmentConnectionGroup`](/swapi/types/objects/defaultable-environment-connection-group.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`DefaultableTargetConnectionGroup`](/swapi/types/objects/defaultable-target-connection-group.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`LinkableField`](/swapi/types/objects/linkable-field.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
