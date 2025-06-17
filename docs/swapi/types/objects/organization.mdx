@@ -1,0 +1,120 @@
+---
+id: organization
+title: Organization
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+No description
+
+
+```graphql
+type Organization {
+  id: ID!
+  name: String!
+  slug: String!
+  createdAt: DateTime
+  updatedAt: DateTime
+  attribution: String
+  dashboard: DashboardStatistics
+  billing: OrganizationBilling
+  isAdmin: Boolean
+  groups: [Group]
+  onboardingTasks: [OnboardingTask]
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>Organization.<b>id</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Organization.<b>name</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Organization.<b>slug</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Organization.<b>createdAt</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/swapi/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Organization.<b>updatedAt</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/swapi/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Organization.<b>attribution</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Organization.<b>dashboard</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DashboardStatistics</b></code>](/swapi/types/objects/dashboard-statistics.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Statistics for projects you have access to within this organization.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Organization.<b>billing</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OrganizationBilling</b></code>](/swapi/types/objects/organization-billing.mdx) <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Organization.<b>isAdmin</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/swapi/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+Is the API actor an admin of this organization. Internal use only, subject to change.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Organization.<b>groups</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Group]</b></code>](/swapi/types/objects/group.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Organization.<b>onboardingTasks</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[OnboardingTask]</b></code>](/swapi/types/objects/onboarding-task.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+
+
+
+
+### Returned By
+
+[`organization`](/swapi/operations/queries/organization.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+
+### Member Of
+
+[`Account`](/swapi/types/objects/account.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Group`](/swapi/types/objects/group.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`OrganizationPayload`](/swapi/types/objects/organization-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Project`](/swapi/types/objects/project.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

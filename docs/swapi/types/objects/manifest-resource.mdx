@@ -1,0 +1,103 @@
+---
+id: manifest-resource
+title: ManifestResource
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+No description
+
+
+```graphql
+type ManifestResource {
+  id: ID!
+  name: String
+  package: Package @deprecated
+  manifest: Manifest
+  artifacts: [Artifact] @deprecated
+  deployments: [Deployment] @deprecated
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ManifestResource.<b>id</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+ID of the underlying manifest
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ManifestResource.<b>name</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+Manifest name
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ManifestResource.<b>package</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Package</b></code>](/swapi/types/objects/package.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="object"/> 
+:::warning[DEPRECATED]
+
+No longer supported
+
+:::
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ManifestResource.<b>manifest</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Manifest</b></code>](/swapi/types/objects/manifest.mdx) <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ManifestResource.<b>artifacts</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Artifact]</b></code>](/swapi/types/objects/artifact.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+:::warning[DEPRECATED]
+
+No longer supported
+
+:::
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ManifestResource.<b>deployments</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Deployment]</b></code>](/swapi/types/objects/deployment.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+:::warning[DEPRECATED]
+
+No longer supported
+
+:::
+
+
+
+
+
+
+### Implemented By
+
+[`Resource`](/swapi/types/unions/resource.mdx)  <Badge class="badge badge--secondary badge--relation" text="union"/>

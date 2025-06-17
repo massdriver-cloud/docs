@@ -1,0 +1,97 @@
+---
+id: reset-package
+title: resetPackage
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Reset a package to its initialized state. This is useful for:
+- Forcing a stuck bundle off the canvas
+- Redeploying a package from scratch
+- Clearing state when destroy&#x005F;state is true
+
+The package's status will be set to INITIALIZED.
+
+By default, the state will not be destroyed. If you want to destroy the state, set destroy&#x005F;state to true.
+By default, the params will not be cleared. If you want to clear the params, set clear&#x005F;params to true.
+
+This mutation is an escape hatch and can lose data. Please make sure to pull any state first.
+
+[Read our manage state guide](https://docs.massdriver.cloud/guides/managing-state#3-pull-existing-state) on setting up your state backend.
+
+## OpenTofu
+
+&#x003E; tofu state pull &#x003E; /somewhere/safe.tfstate
+
+## Terraform
+
+&#x003E; terraform state pull &#x003E; /somewhere/safe.tfstate
+
+
+```graphql
+resetPackage(
+  organizationId: ID!
+  id: ID!
+  destroyState: Boolean!
+  clearParams: Boolean!
+): PackagePayload
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>resetPackage.<b>organizationId</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>resetPackage.<b>id</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Package ID or &#x007B;project.slug&#x007D;-&#x007B;environment.slug&#x007D;-&#x007B;manifest.slug&#x007D; i.e.: ecomm-staging-database
+
+
+#### [<code style={{ fontWeight: 'normal' }}>resetPackage.<b>destroyState</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/swapi/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Destroy the state of the package
+
+
+#### [<code style={{ fontWeight: 'normal' }}>resetPackage.<b>clearParams</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/swapi/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Clear the params of the package
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PackagePayload</b></code>](/swapi/types/objects/package-payload.mdx) <Badge class="badge badge--secondary " text="object"/>

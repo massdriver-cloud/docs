@@ -1,0 +1,112 @@
+---
+id: organization-billing
+title: OrganizationBilling
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+No description
+
+
+```graphql
+type OrganizationBilling {
+  seats: Int!
+  status: OrganizationBillingStatus!
+  cost: Int
+  frequency: OrganizationBillingFrequency
+  affiliate: String
+  trialEndsAt: DateTime!
+  portalUrl: String!
+  plans: [OrganizationBillingPlan]
+  subscriptionManagementUrl: String! @deprecated
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBilling.<b>seats</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/swapi/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+The number of seats in the organization.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBilling.<b>status</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OrganizationBillingStatus!</b></code>](/swapi/types/enums/organization-billing-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> 
+The billing status of the organization.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBilling.<b>cost</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/swapi/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+The cost in cents of the organization's subscription.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBilling.<b>frequency</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OrganizationBillingFrequency</b></code>](/swapi/types/enums/organization-billing-frequency.mdx) <Badge class="badge badge--secondary " text="enum"/> 
+The frequency at which the organization is billed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBilling.<b>affiliate</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBilling.<b>trialEndsAt</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/swapi/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+The date and time when the trial period ends. Timezone is UTC.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBilling.<b>portalUrl</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+The URL to manage the organization's subscription.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBilling.<b>plans</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[OrganizationBillingPlan]</b></code>](/swapi/types/objects/organization-billing-plan.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+The plans available to the organization.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBilling.<b>subscriptionManagementUrl</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+:::warning[DEPRECATED]
+
+Use `organization_billing_plans` instead.
+
+:::
+
+The URL to pay for the organization's subscription.
+
+
+
+
+
+
+### Member Of
+
+[`Organization`](/swapi/types/objects/organization.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

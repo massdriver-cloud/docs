@@ -1,0 +1,91 @@
+---
+id: organization-billing-plan
+title: OrganizationBillingPlan
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+No description
+
+
+```graphql
+type OrganizationBillingPlan {
+  name: String!
+  description: String!
+  url: String!
+  seats: Int!
+  price: Int!
+  frequency: OrganizationBillingFrequency!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBillingPlan.<b>name</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+The name of the plan.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBillingPlan.<b>description</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+The description of the plan.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBillingPlan.<b>url</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+The URL to pay for the plan.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBillingPlan.<b>seats</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/swapi/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+The number of seats in the plan.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBillingPlan.<b>price</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/swapi/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+The price of the plan in cents.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBillingPlan.<b>frequency</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OrganizationBillingFrequency!</b></code>](/swapi/types/enums/organization-billing-frequency.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> 
+The frequency at which the organization is billed.
+
+
+
+
+
+
+### Member Of
+
+[`OrganizationBilling`](/swapi/types/objects/organization-billing.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

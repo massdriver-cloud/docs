@@ -1,0 +1,86 @@
+---
+id: cloud-cost-status
+title: CloudCostStatus
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Indicates whether the artifact is used to fetch cloud cost data
+
+
+```graphql
+enum CloudCostStatus {
+  ACTIVE
+  PENDING
+  FAILED
+  UNSUPPORTED
+  INACTIVE
+}
+```
+
+
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>CloudCostStatus.<b>ACTIVE</b></code>](#)  
+Currently used to fetch cloud cost data
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CloudCostStatus.<b>PENDING</b></code>](#)  
+Currently using the credential to build dependencies for fetching cloud costs
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CloudCostStatus.<b>FAILED</b></code>](#)  
+Attempted to create cloud cost dependencies but failed to do so
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CloudCostStatus.<b>UNSUPPORTED</b></code>](#)  
+Artifact does not support fetching cloud cost data
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CloudCostStatus.<b>INACTIVE</b></code>](#)  
+Eligable to be used for fetching cloud costs but is not in use
+
+
+
+
+
+
+### Member Of
+
+[`Artifact`](/swapi/types/objects/artifact.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`CloudCostCredential`](/swapi/types/objects/cloud-cost-credential.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

@@ -1,0 +1,118 @@
+---
+id: validation-message
+title: ValidationMessage
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Validation messages are returned when mutation input does not meet the requirements.
+  While client-side validation is highly recommended to provide the best User Experience,
+  All inputs will always be validated server-side.
+
+  Some examples of validations are:
+
+  &#x002A; Username must be at least 10 characters
+  &#x002A; Email field does not contain an email address
+  &#x002A; Birth Date is required
+
+  While GraphQL has support for required values, mutation data fields are always
+  set to optional in our API. This allows 'required field' messages
+  to be returned in the same manner as other validations. The only exceptions
+  are id fields, which may be required to perform updates or deletes.
+
+
+```graphql
+type ValidationMessage {
+  field: String
+  message: String
+  code: String!
+  template: String
+  options: [ValidationOption]
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ValidationMessage.<b>field</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+The input field that the error applies to. The field can be used to
+identify which field the error message should be displayed next to in the
+presentation layer.
+
+If there are multiple errors to display for a field, multiple validation
+messages will be in the result.
+
+This field may be null in cases where an error cannot be applied to a specific field.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ValidationMessage.<b>message</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+A friendly error message, appropriate for display to the end user.
+
+The message is interpolated to include the appropriate variables.
+
+Example: `Username must be at least 10 characters`
+
+This message may change without notice, so we do not recommend you match against the text.
+Instead, use the &#x002A;code&#x002A; field for matching.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ValidationMessage.<b>code</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+A unique error code for the type of validation used.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ValidationMessage.<b>template</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+A template used to generate the error message, with placeholders for option substiution.
+
+Example: `Username must be at least {count} characters`
+
+This message may change without notice, so we do not recommend you match against the text.
+Instead, use the &#x002A;code&#x002A; field for matching.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ValidationMessage.<b>options</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ValidationOption]</b></code>](/swapi/types/objects/validation-option.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+A list of substitutions to be applied to a validation message template
+
+
+
+
+
+
+### Member Of
+
+[`AccountMemberPayload`](/swapi/types/objects/account-member-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AccountMembershipPayload`](/swapi/types/objects/account-membership-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ArtifactPayload`](/swapi/types/objects/artifact-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`BundlePayload`](/swapi/types/objects/bundle-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`CloudCostCredentialPayload`](/swapi/types/objects/cloud-cost-credential-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`DeploymentPayload`](/swapi/types/objects/deployment-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentConnectionPayload`](/swapi/types/objects/environment-connection-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentPayload`](/swapi/types/objects/environment-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`GroupPayload`](/swapi/types/objects/group-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`InvitationPayload`](/swapi/types/objects/invitation-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`LinkPayload`](/swapi/types/objects/link-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ManifestPayload`](/swapi/types/objects/manifest-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`OrganizationPayload`](/swapi/types/objects/organization-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PackagePayload`](/swapi/types/objects/package-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ProjectPayload`](/swapi/types/objects/project-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`RemoteReferencePayload`](/swapi/types/objects/remote-reference-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`SecretMetadataPayload`](/swapi/types/objects/secret-metadata-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ServiceAccountMemberPayload`](/swapi/types/objects/service-account-member-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ServiceAccountPayload`](/swapi/types/objects/service-account-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ServiceAccountWithSecretPayload`](/swapi/types/objects/service-account-with-secret-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`TargetConnectionPayload`](/swapi/types/objects/target-connection-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`TargetPayload`](/swapi/types/objects/target-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

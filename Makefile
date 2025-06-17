@@ -5,7 +5,7 @@ all: sync-cli-docs sync-gql-docs sync-authz-docs
 
 .PHONY: sync-gql-docs
 sync-gql-docs: # Generate GraphQL docs
-	rm -rf ./docs/swapi/{directives,inputs,objects,scalars,subscriptions,unions,enums,mutations,queries}
+	rm -rf ./docs/swapi/{operations,types}
 	cd ${MDPATH} && mix absinthe.schema.sdl
 	mv ${MDPATH}/schema.graphql ./schema/md.graphql
 	npx docusaurus graphql-to-doc

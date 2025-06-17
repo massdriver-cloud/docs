@@ -1,0 +1,81 @@
+---
+id: audit-log-actor
+title: AuditLogActor
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+No description
+
+
+```graphql
+enum AuditLogActor {
+  SYSTEM
+  SERVICE_ACCOUNT
+  ACCOUNT
+  DEPLOYMENT
+}
+```
+
+
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>AuditLogActor.<b>SYSTEM</b></code>](#)  
+System actions and legacy events
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AuditLogActor.<b>SERVICE&#x005F;ACCOUNT</b></code>](#)  
+Service account
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AuditLogActor.<b>ACCOUNT</b></code>](#)  
+Account
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AuditLogActor.<b>DEPLOYMENT</b></code>](#)  
+Deployment
+
+
+
+
+
+
+### Member Of
+
+[`Actor`](/swapi/types/objects/actor.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

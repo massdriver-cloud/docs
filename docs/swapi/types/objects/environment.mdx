@@ -1,0 +1,140 @@
+---
+id: environment
+title: Environment
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+No description
+
+
+```graphql
+type Environment {
+  id: ID
+  name: String
+  slug: String
+  description: String
+  mode: EnvironmentMode
+  deletable: EnvironmentDeletionLifecycle!
+  createdAt: DateTime
+  updatedAt: DateTime
+  diagram: Diagram
+  manifests: [Manifest]
+  project: Project
+  packages: [Package]
+  connections: [EnvironmentConnection]
+  defaultConnections: [DefaultEnvironmentConnection]
+  cost: Cost
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>id</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>name</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>slug</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>description</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>mode</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EnvironmentMode</b></code>](/swapi/types/enums/environment-mode.mdx) <Badge class="badge badge--secondary " text="enum"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>deletable</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EnvironmentDeletionLifecycle!</b></code>](/swapi/types/objects/environment-deletion-lifecycle.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>createdAt</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/swapi/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>updatedAt</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/swapi/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>diagram</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Diagram</b></code>](/swapi/types/objects/diagram.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Environment's diagram links and resources
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>manifests</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Manifest]</b></code>](/swapi/types/objects/manifest.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+Manifests for this environment's package
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>project</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Project</b></code>](/swapi/types/objects/project.mdx) <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>packages</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Package]</b></code>](/swapi/types/objects/package.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>connections</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[EnvironmentConnection]</b></code>](/swapi/types/objects/environment-connection.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>defaultConnections</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[DefaultEnvironmentConnection]</b></code>](/swapi/types/objects/default-environment-connection.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>cost</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cost</b></code>](/swapi/types/objects/cost.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Cloud provider costs for this target
+
+
+
+
+
+
+### Returned By
+
+[`environment`](/swapi/operations/queries/environment.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+
+### Member Of
+
+[`EnvironmentConnection`](/swapi/types/objects/environment-connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentPayload`](/swapi/types/objects/environment-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Package`](/swapi/types/objects/package.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Project`](/swapi/types/objects/project.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ProjectDeletionLifecyclePackageError`](/swapi/types/objects/project-deletion-lifecycle-package-error.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

@@ -1,0 +1,101 @@
+---
+id: organization-billing-status
+title: OrganizationBillingStatus
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+No description
+
+
+```graphql
+enum OrganizationBillingStatus {
+  TRIAL
+  ACTIVE
+  PAST_DUE
+  EXPIRED
+  CANCELED
+  SUSPENDED
+  PAYMENT_PENDING
+  PAYMENT_FAILED
+}
+```
+
+
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBillingStatus.<b>TRIAL</b></code>](#)  
+The organization is in the trial period.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBillingStatus.<b>ACTIVE</b></code>](#)  
+The organization is actively paying for the service.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBillingStatus.<b>PAST&#x005F;DUE</b></code>](#)  
+The organization has overdue payments.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBillingStatus.<b>EXPIRED</b></code>](#)  
+The organization's trial has expired.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBillingStatus.<b>CANCELED</b></code>](#)  
+The organization has canceled their subscription.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBillingStatus.<b>SUSPENDED</b></code>](#)  
+The organization's account is temporarily suspended.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBillingStatus.<b>PAYMENT&#x005F;PENDING</b></code>](#)  
+Payment is pending for the organization.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBillingStatus.<b>PAYMENT&#x005F;FAILED</b></code>](#)  
+The organization's payment has failed.
+
+
+
+
+
+
+### Member Of
+
+[`OrganizationBilling`](/swapi/types/objects/organization-billing.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
