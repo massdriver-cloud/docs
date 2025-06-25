@@ -62,7 +62,8 @@ type Bundle {
   createdAt: DateTime!
   updatedAt: DateTime!
   deletable: BundleDeletionLifecycle!
-  fqn: String!
+  fqn: String! @deprecated
+  ociImageReference: String!
 }
 ```
 
@@ -106,7 +107,7 @@ Description of the bundle
 #### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>ref</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> 
 :::warning[DEPRECATED]
 
-Replaced with sourceUrl
+See sourceUrl
 
 :::
 
@@ -147,8 +148,18 @@ When the bundle was last updated
 Information about whether the bundle can be deleted
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>fqn</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>fqn</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+:::warning[DEPRECATED]
+
+See ociImageReference
+
+:::
+
 The full name of the bundle
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>ociImageReference</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+OCI Image Reference URL
 
 
 

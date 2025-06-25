@@ -1,6 +1,6 @@
 ---
-id: target-payload
-title: TargetPayload
+id: artifact-definition-payload
+title: ArtifactDefinitionPayload
 ---
 
 
@@ -43,10 +43,10 @@ No description
 
 
 ```graphql
-type TargetPayload {
+type ArtifactDefinitionPayload {
   successful: Boolean!
   messages: [ValidationMessage]
-  result: Target
+  result: ArtifactDefinition
 }
 ```
 
@@ -55,15 +55,15 @@ type TargetPayload {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>TargetPayload.<b>successful</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/swapi/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>ArtifactDefinitionPayload.<b>successful</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/swapi/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
 Indicates if the mutation completed successfully or not.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>TargetPayload.<b>messages</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ValidationMessage]</b></code>](/swapi/types/objects/validation-message.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}>ArtifactDefinitionPayload.<b>messages</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ValidationMessage]</b></code>](/swapi/types/objects/validation-message.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
 A list of failed validations. May be blank or null if mutation succeeded.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>TargetPayload.<b>result</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Target</b></code>](/swapi/types/objects/target.mdx) <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}>ArtifactDefinitionPayload.<b>result</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ArtifactDefinition</b></code>](/swapi/types/objects/artifact-definition.mdx) <Badge class="badge badge--secondary " text="object"/> 
 The object created/updated/deleted by the mutation. May be null if mutation failed.
 
 
@@ -73,4 +73,4 @@ The object created/updated/deleted by the mutation. May be null if mutation fail
 
 ### Returned By
 
-[`deleteTarget`](/swapi/operations/mutations/delete-target.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`updateTarget`](/swapi/operations/mutations/update-target.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
+[`publishArtifactDefinition`](/swapi/operations/mutations/publish-artifact-definition.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

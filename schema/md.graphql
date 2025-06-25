@@ -5,14 +5,6 @@ schema {
   subscription: RootSubscriptionType
 }
 
-type TargetConnection {
-  id: ID
-  artifact: Artifact
-  target: Target
-  createdAt: DateTime
-  updatedAt: DateTime
-}
-
 enum AlarmStatus {
   "The metric is within normal operating parameters and below the alarm threshold."
   OK
@@ -42,6 +34,7 @@ enum CloudCostStatus {
   INACTIVE
 }
 
+"Represents a user's membership in an organization or group"
 type AccountMembership {
   groupId: ID
 }
@@ -234,15 +227,7 @@ type ArtifactDefinitionUiInstructions {
   content: Markdown!
 }
 
-"Error information for target deletion"
-type TargetDeletionLifecyclePackageError {
-  "Package causing the deletion error"
-  package: Package!
-
-  "Error message"
-  message: String!
-}
-
+"Metadata associated with a deployment log entry"
 type DeploymentLogStreamLogMetadata {
   step: String!
   timestamp: DateTime!
@@ -354,8 +339,6 @@ type Project {
 
   organization: Organization
 
-  targets: [Target] @deprecated(reason: "use `environments`")
-
   environments: [Environment]
 
   manifests: [Manifest]
@@ -387,7 +370,6 @@ type PaginatedArtifacts {
 type ProjectDeletionLifecyclePackageError {
   package: Package!
   message: String!
-  target: Target
   environment: Environment
 }
 
@@ -406,51 +388,7 @@ input Credential {
   artifactId: ID!
 }
 
-"A deployment environment where bundles can be deployed"
-type Target {
-  "Unique identifier"
-  id: ID
-
-  "Name of the target"
-  name: String
-
-  "URL-friendly identifier"
-  slug: String
-
-  "Description of the target"
-  description: String
-
-  "Operation mode of the target"
-  mode: TargetMode
-
-  "Information about whether the target can be deleted"
-  deletable: TargetDeletionLifecycle!
-
-  "When the target was created"
-  createdAt: DateTime
-
-  "When the target was last updated"
-  updatedAt: DateTime
-
-  "Target's diagram links and resources"
-  diagram: Diagram
-
-  "Manifests for this target's package"
-  manifests: [Manifest]
-
-  "The project this target belongs to"
-  project: Project
-
-  "Packages deployed to this target"
-  packages: [Package]
-
-  "Connections configured for this target"
-  connections: [TargetConnection]
-
-  "Default connections for this target"
-  defaultConnections: [DefaultTargetConnection]
-}
-
+"A service account represents a non-human account used for automated access"
 type ServiceAccount {
   id: ID!
   name: String!
@@ -542,17 +480,6 @@ type PackageResource {
 type AuditLogResponse {
   events: [AuditLog]!
   cursor: String
-}
-
-type TargetPayload {
-  "Indicates if the mutation completed successfully or not."
-  successful: Boolean!
-
-  "A list of failed validations. May be blank or null if mutation succeeded."
-  messages: [ValidationMessage]
-
-  "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
-  result: Target
 }
 
 type ServiceAccountWithSecretPayload {
@@ -648,9 +575,6 @@ type Package {
   manifest: Manifest!
 
   paramsSchema: JSON!
-
-  "The target this package will be deployed to"
-  target: Target!
 
   "The environment this package will be deployed to"
   environment: Environment!
@@ -757,6 +681,13 @@ enum PermissionAccessLevel {
 
 type RootQueryType {
   me: Account
+
+  artifactDefinition(
+    "Get an artifact definition"
+    organizationId: ID!
+
+    name: String!
+  ): ArtifactDefinition
 
   artifactDefinitions(
     "List all artifact definitions"
@@ -927,21 +858,6 @@ type RootQueryType {
   "list all groups for an organization"
   groups(organizationId: ID!): [Group]
 
-  "Gets all VM instance types for a given region"
-  instanceTypes(
-    "Organization ID"
-    organizationId: ID!
-
-    "Artifact ID"
-    artifactId: ID!
-
-    "Package ID"
-    packageId: ID!
-
-    "Input parameters for instance type query"
-    input: InstanceTypeInput!
-  ): [InstanceType]
-
   manifest(
     organizationId: ID!
 
@@ -981,15 +897,6 @@ type RootQueryType {
   ): Project
 
   serviceAccounts(organizationId: ID!): [ServiceAccount]
-
-  "Deprecated, use environment instead"
-  target(
-    "Organization ID"
-    organizationId: ID!
-
-    "Target ID or slug"
-    id: ID!
-  ): Target @deprecated(reason: "deprecated, use environment instead")
 }
 
 """
@@ -1030,14 +937,6 @@ type Manifest {
   linkableFields: [LinkableField]
 }
 
-input InstanceTypeInput {
-  "A JQ like query for accessing the region in a package"
-  query: String!
-
-  "Cloud service to get instances for"
-  service: String!
-}
-
 enum OrganizationBillingStatus {
   "The organization is in the trial period."
   TRIAL
@@ -1070,24 +969,7 @@ input BundleSearchFilters {
   query: String
 }
 
-"Default connection configuration for a target"
-type DefaultTargetConnection {
-  "Unique identifier"
-  id: ID!
-
-  "Group name for the connection"
-  defaultTargetConnectionGroup: String!
-
-  "Display label for the connection group"
-  defaultTargetConnectionGroupLabel: String!
-
-  "Type of the connection"
-  defaultTargetConnectionType: String!
-
-  "The artifact being connected"
-  artifact: Artifact!
-}
-
+"An invitation to join an organization or group"
 type Invitation {
   id: ID!
 }
@@ -1125,6 +1007,7 @@ type ArtifactDefinition {
   exportFormats: [ArtifactDefinitionExportFormat]
 }
 
+"An invitation that has been sent but not yet accepted"
 type PendingInvitation {
   id: ID!
   group: Group
@@ -1164,15 +1047,6 @@ type Alarm {
 
   "The most recent state of the alarm. If no states exist, returns INSUFFICIENT_DATA. Otherwise, returns the most recent state based on occurred_at timestamp."
   currentState: PackageAlarmState
-}
-
-"Lifecycle information for target deletion"
-type TargetDeletionLifecycle {
-  "Whether deletion is possible"
-  result: Boolean!
-
-  "List of deletion errors if any"
-  messages: [TargetDeletionLifecyclePackageError]
 }
 
 type ProjectDeletionLifecycle {
@@ -1292,18 +1166,6 @@ type OrganizationBilling {
   subscriptionManagementUrl: String! @deprecated(reason: "Use `organization_billing_plans` instead.")
 }
 
-"Mode of operation for a target"
-enum TargetMode {
-  "Preview mode for testing"
-  PREVIEW
-
-  "Demo mode for demonstrations"
-  DEMO
-
-  "Standard production mode"
-  STANDARD
-}
-
 type RemoteReferencePayload {
   "Indicates if the mutation completed successfully or not."
   successful: Boolean!
@@ -1346,6 +1208,17 @@ type DeploymentPayload {
 
   "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
   result: Deployment
+}
+
+type ArtifactDefinitionPayload {
+  "Indicates if the mutation completed successfully or not."
+  successful: Boolean!
+
+  "A list of failed validations. May be blank or null if mutation succeeded."
+  messages: [ValidationMessage]
+
+  "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
+  result: ArtifactDefinition
 }
 
 "Error information for package deletion"
@@ -1441,35 +1314,6 @@ type OnboardingTask {
 type ManifestDeletionLifecycle {
   result: Boolean!
   messages: [ManifestDeletionLifecyclePackageError]
-}
-
-"A VM type in the cloud"
-type InstanceType {
-  "The name\/identifier of the instance type"
-  name: String!
-
-  "Compute class defined by the cloud"
-  size: String
-
-  "Amount of memory in gigabytes"
-  memoryGb: String!
-
-  "Number of virtual CPUs"
-  vCpus: String!
-
-  "Input\/output operations per second"
-  iops: String
-}
-
-type TargetConnectionPayload {
-  "Indicates if the mutation completed successfully or not."
-  successful: Boolean!
-
-  "A list of failed validations. May be blank or null if mutation succeeded."
-  messages: [ValidationMessage]
-
-  "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
-  result: TargetConnection
 }
 
 type ServiceAccountMemberPayload {
@@ -1594,6 +1438,7 @@ type ArtifactDefinitionUi {
   instructions: [ArtifactDefinitionUiInstructions]!
 }
 
+"A single log entry in a deployment log stream"
 type DeploymentLogStreamLog {
   content: String!
   metadata: DeploymentLogStreamLogMetadata!
@@ -1693,6 +1538,7 @@ type ArtifactDefinitionExportFormat {
   templateLang: String!
 }
 
+"A user account in the system"
 type Account {
   id: ID!
 
@@ -1714,6 +1560,8 @@ type Account {
 
   "Organizations you are a member of"
   organizations: [Organization]
+
+  defaultOrganization: Organization
 }
 
 "Artifact filters"
@@ -1743,6 +1591,7 @@ type AccountMember {
   email: String!
 }
 
+"A stream of logs associated with a deployment"
 type DeploymentLogStream {
   id: ID!
   logs: [DeploymentLogStreamLog]
@@ -1789,7 +1638,7 @@ type Bundle {
   "Description of the bundle"
   description: String
 
-  ref: String @deprecated(reason: "Replaced with sourceUrl")
+  ref: String @deprecated(reason: "See sourceUrl")
 
   "URL to the source code repository"
   sourceUrl: String
@@ -1819,7 +1668,10 @@ type Bundle {
   deletable: BundleDeletionLifecycle!
 
   "The full name of the bundle"
-  fqn: String!
+  fqn: String! @deprecated(reason: "See ociImageReference")
+
+  "OCI Image Reference URL"
+  ociImageReference: String!
 }
 
 type AccountMembershipPayload {
@@ -1842,6 +1694,7 @@ input PreviewEnvironmentInput {
   ciContext: JSON!
 }
 
+"A deployment represents an instance of a bundle being deployed to a target environment"
 type Deployment {
   id: ID!
 
@@ -1896,9 +1749,6 @@ type Artifact {
 
   "Connections to packages"
   connections: [Connection]
-
-  "Targets this package is a default in"
-  targetConnections: [TargetConnection]
 
   "Environments this package is a default in"
   environmentConnections: [EnvironmentConnection]
@@ -1968,6 +1818,13 @@ type RootMutationType {
   Artifacts cannot be deleted if provisioned by Massdriver.
   """
   deleteArtifact(organizationId: ID!, id: ID!): ArtifactPayload
+
+  publishArtifactDefinition(
+    organizationId: ID!
+
+    "JSON Schema with $md config"
+    schema: JSON!
+  ): ArtifactDefinitionPayload
 
   "Delete a bundle"
   deleteBundle(
@@ -2144,14 +2001,17 @@ type RootMutationType {
   Reset a package to its initialized state. This is useful for:
   - Forcing a stuck bundle off the canvas
   - Redeploying a package from scratch
-  - Clearing state when destroy_state is true
+  - Clearing state when delete_state is true
 
-  The package's status will be set to INITIALIZED.
+  The package's status _will_ be set to INITIALIZED.
 
-  By default, the state will not be destroyed. If you want to destroy the state, set destroy_state to true.
-  By default, the params will not be cleared. If you want to clear the params, set clear_params to true.
+  By default, the state will not be destroyed. If you want to destroy the state, set delete_state to true.
+  By default, the params will not be cleared. If you want to clear the params, set delete_params to true.
+  By default, the deployments will not be deleted. If you want to delete the deployments, set delete_deployments to true.
 
-  This mutation is an escape hatch and can lose data. Please make sure to pull any state first.
+  This mutation is an escape hatch and can lose data.
+
+  Please make sure to pull any state first.
 
   [Read our manage state guide](https://docs.massdriver.cloud/guides/managing-state#3-pull-existing-state) on setting up your state backend.
 
@@ -2170,10 +2030,13 @@ type RootMutationType {
     id: ID!
 
     "Destroy the state of the package"
-    destroyState: Boolean!
+    deleteState: Boolean!
 
     "Clear the params of the package"
-    clearParams: Boolean!
+    deleteParams: Boolean!
+
+    "Delete deployment history for this package"
+    deleteDeployments: Boolean!
   ): PackagePayload
 
   "Update a Package's parameters"
@@ -2232,36 +2095,6 @@ type RootMutationType {
   deactivateServiceAccount(organizationId: ID!, id: ID!): ServiceAccountPayload
 
   reactivateServiceAccount(organizationId: ID!, id: ID!): ServiceAccountPayload
-
-  "deprecated. Use createEnvironmentConnection instead"
-  createTargetConnection(organizationId: ID!, artifactId: ID!, targetId: ID!): TargetConnectionPayload @deprecated(reason: "use createEnvironmentConnection instead")
-
-  "deprecated. Use deleteEnvironmentConnection instead"
-  deleteTargetConnection(organizationId: ID!, id: ID!): TargetConnectionPayload @deprecated(reason: "use deleteEnvironmentConnection instead")
-
-  "Deprecated. use updateEnvironment instead"
-  updateTarget(
-    "Organization ID"
-    organizationId: ID!
-
-    "Target ID"
-    id: ID!
-
-    "New name for the target"
-    name: String!
-
-    "New description for the target"
-    description: String
-  ): TargetPayload @deprecated(reason: "use updateEnvironment instead")
-
-  "Deprecated. use deleteTarget instead"
-  deleteTarget(
-    "Organization ID"
-    organizationId: ID!
-
-    "Target ID"
-    id: ID!
-  ): TargetPayload @deprecated(reason: "use deleteTarget instead")
 }
 
 type EnvironmentConnection {
@@ -2311,6 +2144,7 @@ type LinkPayload {
   result: Link
 }
 
+"An event that occurs during the deployment lifecycle"
 type DeploymentLifecycleEvent {
   id: ID!
   status: String!
