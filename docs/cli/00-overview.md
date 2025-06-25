@@ -81,7 +81,7 @@ To find your organization slug, hover over your organization name logo in the to
 
 ![Finding your Org ID](../applications/org-id.png)
 
-#### Creating a Serivce Account
+#### Creating a Service Account
 
 1. Visit the [Service Accounts page](https://app.massdriver.cloud/service-accounts)
 2. Click 'Add Service Account'
