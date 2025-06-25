@@ -65,24 +65,23 @@ For Mac OS users, you will need to allow `mass` to run by opening the `System Pr
 
 :::
 
-### Setup
+## Configuration
 
-In order to execute commands against your Massdriver organization, you must set environment variables for the CLI to use.
+The Massdriver CLI requires configuration to authenticate and interact with your organization's resources. This configuration can be supplied via environment variables or a configuration file, with environment variables taking precedence.
+
+Specifically, the CLI requires the following configuration values:
+* **Organization ID**: A short string identifying your organization (e.g. acme, not a UUID)
+* **API Key**: A Massdriver Service Account token with appropriate permissions
+An optional third configuration is:
+* **URL**: Used only for self-hosted environments to point the CLI at a custom Massdriver API endpoint.
 
 #### Find your organization ID
 
 To find your organization slug, hover over your organization name logo in the top left corner of the Massdriver UI and click the copy button next to your organization slug.
 
-#### Use your organization ID in the Massdriver CLI
-
-To use your organization slug in the Massdriver CLI, export the `MASSDRIVER_ORG_ID` environment variable to the value of your organization slug.
-
-```bash
-export MASSDRIVER_ORG_ID=your-org-id
-```
 ![Finding your Org ID](../applications/org-id.png)
 
-#### Setting The Serivce Account
+#### Creating a Service Account
 
 1. Visit the [Service Accounts page](https://app.massdriver.cloud/service-accounts)
 2. Click 'Add Service Account'
@@ -91,12 +90,57 @@ export MASSDRIVER_ORG_ID=your-org-id
 
 ![](../security/service-accounts.png)
 
-You'll need to export your key to the following environment variable:
+### Configuration Sources
 
-```bash
-export MASSDRIVER_API_KEY=fookey9000!
+#### Environment Variables
+
+You can configure the CLI entirely via environment variables:
+
+| Variable | Description |
+|---|---|
+| `MASSDRIVER_ORGANIZATION_ID` | Your organization identifier. (Note: `MASSDRIVER_ORG_ID` is also supported for this value) |
+| `MASSDRIVER_API_KEY` | Your API key |
+| `MASSDRIVER_URL` | (Optional) Custom API endpoint |
+| `MASSDRIVER_PROFILE` | (Optional) Profile name to use from config file |
+
+#### Configuration File
+
+If environment variables are not set, the CLI will fall back to a YAML configuration file if present:
+
+```yaml
+# ~/.config/massdriver/config.yaml
+
+version: 1
+
+profiles:
+  default:
+    organization_id: acme
+    api_key: your-api-key
+  sandbox:
+    organization_id: acme-sandbox
+    api_key: sandbox-api-key
+  self-hosted:
+    organization_id: internal
+    api_key: internal-api-key
+    url: https://api.massdriver.yourdomain.com
 ```
 
-### See the Commands
+By default, this file should be located at `$HOME/.config/massdriver/config.yaml`, however it will respect the `XDG_CONFIG_HOME` environment variable if present in which case the file should be located at `$XDG_CONFIG_HOME/massdriver/config.yaml`.
+
+The CLI will select a profile based on the following logic:
+
+1. If the `MASSDRIVER_PROFILE` environment variable is set, use that profile.
+2. Otherwise, fall back to the `default` profile (if it exists).
+
+#### Precedence
+
+When resolving configuration, the CLI follows this precedence:
+
+1. Environment variables
+2. Profile from config file
+
+Values provided via environment variables will always override those from the config file, even if a matching profile is found.
+
+## See the Commands
 
 * [mass](/cli/commands/mass)	 - Massdriver Cloud CLI
