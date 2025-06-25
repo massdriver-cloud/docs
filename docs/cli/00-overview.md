@@ -98,7 +98,7 @@ You can configure the CLI entirely via environment variables:
 
 | Variable | Description |
 |---|---|
-| `MASSDRIVER_ORGANIZATION_ID` or `MASSDRIVER_ORG_ID` | Your organization identifier |
+| `MASSDRIVER_ORGANIZATION_ID` | Your organization identifier. (Note: `MASSDRIVER_ORG_ID` is also supported for this value) |
 | `MASSDRIVER_API_KEY` | Your API key |
 | `MASSDRIVER_URL` | (Optional) Custom API endpoint |
 | `MASSDRIVER_PROFILE` | (Optional) Profile name to use from config file |
