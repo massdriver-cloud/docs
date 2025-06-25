@@ -39,7 +39,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-No description
+A user account in the system
 
 
 ```graphql
@@ -53,6 +53,7 @@ type Account {
   token: String
   pendingInvitations: [PendingInvitation]
   organizations: [Organization]
+  defaultOrganization: Organization
 }
 ```
 
@@ -95,6 +96,10 @@ Temporary Account token for GraphQL Subscriptions
 
 #### [<code style={{ fontWeight: 'normal' }}>Account.<b>organizations</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Organization]</b></code>](/swapi/types/objects/organization.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
 Organizations you are a member of
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Account.<b>defaultOrganization</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Organization</b></code>](/swapi/types/objects/organization.mdx) <Badge class="badge badge--secondary " text="object"/> 
+
 
 
 

@@ -51,7 +51,6 @@ type Project {
   createdAt: DateTime
   updatedAt: DateTime
   organization: Organization
-  targets: [Target] @deprecated
   environments: [Environment]
   manifests: [Manifest]
   deletable: ProjectDeletionLifecycle!
@@ -94,14 +93,6 @@ type Project {
 
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Project.<b>targets</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Target]</b></code>](/swapi/types/objects/target.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
-:::warning[DEPRECATED]
-
-use `environments`
-
-:::
-
-
 #### [<code style={{ fontWeight: 'normal' }}>Project.<b>environments</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Environment]</b></code>](/swapi/types/objects/environment.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
 
 
@@ -136,4 +127,4 @@ Cloud provider costs for this project
 
 ### Member Of
 
-[`Environment`](/swapi/types/objects/environment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Permission`](/swapi/types/objects/permission.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ProjectPayload`](/swapi/types/objects/project-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Target`](/swapi/types/objects/target.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`Environment`](/swapi/types/objects/environment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Permission`](/swapi/types/objects/permission.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ProjectPayload`](/swapi/types/objects/project-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

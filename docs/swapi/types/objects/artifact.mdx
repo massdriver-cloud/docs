@@ -53,7 +53,6 @@ type Artifact {
   artifactDefinition: ArtifactDefinition!
   package: Package
   connections: [Connection]
-  targetConnections: [TargetConnection]
   environmentConnections: [EnvironmentConnection]
   origin: ArtifactOrigin
   deletable: ArtifactDeletionLifecycle!
@@ -109,10 +108,6 @@ The package that provisioned this artifact
 Connections to packages
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Artifact.<b>targetConnections</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[TargetConnection]</b></code>](/swapi/types/objects/target-connection.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
-Targets this package is a default in
-
-
 #### [<code style={{ fontWeight: 'normal' }}>Artifact.<b>environmentConnections</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[EnvironmentConnection]</b></code>](/swapi/types/objects/environment-connection.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
 Environments this package is a default in
 
@@ -151,4 +146,4 @@ Packages that remotely reference this artifact
 
 ### Member Of
 
-[`ArtifactPayload`](/swapi/types/objects/artifact-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Connection`](/swapi/types/objects/connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`DefaultEnvironmentConnection`](/swapi/types/objects/default-environment-connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`DefaultTargetConnection`](/swapi/types/objects/default-target-connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Deployment`](/swapi/types/objects/deployment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentConnection`](/swapi/types/objects/environment-connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ManifestResource`](/swapi/types/objects/manifest-resource.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Package`](/swapi/types/objects/package.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PackageDeletionLifecycleArtifactError`](/swapi/types/objects/package-deletion-lifecycle-artifact-error.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PackageResource`](/swapi/types/objects/package-resource.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PaginatedArtifacts`](/swapi/types/objects/paginated-artifacts.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`RemoteReference`](/swapi/types/objects/remote-reference.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`TargetConnection`](/swapi/types/objects/target-connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`ArtifactPayload`](/swapi/types/objects/artifact-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Connection`](/swapi/types/objects/connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`DefaultEnvironmentConnection`](/swapi/types/objects/default-environment-connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Deployment`](/swapi/types/objects/deployment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentConnection`](/swapi/types/objects/environment-connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ManifestResource`](/swapi/types/objects/manifest-resource.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Package`](/swapi/types/objects/package.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PackageDeletionLifecycleArtifactError`](/swapi/types/objects/package-deletion-lifecycle-artifact-error.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PackageResource`](/swapi/types/objects/package-resource.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PaginatedArtifacts`](/swapi/types/objects/paginated-artifacts.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`RemoteReference`](/swapi/types/objects/remote-reference.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

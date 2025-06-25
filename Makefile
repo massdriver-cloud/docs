@@ -6,8 +6,7 @@ all: sync-cli-docs sync-gql-docs sync-authz-docs
 .PHONY: sync-gql-docs
 sync-gql-docs: # Generate GraphQL docs
 	rm -rf ./docs/swapi/{operations,types}
-	cd ${MDPATH} && mix absinthe.schema.sdl
-	mv ${MDPATH}/schema.graphql ./schema/md.graphql
+	curl https://api.massdriver.cloud/graphql/schema.graphql -o ./schema/md.graphql
 	npx docusaurus graphql-to-doc
 
 .PHONY: yarn
