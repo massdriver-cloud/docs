@@ -22,11 +22,11 @@ Check out the Massdriver [artifact definitions GitHub repo](https://github.com/m
 With the [Massdriver CLI](../cli/00-overview.md), you've got the toolkit you need to forge your own definitions. It's usually easier to tweak an existing one than to start from scratch:
 
 1. **Pick a Starting Point**: Hunt down an existing artifact definition that's close to what you need, or use this starting template:
+
 ```json artifact-definition-name.json
 {
   "$schema": "http://json-schema.org/draft-07/schema",
   "$md": {
-    "access": "private",
     "name": "artifact-definition-name"
   },
   "type": "object",
@@ -51,6 +51,7 @@ With the [Massdriver CLI](../cli/00-overview.md), you've got the toolkit you nee
   }
 }
 ```
+
 2. **Make It Your Own**: Copy its content into your favorite editor (like VS Code) and start tweaking it to suit your requirements.
 
 ### Step 3: Key Components of an Artifact Definition
@@ -70,7 +71,6 @@ By the end of this step, your definition should look something like this:
 {
   "$schema": "http://json-schema.org/draft-07/schema",
   "$md": {
-    "access": "private",
     "name": "artifact-definition-name"
   },
   "type": "object",
@@ -196,7 +196,7 @@ By the end of this step, your definition should look something like this:
 
 ### Step 5: Publishing to Massdriver
 
-Got your definition looking sharp? Use the `mass definition publish -f /path/to/definition.json` command in the CLI to send it out into the world. Remember to set your `$md.access` field to `private` to keep it just between you and your team.
+Got your definition looking sharp? Use the `mass definition publish -f /path/to/definition.json` command in the CLI to send it out into the world.
 
 ### Step 6: Fetching Your Masterpiece
 
@@ -250,6 +250,71 @@ resource "massdriver_artifact" "artifact_definition_name" {
 ```
 
 To confirm that your custom artifact definition is working as expected for your bundle, run the `mass bundle lint` and `mass bundle build` commands to check for any issues. When you're ready to publish your bundle changes, `mass bundle publish` will publish your bundle to your Bundle Catalog.
+
+## Customizing Massdriver
+
+### Customizing Onboarding
+
+Massdriver lets you fully customize the onboarding experience for cloud credentials and other artifact types. You can define onboarding instructions, UI labels, and icons directly in your artifact definition using the `$md` and `$md.ui` fields. This enables you to provide clear, step-by-step guidance for your users when they add new credentials.
+
+For example, the onboarding screen for cloud credentials (see below) is driven by the `ui.instructions` array in your artifact definition. Each instruction can include a label and content, allowing you to walk users through complex setup steps with clarity.
+
+![Cloud Credentials Onboarding](../../static/img/ui/credentials-page.png)
+
+**Relevant schema fields:**
+- `$md.label`: Sets the display name for your artifact in the UI.
+- `$md.icon`: Sets a custom icon for your artifact.
+- `$md.ui.instructions`: An array of onboarding steps, each with a `label` and `content`, shown to users during credential setup.
+
+See a real-world example of onboarding instructions in the [aws-iam-role artifact definition](https://github.com/massdriver-cloud/artifact-definitions/blob/main/definitions/artifacts/aws-iam-role.json#L20).
+
+### Note on Icons and Instructions
+
+Currently, icons (as data URLs) and `instructions.content` (as base64-encoded markdown) are packed directly into the JSON Schema. With our upcoming move to OCI for artifact definitions (as we've already done for bundles), you'll soon be able to include these files directly in the same directory as your definition—no more packing required. Stay tuned for updates! Here is the [script](https://github.com/massdriver-cloud/artifact-definitions/blob/main/hack/pack.rb) we use for packaging artifact definitions.
+
+### Customizing the Artifact Types that can be defaulted in an Environment
+
+Massdriver environments support "environment default" artifacts—resources like credentials, networks, or DNS zones that are commonly shared across multiple bundles. You can control which artifact types are eligible to be set as environment defaults by specifying the `ui.environmentDefaultGroup` field in your artifact definition.
+
+When you set this field, your artifact type will appear in the environment overlay, allowing users to assign a default resource for that group (e.g., default network, default credentials) without having to connect it individually to every bundle. This streamlines environment setup and reduces visual clutter in complex diagrams.
+
+![Environment Defaults Overlay](../../static/img/ui/environment-defaults.png)
+
+**Relevant schema fields:**
+- `$md.ui.environmentDefaultGroup`: Adds your artifact type to the "environment default" overlay under the specified group (e.g., `networking`, `authentication`, `dns`). This is what makes an artifact eligible to be set as a default in an environment.
+
+> **Note:** There is a special 'magic' environment default group called `credentials`. Assigning your artifact to this group will make it appear on the credentials page and enables Massdriver to fetch credentials for use in your workflows. Besides that you can use any `environmentDefaultGroup` name that makes sense for your team.
+
+See a real-world example of adding an environment default in the [aws-vpc artifact definition](https://github.com/massdriver-cloud/artifact-definitions/blob/main/definitions/artifacts/aws-vpc.json#L6).
+
+- `$md.ui.connectionOrientation`: Controls how the artifact appears on the canvas. If set to `"link"`, users can draw lines to connect bundles to the artifact. If set to `"environmentDefault"`, the artifact is only shown as a default and not as a connectable box. These options are independently controllable, so you can allow both defaulting and explicit connections if desired. For example, SREs might want to draw lines to a shared Kubernetes cluster, while end developers only see it as a default and don't interact with it directly.
+
+**Example snippet:**
+```json
+{
+  "$md": {
+    "name": "aws-iam-role",
+    "label": "My Cloud Credential",
+    "icon": "https://example.com/my-icon.svg",
+    "ui": {
+      "environmentDefaultGroup": "authentication",
+      "connectionOrientation": "environmentDefault",
+      "instructions": [
+        {
+          "label": "Step 1: Create a Service Account",
+          "content": "Go to your cloud provider and create a new service account..."
+        }
+      ]
+    }
+  }
+}
+```
+
+**References:**
+- [Artifact definition JSON Schema](https://api.massdriver.cloud/json-schemas/artifact-definition.json)
+- [Open source artifact definitions](https://github.com/massdriver-cloud/artifact-definitions)
+
+By leveraging these schema fields, you can tailor both the onboarding experience and environment default behavior for your custom artifact types, ensuring a seamless and intuitive experience for your users.
 
 ## Wrapping Up
 
