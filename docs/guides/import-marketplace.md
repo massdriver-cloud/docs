@@ -1,6 +1,6 @@
 ---
-id: getting-started-import-template
-slug: /getting-started/import-template
+id: guides-import-template
+slug: /guides/import-template
 title: Import Template from Library
 sidebar_label: Import Template from Library
 ---
