@@ -76,7 +76,7 @@ Now that you've published your bundle, its available to deploy into Massdriver o
 
 ![Drag bundle onto canvas](./img/drag_bundle.gif)
 
-3. Give your bundle instance a meaningful name (like "my-first-bundle")
+3. Give your bundle instance a meaningful name (like "My First Bundle")
 
 ### Configure the Bundle
 
