@@ -9,7 +9,7 @@ Welcome to Massdriver! This guide will walk you through your first experience wi
 
 ## Prerequisites
 
-Before you begin, make sure you have completed the [prerequisites](https://docs.massdriver.cloud/getting-started/overview#prerequisites) to install the Massdriver CLI and authenticate with the platform.
+Before you begin, make sure you have completed the [prerequisites](../cli/00-overview.md#prerequisites) to install the Massdriver CLI and authenticate with the platform.
 
 ## Step 1: Download the Getting Started Repository
 
@@ -74,7 +74,7 @@ Now that you've published your bundle, its available to deploy into Massdriver o
 1. Look for your **getting-started** bundle in the sidebar under "Your Bundles"
 2. Drag the bundle from the sidebar onto the canvas
 
-![Drag bundle onto canvas](./img/drag_bundle.gif)
+![Drag bundle onto canvas](img/drag_bundle.gif)
 
 3. Give your bundle instance a meaningful name (like "My First Bundle")
 
@@ -115,7 +115,7 @@ The form demonstrates different parameter types that Massdriver supports:
 2. Massdriver will show you a deployment plan - this is what infrastructure will be created
 3. Confirm the deployment
 
-![Deploy bundle](./img/deploy_bundle.gif)
+![Deploy bundle](img/deploy_bundle.gif)
 
 4. Watch the deployment progress in real-time through the platform
 
@@ -159,12 +159,10 @@ Now that you understand the basics, you can:
 ✅ **Safety first** - Built-in validation and immutable fields prevent accidents  
 ✅ **Visual deployment** - Complex infrastructure becomes as easy as drag-and-drop  
 
-Ready to dive deeper? Check out our advanced guides on [artifacts and connections](https://docs.massdriver.cloud/concepts/connections) or learn how to [create custom bundles](https://docs.massdriver.cloud/bundles/development) from scratch!
+In the next guide, we'll look at connecting this bundle to another bundle to pass information. [Get started now](02-connecting-bundles.md)!
 
 ## Need Help?
 
 - 📄 [Documentation](https://docs.massdriver.cloud)
 - 💬 [Community Slack](https://join.slack.com/t/massdrivercommunity/shared_invite/zt-1smvckvdj-jVFpBG2jF5XiYzX2njDCWA)
 - 🐛 [Report Issues](https://github.com/massdriver-cloud/getting-started/issues)
-
-Welcome to the Massdriver community! 🎉

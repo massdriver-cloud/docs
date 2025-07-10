@@ -15,8 +15,8 @@ Massdriver is a comprehensive platform for managing cloud infrastructure through
 
 This getting started guide is organized into several focused sections:
 
-1. **[Deploying Your First Bundle](./01-deploying-first-bundle.md)** - Get hands-on experience with the core Massdriver workflow by publishing and deploying a simple bundle
-2. **[Connecting Bundles With Artifacts](./02-connecting-bundles.md)** - Learn how connect bundles together and share information between them using artifacts and connections.
+1. **[Deploying Your First Bundle](01-deploying-first-bundle.md)** - Get hands-on experience with the core Massdriver workflow by publishing and deploying a simple bundle
+2. **[Connecting Bundles With Artifacts](02-connecting-bundles.md)** - Learn how connect bundles together and share information between them using artifacts and connections.
 
 Each guide builds upon the previous one, giving you a comprehensive understanding of how to work with Massdriver effectively.
 
@@ -24,7 +24,7 @@ Each guide builds upon the previous one, giving you a comprehensive understandin
 
 Before you begin, you'll need:
 - A **free** Massdriver account - [Create one here](https://app.massdriver.cloud/register)
-- The **Mass CLI** installed and configured - [Installation guide](/docs/cli/overview)
+- The **Mass CLI** installed and configured - [Installation guide](../cli/overview)
 
 
 :::tip Need Help?
@@ -46,4 +46,4 @@ Don't worry if these concepts aren't immediately clear - you'll see them in acti
 
 ## Ready to Get Started?
 
-Now that you understand what to expect, let's dive into your first hands-on experience with Massdriver. Head over to the [Deploying Your First Bundle](./02-deploying-first-bundle.md) guide to begin your journey!
+Now that you understand what to expect, let's dive into your first hands-on experience with Massdriver. Head over to the [Deploying Your First Bundle](01-deploying-first-bundle.md) guide to begin your journey!
