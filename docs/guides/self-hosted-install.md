@@ -72,20 +72,19 @@ Edit your `values-custom.yaml` file to provide the necessary configuration. Focu
 1. **PostgreSQL Connection**
    ```yaml
    postgresql:
-     host: "your-postgres-host"
-     port: 5432
-     database: "massdriver"
      username: "massdriver_user"
      password: "your-secure-password"
+     hostname: "your-postgres-host"
+     port: 5432
    ```
 
 2. **SMTP Configuration**
    ```yaml
    smtp:
-     host: "your-smtp-server"
-     port: 587
      username: "your-smtp-username"
      password: "your-smtp-password"
+     hostname: "your-smtp-server"
+     port: 587
      from: "noreply@your-domain.com"
    ```
 
