@@ -15,6 +15,7 @@ Before beginning the installation, ensure you have the following requirements:
 
 - **Kubernetes cluster** running version 1.25 or higher
 - **PostgreSQL database** version 13.25 or higher
+  - The following PostgresQL extensions are required to be installed: `citext`, `uuid-ossp`, `pg_stat_statements`
 - **SMTP server** for account management and email alerts
 - **Domain name** where you'll host your Massdriver instance
 
