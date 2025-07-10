@@ -258,4 +258,4 @@ For assistance with your self-hosted installation:
 
 ## Next Steps
 
-Ready to start building? Check out our [Getting Started guide](../getting_started/overview) to learn the core Massdriver workflows.
+Ready to start building? Check out our [Getting Started guide](../getting_started/01-prerequisites.md) to learn the core Massdriver workflows.
