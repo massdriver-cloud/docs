@@ -1,5 +1,5 @@
 MDPATH?=../massdriver
-CLIPATH?=../cli
+CLIPATH?=../mass
 
 all: sync-cli-docs sync-gql-docs sync-authz-docs
 
@@ -11,15 +11,15 @@ sync-gql-docs: # Generate GraphQL docs
 
 .PHONY: yarn
 yarn:
-	docker run --rm -it -v ${PWD}:/app -w /app -p 3001:3000 node:19-alpine3.16 yarn install
+	docker run --rm -it -v ${PWD}:/app -w /app -p 3001:3000 node:20-alpine3.22 yarn install
 
 .PHONY: build
 build:
-	docker run --rm -it -v ${PWD}:/app -w /app -p 3001:3000 node:19-alpine3.16 yarn build
+	docker run --rm -it -v ${PWD}:/app -w /app -p 3001:3000 node:20-alpine3.22 yarn build
 
 .PHONY: dev
 dev:
-	docker run --rm -it -v ${PWD}:/app -w /app -p 3001:3000 node:19-alpine3.16 yarn start
+	docker run --rm -it -v ${PWD}:/app -w /app -p 3001:3000 node:20-alpine3.22 yarn start
 
 .PHONY: sync-cli-docs
 sync-cli-docs: # Generate CLI docs
