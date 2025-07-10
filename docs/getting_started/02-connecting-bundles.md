@@ -236,7 +236,7 @@ Now you'll deploy a second bundle that consumes a `getting-started` artifact.
 3. **Connect**: Draw a line from the output port of your `getting-started` bundle to the input port of your `connecting-bundles` bundle
 4. **Deploy**: Click on `connecting-bundles` and click **Deploy** from the Config tab
 
-## Step 2.4: Explore the Results
+## Step 4: Explore the Results
 
 Once deployed, explore what the connecting bundle created:
 

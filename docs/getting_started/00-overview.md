@@ -39,8 +39,6 @@ As you work through these guides, you'll encounter several important Massdriver 
 
 - **Bundles** - Reusable infrastructure modules that define cloud resources
 - **Artifacts** - Standardized outputs that enable bundles to communicate with each other
-- **Environments** - Logical groupings where you deploy and manage your infrastructure
-- **Projects** - Organizational units that contain related environments and deployments
 
 Don't worry if these concepts aren't immediately clear - you'll see them in action as you progress through the guides.
 

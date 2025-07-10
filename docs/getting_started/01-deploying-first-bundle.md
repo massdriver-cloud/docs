@@ -21,6 +21,11 @@ In order to follow along with these guides, be sure to download Massdriver's [`g
     git clone https://github.com/massdriver-cloud/getting-started.git
     cd getting-started
     ```
+2. This repository contains materials for all of the guides in this "Getting Started" series. For this guide, we'll be working in the `01-deploying` directory.
+
+    ```bash
+    cd 01-deploying
+    ```
 
 2. Take a moment to explore the bundle structure:
 
@@ -118,14 +123,6 @@ The form demonstrates different parameter types that Massdriver supports:
 ![Deploy bundle](img/deploy_bundle.gif)
 
 4. Watch the deployment progress in real-time through the platform
-
-## Step 4: Explore the Results
-
-Once deployed, you can explore what was created:
-
-1. **View Resources**: Click on your deployed bundle to see the infrastructure resources that were created
-2. **Check Outputs**: Look at the outputs to see the generated values (like the random pet name and unique ID)
-3. **Monitor Status**: The bundle will show its current status and any relevant metrics
 
 ## Understanding What You Just Did
 
