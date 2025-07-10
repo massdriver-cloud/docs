@@ -5,7 +5,7 @@ title: Self-Hosted Installation
 sidebar_label: Self-Hosted Install
 ---
 
-This guide will walk you through installing Massdriver's self-hosted version using our Helm chart. The self-hosted deployment gives you complete control over your Massdriver instance while maintaining all the features of our cloud platform.
+This guide will walk you through installing Massdriver's self-hosted version using our Helm chart. The self-hosted version of Massdriver is great for teams that want features of our cloud platform in a private cloud environment.
 
 ## Prerequisites
 
@@ -59,7 +59,7 @@ curl -o values-custom.yaml https://raw.githubusercontent.com/massdriver-cloud/he
 
 ### Step 3: Configure Required Values
 
-Edit your `values-custom.yaml` file to provide the necessary configuration. Focus on the top section before the `# Global variables` comment:
+Edit your `values-custom.yaml` file to provide the necessary configuration. Focus on the top section between the `# Mandatory values` and `# Global variables` comments:
 
 #### Required Configuration
 
@@ -99,9 +99,12 @@ Edit your `values-custom.yaml` file to provide the necessary configuration. Focu
    licenseKey: "your-license-key"  # Provided by Massdriver team
    ```
 
-#### Custom Release Name (Optional)
+
+:::info Custom Release Name (Optional)
 
 If you plan to use a different release name than `massdriver`, search for `"release name"` in the values file and update the associated values accordingly.
+
+:::
 
 ### Step 4: Configure Ingress and TLS
 
@@ -115,12 +118,12 @@ Update the `massdriver.ingress` section in your values file:
 massdriver:
   ingress:
     enabled: true
-    ingressClassName: "nginx"  # Update to match your ingress controller
+    ingressClassName: "nginx"  # Update to match your ingress controller, or leave blank to use the default ingress controller
 ```
 
 #### TLS Configuration
 
-Massdriver requires TLS certificates for the following subdomains:
+Massdriver requires a TLS certificate valid for the following subdomains:
 - `app.<your-domain>`
 - `api.<your-domain>`
 - `identity.<your-domain>`
@@ -140,7 +143,7 @@ massdriver:
 
 **Option 2: Provide Your Own Certificate**
 
-If you have your own TLS certificate, configure it in the values file:
+If you have your own TLS certificate, you can create and manage it via the helm chart by configuring it in the values file:
 
 ```yaml
 massdriver:
@@ -159,14 +162,18 @@ massdriver:
 
 **Option 3: Use Existing Secret**
 
-If you've already created a Kubernetes secret with your certificate:
+If you prefer to manage the TLS certificate manually, you can create the TLS secret separately and simply reference it in the values.yaml:
+
+```bash
+kubectl create secret tls massdriver-tls --cert=path/to/tls.crt --key=path/to/tls.key
+```
 
 ```yaml
 massdriver:
   ingress:
     tls:
       createSecret: false
-      secretName: "your-existing-tls-secret"
+      secretName: massdriver-tls
 ```
 
 ### Step 5: Install Massdriver
@@ -200,7 +207,6 @@ Once installed, you can access Massdriver at:
 
 - **Main Application**: `https://app.<your-domain>`
 - **API**: `https://api.<your-domain>`
-- **Identity Service**: `https://identity.<your-domain>`
 
 ## Updating Your Installation
 
@@ -220,7 +226,7 @@ Massdriver periodically releases updates to the self-hosted chart. To update you
 
 :::tip Version Management
 
-Always review the changelog before upgrading and consider testing updates in a staging environment first.
+Always review the changelog before upgrading to check for changes need in values.yaml or other configuration settings.
 
 :::
 
@@ -246,17 +252,10 @@ Always review the changelog before upgrading and consider testing updates in a s
 
 For assistance with your self-hosted installation:
 
-- Check the [troubleshooting guide](/docs/troubleshooting)
+- Check the [troubleshooting guide](../troubleshooting.md)
 - Join our [Slack community](https://join.slack.com/t/massdrivercommunity/shared_invite/zt-1smvckvdj-jVFpBG2jF5XiYzX2njDCWA)
 - Contact the Massdriver team for enterprise support
 
 ## Next Steps
 
-Once your self-hosted Massdriver instance is running:
-
-1. Create your first admin account through the web interface
-2. Configure your organization settings
-3. Set up cloud provider credentials
-4. Begin deploying your first bundles
-
-Ready to start building? Check out our [Getting Started guide](/docs/getting_started/overview) to learn the core Massdriver workflows.
+Ready to start building? Check out our [Getting Started guide](../getting_started/overview) to learn the core Massdriver workflows.
