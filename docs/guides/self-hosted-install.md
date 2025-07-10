@@ -5,7 +5,7 @@ title: Self-Hosted Installation
 sidebar_label: Self-Hosted Install
 ---
 
-This guide will walk you through installing Massdriver's self-hosted version using our Helm chart. The self-hosted version of Massdriver is great for teams that want features of our cloud platform in a private cloud environment.
+This guide will walk you through installing Massdriver's self-hosted version using our Helm chart. The self-hosted version of Massdriver is great for teams that want the all the features of our platform in a private cloud environment.
 
 ## Prerequisites
 
@@ -112,7 +112,7 @@ The ingress configuration requires special attention for security:
 
 #### Ingress Controller
 
-Update the `massdriver.ingress` section in your values file:
+Update the `massdriver.ingress` section in your `values-custom.yaml` file:
 
 ```yaml
 massdriver:
@@ -130,7 +130,7 @@ Massdriver requires a TLS certificate valid for the following subdomains:
 
 **Option 1: Using cert-manager (Recommended)**
 
-If you have cert-manager installed, uncomment and configure the cert-manager annotation:
+If you have [cert-manager](https://cert-manager.io/) running in the Kubernetes cluster where you are installing Massdriver, and it is configured to manage the domain you specified in the `domain` value earlier, uncomment and configure the cert-manager annotation:
 
 ```yaml
 massdriver:
@@ -141,7 +141,7 @@ massdriver:
       createSecret: true
 ```
 
-**Option 2: Provide Your Own Certificate**
+**Option 2: Provide Your Own Certificate Managed By Helm**
 
 If you have your own TLS certificate, you can create and manage it via the helm chart by configuring it in the values file:
 
@@ -160,13 +160,15 @@ massdriver:
         -----END PRIVATE KEY-----
 ```
 
-**Option 3: Use Existing Secret**
+**Option 3: Provide Your Own Certificate Managed Manually**
 
-If you prefer to manage the TLS certificate manually, you can create the TLS secret separately and simply reference it in the values.yaml:
+If you prefer to manage the TLS certificate manually, you can create the TLS secret separately:
 
 ```bash
 kubectl create secret tls massdriver-tls --cert=path/to/tls.crt --key=path/to/tls.key
 ```
+
+and simply reference it in the values file:
 
 ```yaml
 massdriver:
@@ -206,7 +208,7 @@ kubectl get ingress -n massdriver
 Once installed, you can access Massdriver at:
 
 - **Main Application**: `https://app.<your-domain>`
-- **API**: `https://api.<your-domain>`
+- **API**: `https://api.<your-domain>/api/graphiql`
 
 ## Updating Your Installation
 
@@ -226,7 +228,7 @@ Massdriver periodically releases updates to the self-hosted chart. To update you
 
 :::tip Version Management
 
-Always review the changelog before upgrading to check for changes need in values.yaml or other configuration settings.
+Always review the changelog before upgrading to check for changes that are required to values.yaml or other configuration settings.
 
 :::
 
