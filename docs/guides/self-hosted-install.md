@@ -59,7 +59,7 @@ curl -o values-custom.yaml https://raw.githubusercontent.com/massdriver-cloud/he
 
 :::note
 
-This command downloads the `values-example.yaml` file, which is available for convenience of our users as it only contains a subset of the Massdriver helm chart values - specifically the values which are mandatory and/or commonly modified. The full set of values is available in the chart's `values.yaml` file [here](https://github.com/massdriver-cloud/helm-charts/blob/main/charts/massdriver/values.yaml).
+This command downloads the `values-example.yaml` file, which is available for convenience as it only contains a subset of the Massdriver helm chart values - specifically the values which are mandatory and/or commonly modified. The full set of values is available in the chart's `values.yaml` file [here](https://github.com/massdriver-cloud/helm-charts/blob/main/charts/massdriver/values.yaml).
 
 :::
 
