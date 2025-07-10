@@ -59,7 +59,7 @@ curl -o values-custom.yaml https://raw.githubusercontent.com/massdriver-cloud/he
 
 ### Step 3: Configure Required Values
 
-Edit your `values-custom.yaml` file to provide the necessary configuration. Focus on the top section between the `# Mandatory values` and `# Global variables` comments:
+Edit your `values-custom.yaml` file to provide the necessary configuration. Focus on the top section between the `# BEGIN Mandatory values` and `# END Global variables` comments:
 
 #### Required Configuration
 
