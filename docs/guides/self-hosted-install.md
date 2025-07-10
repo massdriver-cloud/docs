@@ -54,8 +54,14 @@ helm repo update
 Download the default values file to customize for your environment:
 
 ```bash
-curl -o values-custom.yaml https://raw.githubusercontent.com/massdriver-cloud/helm-charts/main/charts/massdriver/values.yaml
+curl -o values-custom.yaml https://raw.githubusercontent.com/massdriver-cloud/helm-charts/main/charts/massdriver/values-example.yaml
 ```
+
+:::note
+
+This command downloads the `values-example.yaml` file, which is available for convenience of our users as it only contains a subset of the Massdriver helm chart values - specifically the values which are mandatory and/or commonly modified. The full set of values is available in the chart's `values.yaml` file [here](https://github.com/massdriver-cloud/helm-charts/blob/main/charts/massdriver/values.yaml).
+
+:::
 
 ### Step 3: Configure Required Values
 
