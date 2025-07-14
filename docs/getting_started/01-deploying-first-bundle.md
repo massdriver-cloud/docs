@@ -92,33 +92,34 @@ This is where you'll see Massdriver's parameter system in action!
 3. You'll see a form with several configuration options:
 
 #### Bundle Presets
-Notice the preset dropdown at the top - this demonstrates how bundles can include pre-configured parameter sets:
+Notice the preset dropdown at the top - this demonstrates how bundles can include pre-configured parameter sets. These come from the top-level `example` field in the `params` section of the `massdriver.yaml` file. In this case there are two presets:
 
-- **Preset 1**: Conservative settings good for testing
-- **Preset 2**: More robust configuration for production-like scenarios
+- **Production**
+- **Staging**
 
-Try selecting different presets and watch how the form fields automatically populate!
+Try selecting different presets and watch how the form fields automatically populate. This allows you to create and customize multiple presets to guide users toward common or recommended configurations, such as `dev`, `staging` and `production`, or `single instance` and `highly available`.
 
 #### Parameter Types
-The form demonstrates different parameter types that Massdriver supports:
+The form demonstrates how the JSON schema definition in the `params` section of the `massdriver.yaml` is presented as a form in the Massdriver UI:
 
-- **Pet Configuration**: Shows an enum field (dropdown with specific values)
+- **Pet Configuration**: Shows an enum field of integers (dropdown with specific values)
 - **Password Configuration**: Demonstrates integer fields with validation (minimum/maximum values)
 - **Shuffle Configuration**: Shows array fields where you can add/remove items
 
+Refer to the [JSON Schema documentation](https://json-schema.org/understanding-json-schema/reference/type) for more information the different types, and validations available.
+
 #### Key Features to Notice
 
-**Immutable Fields**: Some fields are marked as immutable (indicated by a lock icon). These cannot be changed after deployment, demonstrating Massdriver's safety features.
+**Immutable Fields**: Fields can be marked **immutable** in the `massdriver.yaml` file. This prevents changes to the field after deployment, preventing accidental, destructive changes.
 
 **Validation**: Try entering invalid values (like a password length of 5) - you'll see real-time validation that prevents misconfiguration.
 
-**Field Descriptions**: Hover over the info icons to see helpful descriptions for each parameter.
+**Field Descriptions**: If params have the `description` field populated, it will be displayed in the UI to provide useful information about the field.
 
 ### Deploy Your Bundle
 
 1. After configuring your parameters, click the **Deploy** button
-2. Massdriver will show you a deployment plan - this is what infrastructure will be created
-3. Confirm the deployment
+2. Massdriver will open a side terminal showing the deployment logs
 
 ![Deploy bundle](img/deploy_bundle.gif)
 

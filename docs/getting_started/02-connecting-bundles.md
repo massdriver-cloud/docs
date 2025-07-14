@@ -136,14 +136,14 @@ Now you'll modify your `getting-started` bundle from the previous guide to produ
         - your_first_artifact
       properties:
         your_first_artifact:
-          $ref: <your-org>/getting-started  # Replace with your org name
+          $ref: <your-organization-id>/getting-started  # Replace with your org name
     ```
 
-4. **Important**: Replace `<your-org>` with your actual organization name from the previous step
+4. **Important**: Replace `<your-organization-id>` with your actual organization name from the previous step
 
 ### Update the Artifact Resource
 
-1. Open `src/_artifacts.tf`
+1. Open `src/artifacts.tf`
 2. Uncomment the `massdriver_artifact` resource:
 
     ```terraform
