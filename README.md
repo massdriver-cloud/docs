@@ -23,8 +23,8 @@ open http://localhost:3000/
 Or with docker
 
 ```shell
-docker run --rm -it -v $PWD:/app -w /app -p 3001:3000 node:19-alpine3.16 yarn
-docker run --rm -it -v $PWD:/app -w /app -p 3001:3000 node:19-alpine3.16 yarn start
+docker run --rm -it -v $PWD:/app -w /app -p 3001:3000 node:20-alpine3.22 yarn
+docker run --rm -it -v $PWD:/app -w /app -p 3001:3000 node:20-alpine3.22 yarn start
 ```
 
 ### Generating GQL Docs
