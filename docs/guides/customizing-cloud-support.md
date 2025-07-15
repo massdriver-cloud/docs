@@ -33,6 +33,10 @@ These quickstarts are fully customizable—you can fork, modify, and republish t
 
 To publish these definitions to your self-hosted Massdriver instance, run the following commands using the Massdriver CLI. Each artifact you publish enables support for that cloud in your environment.
 
+:::note 
+For self-hosted, make sure to configure the mass CLI is [configured to work with your instance](/cli/overview#configuration-file).
+:::
+
 ```bash
 # AWS IAM Role Artifact Definition
 curl -s https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/refs/heads/main/dist/aws-iam-role.json | mass definition publish -
