@@ -190,7 +190,7 @@ Let's remove these unnecessary variables and swap to `md_metadata.name_prefix`.
     ```hcl
     resource "random_id" "server_id" {
       byte_length = 4
-      prefix      = var.md_metadata.name_prefix
+      prefix      = "${var.md_metadata.name_prefix}-"
     }
     ```
 
