@@ -5,7 +5,7 @@ title: Deploying Your First Bundle
 sidebar_label: Deploying Your First Bundle
 ---
 
-Welcome to Massdriver! This guide will walk you through your first experience with the platform by publishing, configuring, and deploying a simple bundle. By the end of this guide, you'll understand the core workflow of working with Massdriver bundles.
+Welcome to part 1 of Massdriver's Getting Started series! This guide will walk you through your first experience with the platform by publishing, configuring, and deploying a simple bundle. By the end of this guide, you'll understand the core workflow of working with Massdriver bundles.
 
 ## Prerequisites
 
