@@ -248,13 +248,6 @@ Once deployed, explore what the connecting bundle created:
    - **password_based_port**: A port number derived from the password length
    - **reshuffled_words**: A new ordering of the original shuffled words
 
-### Key Observations
-
-🔍 **Type Safety**: The artifact definition ensured the connecting bundle received exactly the expected data structure  
-🔍 **Data Sharing**: Artifacts allowed important data to be passed from one bundle to another 
-🔍 **Dependency Management**: The connecting bundle couldn't deploy without the required connection  
-🔍 **Visual Connections**: The UI clearly shows the dependencies between bundles  
-
 ## Key Takeaways
 
 🎯 **Artifacts enable bundle composition** - Complex systems are built by connecting simple bundles  
