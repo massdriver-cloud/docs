@@ -405,7 +405,7 @@ params:
 
 ### Republish and Deploy
 
-  Publish the improved bundle:
+1. Publish the improved bundle:
 
     ```bash
     mass bundle publish
