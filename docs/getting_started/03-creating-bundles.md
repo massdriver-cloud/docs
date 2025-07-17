@@ -5,7 +5,7 @@ title: Creating Your Own Bundle
 sidebar_label: Creating Your Own Bundle
 ---
 
-Welcome to part 3 of the Massdriver getting started guide! In the previous guides, you learned how to [deploy bundles](01-deploying-bundles.md) (part 1) and [connect them together](02-connecting-bundles.md) (part 2). Now you'll learn how to create your own Massdriver bundle from an existing OpenTofu/Terraform module - a common workflow when adopting Massdriver with existing infrastructure code.
+Welcome to part 3 of the Massdriver getting started guide! In the previous guides, you learned how to [deploy bundles](01-deploying-first-bundle.md) (part 1) and [connect them together](02-connecting-bundles.md) (part 2). Now you'll learn how to create your own Massdriver bundle from an existing OpenTofu/Terraform module - a common workflow when adopting Massdriver with existing infrastructure code.
 
 ## What You'll Learn
 
@@ -181,11 +181,11 @@ Let's remove these unnecessary variables and swap to `md_metadata.name_prefix`.
 1. **Open** `massdriver.yaml`
 2. **Remove** these three parameters from the `params`:
    - `app_name`
-   - `environment` 
+   - `environment`
    - `project_name`
 3. **Remove** them from the `required` array at the bottom of the `params`
 4. **Remove** them from the `variables.tf` file
-4. **Update** `src/main.tf` to use the metadata instead:
+5. **Update** `src/main.tf` to use the metadata instead:
 
     ```hcl
     resource "random_id" "server_id" {
