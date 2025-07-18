@@ -137,7 +137,7 @@ Running `mass bundle build` will actually generate variables for **all** the par
 
 Look at `src/_massdriver_variables.tf`:
 
-```terraform
+```hcl
 variable "md_metadata" {
   type = object({
     default_tags = object({...})
@@ -209,7 +209,7 @@ encryption_key_length:
 
 ### Improve Password Configuration
 
-Booleans default to `false` unless specified otherwise, which means all these password options will default to `false`. We don't want our users to have to "opt-in" to a secure password, we want to make it safe by default. Let's make it so all of the password options default to true. Let's also enforce a `minimum` and `maximum` length to make sure the password is secure and valid.
+Booleans default to `false` unless specified otherwise, which means all these password options will default to `false`. We don't want our users to have to "opt-in" to a secure password, we want to make it safe by default. Let's make it so all of the password options default to `true`. Let's also enforce a `minimum` and `maximum` length to make sure the password is secure and valid.
 
 ```yaml
 password_config:

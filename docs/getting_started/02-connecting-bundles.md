@@ -146,7 +146,7 @@ Now you'll modify your `getting-started` bundle from the previous guide to produ
 1. Open `src/artifacts.tf`
 2. Uncomment the `massdriver_artifact` resource:
 
-    ```terraform
+    ```hcl
     resource "massdriver_artifact" "example" {
       field = "your_first_artifact"
       name  = "A human friendly name. This is the artifact for ${var.md_metadata.name_prefix}"
