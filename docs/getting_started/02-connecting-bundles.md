@@ -146,7 +146,7 @@ Now you'll modify your `getting-started` bundle from the previous guide to produ
 1. Open `src/artifacts.tf`
 2. Uncomment the `massdriver_artifact` resource:
 
-    ```terraform
+    ```hcl
     resource "massdriver_artifact" "example" {
       field = "your_first_artifact"
       name  = "A human friendly name. This is the artifact for ${var.md_metadata.name_prefix}"
@@ -248,20 +248,13 @@ Once deployed, explore what the connecting bundle created:
    - **password_based_port**: A port number derived from the password length
    - **reshuffled_words**: A new ordering of the original shuffled words
 
-### Key Observations
-
-🔍 **Type Safety**: The artifact definition ensured the connecting bundle received exactly the expected data structure  
-🔍 **Data Sharing**: Artifacts allowed important data to be passed from one bundle to another 
-🔍 **Dependency Management**: The connecting bundle couldn't deploy without the required connection  
-🔍 **Visual Connections**: The UI clearly shows the dependencies between bundles  
-
 ## Key Takeaways
 
-🎯 **Artifacts enable bundle composition** - Complex systems are built by connecting simple bundles  
-🎯 **Artifact definitions ensure contracts** - Type-safe data exchange between bundles  
-🎯 **Definitions are reusable** - One definition can be used by many bundles  
-🎯 **Visual connections** - The UI makes infrastructure dependencies clear and manageable  
-🎯 **Dependency enforcement** - Required connections prevent incomplete deployments  
+🧩 **Artifacts enable bundle composition** - Complex systems are built by connecting simple bundles  
+📜 **Artifact definitions ensure contracts** - Type-safe data exchange between bundles  
+🔄 **Definitions are reusable** - One definition can be used by many bundles  
+👀 **Visual connections** - The UI makes infrastructure dependencies clear and manageable  
+🔗 **Dependency enforcement** - Required connections prevent incomplete deployments  
 
 ## What's Next?
 

@@ -5,7 +5,19 @@ title: Deploying Your First Bundle
 sidebar_label: Deploying Your First Bundle
 ---
 
-Welcome to Massdriver! This guide will walk you through your first experience with the platform by publishing, configuring, and deploying a simple bundle. By the end of this guide, you'll understand the core workflow of working with Massdriver bundles.
+Welcome to part 1 of Massdriver's Getting Started series! This guide will walk you through your first experience with the platform by publishing, configuring, and deploying a simple bundle. By the end of this guide, you'll understand the core workflow of working with Massdriver bundles.
+
+## What You'll Learn
+
+By the end of this guide, you'll understand:
+
+✅ **Bundle publishing** - How to package and upload infrastructure code to Massdriver  
+✅ **Bundle structure** - Understanding the key files that make up a Massdriver bundle  
+✅ **Parameter configuration** - How JSON Schema creates user-friendly forms with validation  
+✅ **Bundle presets** - Using pre-configured parameter sets for common scenarios  
+✅ **Visual deployment** - Deploying infrastructure through the drag-and-drop interface  
+✅ **Safety features** - Built-in validation, immutable fields, and error prevention  
+✅ **Real-time monitoring** - Watching deployments progress through the platform  
 
 ## Prerequisites
 
@@ -125,21 +137,12 @@ Refer to the [JSON Schema documentation](https://json-schema.org/understanding-j
 
 4. Watch the deployment progress in real-time through the platform
 
-## Understanding What You Just Did
+## Key Takeaways
 
-Congratulations! You've just experienced the core Massdriver workflow:
-
-### 📨 **Bundle Publishing**
-You took infrastructure code and published it as a reusable bundle that others in your organization can deploy.
-
-### 🔧 **Parameter Configuration**
-You saw how JSON Schema in the bundle automatically creates user-friendly forms with validation, presets, and safety features.
-
-### 🚀 **Platform Deployment**
-You deployed infrastructure through a visual interface while maintaining all the power and flexibility of Infrastructure-as-Code.
-
-### 🔒 **Safety Features**
-You experienced validation, immutable fields, and other safety features that prevent common infrastructure mistakes.
+🔄 **Bundles are reusable** - Write once, deploy many times with different configurations  
+🎛️ **Parameters drive UI** - JSON Schema automatically creates user-friendly forms  
+🛡️ **Safety first** - Built-in validation and immutable fields prevent accidents  
+🎨 **Visual deployment** - Complex infrastructure becomes as easy as drag-and-drop  
 
 ## What's Next?
 
@@ -149,13 +152,6 @@ Now that you understand the basics, you can:
 2. **Learn More**: Explore the bundle's `README.md` for detailed explanations of each concept
 3. **Create Custom Bundles**: Use this as a template to create your own infrastructure bundles
 4. **Connect Bundles**: Learn about artifacts and connections to build more complex architectures
-
-## Key Takeaways
-
-✅ **Bundles are reusable** - Write once, deploy many times with different configurations  
-✅ **Parameters drive UI** - JSON Schema automatically creates user-friendly forms  
-✅ **Safety first** - Built-in validation and immutable fields prevent accidents  
-✅ **Visual deployment** - Complex infrastructure becomes as easy as drag-and-drop  
 
 In the next guide, we'll look at connecting this bundle to another bundle to pass information. [Get started now](02-connecting-bundles.md)!
 
