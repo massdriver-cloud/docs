@@ -39,10 +39,10 @@ For self-hosted, make sure to configure the mass CLI is [configured to work with
 
 ```bash
 # AWS IAM Role Artifact Definition
-curl -s https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/refs/heads/main/dist/aws-iam-role.json | mass definition publish -
+curl -s https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/refs/heads/main/dist/aws-iam-role.json | mass definition publish -f -
 
 # Azure Service Principal Artifact Definition
-curl -s https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/refs/heads/main/dist/azure-service-principal.json | mass definition publish -
+curl -s https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/refs/heads/main/dist/azure-service-principal.json | mass definition publish -f -
 
 # GCP Service Account Artifact Definition
-curl -s https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/refs/heads/main/dist/gcp-service-account.json | mass definition publish -
+curl -s https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/refs/heads/main/dist/gcp-service-account.json | mass definition publish -f -
