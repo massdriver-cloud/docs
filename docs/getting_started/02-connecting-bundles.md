@@ -250,11 +250,11 @@ Once deployed, explore what the connecting bundle created:
 
 ## Key Takeaways
 
-🎯 **Artifacts enable bundle composition** - Complex systems are built by connecting simple bundles  
-🎯 **Artifact definitions ensure contracts** - Type-safe data exchange between bundles  
-🎯 **Definitions are reusable** - One definition can be used by many bundles  
-🎯 **Visual connections** - The UI makes infrastructure dependencies clear and manageable  
-🎯 **Dependency enforcement** - Required connections prevent incomplete deployments  
+🧩 **Artifacts enable bundle composition** - Complex systems are built by connecting simple bundles  
+📜 **Artifact definitions ensure contracts** - Type-safe data exchange between bundles  
+🔄 **Definitions are reusable** - One definition can be used by many bundles  
+👀 **Visual connections** - The UI makes infrastructure dependencies clear and manageable  
+🔗 **Dependency enforcement** - Required connections prevent incomplete deployments  
 
 ## What's Next?
 

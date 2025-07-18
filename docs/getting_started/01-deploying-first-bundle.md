@@ -139,10 +139,10 @@ Refer to the [JSON Schema documentation](https://json-schema.org/understanding-j
 
 ## Key Takeaways
 
-✅ **Bundles are reusable** - Write once, deploy many times with different configurations  
-✅ **Parameters drive UI** - JSON Schema automatically creates user-friendly forms  
-✅ **Safety first** - Built-in validation and immutable fields prevent accidents  
-✅ **Visual deployment** - Complex infrastructure becomes as easy as drag-and-drop  
+🔄 **Bundles are reusable** - Write once, deploy many times with different configurations  
+🎛️ **Parameters drive UI** - JSON Schema automatically creates user-friendly forms  
+🛡️ **Safety first** - Built-in validation and immutable fields prevent accidents  
+🎨 **Visual deployment** - Complex infrastructure becomes as easy as drag-and-drop  
 
 ## What's Next?
 

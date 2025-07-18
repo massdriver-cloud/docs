@@ -5,7 +5,13 @@ title: Creating Your Own Bundle
 sidebar_label: Creating Your Own Bundle
 ---
 
-Welcome to part 3 of the Massdriver getting started guide! In the previous guides, you learned how to [deploy bundles](01-deploying-first-bundle.md) (part 1) and [connect them together](02-connecting-bundles.md) (part 2). Now you'll learn how to create your own Massdriver bundle from an existing OpenTofu/Terraform module - a common workflow when adopting Massdriver with existing infrastructure code.
+Welcome to part 3 of the Massdriver getting started guide! In the previous guides, you learned how to [deploy bundles](01-deploying-first-bundle.md) (part 1) and [connect them together](02-connecting-bundles.md) (part 2). Now you'll learn how to create your own Massdriver bundle ## Key Takeaways
+
+⚡ **Existing modules convert easily** - The CLI automates most of the conversion process  
+✨ **Parameter refinement improves UX** - Better titles, validation, and defaults create user-friendly forms  
+🏷️ **Massdriver metadata reduces complexity** - Use injected context instead of manual parameters  
+🔍 **Validation prevents errors** - JSON Schema constraints catch configuration mistakes early  
+🔒 **Immutable fields prevent accidents** - Critical settings can be locked after deployment   existing OpenTofu/Terraform module - a common workflow when adopting Massdriver with existing infrastructure code.
 
 ## What You'll Learn
 
@@ -438,11 +444,11 @@ Try these scenarios to see validation in action:
 
 ## Key Takeaways
 
-🎯 **Existing modules convert easily** - The CLI automates most of the conversion process  
-🎯 **Parameter refinement improves UX** - Better titles, validation, and defaults create user-friendly forms  
-🎯 **Massdriver metadata reduces complexity** - Use injected context instead of manual parameters  
-🎯 **Validation prevents errors** - JSON Schema constraints catch configuration mistakes early  
-🎯 **Immutable fields prevent accidents** - Critical settings can be locked after deployment  
+⚡ **Existing modules convert easily** - The CLI automates most of the conversion process  
+✨ **Parameter refinement improves UX** - Better titles, validation, and defaults create user-friendly forms  
+🏷️ **Massdriver metadata reduces complexity** - Use injected context instead of manual parameters  
+🛡️ **Validation prevents errors** - JSON Schema constraints catch configuration mistakes early  
+🔒 **Immutable fields prevent accidents** - Critical settings can be locked after deployment  
 
 ## What's Next?
 
