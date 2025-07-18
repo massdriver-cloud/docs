@@ -69,7 +69,7 @@ Let's create a new bundle from the existing module using the Massdriver CLI.
     ```
 
     **Existing Module Path:**
-    This will copy the module files into the bundle, and convert the `variable` declarations into `params`. Point to the module directory:
+    This will copy the module files into the bundle, and convert the `variable` declarations into `params`. Point to the `module` directory:
     ```
     ✔ Path to an existing Terraform/OpenTofu module to generate a bundle from, leave blank to skip: module
     ```
@@ -167,6 +167,8 @@ The `name_prefix` field contains `<project>-<environment>-<package>-<random-suff
 You now have a working bundle that will deploy the OpenTofu module we provided earlier. However, there are a number of small improvements we can make to improve the user experience of configuring and deploying this bundle.
 
 ## Step 3: Improve the Bundle Configuration
+
+Let's had back into the code and modify the bundle to improve usability.
 
 ### Remove Redundant Naming Variables
 
