@@ -206,7 +206,7 @@ Massdriver supports the OpenID Connect protocol for authentication to the platfo
 
 **Configuring OIDC**
 
-Update the `values.yaml` file to include an `oidc` configuration.
+Update your `values-custom.yaml` file to include an `oidc` configuration.
 
 ```yaml
 oidc:
@@ -235,7 +235,7 @@ quickstart:
 
 :::tip Disabling QuickStart
 
-The quickstart user should be disabled as soon as OIDC is configured. This can be done simply be remove the quickstart configuration from values.yaml, or setting it to an empty object (`quickstart: {}`)
+The quickstart user should be disabled as soon as OIDC is configured. This can be done by simply removing the quickstart configuration from `values-custom.yaml`, or setting it to an empty object (`quickstart: {}`)
 
 :::
 
@@ -272,9 +272,9 @@ Once installed, you can access your Massdriver installation at:
 - **Main Application (QuickStart login)**: `https://api.<your-domain>/auth/quickstart`
 - **API**: `https://api.<your-domain>/api/graphiql`
 
-#### Setup CLI
+### Setup CLI
 
-Be sure to update the Massdriver CLI configuration to interact with your new self-hosted instance. You'll need to set the `MASSDRIVER_URL` environment variable to point to your new instance (`https://api.<your-domain>/`). You can also create a new `profile` in your configuration file. Review the [CLI documentation](../cli/00-overview.md#Configuration) for more information.
+Be sure to update your Massdriver CLI configuration to interact with your new self-hosted instance. You'll need to set the `MASSDRIVER_URL` environment variable to point to your new instance (`https://api.<your-domain>/`). You can also create a new `profile` in your configuration file. Review the [CLI documentation](../cli/00-overview.md#configuration) for more information.
 
 ## Updating Your Installation
 
