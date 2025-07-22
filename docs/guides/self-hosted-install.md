@@ -200,7 +200,7 @@ massdriver:
       enabled: false
 ```
 
-### Step 6: Configure Access
+### Step 5: Configure Access
 
 Massdriver supports the OpenID Connect protocol for authentication to the platform.
 
