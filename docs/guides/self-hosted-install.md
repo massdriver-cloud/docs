@@ -217,15 +217,15 @@ oidc:
     clientSecret: "some-secret-value"
 ```
 
-**Quickstart User**
+**QuickStart Login**
 
 :::warning Do NOT use QuickStart in Production!!
 
-The quickstart user is intended to be used only for short-term access after installation. OIDC should be used for access to production Massdriver installations.
+QuickStart login is intended to be used only for short-term access after installation. OIDC should be used for access to production Massdriver installations.
 
 :::
 
-Massdriver also supports a single "quickstart" user for testing purposes without requiring a full OIDC configuration.
+Massdriver also supports a single "QuickStart" user for testing purposes without requiring a full OIDC configuration.
 
 ```yaml
 quickstart:
@@ -235,7 +235,7 @@ quickstart:
 
 :::tip Disabling QuickStart
 
-The quickstart user should be disabled as soon as OIDC is configured. This can be done by simply removing the quickstart configuration from `values-custom.yaml`, or setting it to an empty object (`quickstart: {}`)
+QuickStart login should be disabled as soon as OIDC is configured. This can be done by simply removing the QuickStart configuration from `values-custom.yaml`, or setting it to an empty object (`quickstart: {}`)
 
 :::
 
