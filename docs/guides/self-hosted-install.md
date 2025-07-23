@@ -114,7 +114,7 @@ If you plan to use a different release name than `massdriver`, search for `"rele
 
 ### Step 4: Configure Ingress and TLS
 
-The ingress configuration requires special attention for security:
+The ingress configuration allows you to configure how you will access Massdriver in a web browser:
 
 #### Ingress Controller
 
@@ -132,7 +132,6 @@ massdriver:
 Massdriver requires a TLS certificate valid for the following subdomains:
 - `app.<your-domain>`
 - `api.<your-domain>`
-- `identity.<your-domain>`
 
 **Option 1: Using cert-manager (Recommended)**
 
@@ -184,7 +183,63 @@ massdriver:
       secretName: massdriver-tls
 ```
 
-### Step 5: Install Massdriver
+**Option 4: Disable TLS (NOT recommended for production)**
+
+:::warning Do NOT disable TLS in Production!!
+
+It is strongly recommended to enable TLS when using Massdriver in production to avoid sensitive data being transmitted via unencrypted traffic.
+
+:::
+
+Massdriver also supports running without TLS. This is useful for short term development and testing purposes.
+
+```yaml
+massdriver:
+  ingress:
+    tls:
+      enabled: false
+```
+
+### Step 5: Configure Access
+
+Massdriver supports the OpenID Connect protocol for authentication to the platform.
+
+**Configuring OIDC**
+
+Update your `values-custom.yaml` file to include an `oidc` configuration.
+
+```yaml
+oidc:
+  - name: "google"
+    authorizeUrl: "https://..."
+    tokenUrl: "https://..."
+    clientId: "11111111-2222-3333-44444-555555555555"
+    clientSecret: "some-secret-value"
+```
+
+**Quickstart User**
+
+:::warning Do NOT use QuickStart in Production!!
+
+The quickstart user is intended to be used only for short-term access after installation. OIDC should be used for access to production Massdriver installations.
+
+:::
+
+Massdriver also supports a single "quickstart" user for testing purposes without requiring a full OIDC configuration.
+
+```yaml
+quickstart:
+  email: you@example.com
+  password: p@ssw0rd
+```
+
+:::tip Disabling QuickStart
+
+The quickstart user should be disabled as soon as OIDC is configured. This can be done by simply removing the quickstart configuration from `values-custom.yaml`, or setting it to an empty object (`quickstart: {}`)
+
+:::
+
+### Step 6: Install Massdriver
 
 Once your values file is configured, install Massdriver:
 
@@ -195,7 +250,7 @@ helm install massdriver massdriver/massdriver \
   -f values-custom.yaml
 ```
 
-### Step 6: Verify Installation
+### Step 7: Verify Installation
 
 Check that all pods are running:
 
@@ -211,10 +266,15 @@ kubectl get ingress -n massdriver
 
 ## Accessing Your Installation
 
-Once installed, you can access Massdriver at:
+Once installed, you can access your Massdriver installation at:
 
-- **Main Application**: `https://app.<your-domain>`
+- **Main Application (OIDC login)**: `https://app.<your-domain>/login`
+- **Main Application (QuickStart login)**: `https://api.<your-domain>/auth/quickstart`
 - **API**: `https://api.<your-domain>/api/graphiql`
+
+### Setup CLI
+
+Be sure to update your Massdriver CLI configuration to interact with your new self-hosted instance. You'll need to set the `MASSDRIVER_URL` environment variable to point to your new instance (`https://api.<your-domain>/`). You can also create a new `profile` in your configuration file. Review the [CLI documentation](../cli/00-overview.md#configuration) for more information.
 
 ## Updating Your Installation
 
