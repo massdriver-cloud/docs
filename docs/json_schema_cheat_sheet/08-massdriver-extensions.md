@@ -76,7 +76,7 @@ properties:
     $md.enum:
       connection: aws_authentication
       options: .specs.allowedRegions
-      label: "split(\"-\") | map(ascii_upcase) | join(\" \")"
+      label: split("-") | map(ascii_upcase) | join(" ")
       value: "."
 ```
 
@@ -95,7 +95,7 @@ properties:
     type: string
     $md.enum:
       connection: postgres_cluster
-      options: .data.instances[].identifier
+      options: .data.instances[] | .identifier
 ```
 
 #### Subnets from VPC Connection
@@ -113,7 +113,7 @@ properties:
       type: string
       $md.enum:
         connection: vpc
-        options: .data.infrastructure.subnets[]
+        options: .data.infrastructure.subnets
         value: .id
         label: "\(.name) (\(.availability_zone))"
 ```
@@ -150,7 +150,7 @@ properties:
       $md.enum:
         connection: aws_authentication
         options: .specs.allowedRegions
-        label: "split(\"-\") | map(ascii_upcase) | join(\" \")"
+        label: split("-") | map(ascii_upcase) | join(" ")
 ```
 
 ### Best Practices
@@ -184,7 +184,7 @@ properties:
     $md.enum:
       connection: cloud_credentials
       options: .specs.allowedRegions
-      label: "split(\"-\") | map(ascii_upcase) | join(\" \")"
+      label: split("-") | map(ascii_upcase) | join(" ")
 ```
 
 These Massdriver extensions make your infrastructure bundles safer and more user-friendly by preventing dangerous changes and automatically populating valid options from your actual cloud resources. 
