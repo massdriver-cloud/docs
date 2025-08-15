@@ -62,34 +62,81 @@ Matches versions >= 1.1.1 within the same minor:
 
 ## Version Management in Massdriver
 
-### Bundle Publishing
+### Bundle Development and Publishing
 
-When you publish a bundle to Massdriver:
+#### Setting Bundle Version
 
-1. **Version Validation**: Only valid semantic versions are accepted
-2. **Immutability**: Published versions cannot be changed
-3. **Uniqueness**: Each version can only be published once
+In your `massdriver.yaml`, you now specify a `version` field:
 
-### Package Deployments
-
-When deploying packages:
-
-- **Pinned Versions**: Deploy exactly `1.2.3`
-- **Release Channels**: Deploy using `~1.2` for automatic patch updates
-- **Latest**: Deploy the newest available version
-
-### Version Selection
-
-Massdriver provides intelligent version selection:
-
-```javascript
-// Available versions: ["1.0.0", "1.1.0", "1.1.5", "2.0.0", "2.1.0"]
-
-// Release channels suggested:
-["~1", "~1.1", "~1.1.5", "~2", "~2.1", "~2.1.0"]
+```yaml
+schema: draft-07
+name: aws-rds-postgres
+description: "PostgreSQL database on AWS RDS"
+version: "1.2.3"  # Must be valid semantic version
+access: public
 ```
 
-Only the **newest** version at each level is suggested to avoid version debt.
+**Version Rules:**
+- **Required Format**: Must be `MAJOR.MINOR.PATCH` (e.g., `1.2.3`)
+- **Default Fallback**: If omitted, defaults to `0.0.0` (for backwards compatibility)
+- **Immutable Releases**: `0.0.0` is the only mutable version (legacy bundles)
+
+#### Publishing Options
+
+**Standard Release:**
+```bash
+mass bundle publish
+```
+- Publishes the exact version from `massdriver.yaml`
+- Creates an immutable release
+- Available immediately for production use
+
+**Release Candidate:**
+```bash
+mass bundle publish --release-candidate
+# or
+mass bundle publish -r
+```
+- Adds `.rc-TIMESTAMP` to your base version (e.g., `1.2.3.rc-1701234567`)
+- Base version (`1.2.3`) must not have been published yet
+- Allows testing before the final release
+- Perfect for feature branches and testing workflows
+
+### Package Version Management
+
+#### Version Selection Interface
+
+In the package configuration panel, developers see a **"Set Version"** dropdown with multiple options:
+
+**Published Versions:**
+- `1.0.0`, `1.1.0`, `1.1.5`, `2.0.0` (exact versions)
+- Release candidates are **hidden** from this interface
+
+**Release Channels:**
+- `~1`, `~1.1`, `~1.1.5`, `~2`, `~2.1` (auto-generated tilde patterns)
+
+**Automation Rules:**
+
+1. **"Release Candidate"** - Automatically tracks the next RC chain
+   - Keeps you on release candidates for the next version increment
+   - If currently on `2.0.1`, will upgrade to `2.0.2.rc-*` or `2.1.0.rc-*`
+   - Will **not** upgrade to older RCs like `1.2.3.rc-*`
+   - Always follows chronological version progression
+
+2. **"Latest"** - Automatically upgrades to newest stable releases
+   - Upgrades to any new published version greater than current
+   - Excludes release candidates (stable releases only)
+   - Ensures you're always on the latest production-ready version
+
+#### Version Constraints
+
+**Upgrade-Only Policy:**
+- ✅ Can upgrade: `1.0.0` → `1.1.0` → `2.0.0`
+- ❌ Cannot downgrade: `2.0.0` → `1.1.0`
+- ✅ Can rollback: Restore previous configuration with its original version
+
+**Configuration Snapshots:**
+Each version change creates a configuration snapshot, enabling safe rollbacks to previous states while maintaining the upgrade-only constraint for new deployments.
 
 ## Upgrade Strategies
 
@@ -115,50 +162,85 @@ Use major channels for latest features:
 
 ### For Bundle Developers
 
-1. **Follow SemVer**: Use semantic versioning correctly
-   - Patch: Bug fixes, security updates
-   - Minor: New optional features, new cloud regions
-   - Major: Breaking changes, removed parameters
-
-2. **Use Release Candidates**: Test in staging before production
-   ```
-   1.5.0.rc-1701234567  # Test first
-   1.5.0                # Release when ready
+1. **Set Explicit Versions**: Always specify `version` in `massdriver.yaml`
+   ```yaml
+   version: "1.2.3"  # Explicit semantic version
    ```
 
-3. **Document Changes**: Clear changelog for each version
+2. **Development Workflow**: Use release candidates for testing
+   ```bash
+   # Set version in massdriver.yaml
+   version: "1.5.0"
+   
+   # Publish RC for testing
+   mass bundle publish --release-candidate  # Creates 1.5.0.rc-timestamp
+   
+   # Test in staging environments...
+   
+   # Publish final release
+   mass bundle publish  # Creates 1.5.0
+   ```
+
+3. **Follow SemVer Guidelines**:
+   - **Patch** (`1.0.1`): Bug fixes, security updates, documentation
+   - **Minor** (`1.1.0`): New optional features, additional cloud regions
+   - **Major** (`2.0.0`): Breaking changes, removed parameters, incompatible updates
+
+4. **Version Progression**: Ensure each version is greater than the previous
+   - ✅ `1.0.0` → `1.0.1` → `1.1.0` → `2.0.0`
+   - ❌ Don't skip versions unnecessarily
 
 ### For Platform Users
 
-1. **Pin Critical Environments**: Use exact versions for production
+1. **Production Environments**: Use exact versions for stability
    ```
-   version: "1.2.3"  # Exact version for production
-   ```
-
-2. **Use Channels for Development**: Allow automatic updates in dev/staging
-   ```
-   version: "~1.2"   # Auto-update patches and features
+   Set Version: "1.2.3"  # Pinned version for production
    ```
 
-3. **Test Release Candidates**: Validate RCs before they become releases
+2. **Development/Staging**: Use automation for latest features
+   ```
+   Set Version: "Latest"  # Auto-upgrade to stable releases
+   ```
+
+3. **Feature Testing**: Use release candidate tracking
+   ```
+   Set Version: "Release Candidate"  # Follow RC chain for next version
+   ```
+
+4. **Release Channels**: Use tilde patterns for controlled updates
+   ```
+   Set Version: "~1.2"    # Auto-update within minor version
+   Set Version: "~1.2.1"  # Auto-update patches only
+   ```
 
 ## Version Lifecycle
 
 ```mermaid
-graph LR
-    A[Development] --> B[Release Candidate]
-    B --> C[Testing]
-    C --> D[Release]
-    D --> E[Deployment]
-    E --> F[Package]
+graph TD
+    A[Set version in massdriver.yaml] --> B{Publish Type}
+    B -->|mass bundle publish -r| C[Release Candidate<br/>1.2.0.rc-timestamp]
+    B -->|mass bundle publish| D[Stable Release<br/>1.2.0]
+    C --> E[Test in Staging]
+    E --> F{Ready for Release?}
+    F -->|No| G[Fix Issues & Republish RC]
+    G --> C
+    F -->|Yes| D
+    D --> H[Available in UI]
+    H --> I[Package Deployment]
+    I --> J{Version Selection}
+    J -->|Exact| K[Pin to 1.2.0]
+    J -->|Channel| L[Use ~1.2]
+    J -->|Automation| M[Latest/RC Tracking]
 ```
 
-1. **Development**: Create new bundle features
-2. **Release Candidate**: Publish RC for testing (`1.2.0.rc-timestamp`)
-3. **Testing**: Validate in staging environments
-4. **Release**: Publish final version (`1.2.0`)
-5. **Deployment**: Deploy to environments using versions or channels
-6. **Package**: Running instance of the bundle in an environment
+**Workflow Steps:**
+
+1. **Version Definition**: Set semantic version in `massdriver.yaml`
+2. **Release Candidate**: Optional RC publishing for testing (`-r` flag)
+3. **Testing Phase**: Validate RCs in staging environments
+4. **Stable Release**: Publish final immutable version
+5. **Package Selection**: Choose version strategy in UI dropdown
+6. **Deployment**: Package runs with selected version/automation rule
 
 ## Version Filtering
 
