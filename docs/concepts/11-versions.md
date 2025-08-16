@@ -73,7 +73,6 @@ schema: draft-07
 name: aws-rds-postgres
 description: "PostgreSQL database on AWS RDS"
 version: "1.2.3"  # Must be valid semantic version
-access: public
 ```
 
 **Version Rules:**
@@ -89,7 +88,7 @@ mass bundle publish
 ```
 - Publishes the exact version from `massdriver.yaml`
 - Creates an immutable release
-- Available immediately for production use
+- Available immediately for use by your end users
 
 **Release Candidate:**
 ```bash
