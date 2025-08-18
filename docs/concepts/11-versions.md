@@ -41,6 +41,36 @@ Release candidates allow you to test versions before they become official releas
 - **Testing**: Perfect for staging environments and pre-production testing
 - **Timestamps**: Multiple release candidates are ordered by timestamp (higher = newer)
 
+### Rapid Infrastructure Testing
+
+Release candidates are a powerful means of rapidly testing Infrastructure as Code (IaC) changes against real cloud resources:
+
+**Local Development + Real Infrastructure:**
+- Develop bundle changes locally on your machine
+- Publish release candidates without affecting production bundles
+- Deploy RCs to real cloud environments for comprehensive testing
+
+**Opt-in Testing Network:**
+- Set up multiple packages using the "release candidate" automation rule
+- These packages automatically pick up your latest RCs for testing
+- Run Terraform plans and compliance scans against actual provisioned resources
+- Validate infrastructure changes with real cloud provider APIs
+
+**Practical Workflow:**
+```bash
+# 1. Make IaC changes locally
+vim src/main.tf
+
+# 2. Publish RC for testing
+mass bundle publish --release-candidate
+
+# 3. Packages with "release candidate" rule automatically test your changes
+# 4. Review Terraform plans and compliance results from real infrastructure
+# 5. Iterate with new RCs or publish final release
+```
+
+This approach lets you stand up multiple real-world examples of your infrastructure changes before committing to a final release, ensuring your bundles work correctly across different cloud environments and configurations.
+
 ## Release Channels
 
 Release channels use tilde (`~`) constraints to specify compatible version ranges. Massdriver supports three types of release channels:
@@ -53,11 +83,6 @@ Matches the latest version within major version 1:
 ### Minor Channel (`~1.1`)  
 Matches the latest patch within minor version 1.1:
 - `~1.1` could resolve to `1.1.7` (latest patch in 1.1.x)
-- Will **not** upgrade to `1.2.0`
-
-### Patch Channel (`~1.1.1`)
-Matches versions >= 1.1.1 within the same minor:
-- `~1.1.1` could resolve to `1.1.5` (≥ 1.1.1 in 1.1.x)
 - Will **not** upgrade to `1.2.0`
 
 ## Version Management in Massdriver
@@ -112,7 +137,7 @@ In the package configuration panel, developers see a **"Set Version"** dropdown 
 - Release candidates are **hidden** from this interface
 
 **Release Channels:**
-- `~1`, `~1.1`, `~1.1.5`, `~2`, `~2.1` (auto-generated tilde patterns)
+- `~1`, `~1.1`, `~2`, `~2.1` (auto-generated tilde patterns)
 
 **Automation Rules:**
 
@@ -121,6 +146,8 @@ In the package configuration panel, developers see a **"Set Version"** dropdown 
    - If currently on `2.0.1`, will upgrade to `2.0.2.rc-*` or `2.1.0.rc-*`
    - Will **not** upgrade to older RCs like `1.2.3.rc-*`
    - Always follows chronological version progression
+   - **Perfect for testing environments**: Automatically validates new IaC changes
+   - **Real infrastructure validation**: Runs actual Terraform plans and compliance scans
 
 2. **"Latest"** - Automatically upgrades to newest stable releases
    - Upgrades to any new published version greater than current
@@ -138,12 +165,6 @@ In the package configuration panel, developers see a **"Set Version"** dropdown 
 Each version change creates a configuration snapshot, enabling safe rollbacks to previous states while maintaining the upgrade-only constraint for new deployments.
 
 ## Upgrade Strategies
-
-### Conservative Upgrades
-Use patch channels for maximum stability:
-```
-~1.1.1  # Only patch updates (1.1.1 → 1.1.5)
-```
 
 ### Feature Upgrades  
 Use minor channels for new features:
@@ -201,15 +222,18 @@ Use major channels for latest features:
    Set Version: "Latest"  # Auto-upgrade to stable releases
    ```
 
-3. **Feature Testing**: Use release candidate tracking
+3. **Infrastructure Testing**: Use release candidate tracking for real-world validation
    ```
    Set Version: "Release Candidate"  # Follow RC chain for next version
    ```
+   - Ideal for staging/dev environments that mirror production
+   - Automatically tests new IaC changes against real cloud resources
+   - Provides early feedback on Terraform plans and compliance issues
 
 4. **Release Channels**: Use tilde patterns for controlled updates
    ```
+   Set Version: "~1"    # Auto-update within major version
    Set Version: "~1.2"    # Auto-update within minor version
-   Set Version: "~1.2.1"  # Auto-update patches only
    ```
 
 ## Version Lifecycle
