@@ -1,8 +1,8 @@
 ---
 id: self-hosted-install
-slug: /guides/self-hosted-install
+slug: /self-hosted/install
 title: Self-Hosted Installation
-sidebar_label: Self-Hosted Install
+sidebar_label: Install
 ---
 
 This guide will walk you through installing Massdriver's self-hosted version using our Helm chart. The self-hosted version of Massdriver is great for teams that want the all the features of our platform in a private cloud environment.

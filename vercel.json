@@ -49,6 +49,11 @@
       "source": "/getting-started/onboarding",
       "destination": "/getting-started/prerequisites",
       "permanent": true
+    },
+    {
+      "source": "/guides/self-hosted-install",
+      "destination": "/self-hosted/install",
+      "permanent": true
     }
   ]
 }
