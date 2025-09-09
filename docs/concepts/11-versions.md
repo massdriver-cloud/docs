@@ -51,7 +51,7 @@ Release candidates are a powerful means of rapidly testing Infrastructure as Cod
 - Deploy RCs to real cloud environments for comprehensive testing
 
 **Opt-in Testing Network:**
-- Set up multiple packages using the "release candidate" automation rule
+- Set up multiple packages using the "release-candidate" automation rule
 - These packages automatically pick up your latest RCs for testing
 - Run Terraform plans and compliance scans against actual provisioned resources
 - Validate infrastructure changes with real cloud provider APIs
@@ -64,7 +64,7 @@ vim src/main.tf
 # 2. Publish RC for testing
 mass bundle publish --release-candidate
 
-# 3. Packages with "release candidate" rule automatically test your changes
+# 3. Packages with "release-candidate" rule automatically test your changes
 # 4. Review Terraform plans and compliance results from real infrastructure
 # 5. Iterate with new RCs or publish final release
 ```
