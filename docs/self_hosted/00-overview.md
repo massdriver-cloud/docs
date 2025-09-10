@@ -7,44 +7,37 @@ sidebar_label: Overview
 
 # Massdriver Self-Hosted Overview
 
-Massdriver is available as a **self-hosted installation** for teams and agencies that need full control over their infrastructure management platform. Unlike SaaS-based Infrastructure-as-Code orchestrators that require **FedRAMP authorization** to operate in government environments, Massdriver can be deployed entirely within your own network, aligning with existing **FISMA / ATO** processes.
+Massdriver is available as a **self-hosted installation** for teams and agencies that need full control over their infrastructure management platform. By running Massdriver entirely within your own environment, you keep data inside your security boundary and align directly with existing compliance frameworks like **FISMA**, **NIST 800-53**, and agency **Authority to Operate (ATO)** processes.
+
+Because Massdriver is **not delivered as a SaaS**, **FedRAMP authorization is not required**. Agencies can adopt Massdriver through their existing security review and ATO processes without waiting on a vendor FedRAMP package.
 
 ## Why Self-Hosted?
 
 Running Massdriver in your own cloud or data center offers unique advantages:
 
 - **Security & Compliance**  
-  - Keep sensitive data inside your own security boundary.  
-  - No data leaves your network, eliminating SaaS dependencies.  
-  - Simplifies compliance with frameworks like FISMA, NIST 800-53, and agency ATO processes.  
-  - Avoid waiting on FedRAMP authorizations for a vendor’s SaaS environment.  
+  - Sensitive data never leaves your environment.  
+  - Fits cleanly into FISMA and ATO workflows.  
+  - Aligns with NIST 800-53 and related federal security standards.  
 
 - **Air-Gapped Friendly**  
-  - Massdriver is designed to run without external dependencies.  
-  - Suitable for high-security environments, classified workloads, or disconnected networks.  
+  - No dependency on external SaaS services.  
+  - Works in disconnected or classified environments.  
 
 - **Operational Control**  
-  - Deploy on your Kubernetes infrastructure with full ownership of uptime, monitoring, and upgrades.  
-  - Integrate directly with your own IdPs, SMTP, and observability stacks.  
-  - No reliance on external multitenant SaaS systems.  
+  - You manage uptime, monitoring, and upgrades.  
+  - Integrates with your IdPs, and observability systems.  
 
 - **Feature Parity**  
-  - The self-hosted edition includes **all the capabilities of Massdriver’s SaaS platform**.  
-  - Helm-based installation provides built-in dependencies (Argo Workflows, MinIO, etc.) for a turnkey deployment.
-
-## FedRAMP vs. Self-Hosted
-
-- **FedRAMP**: Required when a federal agency consumes a **vendor-operated cloud service**.  
-- **Self-Hosted**: If the agency operates the software within its own boundary, **FedRAMP is not required**. Instead, the deployment falls under the agency’s own **ATO process**, making self-hosting the fastest path for federal adoption.  
-
-This distinction means federal teams can adopt Massdriver today without waiting on our FedRAMP package, while still aligning with all required security frameworks.
+  - Full functionality of Massdriver’s cloud platform.  
+  - Helm-based deployment with included dependencies (Argo Workflows, MinIO, etc.).  
 
 ## Benefits for Federal & Enterprise Teams
 
-- **Accelerated Authority to Operate (ATO):** Agencies control the security package and boundary.  
-- **Policy-Driven IaC Deployments:** Built-in policy enforcement with OPA.  
-- **Future-Proof Compliance:** Aligns with NIST, CIS, and agency-specific baselines.  
-- **No Vendor Lock-In:** You manage the deployment footprint, networking, and data flow.  
+- **Accelerated ATO:** Faster adoption since you manage the security boundary.  
+- **Policy-Driven IaC Deployments:** Built-in OPA enforcement.  
+- **Compliance Ready:** Works within FISMA/ATO requirements without FedRAMP.  
+- **No Vendor Lock-In:** Full control of deployment, networking, and data.  
 
 ## Next Steps
 
@@ -54,4 +47,4 @@ This distinction means federal teams can adopt Massdriver today without waiting 
 
 ---
 
-Massdriver Self-Hosted is the best option for organizations that need **control, compliance, and air-gap compatibility** without sacrificing the developer experience of modern infrastructure orchestration.
+Massdriver Self-Hosted is the best option for organizations that need **security, compliance, and air-gap compatibility**—without the overhead of FedRAMP—while still delivering the modern developer experience of our cloud platform.
