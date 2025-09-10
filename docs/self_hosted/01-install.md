@@ -327,4 +327,4 @@ For assistance with your self-hosted installation:
 ## Next Steps
 
 * [Configure which clouds you wanted supported in your instance](/guides/customizing-cloud-support)
-* Ready to start building? Check out our [Getting Started guide](../getting_started/00-overview.md) to learn the core Massdriver workflows.
+* Ready to start building? Check out our [Getting Started guide](/getting-started/overview) to learn the core Massdriver workflows.

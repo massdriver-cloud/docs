@@ -42,7 +42,7 @@ Running Massdriver in your own cloud or data center offers unique advantages:
 ## Next Steps
 
 - [Install Massdriver Self-Hosted](/self-hosted/install)  
-- [Getting Started Guide](/getting_started/00-overview)  
+- [Getting Started Guide](/getting-started/overview)  
 - [Customizing Cloud Support](/guides/customizing-cloud-support)  
 
 ---
