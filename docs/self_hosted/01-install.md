@@ -76,6 +76,7 @@ Edit your `values-custom.yaml` file to provide the necessary configuration. Focu
      username: "massdriver_user"
      password: "your-secure-password"
      hostname: "your-postgres-host"
+     database: "massdriver"
      port: 5432
    ```
 
@@ -84,9 +85,9 @@ Edit your `values-custom.yaml` file to provide the necessary configuration. Focu
    smtp:
      username: "your-smtp-username"
      password: "your-smtp-password"
-     hostname: "your-smtp-server"
+     server: "your-smtp-server"
      port: 587
-     from: "noreply@your-domain.com"
+     fromAddress: "noreply@your-domain.com"
    ```
 
 3. **Domain Configuration**
