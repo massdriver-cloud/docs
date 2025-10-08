@@ -216,7 +216,10 @@ oidc:
     tokenUrl: "https://..."
     clientId: "11111111-2222-3333-44444-555555555555"
     clientSecret: "some-secret-value"
+    autojoinOrganization: "myorg"  # The Massdriver organization to autojoin after OIDC authentication (optional)
 ```
+
+The `autojoinOrganization` field will automatically associate new users who sign up with this OIDC method to specified Massdriver organization. Without this setting, new users will be prompted to create a new organization when signing up. Be sure to use the organization ID (such as `myorg`) not the organization name (such as `"My First Organization"`).
 
 **QuickStart Login**
 
