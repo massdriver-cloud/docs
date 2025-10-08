@@ -28,6 +28,10 @@ The following configuration options are available:
 | `kubernetes_cluster` | object | `.connections.kubernetes_cluster` | `jq` path to a `massdriver/kubernetes-cluster` connection for authentication to Kubernetes |
 | `namespace` | string | `"default"` | Kubernetes namespace to install the chart into. Defaults to the `default` namespace |
 | `release_name` | string | (package name) | Specifies the release name for the helm chart. Defaults to the Massdriver package name if not specified. |
+| `release_name` | string | (package name) | Specifies the release name for the helm chart. Defaults to the Massdriver package name if not specified. |
+| `.chart.repo` | string | `null` | Specifies the URL of the chart repo (required if using [remote chart](#local-vs-remote-chart)) |
+| `.chart.name` | string | `null` | Specifies the name of the chart from the repo to use (required if using [remote chart](#local-vs-remote-chart)) |
+| `.chart.version` | string | `null` | Specifies the chart version to use (required if using [remote chart](#local-vs-remote-chart)) |
 | `debug` | boolean | `true` | Enables the `--debug` flag for Helm (verbose output) |
 | `wait` | boolean | `true` | Enables the `--wait` flag for Helm (waits for pods, PVCs, services, etc. to be ready before marking the release as successful)  |
 | `wait_for_jobs` | string | `true` | Enables the `--wait-for-jobs` flag for Helm (waits for jobs to complete before marking the release as successful) |
@@ -35,6 +39,34 @@ The following configuration options are available:
 | `checkov.enable` | boolean | `true` | Enables Checkov policy evaluation. If `false`, Checkov will not be run. |
 | `checkov.quiet` | boolean | `true` | Only display failed checks if `true` (adds the `--quiet` flag). |
 | `checkov.halt_on_failure` | boolean | `false` | Halt provisioning run and mark deployment as failed on a policy failure (removes the `--soft-fail` flag). |
+
+### Local vs Remote Chart
+
+This provisioner supports both local and remote charts. By default the provisioner will assume a local chart exists in directory specified by the `path` field of the bundle step. However if `.chart.repo`, `.chart.name` and `.chart.version` are specified then the provisioner will attempt to use the specified remote chart. All 3 fields must be set, or none of them set. Regarding inputs and artifacts, provisioner behavior is the same for both remote and local charts. If a `values.yaml` file exists in the `path` directory, then it will be used to override the specified default values in the remote chart (as Helm typically does with the `-f/--values` flag).
+
+#### Local Chart Example
+
+```yaml
+steps:
+- path: chart         # local chart must exist in this directory
+  provisioner: helm
+  config:
+    namespace: ".params.namespace"
+```
+
+#### Remote Chart Example
+
+```yaml
+steps:
+- path: chart
+  provisioner: helm
+  config:
+    chart:
+      repo: '@text "https://helm.runix.net"'   # Note: jq query notation must be used to specify a static string
+      name: '@text "pgadmin4"'                 # Note: jq query notation must be used to specify a static string
+      version: '@text "1.50.0"'                # Note: jq query notation must be used to specify a static string
+    namespace: ".params.namespace"
+```
 
 ## Inputs
 
