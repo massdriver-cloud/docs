@@ -28,9 +28,10 @@ The following configuration options are available:
 | `kubernetes_cluster` | object | `.connections.kubernetes_cluster` | `jq` path to a `massdriver/kubernetes-cluster` connection for authentication to Kubernetes |
 | `namespace` | string | `"default"` | Kubernetes namespace to install the chart into. Defaults to the `default` namespace |
 | `release_name` | string | (package name) | Specifies the release name for the helm chart. Defaults to the Massdriver package name if not specified. |
-| `.chart.repo` | string | `null` | Specifies the URL of the chart repo (if using [remote chart](#local-vs-remote-chart)) |
-| `.chart.name` | string | `null` | Specifies the name of the chart from the repo to use (if using [remote chart](#local-vs-remote-chart)) |
-| `.chart.version` | string | `"latest"` | Specifies the chart version to use (if using [remote chart](#local-vs-remote-chart)) |
+| `release_name` | string | (package name) | Specifies the release name for the helm chart. Defaults to the Massdriver package name if not specified. |
+| `.chart.repo` | string | `null` | Specifies the URL of the chart repo (required if using [remote chart](#local-vs-remote-chart)) |
+| `.chart.name` | string | `null` | Specifies the name of the chart from the repo to use (required if using [remote chart](#local-vs-remote-chart)) |
+| `.chart.version` | string | `null` | Specifies the chart version to use (required if using [remote chart](#local-vs-remote-chart)) |
 | `debug` | boolean | `true` | Enables the `--debug` flag for Helm (verbose output) |
 | `wait` | boolean | `true` | Enables the `--wait` flag for Helm (waits for pods, PVCs, services, etc. to be ready before marking the release as successful)  |
 | `wait_for_jobs` | string | `true` | Enables the `--wait-for-jobs` flag for Helm (waits for jobs to complete before marking the release as successful) |
@@ -41,7 +42,7 @@ The following configuration options are available:
 
 ### Local vs Remote Chart
 
-This provisioner supports both local and remote charts. By default the provisioner will assume a local chart exists in directory specified by the `path` field of the bundle step. However if both `.chart.repo` and `.chart.name` are specified then the provisioner will attempt to use the specified remote chart. The field `.chart.version` is optional and defaults to `"latest"`. Regarding inputs and artifacts, provisioner behavior is the same for both remote and local charts. If a `values.yaml` file exists in the `path` directory, then it will be used to override the specified default values in the remote chart (as helm typically does with the `-f/--values` flag).
+This provisioner supports both local and remote charts. By default the provisioner will assume a local chart exists in directory specified by the `path` field of the bundle step. However if `.chart.repo`, `.chart.name` and `.chart.version` are specified then the provisioner will attempt to use the specified remote chart. All 3 fields must be set, or none of them set. Regarding inputs and artifacts, provisioner behavior is the same for both remote and local charts. If a `values.yaml` file exists in the `path` directory, then it will be used to override the specified default values in the remote chart (as helm typically does with the `-f/--values` flag).
 
 #### Local Chart Example
 
