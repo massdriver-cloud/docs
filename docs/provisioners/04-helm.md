@@ -42,7 +42,7 @@ The following configuration options are available:
 
 ### Local vs Remote Chart
 
-This provisioner supports both local and remote charts. By default the provisioner will assume a local chart exists in directory specified by the `path` field of the bundle step. However if `.chart.repo`, `.chart.name` and `.chart.version` are specified then the provisioner will attempt to use the specified remote chart. All 3 fields must be set, or none of them set. Regarding inputs and artifacts, provisioner behavior is the same for both remote and local charts. If a `values.yaml` file exists in the `path` directory, then it will be used to override the specified default values in the remote chart (as helm typically does with the `-f/--values` flag).
+This provisioner supports both local and remote charts. By default the provisioner will assume a local chart exists in directory specified by the `path` field of the bundle step. However if `.chart.repo`, `.chart.name` and `.chart.version` are specified then the provisioner will attempt to use the specified remote chart. All 3 fields must be set, or none of them set. Regarding inputs and artifacts, provisioner behavior is the same for both remote and local charts. If a `values.yaml` file exists in the `path` directory, then it will be used to override the specified default values in the remote chart (as Helm typically does with the `-f/--values` flag).
 
 #### Local Chart Example
 
