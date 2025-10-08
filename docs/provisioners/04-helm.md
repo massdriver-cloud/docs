@@ -62,9 +62,9 @@ steps:
   provisioner: helm
   config:
     chart:
-      repo: '@text "https://helm.runix.net"'   # Note: jq query notation must be used to specify a static string
-      name: '@text "pgadmin4"'                 # Note: jq query notation must be used to specify a static string
-      version: '@text "1.50.0"'                # Note: jq query notation must be used to specify a static string
+      repo: '@text "https://my.helm.net"' # Note: jq query notation must be used to specify a static string
+      name: '@text "mychart"'             # Note: jq query notation must be used to specify a static string
+      version: '@text "1.2.3"'            # Note: jq query notation must be used to specify a static string
     namespace: ".params.namespace"
 ```
 
