@@ -450,36 +450,6 @@ When a new bundle version is published, Massdriver automatically:
 - Updates their `currentVersion` and runs IaC apply
 - If a new patch level is published, development releases will do a final upgrade to that version
 
-### Automatic Upgrade Flow
-
-```mermaid
-graph TD
-    A[New Bundle Version Published] --> B{Release Type}
-    B -->|Stable Release| C[Find Packages with Stable Channels]
-    B -->|Development Release| D[Find Packages with Dev Channels]
-    
-    C --> E[Check Channel Resolution]
-    D --> F[Check Channel Resolution]
-    
-    E --> G{Channel Matches?}
-    F --> H{Channel Matches?}
-    
-    G -->|Yes| I[Update currentVersion]
-    G -->|No| J[No Upgrade]
-    
-    H -->|Yes| K[Update currentVersion]
-    H -->|No| L[No Upgrade]
-    
-    I --> M[Run IaC Apply]
-    K --> N[Run IaC Apply]
-    
-    M --> O[Deployment Complete]
-    N --> P[Deployment Complete]
-    
-    O --> Q[Version Burned into Deployment]
-    P --> R[Version Burned into Deployment]
-```
-
 ## Version Resolution Logic
 
 When you set a version constraint on a package, the `currentVersion` field gets updated to reflect what will be deployed next. This resolved version is based on the constraint and release strategy:
@@ -540,23 +510,6 @@ When a bundle is added to the canvas, Massdriver automatically:
 - Can be changed to `development_release` for testing environments
 
 **Note**: Version `0.0.0` is always present as a fallback for bundles without explicit versions.
-
-### Package Initialization Flow
-
-```mermaid
-graph TD
-    A[Bundle Added to Canvas] --> B[Use 'latest' Release Channel]
-    B --> C[Resolve to Newest Stable Version]
-    C --> D[Pin Package to Exact Version]
-    D --> E[Set Release Strategy: stable]
-    E --> F[Package Ready for Configuration]
-    
-    F --> G[User Can Change Version]
-    G --> H{Version Selection}
-    H -->|Exact Version| I[Pin to 1.2.3]
-    H -->|Release Channel| J[Use ~1.2 or latest]
-    H -->|Enable Dev Releases| K[Include Development Builds]
-```
 
 ### Bundle Publishing Defaults
 
