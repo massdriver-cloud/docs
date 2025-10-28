@@ -158,29 +158,23 @@ mass bundle publish -d
 
 #### Version Selection Interface
 
-In the package configuration panel, developers see a **"Set Version"** dropdown with multiple options:
+In the package configuration panel, developers can set the version constraint:
 
-**Published Versions:**
-- `1.0.0`, `1.1.0`, `1.1.5`, `2.0.0` (exact versions)
+**Published Versions (Strict SemVer):**
+- `1.0.0`, `1.1.0`, `1.1.5`, `2.0.0` (exact published versions only)
+- Not free-form - must select from published versions
 - Development releases are **hidden** from this interface
 
-**Release Channels:**
-- `~1`, `~1.1`, `~2`, `~2.1` (auto-generated tilde patterns)
-- Packages on release channels **automatically deploy** when matching versions are published
+**Generated Release Channels:**
+- `~1`, `~1.1`, `~2`, `~2.1` (auto-generated tilde patterns for each possible)
+- `latest` - Newest stable release
+- When you set a version constraint, `currentVersion` gets updated to show what will deploy
 
-**Release Strategies:**
-
-1. **Stable** (Default) - Only receives stable releases
-   - Deploys any new published stable version greater than current
-   - Excludes development releases (stable releases only)
-   - Ensures you're always on the latest production-ready version
-
-2. **Development Release** - Receives both stable and development releases
-   - Available as an option when using any release channel (`~1`, `~1.1`, etc.)
-   - When enabled, the channel will also match and automatically deploy development releases
-   - Example: `~1.0` with development releases enabled will automatically deploy `1.0.5-dev.*` versions
-   - **Perfect for testing environments**: Automatically validates new IaC changes
-   - **Real infrastructure validation**: Runs actual Terraform plans and compliance scans against development releases
+**Development Releases Toggle:**
+- Available when selecting any release channel (`~1`, `~1.1`, `latest`, etc.)
+- When enabled, the channel will also match and automatically deploy development releases
+- Example: `~1.0` with development releases enabled will automatically deploy `1.0.5-dev.*` versions
+- **Perfect for testing environments**: Automatically validates new IaC changes
 
 #### Version Constraints
 
@@ -426,8 +420,8 @@ The package configuration interface provides:
 Massdriver automatically filters out invalid versions:
 
 - ✅ `1.2.3` - Valid semantic version
-- ✅ `1.2.3-rc.20060102T150405Z` - Valid release candidate  
-- ❌ `latest` - Not a semantic version
+- ✅ `1.2.3-dev.20060102T150405Z` - Valid development release
+- ❌ `latest` - Not a semantic version (use as release channel constraint)
 - ❌ `abc123` - Not a semantic version
 - ❌ `v1.2.3` - Invalid prefix
 
@@ -439,45 +433,92 @@ This ensures only proper semantic versions are used in deployments.
 
 When a new bundle version is published, Massdriver automatically:
 
-1. **Identifies Upgrade Candidates**: Finds packages using release channels that match the new version
-2. **Respects Release Strategy**: Only upgrades packages with matching release strategies
-3. **Updates Package References**: Changes the package's `bundleReleaseId` to point to the new version
-4. **Triggers Deployment**: Automatically deploys the upgraded package with the new version
+1. **Identifies Upgrade Candidates**: Finds packages using release channels that would resolve to the new version
+2. **Updates Package References**: Changes the package's `bundleReleaseId` to point to the new version
+3. **Updates currentVersion**: Sets the package's `currentVersion` to the new version
+4. **Triggers Deployment**: Automatically runs the IaC apply with the new version
 
 ### Upgrade Scenarios
 
 **Stable Release Published:**
-- Packages on `~1.2` channel → Upgrade to new patch version
-- Packages on `~1` channel → Upgrade to new minor version  
-- Packages on `latest` → Upgrade to newest stable version
-- Packages with exact versions → No automatic upgrade
+- Finds all packages with stable release channels that resolve to the new version
+- Updates their `currentVersion` and runs IaC apply
+- Examples: `~1.2` packages → upgrade to new patch, `latest` packages → upgrade to newest stable
 
 **Development Release Published:**
-- Packages with `development_release` strategy → Upgrade if version matches channel
-- Packages with `stable` strategy → No upgrade (development releases ignored)
+- Finds all packages with development release channels that resolve to the new version
+- Updates their `currentVersion` and runs IaC apply
+- If a new patch level is published, development releases will do a final upgrade to that version
 
-## Version Resolution Logic
+### Automatic Upgrade Flow
 
 ```mermaid
 graph TD
-    A[Package Version Constraint] --> B{Constraint Type}
-    B -->|Exact 1.2.3| C[Use 1.2.3]
-    B -->|~1.2| D[Find Latest in 1.2.x]
-    B -->|~1| E[Find Latest in 1.x.x]
-    B -->|latest| F[Find Newest Stable]
+    A[New Bundle Version Published] --> B{Release Type}
+    B -->|Stable Release| C[Find Packages with Stable Channels]
+    B -->|Development Release| D[Find Packages with Dev Channels]
     
-    D --> G{Release Strategy}
-    E --> G
-    F --> G
+    C --> E[Check Channel Resolution]
+    D --> F[Check Channel Resolution]
     
-    G -->|Stable| H[Exclude Dev Releases]
-    G -->|Development| I[Include Dev Releases]
+    E --> G{Channel Matches?}
+    F --> H{Channel Matches?}
     
-    H --> J[Resolve Version]
-    I --> J
-    C --> J
+    G -->|Yes| I[Update currentVersion]
+    G -->|No| J[No Upgrade]
     
-    J --> K[Set currentVersion]
+    H -->|Yes| K[Update currentVersion]
+    H -->|No| L[No Upgrade]
+    
+    I --> M[Run IaC Apply]
+    K --> N[Run IaC Apply]
+    
+    M --> O[Deployment Complete]
+    N --> P[Deployment Complete]
+    
+    O --> Q[Version Burned into Deployment]
+    P --> R[Version Burned into Deployment]
+```
+
+## Version Resolution Logic
+
+When you set a version constraint on a package, the `currentVersion` field gets updated to reflect what will be deployed next. This resolved version is based on the constraint and release strategy:
+
+- **Exact versions** (`1.2.3`) → `currentVersion` = `1.2.3`
+- **Release channels** (`~1.2`, `~1`, `latest`) → `currentVersion` = resolved latest matching version
+- **Development releases** → Only included when release strategy is set to "Development Release"
+
+### Version Constraint Resolution
+
+```mermaid
+graph TD
+    A[User Sets Version Constraint] --> B{Constraint Type}
+    
+    B -->|1.2.3| C[Exact Version]
+    B -->|~1.2| D[Minor Channel]
+    B -->|~1| E[Major Channel]
+    B -->|latest| F[Latest Channel]
+    
+    C --> G[currentVersion = 1.2.3]
+    
+    D --> H[Find Latest in 1.2.x]
+    E --> I[Find Latest in 1.x.x]
+    F --> J[Find Newest Stable]
+    
+    H --> K{Release Strategy}
+    I --> K
+    J --> K
+    
+    K -->|Stable| L[Exclude Dev Releases]
+    K -->|Development| M[Include Dev Releases]
+    
+    L --> N[Resolve to Stable Version]
+    M --> O[Resolve to Latest Version]
+    
+    N --> P[Update currentVersion]
+    O --> P
+    
+    P --> Q[Ready for Deployment]
 ```
 
 This ensures predictable version resolution across all package configurations.
@@ -486,22 +527,36 @@ This ensures predictable version resolution across all package configurations.
 
 ### Package Initialization Defaults
 
-When a package is first created, Massdriver automatically sets sensible defaults:
+When a bundle is added to the canvas, Massdriver automatically:
 
-**Version Constraint**: `"latest"`
-- New packages automatically use the latest stable release
-- Ensures packages start with the most current version
-- Can be changed immediately after creation
+**Uses `"latest"` release channel** to get the newest stable version
+- Resolves to the latest published stable release
+- Pins the package to that exact version (e.g., `1.2.3`)
+- The `currentVersion` field shows the resolved version
 
-**Release Strategy**: `stable`
+**Sets Release Strategy to `stable`**
 - New packages only receive stable releases by default
 - Provides stability for production workloads
 - Can be changed to `development_release` for testing environments
 
-**Bundle Version**: Latest published stable release
-- The `currentVersion` field resolves to the newest stable version
-- `deployedVersion` starts as `null` until first deployment
-- `availableUpgrade` shows next available version if applicable
+**Note**: Version `0.0.0` is always present as a fallback for bundles without explicit versions.
+
+### Package Initialization Flow
+
+```mermaid
+graph TD
+    A[Bundle Added to Canvas] --> B[Use 'latest' Release Channel]
+    B --> C[Resolve to Newest Stable Version]
+    C --> D[Pin Package to Exact Version]
+    D --> E[Set Release Strategy: stable]
+    E --> F[Package Ready for Configuration]
+    
+    F --> G[User Can Change Version]
+    G --> H{Version Selection}
+    H -->|Exact Version| I[Pin to 1.2.3]
+    H -->|Release Channel| J[Use ~1.2 or latest]
+    H -->|Enable Dev Releases| K[Include Development Builds]
+```
 
 ### Bundle Publishing Defaults
 
@@ -548,15 +603,15 @@ When a package is first created, Massdriver automatically sets sensible defaults
 
 ### Rollback Strategy
 
-**Configuration Rollback:**
+**Configuration Snapshots:**
 - Each version change creates a configuration snapshot
-- Restore previous configuration with original version
+- Rollbacks restore previous configuration with its original version
 - Maintains upgrade-only policy for new deployments
 
-**Deployment Rollback:**
-- Use `deployedVersion` field to identify last working version
-- Restore package to previous stable configuration
-- Re-deploy with known-good version
+**Deployment Version Tracking:**
+- When you deploy, the version gets burned into the deployment
+- `deployedVersion` field tracks what was actually deployed to infrastructure
+- Rollbacks use these snapshots to restore previous working state
 
 ## Troubleshooting
 
