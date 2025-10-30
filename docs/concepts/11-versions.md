@@ -240,9 +240,7 @@ Use major channels for latest features:
    Set Version: "1.2.3"  # Pinned version for production
    ```
 
-2. **Development/Staging**: Use "Latest" automation for newest features
-   ```
-   Set Version: "Latest"  # Auto-deploy to stable releases
+2. **Development/Staging**: Use `latest` automation for newest features
    ```
 
 3. **Release Channels**: Use tilde patterns for controlled automatic deployments
