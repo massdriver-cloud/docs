@@ -9,18 +9,6 @@ sidebar_label: Versions
 
 Massdriver uses [semantic versioning](https://semver.org/) (SemVer) to manage bundle versions and deployments. This provides predictable versioning behavior and enables sophisticated release management workflows that automate infrastructure updates across your environments.
 
-## Development Releases and **Real Infrastructure** Testing
-
-Development releases let you test infrastructure changes against **actual cloud resources** before promoting a version to release. Publishing a development release outputs a monitoring URL for every package configured to test it. These packages automatically deploy the development release and run their full validation pipeline—Terraform plans, compliance checks, and deployments—against live cloud APIs.
-
-This process validates infrastructure changes across multiple environments and configurations simultaneously, revealing issues like API drift, quota limits, and provider-specific behaviors that static analysis tools can't catch.
-
-## Automated Version Distribution with Release Channels
-
-Release channels automate version distribution across environments. Instead of updating every package manually, you publish once, and packages automatically upgrade based on their configured version constraints.
-
-For example, a package on channel `~2.5` will automatically deploy any patch release (`2.5.1`, `2.5.2`, etc.), while staging or dev environments may use wider channels for faster updates. This keeps environments current within defined boundaries and ensures security patches flow automatically—without coordination or manual promotion steps.
-
 ## Semantic Versioning
 
 All bundle versions in Massdriver follow the semantic versioning specification `MAJOR.MINOR.PATCH`:
@@ -106,6 +94,18 @@ Matches the newest stable release:
 - Will upgrade to any newer stable version
 - Automatically deploys when any new stable version is published
 - Excludes development releases (stable only)
+
+## Development Releases and **Real Infrastructure** Testing
+
+Development releases let you test infrastructure changes against **actual cloud resources** before promoting a version to release. Publishing a development release outputs a monitoring URL for every package configured to test it. These packages automatically deploy the development release and run their full validation pipeline—Terraform plans, compliance checks, and deployments—against live cloud APIs.
+
+This process validates infrastructure changes across multiple environments and configurations simultaneously, revealing issues like API drift, quota limits, and provider-specific behaviors that static analysis tools can't catch.
+
+## Automated Version Distribution with Release Channels
+
+Release channels automate version distribution across environments. Instead of updating every package manually, you publish once, and packages automatically upgrade based on their configured version constraints.
+
+For example, a package on channel `~2.5` will automatically deploy any patch release (`2.5.1`, `2.5.2`, etc.), while staging or dev environments may use wider channels for faster updates. This keeps environments current within defined boundaries and ensures security patches flow automatically—without coordination or manual promotion steps.
 
 ## Version Management in Massdriver
 
@@ -397,7 +397,7 @@ query GetBundleVersions($bundleId: ID!) {
 
 ### Bundle Version Browser
 
-*[Screenshot placeholder: Bundle version browser showing list of available versions with filters for stable vs development releases]*
+![Bundle version browser showing list of available versions](img/bundle-version-browser.png)
 
 The bundle version browser allows you to:
 - View all published versions of a bundle
@@ -407,7 +407,7 @@ The bundle version browser allows you to:
 
 ### Package Version Configuration
 
-*[Screenshot placeholder: Package configuration panel showing version dropdown and release strategy toggle]*
+![Package configuration panel showing version information](img/package-version-configuration.png)
 
 The package configuration interface provides:
 - **Version Dropdown**: Select from published versions or release channels
