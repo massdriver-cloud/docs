@@ -62,7 +62,7 @@ Development releases are a powerful means of rapidly testing Infrastructure as C
 vim src/main.tf
 
 # 2. Publish development release for testing
-mass bundle publish --development-release
+mass bundle publish --development
 
 # 3. Visit the output URL to monitor all test infrastructure
 # 4. Watch plan/apply/compliance pipelines execute automatically
@@ -142,7 +142,7 @@ mass bundle publish
 
 **Development Release:**
 ```bash
-mass bundle publish --development-release
+mass bundle publish --development
 # or
 mass bundle publish -d
 ```
@@ -215,7 +215,7 @@ Use major channels for latest features:
    version: "1.5.0"
    
    # Publish development release for testing
-   mass bundle publish --development-release  # Creates 1.5.0-dev.timestamp
+   mass bundle publish --development  # Creates 1.5.0-dev.timestamp
    # Outputs URL to view all test infrastructure and pipeline executions
    
    # Monitor plan/apply/compliance pipelines in real-time
@@ -518,7 +518,7 @@ When a bundle is added to the canvas, Massdriver automatically:
 
 **Publishing Type**: Stable release
 - `mass bundle publish` creates stable releases by default
-- Use `--development-release` flag for testing versions
+- Use `--development` flag for testing versions
 - Development releases are automatically filtered from production interfaces
 
 ### Environment-Specific Recommendations
