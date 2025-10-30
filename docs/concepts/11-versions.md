@@ -604,4 +604,4 @@ query DebugVersionResolution($packageId: ID!) {
 }
 ```
 
-This helps identify why a package isn't upgrading or why a version isn't resolving as expected. 
+This helps identify why a package isn't upgrading or why a version isn't resolving as expected.
