@@ -90,10 +90,9 @@ Matches the latest patch within minor version 1.1:
 
 ### Latest Channel (`latest`)
 Matches the newest stable release:
-- `latest` could resolve to `2.3.1` (newest stable release)
-- Will upgrade to any newer stable version
+- Will return the highest semver version, not "most recent"
+- Will upgrade to any newer *stable* version
 - Automatically deploys when any new stable version is published
-- Excludes development releases (stable only)
 
 ## Development Releases and **Real Infrastructure** Testing
 
