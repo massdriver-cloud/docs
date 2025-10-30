@@ -1,0 +1,76 @@
+---
+id: oci-manifest
+title: OciManifest
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A JSON document describing the structure of an image or artifact, including its layers and configuration
+
+
+```graphql
+type OciManifest {
+  mediaType: String!
+  digest: String!
+  blobs: [OciBlob]
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>OciManifest.<b>mediaType</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+The media type of this manifest (e.g., application/vnd.oci.image.manifest.v1+json)
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciManifest.<b>digest</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Content-addressable identifier of this manifest (e.g., sha256:abcd...)
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciManifest.<b>blobs</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[OciBlob]</b></code>](/swapi/types/objects/oci-blob.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+The blobs (layers and config) that make up this image or artifact
+
+
+
+
+
+
+### Returned By
+
+[`ociManifest`](/swapi/operations/queries/oci-manifest.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

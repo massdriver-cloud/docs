@@ -47,8 +47,7 @@ recommendManifestDependencies(
   organizationId: ID!
   id: ID!
   fieldName: String!
-  targetId: ID
-  environmentId: ID
+  environmentId: ID!
 ): DependencyRecommendations
 ```
 
@@ -69,18 +68,8 @@ Manifest ID or slug.
 The field to find dependencies for.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>recommendManifestDependencies.<b>targetId</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> 
-:::warning[DEPRECATED]
-
-Use environmentId
-
-:::
-
-Optional. If specified, recommendations are tailored to the environment, prioritizing bundles and manifests of the same cloud as the credentials attached to the environment.
-
-
-#### [<code style={{ fontWeight: 'normal' }}>recommendManifestDependencies.<b>environmentId</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
-Optional. If specified, recommendations are tailored to the environment, prioritizing bundles and manifests of the same cloud as the credentials attached to the environment.
+#### [<code style={{ fontWeight: 'normal' }}>recommendManifestDependencies.<b>environmentId</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+If specified, recommendations are tailored to the environment, prioritizing bundles and manifests in the current environment.
 
 
 ### Type

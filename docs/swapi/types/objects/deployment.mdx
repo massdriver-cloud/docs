@@ -45,8 +45,10 @@ A deployment represents an instance of a bundle being deployed to a target envir
 ```graphql
 type Deployment {
   id: ID!
-  status: String!
-  action: String!
+  status: DeploymentStatus!
+  action: DeploymentAction!
+  version: String!
+  release: Bundle!
   message: String
   params: JSON!
   package: Package!
@@ -68,11 +70,19 @@ type Deployment {
 
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Deployment.<b>status</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>Deployment.<b>status</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DeploymentStatus!</b></code>](/swapi/types/enums/deployment-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> 
 
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Deployment.<b>action</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>Deployment.<b>action</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DeploymentAction!</b></code>](/swapi/types/enums/deployment-action.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Deployment.<b>version</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Deployment.<b>release</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Bundle!</b></code>](/swapi/types/objects/bundle.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> 
 
 
 
@@ -122,4 +132,4 @@ Elapsed time in seconds
 
 ### Member Of
 
-[`DeploymentLifecycleEvent`](/swapi/types/objects/deployment-lifecycle-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`DeploymentPayload`](/swapi/types/objects/deployment-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ManifestResource`](/swapi/types/objects/manifest-resource.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Package`](/swapi/types/objects/package.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PackageResource`](/swapi/types/objects/package-resource.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`DeploymentLifecycleEvent`](/swapi/types/objects/deployment-lifecycle-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`DeploymentPayload`](/swapi/types/objects/deployment-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Package`](/swapi/types/objects/package.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

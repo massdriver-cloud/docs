@@ -1,6 +1,6 @@
 ---
-id: resource
-title: Resource
+id: bundle-deployments-sort
+title: BundleDeploymentsSort
 ---
 
 
@@ -39,28 +39,27 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Artifact and manifest nodes
+No description
 
 
 ```graphql
-union Resource = ManifestResource | PackageResource | ArtifactResource
+input BundleDeploymentsSort {
+  field: BundleDeploymentsSortField!
+  order: SortOrder!
+}
 ```
 
 
 
 
-### Possible types
+### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>Resource.<b>ManifestResource</b></code>](/swapi/types/objects/manifest-resource.mdx) <Badge class="badge badge--secondary " text="object"/> 
-A manifest node in the diagram
-
-
-#### [<code style={{ fontWeight: 'normal' }}>Resource.<b>PackageResource</b></code>](/swapi/types/objects/package-resource.mdx) <Badge class="badge badge--secondary " text="object"/> 
-A package node in the diagram
+#### [<code style={{ fontWeight: 'normal' }}>BundleDeploymentsSort.<b>field</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BundleDeploymentsSortField!</b></code>](/swapi/types/enums/bundle-deployments-sort-field.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> 
+Field to sort by
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Resource.<b>ArtifactResource</b></code>](/swapi/types/objects/artifact-resource.mdx) <Badge class="badge badge--secondary " text="object"/> 
-An artifact node in the diagram
+#### [<code style={{ fontWeight: 'normal' }}>BundleDeploymentsSort.<b>order</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SortOrder!</b></code>](/swapi/types/enums/sort-order.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> 
+Sort order
 
 
 
@@ -69,4 +68,4 @@ An artifact node in the diagram
 
 ### Member Of
 
-[`Diagram`](/swapi/types/objects/diagram.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`bundleDeployments`](/swapi/operations/queries/bundle-deployments.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

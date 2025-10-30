@@ -46,6 +46,8 @@ List all artifacts
 artifacts(
   organizationId: ID!
   input: ArtifactsInput
+  filter: ArtifactsFilters
+  cursor: Cursor
 ): PaginatedArtifacts
 ```
 
@@ -58,8 +60,20 @@ artifacts(
 
 
 
-#### [<code style={{ fontWeight: 'normal' }}>artifacts.<b>input</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ArtifactsInput</b></code>](/swapi/types/inputs/artifacts-input.mdx) <Badge class="badge badge--secondary " text="input"/> 
-Search, filter, and sort inputs
+#### [<code style={{ fontWeight: 'normal' }}>artifacts.<b>input</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ArtifactsInput</b></code>](/swapi/types/inputs/artifacts-input.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="input"/> 
+:::warning[DEPRECATED]
+
+Use filter instead
+
+:::
+
+
+#### [<code style={{ fontWeight: 'normal' }}>artifacts.<b>filter</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ArtifactsFilters</b></code>](/swapi/types/inputs/artifacts-filters.mdx) <Badge class="badge badge--secondary " text="input"/> 
+Filter criteria.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>artifacts.<b>cursor</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/swapi/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> 
+Pagination cursor
 
 
 ### Type

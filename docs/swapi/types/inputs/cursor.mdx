@@ -1,0 +1,76 @@
+---
+id: cursor
+title: Cursor
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+No description
+
+
+```graphql
+input Cursor {
+  limit: Int
+  next: String
+  previous: String
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>Cursor.<b>limit</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/swapi/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+Maximum number of items to return
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Cursor.<b>next</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+Cursor after which to return items
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Cursor.<b>previous</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+Cursor before which to return items
+
+
+
+
+
+
+### Member Of
+
+[`artifacts`](/swapi/operations/queries/artifacts.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`bundleAlerts`](/swapi/operations/queries/bundle-alerts.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`bundleDeployments`](/swapi/operations/queries/bundle-deployments.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`bundlePackages`](/swapi/operations/queries/bundle-packages.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

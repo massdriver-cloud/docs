@@ -44,8 +44,9 @@ No description
 
 ```graphql
 type PaginatedArtifacts {
-  next: String
-  before: String
+  next: String @deprecated
+  before: String @deprecated
+  cursor: PaginationCursor!
   items: [Artifact]
 }
 ```
@@ -55,12 +56,28 @@ type PaginatedArtifacts {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>PaginatedArtifacts.<b>next</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
-A cursor to the next page of items in the list.
+#### [<code style={{ fontWeight: 'normal' }}>PaginatedArtifacts.<b>next</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> 
+:::warning[DEPRECATED]
+
+Use cursor.next instead
+
+:::
+
+Cursor to the next page
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PaginatedArtifacts.<b>before</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
-A cursor to the next page of items in the list.
+#### [<code style={{ fontWeight: 'normal' }}>PaginatedArtifacts.<b>before</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> 
+:::warning[DEPRECATED]
+
+Use cursor.previous instead
+
+:::
+
+Cursor to the previous page
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PaginatedArtifacts.<b>cursor</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PaginationCursor!</b></code>](/swapi/types/objects/pagination-cursor.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> 
+Pagination cursors
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PaginatedArtifacts.<b>items</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Artifact]</b></code>](/swapi/types/objects/artifact.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 

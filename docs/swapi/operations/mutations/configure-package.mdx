@@ -45,9 +45,9 @@ Update a Package's parameters
 ```graphql
 configurePackage(
   organizationId: ID!
+  id: ID
   manifestId: ID
   targetId: ID
-  id: ID
   params: JSON!
 ): PackagePayload
 ```
@@ -59,6 +59,10 @@ configurePackage(
 
 #### [<code style={{ fontWeight: 'normal' }}>configurePackage.<b>organizationId</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
 
+
+
+#### [<code style={{ fontWeight: 'normal' }}>configurePackage.<b>id</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+Package ID, slug, or name prefix.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>configurePackage.<b>manifestId</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> 
@@ -75,10 +79,6 @@ Use id instead
 Use id instead
 
 :::
-
-
-#### [<code style={{ fontWeight: 'normal' }}>configurePackage.<b>id</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
-Package ID, slug, or name prefix.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>configurePackage.<b>params</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>JSON!</b></code>](/swapi/types/scalars/json.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 

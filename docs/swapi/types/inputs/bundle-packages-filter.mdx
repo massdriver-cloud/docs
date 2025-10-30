@@ -1,6 +1,6 @@
 ---
-id: bundle-search-filters
-title: BundleSearchFilters
+id: bundle-packages-filter
+title: BundlePackagesFilter
 ---
 
 
@@ -39,12 +39,12 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Bundle search filters
+No description
 
 
 ```graphql
-input BundleSearchFilters {
-  query: String
+input BundlePackagesFilter {
+  version: String
 }
 ```
 
@@ -53,8 +53,8 @@ input BundleSearchFilters {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>BundleSearchFilters.<b>query</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
-Search query
+#### [<code style={{ fontWeight: 'normal' }}>BundlePackagesFilter.<b>version</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+Filter by bundle version (exact match or release channel like 'latest', '~1', '1.0.0')
 
 
 
@@ -63,4 +63,4 @@ Search query
 
 ### Member Of
 
-[`searchBundles`](/swapi/operations/queries/search-bundles.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+[`bundlePackages`](/swapi/operations/queries/bundle-packages.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

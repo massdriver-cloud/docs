@@ -5,6 +5,20 @@ schema {
   subscription: RootSubscriptionType
 }
 
+type BundlePackagesPage {
+  "Pagination cursors"
+  cursor: PaginationCursor!
+
+  "A list of type bundle_package_summary."
+  items: [BundlePackageSummary]
+}
+
+"OCI blob content"
+type OciBlobContent {
+  "The blob content"
+  content: String!
+}
+
 enum AlarmStatus {
   "The metric is within normal operating parameters and below the alarm threshold."
   OK
@@ -55,28 +69,69 @@ type RootSubscriptionType {
     id: ID!
   ): DeploymentLogStreamLog
   deploymentProgress(organizationId: ID!, packageId: ID!): ProvisioningLifecycleEvents
-  nodeDeleted(organizationId: ID!, projectId: ID!): DeletedNode
-  nodeCreated(organizationId: ID!, projectId: ID!): Node
-  nodeUpdated(organizationId: ID!, projectId: ID!): Node
-  linkCreated(organizationId: ID!, projectId: ID!): Link
-  linkDeleted(organizationId: ID!, projectId: ID!): Link
+  nodeDeleted(
+    organizationId: ID!
+
+    "Project ID"
+    projectId: ID!
+  ): DeletedNode
+  nodeCreated(
+    organizationId: ID!
+
+    "Project ID"
+    projectId: ID!
+  ): Node
+  nodeUpdated(
+    organizationId: ID!
+
+    "Project ID"
+    projectId: ID!
+  ): Node
+  linkCreated(
+    organizationId: ID!
+
+    "Environment ID"
+    environmentId: ID!
+  ): Link
+  linkDeleted(
+    organizationId: ID!
+
+    "Environment ID"
+    environmentId: ID!
+  ): Link
+  linkUpdated(
+    organizationId: ID!
+
+    "Environment ID"
+    environmentId: ID!
+  ): Link
   nodeContextCreated(organizationId: ID!, environmentId: ID!): NodeContext
   nodeContextDeleted(organizationId: ID!, environmentId: ID!): NodeContext
-  linkContextUpdated(organizationId: ID!, environmentId: ID!): LinkContext
-  linkContextCreated(organizationId: ID!, environmentId: ID!): LinkContext
-  linkContextDeleted(organizationId: ID!, environmentId: ID!): LinkContext
   packageAlarms(organizationId: ID!, packageId: ID!): Alarm
 }
 
+"Action type of a deployment"
+enum DeploymentAction {
+  "Provision new infrastructure"
+  PROVISION
+
+  "Decommission existing infrastructure"
+  DECOMMISSION
+
+  "Plan deployment without executing"
+  PLAN
+}
+
+"How connecting this type works on the diagram."
 enum ArtifactDefinitionUiConnectionOrientation {
+  "Artifacts of this type are connected via lines on the graph."
   LINK
+
+  "Artifacts of this type are connected by setting environment defaults in the top left corner."
   ENVIRONMENT_DEFAULT
 }
 
-"""
-The `Markdown` scalar type represents base64 encoded string data used to represent markdown files
-which can be retrieved in decoded form.
-"""
+"A markdown document"
 scalar Markdown
 
 "Summary of costs over a time period"
@@ -114,48 +169,6 @@ type PackageAlarmState {
 
   "ISO 8601 timestamp when this state change occurred."
   occurredAt: DateTime!
-}
-
-"A manifest node in the diagram"
-type ManifestResource {
-  "ID of the underlying manifest"
-  id: ID!
-
-  "Manifest name"
-  name: String
-
-  package: Package @deprecated
-
-  "The manifest"
-  manifest: Manifest
-
-  artifacts: [Artifact] @deprecated
-
-  deployments: [Deployment] @deprecated
-}
-
-"An artifact node in the diagram"
-type ArtifactResource {
-  "Artifact name"
-  name: String
-
-  "Artifact type"
-  type: String
-
-  "Unique identifier"
-  id: ID
-
-  "ID of the underlying artifact"
-  artifactId: ID
-
-  "Origin of the artifact"
-  origin: String
-
-  "ID of the source target"
-  sourceTargetId: ID
-
-  "ID of the source project"
-  sourceProjectId: ID
 }
 
 "Service account with generated secret."
@@ -212,13 +225,27 @@ type RecentDeployment {
   action: String!
 }
 
+enum BundlePackagesSortField {
+  "Sort by bundle version"
+  VERSION
+
+  "Sort by last updated timestamp"
+  UPDATED_AT
+
+  "Sort by package slug"
+  SLUG
+
+  "Sort by package status"
+  STATUS
+
+  "Sort by last month's cost"
+  LAST_MONTHS_COST
+
+  "Sort by project name"
+  PROJECT_NAME
+}
+
 input ArtifactsInput {
-  "The number of items to return."
-  limit: Int
-
-  "A cursor pointing to an item. Instructs the API to return items after the cursor."
-  after: String
-
   filter: ArtifactsFilters
 }
 
@@ -345,9 +372,7 @@ type Project {
 
   deletable: ProjectDeletionLifecycle!
 
-  defaultParams: JSON
-
-  diagram: Diagram
+  defaultParams: JSON @deprecated(reason: "Default params are being deprecated for preview environments in favor of inherit\/override PEs from specific environments. This field will be removed in a future release.")
 
   "Cloud provider costs for this project"
   cost: Cost
@@ -357,11 +382,14 @@ type Project {
 union ProvisioningLifecycleEvents = DeploymentLifecycleEvent
 
 type PaginatedArtifacts {
-  "A cursor to the next page of items in the list."
-  next: String
+  "Cursor to the next page"
+  next: String @deprecated(reason: "Use cursor.next instead")
 
-  "A cursor to the next page of items in the list."
-  before: String
+  "Cursor to the previous page"
+  before: String @deprecated(reason: "Use cursor.previous instead")
+
+  "Pagination cursors"
+  cursor: PaginationCursor!
 
   "A list of type artifact."
   items: [Artifact]
@@ -388,6 +416,36 @@ input Credential {
   artifactId: ID!
 }
 
+"Optimized summary view of a package for list displays"
+type BundlePackageSummary {
+  "Package ID"
+  id: ID!
+
+  "Package slug (e.g., 'joesand-dev-myvpc')"
+  slug: String!
+
+  "Package name"
+  name: String!
+
+  "Package status"
+  status: PackageStatus!
+
+  "Project name"
+  projectName: String!
+
+  "Environment name"
+  environmentName: String!
+
+  "Package cost for the last month"
+  lastMonthsCost: Float
+
+  "Bundle version deployed"
+  version: String!
+
+  "Last update timestamp"
+  updatedAt: DateTime!
+}
+
 "A service account represents a non-human account used for automated access"
 type ServiceAccount {
   id: ID!
@@ -402,12 +460,24 @@ input ContainerRepositoryInput {
   imageName: String!
 }
 
+type ServerFeatures {
+  orgCreationEnabled: Boolean!
+}
+
 type DeploymentStatistic {
   bundleId: ID!
   bundleName: String!
   successfulDeployments: Int!
   failedDeployments: Int!
   errorRate: Float!
+}
+
+type Server {
+  appUrl: String!
+  version: String!
+  mode: ServerMode!
+  ssoProviders: [SsoProvider]
+  features: ServerFeatures! @deprecated(reason: "")
 }
 
 "Error information for bundle deletion"
@@ -456,27 +526,6 @@ type ValidationOption {
   value: String!
 }
 
-"A package node in the diagram"
-type PackageResource {
-  "ID of the underlying package"
-  id: ID!
-
-  "Manifest name for the current package name"
-  name: String
-
-  "The package"
-  package: Package
-
-  "The manifest"
-  manifest: Manifest
-
-  "Artifacts associated with this package"
-  artifacts: [Artifact]
-
-  "Deployments associated with this package"
-  deployments: [Deployment]
-}
-
 type AuditLogResponse {
   events: [AuditLog]!
   cursor: String
@@ -513,6 +562,14 @@ type EnvironmentConnectionPayload {
 
   "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
   result: EnvironmentConnection
+}
+
+input BundlePackagesSort {
+  "Field to sort by"
+  field: BundlePackagesSortField!
+
+  "Sort order"
+  order: SortOrder!
 }
 
 type ArtifactPayload {
@@ -560,6 +617,46 @@ type Package {
   "When the package was last updated"
   updatedAt: DateTime!
 
+  bundle: Bundle!
+
+  """
+  The version constraint for this package. This determines which bundle release version the package should use.
+  Supports semver constraints (~1.2, ~1), exact versions (1.2.3), and release channels (latest).
+  See `VersionConstraint` type documentation for supported formats and examples.
+  """
+  version: VersionConstraint!
+
+  """
+  The actual semantic version of the bundle release currently configured for this package.
+  This is the resolved version based on the `version` constraint and will be used for the next deployment.
+  Example: if `version` is "~1.2", `currentVersion` might be "1.2.5".
+  """
+  currentVersion: String!
+
+  """
+  The release strategy for this package. Determines whether the package should receive
+  stable releases only or also development releases.
+  """
+  releaseStrategy: ReleaseStrategy!
+
+  """
+  The semantic version that was last executed.
+  This reflects what has been provisioned to infrastructure, which may differ from `currentVersion`
+  if the package hasn't been deployed since the version was changed. Returns nil if never deployed.
+  """
+  deployedVersion: String
+
+  "The latest deployment for this package"
+  latestDeployment: Deployment
+
+  """
+  The newest version available for upgrade based on the package's `version` constraint.
+  Returns nil if no upgrade is available or if already on the latest matching version.
+  For strict semver constraints (1.2.3), checks for patch-level upgrades (~1.2).
+  For release channels (~1.2, ~1, latest), checks for the newest matching version.
+  """
+  availableUpgrade: String
+
   "Cloud alarms configured through IaC for this package"
   alarms: [Alarm]
 
@@ -593,12 +690,12 @@ type Package {
   cost: Cost
 }
 
-"A node in the diagram"
+"An infrastructure component in the diagram"
 type Node {
   "ID of the manifest"
   manifestId: ID!
 
-  "Name of the node"
+  "Manifest Name"
   name: String!
 
   "Type of the node (organization\/bundle)"
@@ -609,12 +706,6 @@ type Node {
 
   "Y coordinate position in the diagram"
   positionY: Int!
-
-  "Handles for artifact connections"
-  artifactHandles: [Handle]!
-
-  "Handles for resource connections"
-  connectionHandles: [Handle]!
 }
 
 "Lifecycle information for bundle deletion"
@@ -626,28 +717,37 @@ type BundleDeletionLifecycle {
   messages: [BundleDeletionLifecycleError]
 }
 
-"Context information for a node"
+"""
+The `Date` scalar type represents a date. The Date appears in a JSON
+response as an ISO8601 formatted string, without a time component.
+"""
+scalar Date
+
+"Contextual information about a node in the diagram"
 type NodeContext {
   "ID of the manifest"
   manifestId: ID!
 
   "ID of the package"
-  packageId: ID!
+  packageId: ID
 
   "Slug of the package"
-  packageSlug: String!
-}
+  packageSlug: String
 
-"Context information for a link"
-type LinkContext {
-  "ID of the link"
-  id: ID!
+  "Version constraint of the package"
+  packageVersion: VersionConstraint!
 
-  "ID of the environment"
-  environmentId: ID!
+  "Manifest Name"
+  name: String!
 
-  "Whether this is a connection"
-  isConnection: Boolean
+  "Type of the node (organization\/bundle)"
+  type: String!
+
+  "Handles for artifact connections"
+  artifactHandles: [Handle]!
+
+  "Handles for resource connections"
+  connectionHandles: [Handle]!
 }
 
 "Cost information for a resource"
@@ -707,9 +807,6 @@ type RootQueryType {
     organizationId: ID!
   ): [DefaultableEnvironmentConnectionGroup]
 
-  "Filter artifacts by an artifact definition type."
-  filterArtifactsByType(organizationId: ID!, type: String!): [Artifact] @deprecated(reason: "Use artifacts query w\/ artifacts filters instead.")
-
   "Get an artifact by ID"
   artifact(organizationId: ID!, id: ID!): Artifact
 
@@ -717,8 +814,13 @@ type RootQueryType {
   artifacts(
     organizationId: ID!
 
-    "Search, filter, and sort inputs"
-    input: ArtifactsInput
+    input: ArtifactsInput @deprecated(reason: "Use filter instead")
+
+    "Filter criteria."
+    filter: ArtifactsFilters
+
+    "Pagination cursor"
+    cursor: Cursor
   ): PaginatedArtifacts
 
   "Connection data for an artifact rendered in requested format"
@@ -741,11 +843,11 @@ type RootQueryType {
 
   compareDeployments(organizationId: ID!, fromDeploymentId: ID!, toDeploymentId: ID!): Changeset
 
-  "Marketplace Blueprints"
+  "Marketplace Templates"
   templates(
     "Organization ID"
     organizationId: ID!
-  ): [Bundle]
+  ): [Template]
 
   "List all bundles"
   bundles(
@@ -758,27 +860,79 @@ type RootQueryType {
     "Organization ID"
     organizationId: ID!
 
+    "Bundle UUID or Name"
+    id: ID!
+
+    """
+    Specifies which bundle release to return. Can be an exact version (e.g., '1.2.3'),
+    a tilde constraint for semantic versioning ranges (e.g., '~1.2' for 1.2.x, '~1' for 1.x.x),
+    or 'latest' for the newest stable release. `+dev` can be appended to include development releases.
+    """
+    version: VersionConstraint
+  ): Bundle
+
+  "Get a specific template"
+  template(
+    "Organization ID"
+    organizationId: ID!
+
     "Bundle ID"
     id: ID!
   ): Bundle
 
-  "Search for bundles"
-  searchBundles(
+  "Get packages deployed from this bundle with filtering and pagination"
+  bundlePackages(
     "Organization ID"
     organizationId: ID!
 
-    "Filter bundle search results"
-    input: BundleSearchFilters
-  ): [Bundle]
-
-  "Get bundle source code"
-  bundleSourceCode(
-    "Organization ID"
-    organizationId: ID!
-
-    "Bundle ID"
+    "Bundle ID or Name"
     id: ID!
-  ): BundleSource
+
+    "Filter criteria"
+    filter: BundlePackagesFilter
+
+    "Sort criteria"
+    sort: BundlePackagesSort
+
+    "Pagination cursor"
+    cursor: Cursor
+  ): BundlePackagesPage
+
+  "Get deployments for packages from this bundle with filtering and pagination"
+  bundleDeployments(
+    "Organization ID"
+    organizationId: ID!
+
+    "Bundle ID or Name"
+    id: ID!
+
+    "Filter criteria"
+    filter: BundleDeploymentsFilter
+
+    "Sort criteria"
+    sort: BundleDeploymentsSort
+
+    "Pagination cursor with limit and after"
+    cursor: Cursor
+  ): BundleDeploymentsPage
+
+  "Get alerts for packages from this bundle with filtering and pagination"
+  bundleAlerts(
+    "Organization ID"
+    organizationId: ID!
+
+    "Bundle ID or Name"
+    id: ID!
+
+    "Filter criteria"
+    filter: BundleAlertsFilter
+
+    "Sort criteria"
+    sort: BundleAlertsSort
+
+    "Pagination cursor with limit and after"
+    cursor: Cursor
+  ): BundleAlertsPage
 
   containerRepository(organizationId: ID!, artifactId: ID!, input: ContainerRepositoryInput!): ContainerRepositoryAuth @deprecated(reason: "This function will be removed in the near future.")
 
@@ -792,11 +946,8 @@ type RootQueryType {
     "The field to find dependencies for."
     fieldName: String!
 
-    "Optional. If specified, recommendations are tailored to the environment, prioritizing bundles and manifests of the same cloud as the credentials attached to the environment."
-    targetId: ID @deprecated(reason: "Use environmentId")
-
-    "Optional. If specified, recommendations are tailored to the environment, prioritizing bundles and manifests of the same cloud as the credentials attached to the environment."
-    environmentId: ID
+    "If specified, recommendations are tailored to the environment, prioritizing bundles and manifests in the current environment."
+    environmentId: ID!
   ): DependencyRecommendations
 
   deployment(
@@ -833,11 +984,9 @@ type RootQueryType {
     projectId: ID!
   ): [Node]
 
-  links(organizationId: ID!, projectId: ID!): [Link]
+  links(organizationId: ID!, environmentId: ID!): [Link]
 
   nodeContexts(organizationId: ID!, environmentId: ID!): [NodeContext]
-
-  linkContexts(organizationId: ID!, environmentId: ID!): [LinkContext]
 
   environment(
     organizationId: ID!
@@ -865,6 +1014,42 @@ type RootQueryType {
     id: ID!
   ): Manifest
 
+  "Get an OCI repository"
+  ociRepo(
+    "Organization ID"
+    organizationId: ID!
+
+    "Bundle ID or Name"
+    id: ID!
+  ): OciRepo
+
+  "Get an OCI manifest by tag"
+  ociManifest(
+    "Organization ID"
+    organizationId: ID!
+
+    "OCI Repo name"
+    id: ID!
+
+    "OCI tag (e.g., '0.0.0', '1.1.3')"
+    tag: String!
+  ): OciManifest
+
+  "Get an OCI blob content by digest"
+  ociBlob(
+    "Organization ID"
+    organizationId: ID!
+
+    "Bundle ID or Name"
+    id: ID!
+
+    "OCI tag (for authorization context)"
+    tag: String!
+
+    "Blob digest (e.g., 'sha256:...')"
+    digest: String!
+  ): OciBlobContent
+
   "Gets the organization the user has selected to act on behalf of"
   organization(organizationId: ID!): Organization!
 
@@ -887,6 +1072,15 @@ type RootQueryType {
     name: String!
   ): Package @deprecated(reason: "Use package(id: $id){}")
 
+  "Get a specific repository"
+  repo(
+    "Organization ID"
+    organizationId: ID!
+
+    "Repository UUID or Name"
+    id: ID!
+  ): Repo
+
   projects(organizationId: ID!): [Project]
 
   project(
@@ -897,6 +1091,8 @@ type RootQueryType {
   ): Project
 
   serviceAccounts(organizationId: ID!): [ServiceAccount]
+
+  server: Server!
 }
 
 """
@@ -907,34 +1103,31 @@ be converted to UTC if there is an offset.
 """
 scalar DateTime
 
-"An instance of a bundle in a project's architecture, providing context for how the bundle is used"
+"A JSON document describing the structure of an image or artifact, including its layers and configuration"
+type OciManifest {
+  "The media type of this manifest (e.g., application\/vnd.oci.image.manifest.v1+json)"
+  mediaType: String!
+
+  "Content-addressable identifier of this manifest (e.g., sha256:abcd...)"
+  digest: String!
+
+  "The blobs (layers and config) that make up this image or artifact"
+  blobs: [OciBlob]
+}
+
+"A bundle used in a project with a specific context (e.g. redis 'cache' vs 'sessions' instance)"
 type Manifest {
   id: ID!
-
   name: String!
-
   slug: String!
-
   suffix: String!
-
   description: String
-
   position: GraphPosition
-
-  "Fields & values for managing default secret values in preview environments."
-  secretFields: [SecretField]
-
   deletable: ManifestDeletionLifecycle!
-
   createdAt: DateTime!
-
   updatedAt: DateTime!
-
-  bundle: Bundle!
-
+  repo: OciRepo!
   packages: [Package]
-
-  linkableFields: [LinkableField]
 }
 
 enum OrganizationBillingStatus {
@@ -963,10 +1156,9 @@ enum OrganizationBillingStatus {
   PAYMENT_FAILED
 }
 
-"Bundle search filters"
-input BundleSearchFilters {
-  "Search query"
-  query: String
+input BundleAlertsFilter {
+  "Filter by bundle version (exact match or release channel like 'latest', '~1', '1.0.0')"
+  version: String
 }
 
 "An invitation to join an organization or group"
@@ -1001,8 +1193,6 @@ type ArtifactDefinition {
   icon: String
 
   label: String!
-
-  type: String @deprecated(reason: "use `name` field")
 
   exportFormats: [ArtifactDefinitionExportFormat]
 }
@@ -1124,6 +1314,11 @@ type DependencyRecommendations {
   manifests: [ManifestRecommendation]
 }
 
+input BundleDeploymentsFilter {
+  "Filter by bundle version (exact match or release channel like 'latest', '~1', '1.0.0')"
+  version: String
+}
+
 enum AuditLogActor {
   "System actions and legacy events"
   SYSTEM
@@ -1136,6 +1331,15 @@ enum AuditLogActor {
 
   "Deployment"
   DEPLOYMENT
+}
+
+"OCI annotation - arbitrary key-value pair for storing custom metadata"
+type OciAnnotation {
+  "The annotation key (e.g., 'org.opencontainers.artifact.title')"
+  name: String!
+
+  "The annotation value"
+  value: String!
 }
 
 type OrganizationBilling {
@@ -1155,6 +1359,9 @@ type OrganizationBilling {
 
   "The date and time when the trial period ends. Timezone is UTC."
   trialEndsAt: DateTime!
+
+  "Expiration date for annual plans."
+  planExpiresOn: Date
 
   "The URL to manage the organization's subscription."
   portalUrl: String!
@@ -1221,6 +1428,24 @@ type ArtifactDefinitionPayload {
   result: ArtifactDefinition
 }
 
+"Status of a deployment"
+enum DeploymentStatus {
+  "Deployment is pending execution"
+  PENDING
+
+  "Deployment is currently running"
+  RUNNING
+
+  "Deployment completed successfully"
+  COMPLETED
+
+  "Deployment failed"
+  FAILED
+
+  "Deployment was aborted"
+  ABORTED
+}
+
 "Error information for package deletion"
 type PackageDeletionLifecycleArtifactError {
   "Artifact causing the deletion error"
@@ -1235,10 +1460,42 @@ type ManifestDeletionLifecyclePackageError {
   message: String!
 }
 
+"An IaC bundle repository"
+type Repo {
+  "Unique identifier"
+  id: ID!
+
+  "Name of the repository"
+  name: String!
+
+  "When the repository was created"
+  createdAt: DateTime!
+
+  "Count of active packages deployed from this repository"
+  activePackages: Int
+
+  "Total cost for the last month across all packages"
+  lastMonthsCost: Float
+}
+
 enum AuditLogFilterOption {
   PROJECT
   TARGET @deprecated(reason: "Use environment instead")
   ENVIRONMENT
+}
+
+"Release strategy for a package"
+enum ReleaseStrategy {
+  "Package receives only stable releases"
+  STABLE
+
+  "Package receives both stable and development releases"
+  DEVELOPMENT
+}
+
+enum ServerMode {
+  SELF_HOSTED
+  MANAGED
 }
 
 type RemoteReference {
@@ -1252,6 +1509,22 @@ type RemoteReference {
 type EnvironmentDeletionLifecycle {
   result: Boolean!
   messages: [EnvironmentDeletionLifecyclePackageError]
+}
+
+type BundleDeploymentsPage {
+  "Pagination cursors"
+  cursor: PaginationCursor!
+
+  "A list of type bundle_deployment_summary."
+  items: [BundleDeploymentSummary]
+}
+
+type BundleAlertsPage {
+  "Pagination cursors"
+  cursor: PaginationCursor!
+
+  "A list of type bundle_alert_summary."
+  items: [BundleAlertSummary]
 }
 
 type ArtifactDeletionLifecycle {
@@ -1268,6 +1541,17 @@ type PackagePayload {
 
   "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
   result: Package
+}
+
+input Cursor {
+  "Maximum number of items to return"
+  limit: Int
+
+  "Cursor after which to return items"
+  next: String
+
+  "Cursor before which to return items"
+  previous: String
 }
 
 type Actor {
@@ -1287,9 +1571,12 @@ type Dimension {
 
 type DefaultEnvironmentConnection {
   id: ID!
-  defaultEnvironmentConnectionGroup: String!
-  defaultEnvironmentConnectionGroupLabel: String!
-  defaultEnvironmentConnectionType: String!
+  defaultEnvironmentConnectionGroup: String! @deprecated(reason: "see group")
+  defaultEnvironmentConnectionGroupLabel: String! @deprecated(reason: "see label")
+  defaultEnvironmentConnectionType: String! @deprecated(reason: "see artifactDefinition.name")
+  label: String!
+  group: String!
+  artifactDefinition: ArtifactDefinition!
   artifact: Artifact!
 }
 
@@ -1300,16 +1587,10 @@ type BundleRecommendation {
 
 """
 The `JSON` scalar type represents arbitrary json string data, represented as UTF-8
-character sequences. The Json type is most often used to represent a free-form
-human-readable json string.
+character sequences. The JSON type is most often used to represent a free-form
+human-readable JSON string.
 """
 scalar JSON
-
-type OnboardingTask {
-  task: String!
-  complete: Boolean!
-  label: String!
-}
 
 type ManifestDeletionLifecycle {
   result: Boolean!
@@ -1355,9 +1636,6 @@ type Environment {
 
   updatedAt: DateTime
 
-  "Environment's diagram links and resources"
-  diagram: Diagram
-
   "Manifests for this environment's package"
   manifests: [Manifest]
 
@@ -1399,10 +1677,21 @@ input RemoteReferenceParams {
   field: String
 }
 
+enum SortOrder {
+  "Ascending order"
+  ASC
+
+  "Descending order"
+  DESC
+}
+
 "A connection between two nodes in the diagram"
 type Link {
   "Unique identifier for the link"
   id: ID!
+
+  "ID of the environment"
+  environmentId: ID
 
   "Source field name"
   srcField: String!
@@ -1411,7 +1700,7 @@ type Link {
   destField: String!
 
   "Whether this link represents a connection"
-  isConnection: Boolean
+  isConnection: Boolean!
 
   "When the link was created"
   createdAt: DateTime!
@@ -1432,6 +1721,45 @@ type Link {
   destManifest: Manifest!
 }
 
+"Optimized summary view of a deployment for list displays"
+type BundleDeploymentSummary {
+  "Deployment ID"
+  id: ID!
+
+  "Deployment creation timestamp"
+  createdAt: DateTime!
+
+  "Email of user or service account that deployed"
+  deployedBy: String
+
+  "Elapsed time in seconds"
+  elapsedTime: Int
+
+  "Deployment action (PROVISION, DECOMMISSION, PLAN)"
+  action: DeploymentAction!
+
+  "Deployment status (PENDING, RUNNING, COMPLETED, FAILED, ABORTED)"
+  status: DeploymentStatus!
+
+  "Deployment message"
+  message: String
+
+  "Package slug"
+  packageSlug: String!
+
+  "Package name"
+  packageName: String!
+
+  "Environment name"
+  environmentName: String!
+
+  "Project name"
+  projectName: String!
+
+  "Bundle version deployed"
+  version: String!
+}
+
 type ArtifactDefinitionUi {
   connectionOrientation: ArtifactDefinitionUiConnectionOrientation!
   environmentDefaultGroup: String
@@ -1442,15 +1770,6 @@ type ArtifactDefinitionUi {
 type DeploymentLogStreamLog {
   content: String!
   metadata: DeploymentLogStreamLogMetadata!
-}
-
-"Source code information for a bundle"
-type BundleSource {
-  "The bundle"
-  bundle: Bundle!
-
-  "Source code content"
-  source: String!
 }
 
 type ServiceAccountPayload {
@@ -1481,6 +1800,13 @@ enum ArtifactDefinitionAccess {
   PRIVATE
 }
 
+type SsoProvider {
+  name: String!
+
+  "OAuth Login Flow URL"
+  loginUrl: String!
+}
+
 "A service account group membership"
 type ServiceAccountMember {
   id: ID!
@@ -1491,6 +1817,21 @@ type ServiceAccountMember {
 input AuditLogFilter {
   id: ID
   type: AuditLogFilterOption
+}
+
+"A namespace for storing related container images and artifacts"
+type OciRepo {
+  "The repository name within the registry"
+  name: String!
+
+  "Timestamp when the repository was created"
+  createdAt: DateTime!
+
+  "Distribution channels for artifact releases"
+  releaseChannels: [OciReleaseChannel]
+
+  "Human-readable references to manifests in this repository"
+  tags: [OciTag]
 }
 
 type OrganizationBillingPlan {
@@ -1513,6 +1854,45 @@ type OrganizationBillingPlan {
   frequency: OrganizationBillingFrequency!
 }
 
+"A release channel that resolves to a specific tag"
+type OciReleaseChannel {
+  "The channel name (e.g., 'latest', '1.x', '0.x')"
+  name: String!
+
+  "The tag this channel resolves to (e.g., '1.0.0')"
+  tag: String!
+}
+
+"Optimized summary view of an alert for list displays"
+type BundleAlertSummary {
+  "Alarm ID"
+  id: ID!
+
+  "Alert status (OK, ALARM)"
+  status: AlarmStatus!
+
+  "Alert display name"
+  displayName: String!
+
+  "When the alert occurred"
+  occurredAt: DateTime
+
+  "Project name"
+  projectName: String!
+
+  "Environment name"
+  environmentName: String!
+
+  "Package name"
+  packageName: String!
+
+  "Package slug"
+  packageSlug: String!
+
+  "Bundle version"
+  bundleVersion: String!
+}
+
 type SecretMetadataPayload {
   "Indicates if the mutation completed successfully or not."
   successful: Boolean!
@@ -1522,12 +1902,6 @@ type SecretMetadataPayload {
 
   "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
   result: SecretMetadata
-}
-
-"Field that an artifact can be linked to on this manifest."
-type LinkableField {
-  name: String!
-  artifactDefinitions: [ArtifactDefinition]!
 }
 
 "Supported download formats"
@@ -1605,14 +1979,14 @@ type Handle {
   "Type of the handle"
   type: String!
 
-  "Whether this handle can be linked"
-  isLinkable: Boolean!
-
   "Whether this handle is required"
   required: Boolean!
+
+  "How to visually connect this artifact definition type on the canvas. link - draw lines, environmentDefault - set on sidebar"
+  connectionOrientation: ArtifactDefinitionUiConnectionOrientation!
 }
 
-"A reusable infrastructure component that packages IaC modules, policies, runbooks, and cloud dependencies into a deliverable software component"
+"A specific version of a bundle"
 type Bundle {
   "Unique identifier"
   id: ID!
@@ -1620,25 +1994,20 @@ type Bundle {
   "Name of the bundle"
   name: String!
 
-  "Version of the bundle"
-  version: String
-
   "Icon SVG"
   icon: String
+
+  "Raw massdriver.yaml spec"
+  spec: JSON!
+
+  "Semantic version of this bundle release"
+  version: String!
 
   "Version of the bundle specification"
   specVersion: String
 
-  "Application or bundle"
-  type: String!
-
-  "Private bundle or public template"
-  access: String!
-
   "Description of the bundle"
   description: String
-
-  ref: String @deprecated(reason: "See sourceUrl")
 
   "URL to the source code repository"
   sourceUrl: String
@@ -1664,14 +2033,8 @@ type Bundle {
   "When the bundle was last updated"
   updatedAt: DateTime!
 
-  "Information about whether the bundle can be deleted"
+  "Information about whether the bundle repo can be deleted"
   deletable: BundleDeletionLifecycle!
-
-  "The full name of the bundle"
-  fqn: String! @deprecated(reason: "See ociImageReference")
-
-  "OCI Image Reference URL"
-  ociImageReference: String!
 }
 
 type AccountMembershipPayload {
@@ -1698,9 +2061,13 @@ input PreviewEnvironmentInput {
 type Deployment {
   id: ID!
 
-  status: String!
+  status: DeploymentStatus!
 
-  action: String!
+  action: DeploymentAction!
+
+  version: String!
+
+  release: Bundle!
 
   message: String
 
@@ -1723,6 +2090,22 @@ type Deployment {
   elapsedTime: Int!
 }
 
+input BundleDeploymentsSort {
+  "Field to sort by"
+  field: BundleDeploymentsSortField!
+
+  "Sort order"
+  order: SortOrder!
+}
+
+input BundleAlertsSort {
+  "Field to sort by"
+  field: BundleAlertsSortField!
+
+  "Sort order"
+  order: SortOrder!
+}
+
 type Changeset {
   change: JSON
 }
@@ -1735,7 +2118,7 @@ type Artifact {
   type: String!
 
   "The bundle's artifact field (output field) that produced this artifact."
-  field: String!
+  field: String
 
   specs: JSON
 
@@ -1778,6 +2161,14 @@ type EnvironmentStatistic {
   growthRate: Float!
   projectSlug: String!
   projectId: ID!
+}
+
+type PaginationCursor {
+  "Cursor to the next page"
+  next: String
+
+  "Cursor to the previous page"
+  previous: String
 }
 
 type ArtifactDeletionLifecycleArtifactError {
@@ -1835,7 +2226,7 @@ type RootMutationType {
     id: ID!
   ): BundlePayload
 
-  "Add a bundle to the catalog"
+  "Add a template to your bundle catalog"
   addBundleToCatalog(
     "Organization ID"
     organizationId: ID!
@@ -1890,7 +2281,7 @@ type RootMutationType {
 
   "Links two manifests"
   linkManifests(
-    organizationId: ID!, srcManifestId: ID!, srcManifestField: String!, destManifestId: ID!, destManifestField: String!
+    organizationId: ID!, environmentId: ID!, srcManifestId: ID!, srcManifestField: String!, destManifestId: ID!, destManifestField: String!
   ): LinkPayload
 
   unlinkManifests(organizationId: ID!, linkId: ID!): LinkPayload
@@ -1952,26 +2343,6 @@ type RootMutationType {
 
     params: GraphPositionParams!
   ): ManifestPayload
-
-  "Sets a default secret value for this manifest. This value can be overridden by setting a secret value on a package."
-  setManifestDefaultSecret(
-    organizationId: ID!
-
-    "Manifest ID or {project.slug}-{manifest.slug} i.e.: ecomm-database"
-    id: ID!
-
-    input: SetSecretValueInput!
-  ): SecretMetadataPayload
-
-  "Removes a default secret value for this manifest in all preview environments."
-  unsetManifestDefaultSecret(
-    organizationId: ID!
-
-    "Manifest ID or {project.slug}-{manifest.slug} i.e.: ecomm-database"
-    id: ID!
-
-    input: UnsetSecretValueInput!
-  ): SecretMetadataPayload
 
   "Adds a Service Account to a group"
   addServiceAccountToGroup(groupId: ID!, organizationId: ID!, serviceAccountId: ID!): ServiceAccountMemberPayload
@@ -2039,16 +2410,29 @@ type RootMutationType {
     deleteDeployments: Boolean!
   ): PackagePayload
 
+  setPackageVersion(
+    organizationId: ID!
+
+    "Package ID, slug, or name prefix."
+    id: ID!
+
+    "The version or release channel to use."
+    version: String!
+
+    "The release strategy for this package."
+    releaseStrategy: ReleaseStrategy
+  ): PackagePayload
+
   "Update a Package's parameters"
   configurePackage(
     organizationId: ID!
 
+    "Package ID, slug, or name prefix."
+    id: ID
+
     manifestId: ID @deprecated(reason: "Use id instead")
 
     targetId: ID @deprecated(reason: "Use id instead")
-
-    "Package ID, slug, or name prefix."
-    id: ID
 
     params: JSON!
   ): PackagePayload
@@ -2105,18 +2489,6 @@ type EnvironmentConnection {
   updatedAt: DateTime
 }
 
-"A diagram representing relationships between resources"
-type Diagram {
-  "Unique identifier for the diagram"
-  id: ID!
-
-  "Links between nodes in the diagram"
-  links: [Link]
-
-  "Resources (nodes) in the diagram"
-  resources: [Resource]
-}
-
 enum OrganizationBillingFrequency {
   "Monthly billing frequency."
   MONTHLY
@@ -2124,9 +2496,6 @@ enum OrganizationBillingFrequency {
   "Annual billing frequency."
   ANNUALLY
 }
-
-"Artifact and manifest nodes"
-union Resource = ManifestResource | PackageResource | ArtifactResource
 
 input UnsetSecretValueInput {
   "Name defined in applications massdriver.yaml file."
@@ -2149,6 +2518,29 @@ type DeploymentLifecycleEvent {
   id: ID!
   status: String!
   deployment: Deployment!
+}
+
+enum BundleAlertsSortField {
+  "Sort by when the alert occurred"
+  OCCURRED_AT
+
+  "Sort by alert status"
+  STATUS
+
+  "Sort by alert display name"
+  DISPLAY_NAME
+
+  "Sort by package name"
+  PACKAGE_NAME
+
+  "Sort by environment name"
+  ENVIRONMENT_NAME
+
+  "Sort by project name"
+  PROJECT_NAME
+
+  "Sort by bundle version"
+  VERSION
 }
 
 "Status of a package"
@@ -2204,8 +2596,6 @@ type Organization {
   isAdmin: Boolean
 
   groups: [Group]
-
-  onboardingTasks: [OnboardingTask]
 }
 
 "A connection between a package and an artifact"
@@ -2229,10 +2619,49 @@ type Connection {
   updatedAt: DateTime
 }
 
+"A human-readable reference name that points to a specific OCI manifest"
+type OciTag {
+  "The media type of the referenced manifest (e.g., application\/vnd.oci.image.manifest.v1+json)"
+  mediaType: String!
+
+  "Timestamp when this tag was created or last updated"
+  createdAt: DateTime!
+
+  "The tag name\/label (e.g., 'latest', 'v1.0.0')"
+  tag: String!
+
+  "Release notes for this tagged version"
+  releaseNotes: String
+
+  "Content-addressable identifier of the manifest (e.g., sha256:abcd...)"
+  digest: String!
+}
+
 "Information about a deleted node"
 type DeletedNode {
   "ID of the deleted manifest"
   manifestId: ID!
+}
+
+"A template bundle"
+type Template {
+  "Unique identifier"
+  id: ID!
+
+  "Name of the template"
+  name: String!
+
+  "Description of the bundle"
+  description: String
+
+  "The operator guide for the bundle in markdown."
+  operatorGuide: Markdown
+
+  "JSON schema for bundle parameters"
+  paramsSchema: JSON!
+
+  "URL to the source code repository"
+  sourceUrl: String
 }
 
 input SetSecretValueInput {
@@ -2249,6 +2678,32 @@ input GroupInput {
   description: String
 }
 
+enum BundleDeploymentsSortField {
+  "Sort by deployment creation timestamp"
+  CREATED_AT
+
+  "Sort by deployment action"
+  ACTION
+
+  "Sort by deployment status"
+  STATUS
+
+  "Sort by package name"
+  PACKAGE_NAME
+
+  "Sort by environment name"
+  ENVIRONMENT_NAME
+
+  "Sort by project name"
+  PROJECT_NAME
+
+  "Sort by bundle version"
+  VERSION
+}
+
+"Version constraint for bundle releases. Supports exact versions (1.2.3), tilde constraints (~1.2, ~1), automation rules (latest, release-candidate), and release channels. Examples: '1.2.3' (exact), '~1.2' (latest patch in 1.2.x), '~1' (latest minor in 1.x.x), 'latest' (newest stable), 'release-candidate' (newest RC)"
+scalar VersionConstraint
+
 "Statistics and metrics including bundle usage, deployment history, and active alarms."
 type DashboardStatistics {
   "Returns usage and cost metrics for each infrastructure module (bundle) across your organization. For each bundle, it provides total number of environments using the bundle, total number of package instances deployed, and total accumulated costs since inception."
@@ -2263,9 +2718,26 @@ type DashboardStatistics {
   "Displays the 10 most recent infrastructure alarm status changes, ordered by when they occurred. This gives immediate visibility into potential issues across your infrastructure."
   recentAlarms: [RecentAlarm]
 
-  "Shows the 10 most recent infrastructure changes, ordered by when the deployment was created. This panel provides visibility into the latest infrastructure modifications across your environments."
+  "Shows the 20 most recent infrastructure changes, ordered by when the deployment was created. This panel provides visibility into the latest infrastructure modifications across your environments."
   recentInfrastructureDeployments: [RecentDeployment]
+}
 
-  "Shows the 10 most recent application changes, ordered by when the deployment was created. This panel provides visibility into the latest application modifications across your environments."
-  recentApplicationDeployments: [RecentDeployment]
+"Content-addressable storage for image layers, configurations, and other artifact data"
+type OciBlob {
+  "The media type of this blob (e.g., application\/vnd.oci.image.layer.v1.tar+gzip)"
+  mediaType: String!
+
+  "Content-addressable identifier of the blob content (e.g., sha256:abcd...)"
+  digest: String!
+
+  "Size of the blob in bytes"
+  size: Int!
+
+  "Optional key-value pairs providing additional metadata"
+  annotations: [OciAnnotation]
+}
+
+input BundlePackagesFilter {
+  "Filter by bundle version (exact match or release channel like 'latest', '~1', '1.0.0')"
+  version: String
 }

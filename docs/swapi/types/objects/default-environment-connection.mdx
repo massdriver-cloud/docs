@@ -45,9 +45,12 @@ No description
 ```graphql
 type DefaultEnvironmentConnection {
   id: ID!
-  defaultEnvironmentConnectionGroup: String!
-  defaultEnvironmentConnectionGroupLabel: String!
-  defaultEnvironmentConnectionType: String!
+  defaultEnvironmentConnectionGroup: String! @deprecated
+  defaultEnvironmentConnectionGroupLabel: String! @deprecated
+  defaultEnvironmentConnectionType: String! @deprecated
+  label: String!
+  group: String!
+  artifactDefinition: ArtifactDefinition!
   artifact: Artifact!
 }
 ```
@@ -61,15 +64,39 @@ type DefaultEnvironmentConnection {
 
 
 
-#### [<code style={{ fontWeight: 'normal' }}>DefaultEnvironmentConnection.<b>defaultEnvironmentConnectionGroup</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>DefaultEnvironmentConnection.<b>defaultEnvironmentConnectionGroup</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+:::warning[DEPRECATED]
+
+see group
+
+:::
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DefaultEnvironmentConnection.<b>defaultEnvironmentConnectionGroupLabel</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+:::warning[DEPRECATED]
+
+see label
+
+:::
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DefaultEnvironmentConnection.<b>defaultEnvironmentConnectionType</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+:::warning[DEPRECATED]
+
+see artifactDefinition.name
+
+:::
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DefaultEnvironmentConnection.<b>label</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
 
 
 
-#### [<code style={{ fontWeight: 'normal' }}>DefaultEnvironmentConnection.<b>defaultEnvironmentConnectionGroupLabel</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>DefaultEnvironmentConnection.<b>group</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
 
 
 
-#### [<code style={{ fontWeight: 'normal' }}>DefaultEnvironmentConnection.<b>defaultEnvironmentConnectionType</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>DefaultEnvironmentConnection.<b>artifactDefinition</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ArtifactDefinition!</b></code>](/swapi/types/objects/artifact-definition.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> 
 
 
 

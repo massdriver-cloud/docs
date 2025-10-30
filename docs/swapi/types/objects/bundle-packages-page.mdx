@@ -1,6 +1,6 @@
 ---
-id: search-bundles
-title: searchBundles
+id: bundle-packages-page
+title: BundlePackagesPage
 ---
 
 
@@ -39,30 +39,33 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Search for bundles
+No description
 
 
 ```graphql
-searchBundles(
-  organizationId: ID!
-  input: BundleSearchFilters
-): [Bundle]
+type BundlePackagesPage {
+  cursor: PaginationCursor!
+  items: [BundlePackageSummary]
+}
 ```
 
 
 
 
-### Arguments
+### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>searchBundles.<b>organizationId</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
-Organization ID
-
-
-#### [<code style={{ fontWeight: 'normal' }}>searchBundles.<b>input</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BundleSearchFilters</b></code>](/swapi/types/inputs/bundle-search-filters.mdx) <Badge class="badge badge--secondary " text="input"/> 
-Filter bundle search results
+#### [<code style={{ fontWeight: 'normal' }}>BundlePackagesPage.<b>cursor</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PaginationCursor!</b></code>](/swapi/types/objects/pagination-cursor.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> 
+Pagination cursors
 
 
-### Type
+#### [<code style={{ fontWeight: 'normal' }}>BundlePackagesPage.<b>items</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[BundlePackageSummary]</b></code>](/swapi/types/objects/bundle-package-summary.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+A list of type bundle&#x005F;package&#x005F;summary.
 
-#### [<code style={{ fontWeight: 'normal' }}><b>Bundle</b></code>](/swapi/types/objects/bundle.mdx) <Badge class="badge badge--secondary " text="object"/> 
-A reusable infrastructure component that packages IaC modules, policies, runbooks, and cloud dependencies into a deliverable software component
+
+
+
+
+
+### Returned By
+
+[`bundlePackages`](/swapi/operations/queries/bundle-packages.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

@@ -39,7 +39,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-An instance of a bundle in a project's architecture, providing context for how the bundle is used
+A bundle used in a project with a specific context (e.g. redis 'cache' vs 'sessions' instance)
 
 
 ```graphql
@@ -50,13 +50,11 @@ type Manifest {
   suffix: String!
   description: String
   position: GraphPosition
-  secretFields: [SecretField]
   deletable: ManifestDeletionLifecycle!
   createdAt: DateTime!
   updatedAt: DateTime!
-  bundle: Bundle!
+  repo: OciRepo!
   packages: [Package]
-  linkableFields: [LinkableField]
 }
 ```
 
@@ -89,10 +87,6 @@ type Manifest {
 
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Manifest.<b>secretFields</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[SecretField]</b></code>](/swapi/types/objects/secret-field.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
-Fields & values for managing default secret values in preview environments.
-
-
 #### [<code style={{ fontWeight: 'normal' }}>Manifest.<b>deletable</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ManifestDeletionLifecycle!</b></code>](/swapi/types/objects/manifest-deletion-lifecycle.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> 
 
 
@@ -105,15 +99,11 @@ Fields & values for managing default secret values in preview environments.
 
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Manifest.<b>bundle</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Bundle!</b></code>](/swapi/types/objects/bundle.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}>Manifest.<b>repo</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepo!</b></code>](/swapi/types/objects/oci-repo.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> 
 
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Manifest.<b>packages</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Package]</b></code>](/swapi/types/objects/package.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
-
-
-
-#### [<code style={{ fontWeight: 'normal' }}>Manifest.<b>linkableFields</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[LinkableField]</b></code>](/swapi/types/objects/linkable-field.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
 
 
 
@@ -127,4 +117,4 @@ Fields & values for managing default secret values in preview environments.
 
 ### Member Of
 
-[`Environment`](/swapi/types/objects/environment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Link`](/swapi/types/objects/link.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ManifestPayload`](/swapi/types/objects/manifest-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ManifestRecommendation`](/swapi/types/objects/manifest-recommendation.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ManifestResource`](/swapi/types/objects/manifest-resource.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Package`](/swapi/types/objects/package.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PackageResource`](/swapi/types/objects/package-resource.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Project`](/swapi/types/objects/project.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`Environment`](/swapi/types/objects/environment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Link`](/swapi/types/objects/link.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ManifestPayload`](/swapi/types/objects/manifest-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ManifestRecommendation`](/swapi/types/objects/manifest-recommendation.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Package`](/swapi/types/objects/package.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Project`](/swapi/types/objects/project.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

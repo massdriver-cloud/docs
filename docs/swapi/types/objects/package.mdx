@@ -50,6 +50,13 @@ type Package {
   status: PackageStatus!
   createdAt: DateTime!
   updatedAt: DateTime!
+  bundle: Bundle!
+  version: VersionConstraint!
+  currentVersion: String!
+  releaseStrategy: ReleaseStrategy!
+  deployedVersion: String
+  latestDeployment: Deployment
+  availableUpgrade: String
   alarms: [Alarm]
   secretFields: [SecretField]
   activeDeployment: Deployment
@@ -92,6 +99,44 @@ When the package was created
 
 #### [<code style={{ fontWeight: 'normal' }}>Package.<b>updatedAt</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/swapi/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
 When the package was last updated
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Package.<b>bundle</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Bundle!</b></code>](/swapi/types/objects/bundle.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Package.<b>version</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>VersionConstraint!</b></code>](/swapi/types/scalars/version-constraint.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+The version constraint for this package. This determines which bundle release version the package should use.
+Supports semver constraints (~1.2, ~1), exact versions (1.2.3), and release channels (latest).
+See `VersionConstraint` type documentation for supported formats and examples.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Package.<b>currentVersion</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+The actual semantic version of the bundle release currently configured for this package.
+This is the resolved version based on the `version` constraint and will be used for the next deployment.
+Example: if `version` is "~1.2", `currentVersion` might be "1.2.5".
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Package.<b>releaseStrategy</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ReleaseStrategy!</b></code>](/swapi/types/enums/release-strategy.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> 
+The release strategy for this package. Determines whether the package should receive
+stable releases only or also development releases.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Package.<b>deployedVersion</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+The semantic version that was last executed.
+This reflects what has been provisioned to infrastructure, which may differ from `currentVersion`
+if the package hasn't been deployed since the version was changed. Returns nil if never deployed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Package.<b>latestDeployment</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Deployment</b></code>](/swapi/types/objects/deployment.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The latest deployment for this package
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Package.<b>availableUpgrade</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+The newest version available for upgrade based on the package's `version` constraint.
+Returns nil if no upgrade is available or if already on the latest matching version.
+For strict semver constraints (1.2.3), checks for patch-level upgrades (~1.2).
+For release channels (~1.2, ~1, latest), checks for the newest matching version.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Package.<b>alarms</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Alarm]</b></code>](/swapi/types/objects/alarm.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
@@ -152,4 +197,4 @@ Cloud provider costs for this package
 
 ### Member Of
 
-[`Artifact`](/swapi/types/objects/artifact.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Connection`](/swapi/types/objects/connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Deployment`](/swapi/types/objects/deployment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Environment`](/swapi/types/objects/environment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentDeletionLifecyclePackageError`](/swapi/types/objects/environment-deletion-lifecycle-package-error.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Manifest`](/swapi/types/objects/manifest.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ManifestDeletionLifecyclePackageError`](/swapi/types/objects/manifest-deletion-lifecycle-package-error.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ManifestResource`](/swapi/types/objects/manifest-resource.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PackagePayload`](/swapi/types/objects/package-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PackageResource`](/swapi/types/objects/package-resource.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ProjectDeletionLifecyclePackageError`](/swapi/types/objects/project-deletion-lifecycle-package-error.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`RemoteReference`](/swapi/types/objects/remote-reference.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`Artifact`](/swapi/types/objects/artifact.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Connection`](/swapi/types/objects/connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Deployment`](/swapi/types/objects/deployment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Environment`](/swapi/types/objects/environment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentDeletionLifecyclePackageError`](/swapi/types/objects/environment-deletion-lifecycle-package-error.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Manifest`](/swapi/types/objects/manifest.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ManifestDeletionLifecyclePackageError`](/swapi/types/objects/manifest-deletion-lifecycle-package-error.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PackagePayload`](/swapi/types/objects/package-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ProjectDeletionLifecyclePackageError`](/swapi/types/objects/project-deletion-lifecycle-package-error.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`RemoteReference`](/swapi/types/objects/remote-reference.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

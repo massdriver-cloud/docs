@@ -45,9 +45,10 @@ A connection between two nodes in the diagram
 ```graphql
 type Link {
   id: ID!
+  environmentId: ID
   srcField: String!
   destField: String!
-  isConnection: Boolean
+  isConnection: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
   srcId: ID!
@@ -66,6 +67,10 @@ type Link {
 Unique identifier for the link
 
 
+#### [<code style={{ fontWeight: 'normal' }}>Link.<b>environmentId</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+ID of the environment
+
+
 #### [<code style={{ fontWeight: 'normal' }}>Link.<b>srcField</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
 Source field name
 
@@ -74,7 +79,7 @@ Source field name
 Destination field name
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Link.<b>isConnection</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/swapi/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>Link.<b>isConnection</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/swapi/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
 Whether this link represents a connection
 
 
@@ -108,8 +113,8 @@ Destination manifest
 
 ### Returned By
 
-[`linkCreated`](/swapi/operations/subscriptions/link-created.mdx)  <Badge class="badge badge--secondary badge--relation" text="subscription"/><Bullet />[`linkDeleted`](/swapi/operations/subscriptions/link-deleted.mdx)  <Badge class="badge badge--secondary badge--relation" text="subscription"/><Bullet />[`links`](/swapi/operations/queries/links.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+[`linkCreated`](/swapi/operations/subscriptions/link-created.mdx)  <Badge class="badge badge--secondary badge--relation" text="subscription"/><Bullet />[`linkDeleted`](/swapi/operations/subscriptions/link-deleted.mdx)  <Badge class="badge badge--secondary badge--relation" text="subscription"/><Bullet />[`links`](/swapi/operations/queries/links.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`linkUpdated`](/swapi/operations/subscriptions/link-updated.mdx)  <Badge class="badge badge--secondary badge--relation" text="subscription"/>
 
 ### Member Of
 
-[`Diagram`](/swapi/types/objects/diagram.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`LinkPayload`](/swapi/types/objects/link-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`LinkPayload`](/swapi/types/objects/link-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

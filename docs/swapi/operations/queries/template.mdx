@@ -1,6 +1,6 @@
 ---
-id: filter-artifacts-by-type
-title: filterArtifactsByType
+id: template
+title: template
 ---
 
 
@@ -39,20 +39,14 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-:::warning[DEPRECATED]
-
-Use artifacts query w/ artifacts filters instead.
-
-:::
-
-Filter artifacts by an artifact definition type.
+Get a specific template
 
 
 ```graphql
-filterArtifactsByType(
+template(
   organizationId: ID!
-  type: String!
-): [Artifact] @deprecated
+  id: ID!
+): Bundle
 ```
 
 
@@ -60,14 +54,15 @@ filterArtifactsByType(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>filterArtifactsByType.<b>organizationId</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>template.<b>organizationId</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Organization ID
 
 
-
-#### [<code style={{ fontWeight: 'normal' }}>filterArtifactsByType.<b>type</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
-
+#### [<code style={{ fontWeight: 'normal' }}>template.<b>id</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Bundle ID
 
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>Artifact</b></code>](/swapi/types/objects/artifact.mdx) <Badge class="badge badge--secondary " text="object"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>Bundle</b></code>](/swapi/types/objects/bundle.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A specific version of a bundle

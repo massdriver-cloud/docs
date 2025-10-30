@@ -1,0 +1,106 @@
+---
+id: bundle-package-summary
+title: BundlePackageSummary
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Optimized summary view of a package for list displays
+
+
+```graphql
+type BundlePackageSummary {
+  id: ID!
+  slug: String!
+  name: String!
+  status: PackageStatus!
+  projectName: String!
+  environmentName: String!
+  lastMonthsCost: Float
+  version: String!
+  updatedAt: DateTime!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>BundlePackageSummary.<b>id</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Package ID
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundlePackageSummary.<b>slug</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Package slug (e.g., 'joesand-dev-myvpc')
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundlePackageSummary.<b>name</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Package name
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundlePackageSummary.<b>status</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PackageStatus!</b></code>](/swapi/types/enums/package-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> 
+Package status
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundlePackageSummary.<b>projectName</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Project name
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundlePackageSummary.<b>environmentName</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Environment name
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundlePackageSummary.<b>lastMonthsCost</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/swapi/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+Package cost for the last month
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundlePackageSummary.<b>version</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Bundle version deployed
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundlePackageSummary.<b>updatedAt</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/swapi/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Last update timestamp
+
+
+
+
+
+
+### Member Of
+
+[`BundlePackagesPage`](/swapi/types/objects/bundle-packages-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

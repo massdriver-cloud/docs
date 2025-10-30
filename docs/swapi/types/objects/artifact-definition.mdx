@@ -54,7 +54,6 @@ type ArtifactDefinition {
   ui: ArtifactDefinitionUi
   icon: String
   label: String!
-  type: String @deprecated
   exportFormats: [ArtifactDefinitionExportFormat]
 }
 ```
@@ -104,14 +103,6 @@ The name of this type. Organization scoped: my-org/aws-iam-role
 
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ArtifactDefinition.<b>type</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> 
-:::warning[DEPRECATED]
-
-use `name` field
-
-:::
-
-
 #### [<code style={{ fontWeight: 'normal' }}>ArtifactDefinition.<b>exportFormats</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ArtifactDefinitionExportFormat]</b></code>](/swapi/types/objects/artifact-definition-export-format.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
 
 
@@ -126,4 +117,4 @@ use `name` field
 
 ### Member Of
 
-[`Artifact`](/swapi/types/objects/artifact.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ArtifactDefinitionPayload`](/swapi/types/objects/artifact-definition-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`DefaultableEnvironmentConnectionGroup`](/swapi/types/objects/defaultable-environment-connection-group.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`DefaultableTargetConnectionGroup`](/swapi/types/objects/defaultable-target-connection-group.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`LinkableField`](/swapi/types/objects/linkable-field.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`Artifact`](/swapi/types/objects/artifact.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ArtifactDefinitionPayload`](/swapi/types/objects/artifact-definition-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`DefaultableEnvironmentConnectionGroup`](/swapi/types/objects/defaultable-environment-connection-group.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`DefaultableTargetConnectionGroup`](/swapi/types/objects/defaultable-target-connection-group.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`DefaultEnvironmentConnection`](/swapi/types/objects/default-environment-connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

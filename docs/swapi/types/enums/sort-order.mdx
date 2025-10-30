@@ -1,6 +1,6 @@
 ---
-id: link-context-created
-title: linkContextCreated
+id: sort-order
+title: SortOrder
 ---
 
 
@@ -43,26 +43,29 @@ No description
 
 
 ```graphql
-linkContextCreated(
-  organizationId: ID!
-  environmentId: ID!
-): LinkContext
+enum SortOrder {
+  ASC
+  DESC
+}
 ```
 
 
 
 
-### Arguments
+### Values
 
-#### [<code style={{ fontWeight: 'normal' }}>linkContextCreated.<b>organizationId</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
-
-
-
-#### [<code style={{ fontWeight: 'normal' }}>linkContextCreated.<b>environmentId</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>SortOrder.<b>ASC</b></code>](#)  
+Ascending order
 
 
+#### [<code style={{ fontWeight: 'normal' }}>SortOrder.<b>DESC</b></code>](#)  
+Descending order
 
-### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>LinkContext</b></code>](/swapi/types/objects/link-context.mdx) <Badge class="badge badge--secondary " text="object"/> 
-Context information for a link
+
+
+
+
+### Member Of
+
+[`BundleAlertsSort`](/swapi/types/inputs/bundle-alerts-sort.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`BundleDeploymentsSort`](/swapi/types/inputs/bundle-deployments-sort.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`BundlePackagesSort`](/swapi/types/inputs/bundle-packages-sort.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

@@ -50,6 +50,7 @@ type OrganizationBilling {
   frequency: OrganizationBillingFrequency
   affiliate: String
   trialEndsAt: DateTime!
+  planExpiresOn: Date
   portalUrl: String!
   plans: [OrganizationBillingPlan]
   subscriptionManagementUrl: String! @deprecated
@@ -83,6 +84,10 @@ The frequency at which the organization is billed.
 
 #### [<code style={{ fontWeight: 'normal' }}>OrganizationBilling.<b>trialEndsAt</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/swapi/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
 The date and time when the trial period ends. Timezone is UTC.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBilling.<b>planExpiresOn</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Date</b></code>](/swapi/types/scalars/date.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+Expiration date for annual plans.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OrganizationBilling.<b>portalUrl</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 

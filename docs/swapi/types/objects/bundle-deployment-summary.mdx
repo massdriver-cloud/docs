@@ -1,0 +1,121 @@
+---
+id: bundle-deployment-summary
+title: BundleDeploymentSummary
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Optimized summary view of a deployment for list displays
+
+
+```graphql
+type BundleDeploymentSummary {
+  id: ID!
+  createdAt: DateTime!
+  deployedBy: String
+  elapsedTime: Int
+  action: DeploymentAction!
+  status: DeploymentStatus!
+  message: String
+  packageSlug: String!
+  packageName: String!
+  environmentName: String!
+  projectName: String!
+  version: String!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>BundleDeploymentSummary.<b>id</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Deployment ID
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundleDeploymentSummary.<b>createdAt</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/swapi/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Deployment creation timestamp
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundleDeploymentSummary.<b>deployedBy</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+Email of user or service account that deployed
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundleDeploymentSummary.<b>elapsedTime</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/swapi/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+Elapsed time in seconds
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundleDeploymentSummary.<b>action</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DeploymentAction!</b></code>](/swapi/types/enums/deployment-action.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> 
+Deployment action (PROVISION, DECOMMISSION, PLAN)
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundleDeploymentSummary.<b>status</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DeploymentStatus!</b></code>](/swapi/types/enums/deployment-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> 
+Deployment status (PENDING, RUNNING, COMPLETED, FAILED, ABORTED)
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundleDeploymentSummary.<b>message</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+Deployment message
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundleDeploymentSummary.<b>packageSlug</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Package slug
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundleDeploymentSummary.<b>packageName</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Package name
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundleDeploymentSummary.<b>environmentName</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Environment name
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundleDeploymentSummary.<b>projectName</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Project name
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundleDeploymentSummary.<b>version</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Bundle version deployed
+
+
+
+
+
+
+### Member Of
+
+[`BundleDeploymentsPage`](/swapi/types/objects/bundle-deployments-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
