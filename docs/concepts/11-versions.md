@@ -251,7 +251,7 @@ Use major channels for latest features:
 
 4. **Infrastructure Testing**: Enable development releases on a channel
    ```
-   Set Version: "~1.0"  # Then set Release Strategy to "Development Release"
+   Set Version: "~1.0"  # Then set releaseStrategy to "Development Release"
    ```
    - Ideal for staging/dev environments that mirror production
    - Automatically deploys and tests development releases against real cloud resources
