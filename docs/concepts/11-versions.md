@@ -72,6 +72,8 @@ mass bundle publish --development
 
 This approach lets you stand up multiple real-world examples of your infrastructure changes before committing to a final release, ensuring your bundles work correctly across different cloud environments and configurations.
 
+![Bundle instances showing version information](img/bundle-version-browser.png)
+
 ## Release Channels
 
 Release channels use tilde (`~`) constraints to specify compatible version ranges. When a package uses a release channel, it **automatically runs the full deploy/apply pipeline** whenever a new version matching that channel is published. This includes compliance checks, Terraform plans, and all other validation steps. This automates infrastructure version management.
@@ -168,6 +170,8 @@ mass bundle publish -d
 ### Package Version Management
 
 #### Version Selection Interface
+
+![Package version configuration panel](img/package-version-configuration.png)
 
 In the package configuration panel, developers can set the version constraint:
 
