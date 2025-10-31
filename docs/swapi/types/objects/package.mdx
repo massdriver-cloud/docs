@@ -52,7 +52,7 @@ type Package {
   updatedAt: DateTime!
   bundle: Bundle!
   version: VersionConstraint!
-  currentVersion: String!
+  resolvedVersion: String!
   releaseStrategy: ReleaseStrategy!
   deployedVersion: String
   latestDeployment: Deployment
@@ -111,10 +111,10 @@ Supports semver constraints (~1.2, ~1), exact versions (1.2.3), and release chan
 See `VersionConstraint` type documentation for supported formats and examples.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Package.<b>currentVersion</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>Package.<b>resolvedVersion</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
 The actual semantic version of the bundle release currently configured for this package.
 This is the resolved version based on the `version` constraint and will be used for the next deployment.
-Example: if `version` is "~1.2", `currentVersion` might be "1.2.5".
+Example: if `version` is "~1.2", `resolvedVersion` might be "1.2.5".
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Package.<b>releaseStrategy</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ReleaseStrategy!</b></code>](/swapi/types/enums/release-strategy.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> 
@@ -124,7 +124,7 @@ stable releases only or also development releases.
 
 #### [<code style={{ fontWeight: 'normal' }}>Package.<b>deployedVersion</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
 The semantic version that was last executed.
-This reflects what has been provisioned to infrastructure, which may differ from `currentVersion`
+This reflects what has been provisioned to infrastructure, which may differ from `resolvedVersion`
 if the package hasn't been deployed since the version was changed. Returns nil if never deployed.
 
 

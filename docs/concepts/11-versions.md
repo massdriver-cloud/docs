@@ -183,7 +183,7 @@ In the package configuration panel, developers can set the version constraint:
 **Generated Release Channels:**
 - `~1`, `~1.1`, `~2`, `~2.1` (auto-generated tilde patterns for each possible)
 - `latest` - Newest SemVer release
-- When you set a version constraint, `currentVersion` gets updated to show what will deploy
+- When you set a version constraint, `resolvedVersion` gets updated to show what will deploy
 
 #### Version Constraints
 
@@ -278,7 +278,7 @@ Each package in Massdriver has several version-related fields that control how i
 ### Package Version Fields
 
 - **`version`** - The version constraint (e.g., `"1.2.3"`, `"~1.2"`, `"latest"`)
-- **`currentVersion`** - The resolved semantic version that will be deployed next
+- **`releaseStrategy`** - Whether the package receives `stable` releases only or also `development` releases
+- **`resolvedVersion`** - The resolved semantic version that will be deployed next
 - **`deployedVersion`** - The version that was last successfully deployed to infrastructure
 - **`availableUpgrade`** - The newest version available for upgrade based on the constraint
-- **`releaseStrategy`** - Whether the package receives stable releases only or also development releases

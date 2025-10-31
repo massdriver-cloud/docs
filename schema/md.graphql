@@ -629,9 +629,9 @@ type Package {
   """
   The actual semantic version of the bundle release currently configured for this package.
   This is the resolved version based on the `version` constraint and will be used for the next deployment.
-  Example: if `version` is "~1.2", `currentVersion` might be "1.2.5".
+  Example: if `version` is "~1.2", `resolvedVersion` might be "1.2.5".
   """
-  currentVersion: String!
+  resolvedVersion: String!
 
   """
   The release strategy for this package. Determines whether the package should receive
@@ -641,7 +641,7 @@ type Package {
 
   """
   The semantic version that was last executed.
-  This reflects what has been provisioned to infrastructure, which may differ from `currentVersion`
+  This reflects what has been provisioned to infrastructure, which may differ from `resolvedVersion`
   if the package hasn't been deployed since the version was changed. Returns nil if never deployed.
   """
   deployedVersion: String
