@@ -1,6 +1,6 @@
 ---
-id: bundle-source
-title: BundleSource
+id: deployment-action
+title: DeploymentAction
 ---
 
 
@@ -39,33 +39,38 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Source code information for a bundle
+Action type of a deployment
 
 
 ```graphql
-type BundleSource {
-  bundle: Bundle!
-  source: String!
+enum DeploymentAction {
+  PROVISION
+  DECOMMISSION
+  PLAN
 }
 ```
 
 
 
 
-### Fields
+### Values
 
-#### [<code style={{ fontWeight: 'normal' }}>BundleSource.<b>bundle</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Bundle!</b></code>](/swapi/types/objects/bundle.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> 
-The bundle
-
-
-#### [<code style={{ fontWeight: 'normal' }}>BundleSource.<b>source</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
-Source code content
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentAction.<b>PROVISION</b></code>](#)  
+Provision new infrastructure
 
 
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentAction.<b>DECOMMISSION</b></code>](#)  
+Decommission existing infrastructure
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentAction.<b>PLAN</b></code>](#)  
+Plan deployment without executing
 
 
 
 
-### Returned By
 
-[`bundleSourceCode`](/swapi/operations/queries/bundle-source-code.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+
+### Member Of
+
+[`BundleDeploymentSummary`](/swapi/types/objects/bundle-deployment-summary.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Deployment`](/swapi/types/objects/deployment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

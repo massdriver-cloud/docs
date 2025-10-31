@@ -46,8 +46,8 @@ A connection handle in the diagram
 type Handle {
   fieldName: String!
   type: String!
-  isLinkable: Boolean!
   required: Boolean!
+  connectionOrientation: ArtifactDefinitionUiConnectionOrientation!
 }
 ```
 
@@ -64,12 +64,12 @@ Name of the field
 Type of the handle
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Handle.<b>isLinkable</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/swapi/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
-Whether this handle can be linked
-
-
 #### [<code style={{ fontWeight: 'normal' }}>Handle.<b>required</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/swapi/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
 Whether this handle is required
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Handle.<b>connectionOrientation</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ArtifactDefinitionUiConnectionOrientation!</b></code>](/swapi/types/enums/artifact-definition-ui-connection-orientation.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> 
+How to visually connect this artifact definition type on the canvas. link - draw lines, environmentDefault - set on sidebar
 
 
 
@@ -78,4 +78,4 @@ Whether this handle is required
 
 ### Member Of
 
-[`Node`](/swapi/types/objects/node.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`NodeContext`](/swapi/types/objects/node-context.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

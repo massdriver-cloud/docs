@@ -1,6 +1,6 @@
 ---
-id: linkable-field
-title: LinkableField
+id: bundle-deployments-page
+title: BundleDeploymentsPage
 ---
 
 
@@ -39,13 +39,13 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Field that an artifact can be linked to on this manifest.
+No description
 
 
 ```graphql
-type LinkableField {
-  name: String!
-  artifactDefinitions: [ArtifactDefinition]!
+type BundleDeploymentsPage {
+  cursor: PaginationCursor!
+  items: [BundleDeploymentSummary]
 }
 ```
 
@@ -54,18 +54,18 @@ type LinkableField {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>LinkableField.<b>name</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>BundleDeploymentsPage.<b>cursor</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PaginationCursor!</b></code>](/swapi/types/objects/pagination-cursor.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> 
+Pagination cursors
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundleDeploymentsPage.<b>items</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[BundleDeploymentSummary]</b></code>](/swapi/types/objects/bundle-deployment-summary.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+A list of type bundle&#x005F;deployment&#x005F;summary.
 
 
 
-#### [<code style={{ fontWeight: 'normal' }}>LinkableField.<b>artifactDefinitions</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ArtifactDefinition]!</b></code>](/swapi/types/objects/artifact-definition.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> 
 
 
 
+### Returned By
 
-
-
-
-### Member Of
-
-[`Manifest`](/swapi/types/objects/manifest.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`bundleDeployments`](/swapi/operations/queries/bundle-deployments.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

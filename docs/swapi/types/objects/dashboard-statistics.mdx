@@ -49,7 +49,6 @@ type DashboardStatistics {
   deploymentStatistics: [DeploymentStatistic]
   recentAlarms: [RecentAlarm]
   recentInfrastructureDeployments: [RecentDeployment]
-  recentApplicationDeployments: [RecentDeployment]
 }
 ```
 
@@ -75,11 +74,7 @@ Displays the 10 most recent infrastructure alarm status changes, ordered by when
 
 
 #### [<code style={{ fontWeight: 'normal' }}>DashboardStatistics.<b>recentInfrastructureDeployments</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[RecentDeployment]</b></code>](/swapi/types/objects/recent-deployment.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
-Shows the 10 most recent infrastructure changes, ordered by when the deployment was created. This panel provides visibility into the latest infrastructure modifications across your environments.
-
-
-#### [<code style={{ fontWeight: 'normal' }}>DashboardStatistics.<b>recentApplicationDeployments</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[RecentDeployment]</b></code>](/swapi/types/objects/recent-deployment.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
-Shows the 10 most recent application changes, ordered by when the deployment was created. This panel provides visibility into the latest application modifications across your environments.
+Shows the 20 most recent infrastructure changes, ordered by when the deployment was created. This panel provides visibility into the latest infrastructure modifications across your environments.
 
 
 

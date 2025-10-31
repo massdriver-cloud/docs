@@ -1,6 +1,6 @@
 ---
-id: link-context-updated
-title: linkContextUpdated
+id: server-features
+title: ServerFeatures
 ---
 
 
@@ -43,26 +43,24 @@ No description
 
 
 ```graphql
-linkContextUpdated(
-  organizationId: ID!
-  environmentId: ID!
-): LinkContext
+type ServerFeatures {
+  orgCreationEnabled: Boolean!
+}
 ```
 
 
 
 
-### Arguments
+### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>linkContextUpdated.<b>organizationId</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
-
-
-
-#### [<code style={{ fontWeight: 'normal' }}>linkContextUpdated.<b>environmentId</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>ServerFeatures.<b>orgCreationEnabled</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/swapi/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
 
 
 
-### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>LinkContext</b></code>](/swapi/types/objects/link-context.mdx) <Badge class="badge badge--secondary " text="object"/> 
-Context information for a link
+
+
+
+### Member Of
+
+[`Server`](/swapi/types/objects/server.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

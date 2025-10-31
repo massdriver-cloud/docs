@@ -1,0 +1,82 @@
+---
+id: bundle-alerts
+title: bundleAlerts
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Get alerts for packages from this bundle with filtering and pagination
+
+
+```graphql
+bundleAlerts(
+  organizationId: ID!
+  id: ID!
+  filter: BundleAlertsFilter
+  sort: BundleAlertsSort
+  cursor: Cursor
+): BundleAlertsPage
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>bundleAlerts.<b>organizationId</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Organization ID
+
+
+#### [<code style={{ fontWeight: 'normal' }}>bundleAlerts.<b>id</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Bundle ID or Name
+
+
+#### [<code style={{ fontWeight: 'normal' }}>bundleAlerts.<b>filter</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BundleAlertsFilter</b></code>](/swapi/types/inputs/bundle-alerts-filter.mdx) <Badge class="badge badge--secondary " text="input"/> 
+Filter criteria
+
+
+#### [<code style={{ fontWeight: 'normal' }}>bundleAlerts.<b>sort</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BundleAlertsSort</b></code>](/swapi/types/inputs/bundle-alerts-sort.mdx) <Badge class="badge badge--secondary " text="input"/> 
+Sort criteria
+
+
+#### [<code style={{ fontWeight: 'normal' }}>bundleAlerts.<b>cursor</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/swapi/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> 
+Pagination cursor with limit and after
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>BundleAlertsPage</b></code>](/swapi/types/objects/bundle-alerts-page.mdx) <Badge class="badge badge--secondary " text="object"/>

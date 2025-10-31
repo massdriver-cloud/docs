@@ -46,6 +46,7 @@ Get a specific bundle
 bundle(
   organizationId: ID!
   id: ID!
+  version: VersionConstraint
 ): Bundle
 ```
 
@@ -59,10 +60,16 @@ Organization ID
 
 
 #### [<code style={{ fontWeight: 'normal' }}>bundle.<b>id</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
-Bundle ID
+Bundle UUID or Name
+
+
+#### [<code style={{ fontWeight: 'normal' }}>bundle.<b>version</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>VersionConstraint</b></code>](/swapi/types/scalars/version-constraint.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+Specifies which bundle release to return. Can be an exact version (e.g., '1.2.3'),
+a tilde constraint for semantic versioning ranges (e.g., '~1.2' for 1.2.x, '~1' for 1.x.x),
+or 'latest' for the newest stable release. `+dev` can be appended to include development releases.
 
 
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>Bundle</b></code>](/swapi/types/objects/bundle.mdx) <Badge class="badge badge--secondary " text="object"/> 
-A reusable infrastructure component that packages IaC modules, policies, runbooks, and cloud dependencies into a deliverable software component
+A specific version of a bundle

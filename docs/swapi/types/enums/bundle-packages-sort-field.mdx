@@ -1,0 +1,91 @@
+---
+id: bundle-packages-sort-field
+title: BundlePackagesSortField
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+No description
+
+
+```graphql
+enum BundlePackagesSortField {
+  VERSION
+  UPDATED_AT
+  SLUG
+  STATUS
+  LAST_MONTHS_COST
+  PROJECT_NAME
+}
+```
+
+
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>BundlePackagesSortField.<b>VERSION</b></code>](#)  
+Sort by bundle version
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundlePackagesSortField.<b>UPDATED&#x005F;AT</b></code>](#)  
+Sort by last updated timestamp
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundlePackagesSortField.<b>SLUG</b></code>](#)  
+Sort by package slug
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundlePackagesSortField.<b>STATUS</b></code>](#)  
+Sort by package status
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundlePackagesSortField.<b>LAST&#x005F;MONTHS&#x005F;COST</b></code>](#)  
+Sort by last month's cost
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundlePackagesSortField.<b>PROJECT&#x005F;NAME</b></code>](#)  
+Sort by project name
+
+
+
+
+
+
+### Member Of
+
+[`BundlePackagesSort`](/swapi/types/inputs/bundle-packages-sort.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

@@ -1,0 +1,77 @@
+---
+id: set-package-version
+title: setPackageVersion
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+No description
+
+
+```graphql
+setPackageVersion(
+  organizationId: ID!
+  id: ID!
+  version: String!
+  releaseStrategy: ReleaseStrategy
+): PackagePayload
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setPackageVersion.<b>organizationId</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>setPackageVersion.<b>id</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Package ID, slug, or name prefix.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>setPackageVersion.<b>version</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+The version or release channel to use.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>setPackageVersion.<b>releaseStrategy</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ReleaseStrategy</b></code>](/swapi/types/enums/release-strategy.mdx) <Badge class="badge badge--secondary " text="enum"/> 
+The release strategy for this package.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PackagePayload</b></code>](/swapi/types/objects/package-payload.mdx) <Badge class="badge badge--secondary " text="object"/>

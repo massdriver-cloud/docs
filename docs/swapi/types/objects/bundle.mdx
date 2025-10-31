@@ -39,20 +39,18 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-A reusable infrastructure component that packages IaC modules, policies, runbooks, and cloud dependencies into a deliverable software component
+A specific version of a bundle
 
 
 ```graphql
 type Bundle {
   id: ID!
   name: String!
-  version: String
   icon: String
+  spec: JSON!
+  version: String!
   specVersion: String
-  type: String!
-  access: String!
   description: String
-  ref: String @deprecated
   sourceUrl: String
   paramsSchema: JSON!
   connectionsSchema: JSON!
@@ -62,8 +60,6 @@ type Bundle {
   createdAt: DateTime!
   updatedAt: DateTime!
   deletable: BundleDeletionLifecycle!
-  fqn: String! @deprecated
-  ociImageReference: String!
 }
 ```
 
@@ -80,36 +76,24 @@ Unique identifier
 Name of the bundle
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>version</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
-Version of the bundle
-
-
 #### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>icon</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
 Icon SVG
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>spec</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>JSON!</b></code>](/swapi/types/scalars/json.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Raw massdriver.yaml spec
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>version</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Semantic version of this bundle release
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>specVersion</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
 Version of the bundle specification
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>type</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
-Application or bundle
-
-
-#### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>access</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
-Private bundle or public template
-
-
 #### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>description</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
 Description of the bundle
-
-
-#### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>ref</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> 
-:::warning[DEPRECATED]
-
-See sourceUrl
-
-:::
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>sourceUrl</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
@@ -145,21 +129,7 @@ When the bundle was last updated
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>deletable</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BundleDeletionLifecycle!</b></code>](/swapi/types/objects/bundle-deletion-lifecycle.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> 
-Information about whether the bundle can be deleted
-
-
-#### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>fqn</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
-:::warning[DEPRECATED]
-
-See ociImageReference
-
-:::
-
-The full name of the bundle
-
-
-#### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>ociImageReference</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
-OCI Image Reference URL
+Information about whether the bundle repo can be deleted
 
 
 
@@ -168,8 +138,8 @@ OCI Image Reference URL
 
 ### Returned By
 
-[`bundle`](/swapi/operations/queries/bundle.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`bundles`](/swapi/operations/queries/bundles.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`searchBundles`](/swapi/operations/queries/search-bundles.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`templates`](/swapi/operations/queries/templates.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+[`bundle`](/swapi/operations/queries/bundle.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`bundles`](/swapi/operations/queries/bundles.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`template`](/swapi/operations/queries/template.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
 
 ### Member Of
 
-[`BundlePayload`](/swapi/types/objects/bundle-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`BundleRecommendation`](/swapi/types/objects/bundle-recommendation.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`BundleSource`](/swapi/types/objects/bundle-source.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Manifest`](/swapi/types/objects/manifest.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`BundlePayload`](/swapi/types/objects/bundle-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`BundleRecommendation`](/swapi/types/objects/bundle-recommendation.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Deployment`](/swapi/types/objects/deployment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Package`](/swapi/types/objects/package.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

@@ -39,14 +39,19 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Context information for a node
+Contextual information about a node in the diagram
 
 
 ```graphql
 type NodeContext {
   manifestId: ID!
-  packageId: ID!
-  packageSlug: String!
+  packageId: ID
+  packageSlug: String
+  packageVersion: VersionConstraint!
+  name: String!
+  type: String!
+  artifactHandles: [Handle]!
+  connectionHandles: [Handle]!
 }
 ```
 
@@ -59,12 +64,32 @@ type NodeContext {
 ID of the manifest
 
 
-#### [<code style={{ fontWeight: 'normal' }}>NodeContext.<b>packageId</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>NodeContext.<b>packageId</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
 ID of the package
 
 
-#### [<code style={{ fontWeight: 'normal' }}>NodeContext.<b>packageSlug</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>NodeContext.<b>packageSlug</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
 Slug of the package
+
+
+#### [<code style={{ fontWeight: 'normal' }}>NodeContext.<b>packageVersion</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>VersionConstraint!</b></code>](/swapi/types/scalars/version-constraint.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Version constraint of the package
+
+
+#### [<code style={{ fontWeight: 'normal' }}>NodeContext.<b>name</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Manifest Name
+
+
+#### [<code style={{ fontWeight: 'normal' }}>NodeContext.<b>type</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Type of the node (organization/bundle)
+
+
+#### [<code style={{ fontWeight: 'normal' }}>NodeContext.<b>artifactHandles</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Handle]!</b></code>](/swapi/types/objects/handle.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> 
+Handles for artifact connections
+
+
+#### [<code style={{ fontWeight: 'normal' }}>NodeContext.<b>connectionHandles</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Handle]!</b></code>](/swapi/types/objects/handle.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> 
+Handles for resource connections
 
 
 

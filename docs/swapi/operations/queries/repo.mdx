@@ -1,6 +1,6 @@
 ---
-id: link-contexts
-title: linkContexts
+id: repo
+title: repo
 ---
 
 
@@ -39,14 +39,14 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-No description
+Get a specific repository
 
 
 ```graphql
-linkContexts(
+repo(
   organizationId: ID!
-  environmentId: ID!
-): [LinkContext]
+  id: ID!
+): Repo
 ```
 
 
@@ -54,15 +54,15 @@ linkContexts(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>linkContexts.<b>organizationId</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>repo.<b>organizationId</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Organization ID
 
 
-
-#### [<code style={{ fontWeight: 'normal' }}>linkContexts.<b>environmentId</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
-
+#### [<code style={{ fontWeight: 'normal' }}>repo.<b>id</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Repository UUID or Name
 
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>LinkContext</b></code>](/swapi/types/objects/link-context.mdx) <Badge class="badge badge--secondary " text="object"/> 
-Context information for a link
+#### [<code style={{ fontWeight: 'normal' }}><b>Repo</b></code>](/swapi/types/objects/repo.mdx) <Badge class="badge badge--secondary " text="object"/> 
+An IaC bundle repository

@@ -1,6 +1,6 @@
 ---
-id: link-context-deleted
-title: linkContextDeleted
+id: oci-annotation
+title: OciAnnotation
 ---
 
 
@@ -39,30 +39,33 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-No description
+OCI annotation - arbitrary key-value pair for storing custom metadata
 
 
 ```graphql
-linkContextDeleted(
-  organizationId: ID!
-  environmentId: ID!
-): LinkContext
+type OciAnnotation {
+  name: String!
+  value: String!
+}
 ```
 
 
 
 
-### Arguments
+### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>linkContextDeleted.<b>organizationId</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
-
-
-
-#### [<code style={{ fontWeight: 'normal' }}>linkContextDeleted.<b>environmentId</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>OciAnnotation.<b>name</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+The annotation key (e.g., 'org.opencontainers.artifact.title')
 
 
+#### [<code style={{ fontWeight: 'normal' }}>OciAnnotation.<b>value</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+The annotation value
 
-### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>LinkContext</b></code>](/swapi/types/objects/link-context.mdx) <Badge class="badge badge--secondary " text="object"/> 
-Context information for a link
+
+
+
+
+### Member Of
+
+[`OciBlob`](/swapi/types/objects/oci-blob.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

@@ -1,0 +1,85 @@
+---
+id: oci-repo
+title: OciRepo
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A namespace for storing related container images and artifacts
+
+
+```graphql
+type OciRepo {
+  name: String!
+  createdAt: DateTime!
+  releaseChannels: [OciReleaseChannel]
+  tags: [OciTag]
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>name</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+The repository name within the registry
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>createdAt</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/swapi/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Timestamp when the repository was created
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>releaseChannels</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[OciReleaseChannel]</b></code>](/swapi/types/objects/oci-release-channel.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+Distribution channels for artifact releases
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>tags</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[OciTag]</b></code>](/swapi/types/objects/oci-tag.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+Human-readable references to manifests in this repository
+
+
+
+
+
+
+### Returned By
+
+[`ociRepo`](/swapi/operations/queries/oci-repo.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+
+### Member Of
+
+[`Manifest`](/swapi/types/objects/manifest.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
