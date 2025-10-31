@@ -250,20 +250,20 @@ Use major channels for latest features:
 
 ```mermaid
 graph TD
-    A[Set version in massdriver.yaml] --> B{Publish Type}
-    B -->|mass bundle publish -d| C[Development Release<br/>1.2.0-dev.timestamp]
-    B -->|mass bundle publish| D[Stable Release<br/>1.2.0]
-    C --> E[Test in Staging]
-    E --> F{Ready for Release?}
-    F -->|No| G[Fix Issues & Republish Dev Release]
+    A["Set version in massdriver.yaml"] --> B{"Publish Type"}
+    B -->|"mass bundle publish -d"| C["Development Release<br/>1.2.0-dev.timestamp"]
+    B -->|"mass bundle publish"| D["Stable Release<br/>1.2.0"]
+    C --> E["Test in Staging"]
+    E --> F{"Ready for Release?"}
+    F -->|"No"| G["Fix Issues & Republish Dev Release"]
     G --> C
-    F -->|Yes| D
-    D --> H[Available in UI]
-    H --> I[Package Deployment]
-    I --> J{Version Selection}
-    J -->|Exact| K[Pin to 1.2.0]
-    J -->|Channel| L[Use ~1.2]
-    J -->|Strategy| M[Stable/Development Release]
+    F -->|"Yes"| D
+    D --> H["Available in UI"]
+    H --> I["Package Deployment"]
+    I --> J{"Version Selection"}
+    J -->|"Exact"| K["Pin to 1.2.0"]
+    J -->|"Channel"| L["Use ~1.2"]
+    J -->|"Strategy"| M["Stable/Development Release"]
 ```
 
 **Workflow Steps:**

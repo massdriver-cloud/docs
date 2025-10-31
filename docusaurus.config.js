@@ -142,6 +142,10 @@ module.exports = {
       }
     ]
   ],
+  themes: ['@docusaurus/theme-mermaid'],
+  markdown: {
+    mermaid: true,
+  },
   presets: [
     [
       '@docusaurus/preset-classic',
