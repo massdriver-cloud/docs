@@ -9,6 +9,10 @@ sidebar_label: Versions
 
 Massdriver uses [semantic versioning](https://semver.org/) (SemVer) to manage bundle versions and deployments. This provides predictable versioning behavior and enables sophisticated release management workflows that automate infrastructure updates across your environments.
 
+:::note
+Versions is currently in prerelease schedule to be publicly available Nov 7th. If you would like to be opted in please post a message in the [community support channel](https://join.slack.com/t/massdrivercommunity/shared_invite/zt-1sxag35w2-eYw7gatS1hwlH2y8MCmwXA) or from the support chat while logged in to Massdriver.
+:::
+
 ## Semantic Versioning
 
 All bundle versions in Massdriver follow the semantic versioning specification `MAJOR.MINOR.PATCH`:
