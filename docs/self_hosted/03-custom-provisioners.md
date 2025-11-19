@@ -44,7 +44,7 @@ Integrate with your organization's operational systems:
 
 This section will walk you through the process of creating a simple "noop" provisioner which will simply echo that provision is happening. This will give you a base for creating your own provisioners.
 
-::: tip Examples
+:::tip Examples
 
 For more detailed and specific examples, you and refer to the Massdriver Official provisioners for [OpenTofu](https://github.com/massdriver-cloud/provisioner-opentofu), [Terrform](https://github.com/massdriver-cloud/provisioner-terraform), [Helm](https://github.com/massdriver-cloud/provisioner-helm) and [Bicep](https://github.com/massdriver-cloud/provisioner-bicep). You can also fork and customize these provisioners to fit your specific use case.
 
@@ -54,7 +54,7 @@ For more detailed and specific examples, you and refer to the Massdriver Officia
 
 Start by creating a Dockerfile for your custom provisioner.
 
-```dockerfile
+```Dockerfile
 FROM ubuntu:24.04
 
 # Install your required tools
@@ -72,7 +72,7 @@ RUN adduser \
     massdriver
 RUN chown -R massdriver:massdriver /massdriver
 
-# Copy your entrypoint script
+# Copy your entrypoint script - be sure to copy it to /usr/local/bin/entrypoint.sh
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
@@ -85,6 +85,12 @@ USER massdriver
 # Set the entrypoint
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 ```
+
+:::tip Entrypoint Location
+
+Be sure to place the entrypoint script at `/usr/local/bin/entrypoint.sh`! The workflow orchestrator expects the entrypoint script to be at that path when launching the provisioner container.
+
+:::
 
 ### Step 2: Create the Entrypoint Script
 
