@@ -15,7 +15,7 @@ A **provisioner** is a Docker image designed to execute infrastructure-as-code (
 * [Bicep](/provisioners/bicep)
 
 :::note
-Massdriver also supports the use of custom, private, provisioners for our customers. Please contact us for more information.
+Massdriver also supports the use of custom, private, provisioners in self-hosted installations. See our [documentation](../self_hosted/03-custom-provisioners.md) for more information.
 :::
 
 ---
@@ -65,12 +65,13 @@ Each bundle step will be executed in a isolated container. The bundle directory 
 
 The following files are generated and placed at the specified path in the provisioner.
 
-| File Path                       | Description                                                                 |
-|---------------------------------|-----------------------------------------------------------------------------|
-| `/massdriver/params.json`       | Parameters provided for the deployment, specific to the bundle.            |
-| `/massdriver/connections.json`  | Connection data representing relationships with other bundles or services. |
-| `/massdriver/envs.json`         | Environment variables to inject runtime configuration.                     |
-| `/massdriver/secrets.json`      | Secrets required for sensitive configurations or access.                   |
+| File Path                       | Description                                     |
+|---------------------------------|-------------------------------------------------|
+| `/massdriver/params.json`       | Parameters from package configuration           |
+| `/massdriver/connections.json`  | Connection artifacts                            |
+| `/massdriver/envs.json`         | Environment variables                           |
+| `/massdriver/secrets.json`      | Secrets (in decrypted form)                     |
+| `/massdriver/config.json`       | Provisioner configuration (from `config` block) |
 
 For more information about how a provisioner interacts with these files, refer to the provisioner-specific documentation.
 
