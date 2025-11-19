@@ -135,7 +135,7 @@ esac
 echo "Action $MASSDRIVER_DEPLOYMENT_ACTION completed successfully."
 ```
 
-### Step 4: Build and Publish the Image
+### Step 3: Build and Publish the Image
 
 Build and push your custom provisioner to a container registry accessible by your Massdriver cluster:
 
