@@ -5,17 +5,13 @@ title: Custom Provisioners
 sidebar_label: Custom Provisioners
 ---
 
-Custom provisioners allow users to extend and customize the infrastructure deployment capabilities of the Massdriver platform. While Massdriver currently provides four official provisioners ([OpenTofu](/provisioners/02-opentofu.md), [Terraform](/provisioners/03-terraform.md), [Helm](/provisioners/04-helm.md), and [Bicep](/provisioners/05-bicep.md)), custom provisioners enable you to integrate additional tools, workflows, and processes that are specific to your organization's needs.
+A **provisioner** is a Docker image designed to execute infrastructure-as-code (IaC) operations (e.g., `plan`, `provision`, and `decommission`) on a [Massdriver bundle](/concepts/bundles). Custom provisioners allow users to extend and customize these infrastructure deployment capabilities beyond the official provisioners that Massdriver currently provides ([OpenTofu](/provisioners/02-opentofu.md), [Terraform](/provisioners/03-terraform.md), [Helm](/provisioners/04-helm.md), and [Bicep](/provisioners/05-bicep.md)). Custom provisioners are created and maintained by users to integrate additional tools, workflows, and processes specific to their organization's needs, receiving deployment data from Massdriver to perform deployment actions on your bundles.
 
 :::info Self-Hosted Only
 
 Custom provisioners are exclusively available in self-hosted Massdriver installations. This feature is not available in the managed cloud platform.
 
 :::
-
-## What Are Custom Provisioners?
-
-A **provisioner** is a Docker image designed to execute infrastructure-as-code (IaC) operations (e.g., `plan`, `provision`, and `decommission`) on a [Massdriver bundle](/concepts/bundles). Custom provisioners are created and mainted by users to , custom provisioners receive deployment data from Massdriver and perform deployment actions such as `plan`, `provision`, and `decommission` operations on your bundles.
 
 ## Why Create Custom Provisioners?
 
@@ -56,9 +52,11 @@ Custom provisioners follow the same execution model as official provisioners:
 
 ## Creating a Custom Provisioner
 
+This section will walk you through the process of creating a simple "noop" provisioner which will simply echo that provision is happening. This will give you a base for creating your own provisioners.
+
 ::: tip Examples
 
-You can refer to the existing Massdriver Official provisioners for [OpenTofu](https://github.com/massdriver-cloud/provisioner-opentofu), [Terrform](https://github.com/massdriver-cloud/provisioner-terraform), [Helm](https://github.com/massdriver-cloud/provisioner-helm) and [Bicep](https://github.com/massdriver-cloud/provisioner-bicep) of some of the steps below.
+For more detailed and specific examples, you and refer to the Massdriver Official provisioners for [OpenTofu](https://github.com/massdriver-cloud/provisioner-opentofu), [Terrform](https://github.com/massdriver-cloud/provisioner-terraform), [Helm](https://github.com/massdriver-cloud/provisioner-helm) and [Bicep](https://github.com/massdriver-cloud/provisioner-bicep). You can also fork and customize these provisioners to fit your specific use case.
 
 :::
 
@@ -67,22 +65,30 @@ You can refer to the existing Massdriver Official provisioners for [OpenTofu](ht
 Start by creating a Dockerfile for your custom provisioner.
 
 ```dockerfile
-FROM alpine:3.22
+FROM ubuntu:24.04
 
 # Install your required tools
-RUN apk add --no-cache \
-    bash \
-    curl \
-    jq \
-    python3 \
-    py3-pip
+RUN apt update && apt install -y ca-certificates jq && \
+    rm -rf /var/lib/apt/lists/*
 
-# Install your specific tooling
-RUN pip3 install pulumi pulumi-aws
+# Create the working dir
+RUN mkdir -p -m 777 /massdriver
+
+# Add the Massdriver user (this is the default user provisioners will run as, if you prefer a different user you must customize your launch control configuration)
+RUN adduser \
+    --disabled-password \
+    --gecos "" \
+    --uid 10001 \
+    massdriver
+RUN chown -R massdriver:massdriver /massdriver
+USER massdriver
 
 # Copy your entrypoint script
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Set the /massdriver directory as the default
+WORKDIR /massdriver
 
 # Set the entrypoint
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
@@ -90,19 +96,21 @@ ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 ### Step 2: Create the Entrypoint Script
 
-Your entrypoint script handles the provisioner logic:
+Your entrypoint script handles the provisioner logic. When the provisioner container is created, Massdriver will place the bundle directory and several files in the container for use by the provisioner. Refer to the [provisioner overview documentation](/provisioners/01-overview.md#environment) for details on the files and environment variables.
 
 ```bash
 #!/bin/bash
-set -e
+set -euo pipefail
 
-# Read Massdriver inputs
-PARAMS=$(cat /massdriver/params.json)
-CONNECTIONS=$(cat /massdriver/connections.json)
-CONFIG=$(cat /massdriver/config.json)
+# Create bash variables for Massdriver inputs
+params_path="$entrypoint_dir/params.json"
+connections_path="$entrypoint_dir/connections.json"
+config_path="$entrypoint_dir/config.json"
+envs_path="$entrypoint_dir/envs.json"
+secrets_path="$entrypoint_dir/secrets.json"
 
-# Navigate to bundle directory
-cd /massdriver/bundle
+# Navigate to the proper bundle directory for this setp
+cd /massdriver/bundle/$MASSDRIVER_STEP_PATH
 
 case "$MASSDRIVER_DEPLOYMENT_ACTION" in
   "plan")
@@ -124,131 +132,28 @@ case "$MASSDRIVER_DEPLOYMENT_ACTION" in
 esac
 ```
 
-### Step 3: Handle Massdriver Data
-
-#### Bundle Directory and Input Files
-
-When the provisioner container is created, Massdriver will place the bundle directory and several files in the container for use by the provisioner. Refer to the [provisioner overview documentation](/provisioners/01-overview.md#inputs) for details on the files and their locations.
-
-```bash
-# Example usage of files
-cd /massdriver/bundle/$MASSDRIVER_BUNDLE_STEP
-cp /massdriver/params.json params.auto.tfvars.json
-cp /massdriver/connections.json connections.auto.tfvars.json
-tofu init
-```
-
-#### Environment Variables
-
-Your provisioner also receives [environment variables](/provisioners/overview#environment-variables) with deployment context:
-
-```bash
-# Example usage of environment variables
-echo "Deploying bundle: $MASSDRIVER_BUNDLE_ID"
-echo "Package name: $MASSDRIVER_PACKAGE_NAME"
-echo "Action: $MASSDRIVER_DEPLOYMENT_ACTION"
-```
-
 ### Step 4: Build and Publish the Image
 
 Build and push your custom provisioner to a container registry accessible by your Massdriver cluster:
 
 ```bash
 # Build the image
-docker build -t your-registry.com/custom-provisioner:v1.0.0 .
+docker build -t your-registry.com/provisioner-noop:v1.0.0 .
 
 # Push to registry
-docker push your-registry.com/custom-provisioner:v1.0.0
+docker push your-registry.com/provisioner-noop:v1.0.0
 ```
 
 ## Using Custom Provisioners in Bundles
 
-Once your custom provisioner is built and published, use it in your bundle's `massdriver.yaml`:
+Once your custom provisioner is built and published, use it in your bundle's `massdriver.yaml`. If applicable, you can add custom configuration values to the `config` block will will be placed in the `config.json` file at during bundle provisioning:
 
 ```yaml
 steps:
   - path: src
-    provisioner: your-registry.com/custom-provisioner:v1.0.0
-    config:
-      foo: .params.foo
-```
-
-## Advanced Examples
-
-### Security Scanning Provisioner
-
-```dockerfile
-FROM alpine:3.22
-
-RUN apk add --no-cache bash curl jq
-RUN wget -O /usr/local/bin/snyk https://github.com/snyk/snyk/releases/download/v1.1064.0/snyk-alpine
-RUN chmod +x /usr/local/bin/snyk
-
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
-
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-```
-
-```bash
-#!/bin/bash
-# entrypoint.sh for security scanner
-set -e
-
-cd /massdriver/bundle
-
-case "$MASSDRIVER_DEPLOYMENT_ACTION" in
-  "plan"|"provision")
-    echo "Running security scan..."
-    snyk iac test . --severity-threshold=high
-    
-    # Update CMDB
-    REGION=$(jq -r '.region' /massdriver/config.json)
-    curl -X POST https://cmdb.yourorg.com/api/deployments \
-      -H "Content-Type: application/json" \
-      -d "{\"bundle_id\": \"$MASSDRIVER_BUNDLE_ID\", \"region\": \"$REGION\"}"
-    ;;
-  "decommission")
-    echo "Cleaning up CMDB entry..."
-    curl -X DELETE "https://cmdb.yourorg.com/api/deployments/$MASSDRIVER_BUNDLE_ID"
-    ;;
-esac
-```
-
-### Pulumi Provisioner
-
-```dockerfile
-FROM pulumi/pulumi:latest
-
-RUN apt-get update && apt-get install -y jq curl
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
-
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-```
-
-```bash
-#!/bin/bash
-# entrypoint.sh for Pulumi
-set -e
-
-cd /massdriver/bundle
-
-# Set up Pulumi configuration from Massdriver params
-STACK_NAME=$(jq -r '.stack_name' /massdriver/config.json)
-pulumi stack select "$STACK_NAME" || pulumi stack init "$STACK_NAME"
-
-case "$MASSDRIVER_DEPLOYMENT_ACTION" in
-  "plan")
-    pulumi preview
-    ;;
-  "provision")
-    pulumi up --yes
-    ;;
-  "decommission")
-    pulumi destroy --yes
-    ;;
-esac
+    provisioner: your-registry.com/provisioner-noop:v1.0.0
+    # config:
+    #   foo: .params.foo
 ```
 
 ## Best Practices
