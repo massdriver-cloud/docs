@@ -68,7 +68,7 @@ Start by creating a Dockerfile for your custom provisioner.
 FROM ubuntu:24.04
 
 # Install your required tools
-RUN apt update && apt install -y ca-certificates jq && \
+RUN apt update && apt install -y ca-certificates jq adduser && \
     rm -rf /var/lib/apt/lists/*
 
 # Create the working dir
@@ -81,7 +81,6 @@ RUN adduser \
     --uid 10001 \
     massdriver
 RUN chown -R massdriver:massdriver /massdriver
-USER massdriver
 
 # Copy your entrypoint script
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
@@ -89,6 +88,9 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Set the /massdriver directory as the default
 WORKDIR /massdriver
+
+# Drop privileges to created user
+USER massdriver
 
 # Set the entrypoint
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
@@ -103,14 +105,17 @@ Your entrypoint script handles the provisioner logic. When the provisioner conta
 set -euo pipefail
 
 # Create bash variables for Massdriver inputs
-params_path="$entrypoint_dir/params.json"
-connections_path="$entrypoint_dir/connections.json"
-config_path="$entrypoint_dir/config.json"
-envs_path="$entrypoint_dir/envs.json"
-secrets_path="$entrypoint_dir/secrets.json"
+workdir="/massdriver"
+params_path="$workdir/params.json"
+connections_path="$workdir/connections.json"
+config_path="$workdir/config.json"
+envs_path="$workdir/envs.json"
+secrets_path="$workdir/secrets.json"
 
 # Navigate to the proper bundle directory for this setp
 cd /massdriver/bundle/$MASSDRIVER_STEP_PATH
+
+echo "Starting action: $MASSDRIVER_DEPLOYMENT_ACTION"
 
 case "$MASSDRIVER_DEPLOYMENT_ACTION" in
   "plan")
@@ -130,6 +135,8 @@ case "$MASSDRIVER_DEPLOYMENT_ACTION" in
     exit 1
     ;;
 esac
+
+echo "Action $MASSDRIVER_DEPLOYMENT_ACTION completed successfully."
 ```
 
 ### Step 4: Build and Publish the Image
@@ -155,58 +162,6 @@ steps:
     # config:
     #   foo: .params.foo
 ```
-
-## Best Practices
-
-### 🔒 **Security**
-- Use minimal base images to reduce attack surface
-- Scan your provisioner images for vulnerabilities
-- Handle secrets securely and never log them
-- Use read-only file systems where possible
-
-### 📝 **Error Handling**
-- Implement proper exit codes (0 for success, non-zero for failure)
-- Provide clear, actionable error messages
-- Log important steps for debugging
-- Handle network timeouts and retries
-
-### 🎯 **Performance**
-- Keep images as small as possible
-- Cache dependencies appropriately
-- Implement timeouts for long-running operations
-- Consider parallel execution where safe
-
-### 🔄 **Maintenance**
-- Version your provisioner images
-- Document configuration options
-- Provide examples and documentation
-- Test with different deployment scenarios
-
-## Troubleshooting
-
-### Common Issues
-
-**Image Pull Errors**
-- Verify your Kubernetes cluster can access the registry
-- Check image tags and ensure they exist
-- Validate registry credentials are configured
-
-**Permission Errors**
-- Ensure the provisioner runs with appropriate user permissions
-- Check file system permissions in the container
-- Validate Kubernetes service account permissions
-
-**Configuration Issues**
-- Verify jq queries in the `config` block are valid
-- Check that required parameters are provided
-- Ensure JSON structure matches expectations
-
-### Debugging Tips
-
-1. **Test Locally**: Run your provisioner container locally with sample data
-2. **Check Logs**: Use `kubectl logs` to view provisioner execution logs
-3. **Validate Inputs**: Print input JSON files during development
-4. **Step Through Actions**: Test each deployment action independently
 
 ## Getting Help
 
