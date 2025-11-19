@@ -40,16 +40,6 @@ Integrate with your organization's operational systems:
 - Service catalog registration
 - Cost tracking and reporting
 
-## How Custom Provisioners Work
-
-Custom provisioners follow the same execution model as official provisioners:
-
-1. **Bundle Preparation**: Massdriver prepares the bundle and deployment context
-2. **Container Execution**: Your custom provisioner container is launched
-3. **Data Injection**: Massdriver injects deployment data and environment variables
-4. **Action Execution**: Your provisioner executes the requested action
-5. **Result Processing**: Massdriver processes outputs and artifacts
-
 ## Creating a Custom Provisioner
 
 This section will walk you through the process of creating a simple "noop" provisioner which will simply echo that provision is happening. This will give you a base for creating your own provisioners.
