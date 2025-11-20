@@ -9,10 +9,13 @@ RJSF and JSON Schema support `readOnly` fields. Massdriver extends this function
 
 When a field is set to immutable, it cannot be changed once provisioned. This is useful for adding guardrails on fields that might cause recreation if a value is changed. I.e.: changing the CIDR address of a VPC.
 
-:::note
-This is currently only supported on top-level properties.
+:::tip
+For complete documentation on `$md.immutable` and other Massdriver custom annotations, see the [Massdriver Annotations](/json-schema-cheat-sheet/massdriver-annotations) reference page.
 :::
 
+:::note
+This is currently supported on top-level properties and nested properties within objects.
+:::
 
 ```yaml
 title: Immutable Field Example

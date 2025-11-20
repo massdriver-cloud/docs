@@ -45,6 +45,8 @@ Both packages must be from the same manifest (e.g., api-prod-database and api-st
 Fields marked with `$md.copyable: false` in the params schema will be excluded from copying.
 The merged params are deep merged with the overrides, allowing you to override specific values.
 
+For complete documentation on the `$md.copyable` annotation and usage examples, see the [Massdriver Annotations Reference](/json-schema-cheat-sheet/massdriver-annotations#mdcopyable).
+
 
 ```graphql
 copyPackageParams(
