@@ -7,6 +7,10 @@ sidebar_label: Custom Widgets & Fields
 
 Massdriver's `RJSF Form` component is a wrapper enhancing RJSF's MUI `ThemedForm`. This wrapper allows us to provide custom widgets, fields, error messages, and AJV formData sanitization to the basic `ThemedForm` functionality.
 
+:::tip
+Looking for Massdriver schema annotations like `$md.immutable`, `$md.enum`, or `$md.copyable`? See the [Massdriver Annotations Reference](/json-schema-cheat-sheet/massdriver-annotations) for documentation on custom annotations that work in your params schema.
+:::
+
 ## Implementation Pattern
 
 When implementing a `Custom Widget/Field`, you must define both the `schema` and the `uiSchema`. The way custom Widgets/Fields work in RJSF, you must take the `name` of the `property` defined in the `schema`, and use the `uiSchema` to pair that `property` with a custom Widget/Field. Some custom Widgets/Fields also allow/require additional external props to be passed to the Widget/Field through the uiSchema.

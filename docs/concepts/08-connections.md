@@ -15,6 +15,16 @@ A solid line indicates that an [artifact](#artifact) _has_ been provisioned for 
 
 ![Connections](./img/connections.png)
 
+## Dynamic Configuration from Connections
+
+You can use the `$md.enum` annotation in your bundle's params schema to create dynamic dropdown fields that query data from connected artifacts. This enables users to select from available resources (like subnets, database instances, or IAM roles) that exist in their connected infrastructure.
+
+For example, a bundle connected to a VPC can provide a dropdown to select from available subnets, or a bundle connected to a database cluster can let users pick a specific database instance.
+
+See the [Massdriver Annotations Reference](/json-schema-cheat-sheet/massdriver-annotations#mdenuml) for complete documentation and examples.
+
+## Removing Connections
+
 To remove a connection, click the **X** on the connection line.
 
 :::caution

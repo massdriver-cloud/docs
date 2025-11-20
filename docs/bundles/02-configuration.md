@@ -89,6 +89,16 @@ Input parameters for the bundle. These will be converted to input variables for 
 * **Type**: `any`
 * **Required**:  &#10003; Yes
 
+#### Massdriver Custom Annotations
+
+Massdriver extends JSON Schema with custom annotations prefixed with `$md.` to provide platform-specific functionality in your params schema:
+
+- **`$md.immutable`**: Prevents modification of fields after initial provisioning (e.g., VPC CIDR blocks, database identifiers)
+- **`$md.enum`**: Creates dynamic dropdown options from connected artifact data (e.g., select a subnet from a connected VPC)
+- **`$md.copyable`**: Controls whether fields are copied when duplicating configuration between environments (useful for excluding secrets)
+
+See the [Massdriver Annotations Reference](/json-schema-cheat-sheet/massdriver-annotations) for complete documentation, use cases, and examples.
+
 ### Bundle Connections
 
 Input connections for this bundle. Determines which artifacts from other bundles this bundle depends on. These will be converted to input variables for your IaC module.
