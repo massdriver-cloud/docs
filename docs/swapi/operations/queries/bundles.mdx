@@ -39,13 +39,19 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
+:::warning[DEPRECATED]
+
+See repos()
+
+:::
+
 List all bundles
 
 
 ```graphql
 bundles(
   organizationId: ID!
-): [Bundle]
+): [Bundle] @deprecated
 ```
 
 

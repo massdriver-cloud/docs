@@ -1,0 +1,93 @@
+---
+id: repos
+title: repos
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+List all bundle repositories with pagination, sorting, and search capabilities.
+
+Returns a paginated list of repositories (bundles) that the authenticated user has access to
+within the specified organization. Each repository can contain multiple releases with
+different version strategies (stable vs development).
+
+
+```graphql
+repos(
+  organizationId: ID!
+  sort: ReposSort
+  cursor: Cursor
+  search: String
+): ReposPage
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>repos.<b>organizationId</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/swapi/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Organization ID to scope the query
+
+
+#### [<code style={{ fontWeight: 'normal' }}>repos.<b>sort</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ReposSort</b></code>](/swapi/types/inputs/repos-sort.mdx) <Badge class="badge badge--secondary " text="input"/> 
+Sort repositories by name or creation date. Defaults to name ascending.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>repos.<b>cursor</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/swapi/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> 
+Pagination cursor with limit and next/previous tokens for cursor-based pagination
+
+
+#### [<code style={{ fontWeight: 'normal' }}>repos.<b>search</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+Full-text search with Google-style operators (AND, OR, -, quotes).
+Searches across the most recent release's name, description, and operator guide.
+
+Syntax:
+- "word1 word2" → OR (matches either)
+- "word1 AND word2" → both required
+- "-word" → exclude term
+- "\"exact phrase\"" → exact match
+
+Examples:
+- "postgres AND aws -aurora"
+- "kubernetes AND (gcp OR azure)"
+- "\"load balancer\""
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ReposPage</b></code>](/swapi/types/objects/repos-page.mdx) <Badge class="badge badge--secondary " text="object"/>

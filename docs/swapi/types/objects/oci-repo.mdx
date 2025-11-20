@@ -46,7 +46,7 @@ A namespace for storing related container images and artifacts
 type OciRepo {
   name: String!
   createdAt: DateTime!
-  releaseChannels: [OciReleaseChannel]
+  releaseChannels: [OciReleaseChannel] @deprecated
   tags: [OciTag]
 }
 ```
@@ -64,7 +64,13 @@ The repository name within the registry
 Timestamp when the repository was created
 
 
-#### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>releaseChannels</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[OciReleaseChannel]</b></code>](/swapi/types/objects/oci-release-channel.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>releaseChannels</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[OciReleaseChannel]</b></code>](/swapi/types/objects/oci-release-channel.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+:::warning[DEPRECATED]
+
+Use Repo.releaseChannels instead
+
+:::
+
 Distribution channels for artifact releases
 
 
@@ -79,7 +85,3 @@ Human-readable references to manifests in this repository
 ### Returned By
 
 [`ociRepo`](/swapi/operations/queries/oci-repo.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
-
-### Member Of
-
-[`Manifest`](/swapi/types/objects/manifest.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

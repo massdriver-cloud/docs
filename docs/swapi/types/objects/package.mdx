@@ -45,7 +45,8 @@ A deployed instance of a bundle in the context of its manifest
 ```graphql
 type Package {
   id: ID!
-  namePrefix: String!
+  namePrefix: String! @deprecated
+  slug: String!
   params: JSON!
   status: PackageStatus!
   createdAt: DateTime!
@@ -81,8 +82,16 @@ type Package {
 Unique identifier
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Package.<b>namePrefix</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
-Prefix for resource names
+#### [<code style={{ fontWeight: 'normal' }}>Package.<b>namePrefix</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+:::warning[DEPRECATED]
+
+Use slug instead.
+
+:::
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Package.<b>slug</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Unique identifier for the package
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Package.<b>params</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>JSON!</b></code>](/swapi/types/scalars/json.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 

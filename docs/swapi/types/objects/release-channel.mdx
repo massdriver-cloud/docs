@@ -1,6 +1,6 @@
 ---
-id: sort-order
-title: SortOrder
+id: release-channel
+title: ReleaseChannel
 ---
 
 
@@ -39,27 +39,27 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-No description
+A release channel that resolves to a specific tag
 
 
 ```graphql
-enum SortOrder {
-  ASC
-  DESC
+type ReleaseChannel {
+  name: String!
+  tag: String!
 }
 ```
 
 
 
 
-### Values
+### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>SortOrder.<b>ASC</b></code>](#)  
-Ascending order
+#### [<code style={{ fontWeight: 'normal' }}>ReleaseChannel.<b>name</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+The channel name (e.g., 'latest', '1.x', '0.x')
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SortOrder.<b>DESC</b></code>](#)  
-Descending order
+#### [<code style={{ fontWeight: 'normal' }}>ReleaseChannel.<b>tag</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+The tag this channel resolves to (e.g., '1.0.0')
 
 
 
@@ -68,4 +68,4 @@ Descending order
 
 ### Member Of
 
-[`BundleAlertsSort`](/swapi/types/inputs/bundle-alerts-sort.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`BundleDeploymentsSort`](/swapi/types/inputs/bundle-deployments-sort.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`BundlePackagesSort`](/swapi/types/inputs/bundle-packages-sort.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`ReleasesSort`](/swapi/types/inputs/releases-sort.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`ReposSort`](/swapi/types/inputs/repos-sort.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>
+[`Repo`](/swapi/types/objects/repo.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
