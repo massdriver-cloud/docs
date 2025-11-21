@@ -20,7 +20,6 @@ If you wish to use a [dependency lock file](https://opentofu.org/docs/language/f
 The following tools are included in this provisioner:
 
 * [Checkov](https://www.checkov.io/): Included to scan terraform configurations for common policy and compliance violations.
-* [Open Policy Agent](https://www.openpolicyagent.org/): Included to scan terraform configurations against custom policies.
 
 ## Configuration
 
