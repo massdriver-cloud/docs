@@ -1,14 +1,3 @@
----
-id: provisioners-bicep
-slug: /provisioners/bicep
-title: Bicep Provisioner
-sidebar_label: Bicep
----
-
-# Bicep Provisioner
-
-[Massdriver](https://www.massdriver.cloud/) provisioner for managing resources with [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/).
-
 ## Structure
 
 This provisioner expects the `path` to contain a single bicep file named `template.bicep`. While other files may exists in the directory, this `template.bicep` file will be what is used for provisioning and managing the Azure resources.
@@ -26,12 +15,12 @@ The following configuration options are available:
 | Configuration Option | Type | Default | Description |
 |-|-|-|-|
 | `azure_service_principal` | object | `.connections.azure_service_principal` | `jq` path to a `massdriver/azure-service-principal` connection for authentication to Azure |
-| `region` | string | `"eastus"` | Azure region to deploy template resources into. Defaults to `"eastus"`. |
-| `resource_group` | string | (package name) | Specifies the resource group name. Defaults to the Massdriver package name if not specified. |
+| `location` | string | `"eastus"` | Azure region to deploy template resources into. Defaults to `"eastus"`. |
 | `scope` | string | `"group"` | Sets the [Azure Resource Manager deployment scope](https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/deploy-cli#deployment-scope). Currently supports `group` and `sub`. For more information, refer to the [Deployment Scope](#deployment-scope) section. |
-| `complete` | boolean | `true` | Sets the [Azure Resource Manager deployment mode](https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/deployment-modes) to "Complete" (sets the `--mode Complete` flag). If this is set to `false`, deployment mode will be "Incremental". Only applies to steps with scope `group`. For more information, refer to the [Deployment Mode](#deployment-mode) section |
-| `create_resource_group` | boolean | `true` | Determines whether the resource group will be created during provisioning. If this is set to `false`, the resource group must already exist in Azure. |
-| `delete_resource_group` | boolean | `true` | Determines whether the resource group will be deleted during decommissioning. |
+| `complete` | boolean | `true` | Sets the [Azure Resource Manager deployment mode](https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/deployment-modes) to "Complete" (sets the `--mode Complete` flag). If this is set to `false`, deployment mode will be "Incremental". Only applies to steps with scope `group`. For more information, refer to the [Deployment Mode](#deployment-mode) section. |
+| `resource_group` | string | (package name) | Specifies the resource group name. Defaults to the Massdriver package name if not specified. Only applies to steps with scope `group`. |
+| `create_resource_group` | boolean | `true` | Determines whether the resource group will be created during provisioning. If this is set to `false`, the resource group must already exist in Azure. Only applies to steps with scope `group`. |
+| `delete_resource_group` | boolean | `true` | Determines whether the resource group will be deleted during decommissioning. Only applies to steps with scope `group`. |
 | `checkov.enable` | boolean |  `true` | Enables Checkov policy evaluation. If `false`, Checkov will not be run. |
 | `checkov.quiet` | boolean |  `true` | Only display failed checks if `true` (adds the `--quiet` flag). |
 | `checkov.halt_on_failure` | boolean |  `false` | Halt provisioning run and mark deployment as failed on a policy failure (removes the `--soft-fail` flag). |
