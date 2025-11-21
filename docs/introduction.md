@@ -9,16 +9,16 @@ Massdriver turns Infrastructure as Code into reusable, self-service components t
 
 ## Massdriver Platform Principles
 
-	•	Bundle-centric architecture — bundles encapsulate best practices, validations, policies, and artifact contracts so mistakes can’t propagate downstream.
-	•	Proactive guardrails — invalid, insecure, or out-of-policy configurations are impossible to express; issues are prevented up front rather than caught in review.
-	•	Pipeline-free automation — ephemeral, on-demand workflows replace permanent IaC pipelines, eliminating pipeline sprawl and the maintenance burden that comes with it.
-	•	Type-safe infrastructure composition — artifact schemas and connection contracts ensure components are compatible before they’re ever deployed.
-	•	The compliant path is the easiest path — developers get a simple, visual, self-service workflow that naturally adheres to ops policies and standards.
-	•	Environment consistency by design — every environment is created from the same validated bundle definitions, eliminating drift and configuration divergence.
-	•	API-first platform — every UI action maps to an API, enabling deep automation, custom tooling, and integration with external systems.
-	•	Bring your own IaC — use Terraform, OpenTofu, Helm, Bicep, etc.; Massdriver adds guardrails, validation, and orchestration without locking you into a DSL.
-	•	No lock-in — infrastructure runs in your cloud accounts, bundles are open, and you retain full ownership of IaC code and state.
-	•	All-in-one orchestration — infrastructure, applications, IAM, security checks, cost insights, and observability live in one cohesive system rather than scattered across tools.
+- Bundle-centric architecture — bundles encapsulate best practices, validations, policies, and artifact contracts so mistakes can’t propagate downstream.
+- Proactive guardrails — invalid, insecure, or out-of-policy configurations are impossible to express; issues are prevented up front rather than caught in review.
+- Pipeline-free automation — ephemeral, on-demand workflows replace permanent IaC pipelines, eliminating pipeline sprawl and the maintenance burden that comes with it.
+- Type-safe infrastructure composition — artifact schemas and connection contracts ensure components are compatible before they’re ever deployed.
+- The compliant path is the easiest path — developers get a simple, visual, self-service workflow that naturally adheres to ops policies and standards.
+- Environment consistency by design — every environment is created from the same validated bundle definitions, eliminating drift and configuration divergence.
+- API-first platform — every UI action maps to an API, enabling deep automation, custom tooling, and integration with external systems.
+- Bring your own IaC — use Terraform, OpenTofu, Helm, Bicep, etc.; Massdriver adds guardrails, validation, and orchestration without locking you into a DSL.
+- No lock-in — infrastructure runs in your cloud accounts, bundles are open, and you retain full ownership of IaC code and state.
+- All-in-one orchestration — infrastructure, applications, IAM, security checks, cost insights, and observability live in one cohesive system rather than scattered across tools.
 
 ## Massdriver Core Concepts
 
