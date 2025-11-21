@@ -88,7 +88,7 @@ ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 :::tip Entrypoint Location
 
-Be sure to place the entrypoint script at `/usr/local/bin/entrypoint.sh`! The workflow orchestrator expects the entrypoint script to be at that path when launching the provisioner container.
+Be sure to place the entrypoint script somewhere in the `path` (`/usr/local/bin/entrypoint.sh` is always a good option)! The workflow orchestrator attempts to call `entrypoint.sh` when launching the provisioner container.
 
 :::
 
