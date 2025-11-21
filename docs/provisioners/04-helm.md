@@ -28,7 +28,6 @@ The following configuration options are available:
 | `kubernetes_cluster` | object | `.connections.kubernetes_cluster` | `jq` path to a `massdriver/kubernetes-cluster` connection for authentication to Kubernetes |
 | `namespace` | string | `"default"` | Kubernetes namespace to install the chart into. Defaults to the `default` namespace |
 | `release_name` | string | (package name) | Specifies the release name for the helm chart. Defaults to the Massdriver package name if not specified. |
-| `release_name` | string | (package name) | Specifies the release name for the helm chart. Defaults to the Massdriver package name if not specified. |
 | `.chart.repo` | string | `null` | Specifies the URL of the chart repo (required if using [remote chart](#local-vs-remote-chart)) |
 | `.chart.name` | string | `null` | Specifies the name of the chart from the repo to use (required if using [remote chart](#local-vs-remote-chart)) |
 | `.chart.version` | string | `null` | Specifies the chart version to use (required if using [remote chart](#local-vs-remote-chart)) |
