@@ -15,7 +15,7 @@ Bundles solve a fundamental problem in cloud infrastructure management: how to c
 - **How to configure applications** (secrets, environment variables, IAM policies)
 - **What policies are enforced** (policy-as-code validations)
 
-## The Problem Bundles Solve
+## Bundles make Infrastructure-as-Code adoption scalable
 
 Modern teams struggle with complex cloud setups, slow provisioning, and DevOps bottlenecks. Traditional IaC workflows require developers to author Terraform, Helm, or other infrastructure code, push to Git, and wait for CI pipelines to execute—a process that leads to long code review cycles and a steep learning curve for those not deeply familiar with cloud internals. This slows down innovation and creates friction between fast-moving development needs and the safeguards of operations.
 
