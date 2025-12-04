@@ -105,7 +105,6 @@ For a detailed video on getting started with Dockerizing an application, check o
    - Browse to <https://app.massdriver.cloud> and log in.
    - In the `Bundle Catalog`, search for your application bundle.
    - Drag it out to the canvas to start configuring your application.
-   - If you want to implement DNS, be sure [add DNS](/docs/dns/01-dns-zones.md) and configure it based on your domain registrar, then enable DNS for AKS first.
    - **Don't deploy yet**!!
 
 ## Step 4: Push the Docker Image to Azure Container Registry

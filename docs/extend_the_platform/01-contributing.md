@@ -31,7 +31,7 @@ For the time being, only Massdriver employees will have approve / merge / commit
 
 ## Alternatives to Contributing to Public Bundles
 - [Fork an existing bundle](/extend-the-platform/fork-the-bundle) if you are trying to make a major feature change or support a different use case with similar technology
-- [Develop](/bundles/development) your own bundle from scratch and optionally open source in your own organization
+- [Develop](/getting-started/creating-bundles) your own bundle from scratch and optionally open source in your own organization
 
 ## Not Sure Whether to Fix or Fork?
 Before doing a lot of hard work, please open an issue on the existing bundle repo describing the change

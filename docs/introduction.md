@@ -57,15 +57,13 @@ This modular approach allows teams to build, share, and deploy infrastructure co
 * **Fast-tracked compliance**: Correct infrastructure diagrams, activity logs, bundle source code access, resource manifests, and change/deployment history. Everything a compliance auditor desires in their extremely exciting life.
 * **Infinitely Extensible**: Extend the platform with the open-source infrastructure-as-code tools your team is familiar with, like [OpenTofu](https://www.massdriver.cloud/partners/opentofu), Terraform, Helm, and Pulumi (coming soon).
 
-Massdriver is an extendable platform. We don't want to be the black box that Platforms-as-a-Service offer. With Massdriver, teams can design private [bundles](/bundles) and [applications](/applications), or [request bundles](https://roadmap.massdriver.cloud) and we'll add it to our roadmap.
-
 Massdriver integrates with any CI system and provides a unified infrastructure and application continuous deployment system.
 
 We fully dogfood Massdriver, and all of [our bundles](https://github.com/orgs/massdriver-cloud/repositories?q=&type=all&language=terraform&sort=) are open-sourced.
 
 ## Getting started
 
-* [Developing Custom Infrastructure Components](/bundles/walk-through)
+* [Developing Custom Infrastructure Components](/getting-started/creating-bundles)
 * [Running Applications on Massdriver](/applications/create)
 
 We've got some great getting started tutorials on YouTube.
