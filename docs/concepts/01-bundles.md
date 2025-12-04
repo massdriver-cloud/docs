@@ -5,23 +5,6 @@ title: Bundles
 sidebar_label: Bundles
 ---
 
-Bundles are the basic building blocks of infrastructure, applications, and architectures in Massdriver. They are composed of OpenTofu modules, Terraform modules or Helm charts.
-
-Massdriver has a [Bundle Template Library](https://www.massdriver.cloud/templates) available to help you get started. These templates are designed to be used as a starting point for your infrastructure and application needs.
-
-A Massdriver bundle typically serves a single purpose rather than abstracting an entire cloud service. Instead of terraform modules like `AWS RDS` they will typically be designed around the use case a software engineering is looking for like `AWS RDS MySQL`. In Massdriver, we advise against bundles like 'S3 Bundle' and instead suggest bundles like 'S3 Logging Bucket' or 'CDN' (using S3 & CloudFront).
-
-Bundles can be added from the bundle sidebar when viewing a project.
-![Bundles](./img/bundles.png)
-
-Keeping infrastructure and applications up to date can be tedious. Whenever an update is published to a Massdriver bundle, an indicator lets you know it's time to update. Official Massdriver bundles are forward compatible and include Open Policy Agent rules to prevent accidental deletion of critical resources.
-
-![Bundles Up-to-Date](./img/bundles-up-to-date.png)
-
-# Bundle Specification
-
-## What is a Bundle?
-
 A **bundle** is a reusable, versioned definition of cloud infrastructure or application components. It encapsulates infrastructure-as-code (IaC) modules, their configuration schemas, dependencies, outputs, deployment logic, and policy-as-code into a single, composable unit.
 
 Bundles solve a fundamental problem in cloud infrastructure management: how to create, share, and compose infrastructure components while maintaining type safety, security, and operational best practices. Instead of managing raw IaC code and ad-hoc configuration, bundles provide a structured contract that defines:
@@ -65,6 +48,10 @@ Developers get a simple, visual, self-service workflow that naturally adheres to
 ### Environment Consistency by Design
 
 Every environment is created from the same validated bundle definitions conceptually, eliminating drift and configuration divergence. While environments may use different bundle versions, they all follow the same bundle structure and validation rules, with environment-specific parameter values.
+
+### Single-Purpose Design
+
+A Massdriver bundle typically serves a single purpose rather than abstracting an entire cloud service. Instead of generic modules like `AWS RDS`, bundles are designed around the use case a software engineer is looking for, like `AWS RDS MySQL`. In Massdriver, we advise against bundles like 'S3 Bundle' and instead suggest bundles like 'S3 Logging Bucket' or 'CDN' (using S3 & CloudFront). This approach ensures bundles are composable, maintainable, and aligned with actual engineering needs.
 
 ### Bring Your Own IaC
 
@@ -413,7 +400,7 @@ Policies are evaluated at deployment time and attached to the application's exec
 
 ### Development
 
-1. **Create** a bundle repository with your IaC code using the Massdriver CLI
+1. **Create** a bundle repository with your IaC code using the Massdriver CLI, or start from a template in the [Bundle Template Library](https://www.massdriver.cloud/templates). These templates are designed to be used as a starting point for your infrastructure and application needs, providing proven patterns with best practices built-in.
 2. **Define** the `massdriver.yaml` file with schemas and configuration
 3. **Test** using the Development Releases feature: publish to a development release and grid test your plans and scans against ephemeral real "test" infrastructure. Spin the resources down at the end. Test common scenarios by writing the IaC and the policy-as-code, ensuring your bundle works correctly before publishing a stable release.
 
@@ -423,7 +410,7 @@ Policies are evaluated at deployment time and attached to the application's exec
 
 ### Deployment
 
-1. **Add** the bundle to an environment canvas
+1. **Add** the bundle to an environment canvas from the bundle sidebar when viewing a project
 2. **Configure** parameters and connections with proactive guardrails ensuring valid, secure configurations
 3. **Deploy** to an environment
 4. **Get back to writing software** - Your infrastructure is provisioned in minutes, not days. No waiting for CI pipelines, no manual approvals, no context switching between tools.
