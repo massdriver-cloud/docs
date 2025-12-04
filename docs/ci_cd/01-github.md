@@ -99,7 +99,7 @@ When this GitHub Action runs, it will:
 
 ## Publish your bundle
 
-Before you can set up a GitHub Action to automate publishing your bundle, first you'll need to manually publish it to Massdriver and create a package. You can do this by following the [Bundle Creation Walkthrough](/bundles/walk-through) guide.
+Before you can set up a GitHub Action to automate publishing your bundle, first you'll need to manually publish it to Massdriver and create a package. You can do this by following the [Bundle Creation Walkthrough](/getting-started/creating-bundles) guide.
 
 After you publish your bundle, you'll need to create a package. You can do this by dragging your bundle out from the bundle bar in the Massdriver canvas. Fill in the fields of your bundle and click **Save**. 
 

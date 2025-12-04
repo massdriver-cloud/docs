@@ -107,7 +107,7 @@ artifacts:
       $ref: massdriver/aws-rds-postgres
 ```
 
-For more information about bundle configuration, see [Bundle Configuration](/bundles/configuration).
+For more information about bundle configuration, see [Bundle Configuration](/concepts/bundles).
 
 ## Schema Location
 

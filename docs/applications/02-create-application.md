@@ -89,7 +89,7 @@ The following directory structure will be created:
 
 :::info
 
-The `massdriver.yaml` is covered in detail under [Bundle Configuration](/bundles/configuration) section.
+The `massdriver.yaml` is covered in detail under [Bundle Configuration](/concepts/bundles) section.
 
 It's important to note that the generated code is a great way to _get started_, but you can customize the fields in `massdriver.yaml` and the rigging code in `src` to meet your needs.
 

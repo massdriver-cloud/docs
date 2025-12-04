@@ -61,7 +61,6 @@ Once all of your infrastructure has booted up, you can add and connect your appl
 
 You can now click configure and set your values. You can set any values here that makes sense for your application. A publicly hosted docker repository can be used: `massdriver/cloud/phoenix-chat-example`.
 
-If you [registered a DNS Zone](/dns/dns-zones) check `Enable Public Internet Access` and you'll be able to set a hostname for your application. This will configure a public load balancer, TLS certificate, and DNS record for your application.
 
 Once your application has been configured and connected, it can also be deployed from our CLI.
 
