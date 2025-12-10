@@ -17,6 +17,7 @@ This document describes the validation constraints and naming conventions for al
 - [Bundle](#bundle)
 - [Artifact Definition](#artifact-definition)
 - [Artifact](#artifact)
+- [Bundle Deployment Metadata](#bundle-deployment-metadata)
 
 ---
 
@@ -295,4 +296,48 @@ Use these hierarchical identifiers to reference resources in API calls.
 | Environment (Target) | `slug` | `^[a-z][a-z0-9]{0,6}$` | 1 | 7 | Project | Immutable, hierarchical ID: `proj-env` |
 | Manifest | `slug` | `^[a-z][a-z0-9]{0,11}$` | 1 | 12 | Project | Immutable |
 | Package | `slug` | `{proj}-{env}-{manifest}` | N/A | 28 | Project | Hierarchical slug used as ID, includes suffix in name_prefix |
+
+---
+
+## Bundle Deployment Metadata
+
+When bundles are deployed, Massdriver automatically injects Bundle Deployment Metadata (`md_metadata`) into the deployment context. This metadata includes identifiers and context about the package, target environment, and deployment configuration.
+
+The `md_metadata` object contains:
+- `name_prefix`: The package name prefix (incorporates project, target, and manifest slugs)
+- `default_tags`: Standard tags including `md-project`, `md-target`, `md-manifest`, and `md-package` identifiers
+- `observability`: Alarm webhook URL for the target
+- `target`: Target (legacy name for Environment) information including contact email
+- `package`: Package metadata with timestamps and status information
+
+This metadata is available to all bundle deployments and can be used for resource naming, tagging, conditional logic, and observability integration.
+
+**Example `md_metadata` object structure:**
+
+```json
+{
+  "name_prefix": "my-project-prod-my-package",           // Package name prefix (project-target-manifest-package)
+  "default_tags": {                                       // Standard tags for all resources
+    "managed-by": "massdriver",                           // Always set to "massdriver"
+    "md-project": "my-project",                           // Project slug
+    "md-target": "production",                            // Target (environment) slug
+    "md-manifest": "my-manifest",                         // Manifest slug
+    "md-package": "my-package"                            // Package name prefix
+  },
+  "observability": {
+    "alarm_webhook_url": "https://api.massdriver.cloud/targets/abc123/alarms?token=xyz"  // Webhook for alarm notifications
+  },
+  "target": {                                             // Target (legacy name for Environment) information
+    "contact_email": "admin@example.com"                  // Organization owner email
+  },
+  "package": {                                            // Package metadata
+    "created_at": "2024-01-15T10:30:00Z",                 // Package creation timestamp (ISO 8601)
+    "updated_at": "2024-01-20T14:45:00Z",                 // Last update timestamp (ISO 8601)
+    "deployment_enqueued_at": "2024-01-20T15:00:00Z",     // Current deployment enqueue time (ISO 8601)
+    "previous_status": "healthy"                          // Package status before this deployment
+  }
+}
+```
+
+For complete details on using `md_metadata` in your bundles, see [Using Bundle Deployment Metadata](/getting-started/using-bundle-metadata).
 

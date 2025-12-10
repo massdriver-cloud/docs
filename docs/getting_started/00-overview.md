@@ -16,7 +16,9 @@ Massdriver is a comprehensive platform for managing cloud infrastructure through
 This getting started guide is organized into several focused sections:
 
 1. **[Deploying Your First Bundle](01-deploying-first-bundle.md)** - Get hands-on experience with the core Massdriver workflow by publishing and deploying a simple bundle
-2. **[Connecting Bundles With Artifacts](02-connecting-bundles.md)** - Learn how connect bundles together and share information between them using artifacts and connections.
+2. **[Connecting Bundles With Artifacts](02-connecting-bundles.md)** - Learn how connect bundles together and share information between them using artifacts and connections
+3. **[Creating Your Own Bundle](03-creating-bundles.md)** - Convert existing Terraform/OpenTofu modules into Massdriver bundles
+4. **[Using Bundle Deployment Metadata](04-using-bundle-metadata.md)** - Leverage automatically injected metadata for resource naming, tagging, and conditional logic
 
 Each guide builds upon the previous one, giving you a comprehensive understanding of how to work with Massdriver effectively.
 
