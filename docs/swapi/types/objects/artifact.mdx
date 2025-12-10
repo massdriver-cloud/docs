@@ -47,6 +47,7 @@ type Artifact {
   id: ID!
   name: String!
   type: String!
+  formats: [String!]
   field: String
   specs: JSON
   packageId: ID @deprecated
@@ -78,6 +79,10 @@ type Artifact {
 
 #### [<code style={{ fontWeight: 'normal' }}>Artifact.<b>type</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
 
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Artifact.<b>formats</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Download formats supported for this artifact
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Artifact.<b>field</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/swapi/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 

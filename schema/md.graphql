@@ -49,7 +49,7 @@ type RootQueryType {
   ): PaginatedArtifacts
 
   "Connection data for an artifact rendered in requested format"
-  downloadArtifact(organizationId: ID!, artifactId: ID!, format: DownloadFormat!): RenderedArtifact
+  downloadArtifact(organizationId: ID!, artifactId: ID!, format: String!): RenderedArtifact
 
   auditLog(id: ID!, organizationId: ID!): AuditLog
 
@@ -356,6 +356,12 @@ type RootQueryType {
 }
 
 type RootMutationType {
+  "Set or update the account avatar"
+  setAccountAvatar(avatar: Upload!): AvatarPayload
+
+  "Remove the account avatar"
+  removeAccountAvatar: Boolean
+
   "Grants group permissions for a project"
   grantGroupAccess(organizationId: ID!, groupId: ID!, permission: PermissionGrantInput!): ProjectPayload
 
@@ -453,6 +459,11 @@ type RootMutationType {
 
   "Create an environment"
   createEnvironment(organizationId: ID!, projectId: ID!, name: String!, slug: String!, description: String): EnvironmentPayload
+
+  deployEnvironment(organizationId: ID!, id: ID!): EnvironmentPayload
+
+  "Decommission an environment by decommissioning all packages in the environment"
+  decommissionEnvironment(organizationId: ID!, id: ID!): EnvironmentPayload
 
   "Deploy a Preview Environment"
   deployPreviewEnvironment(organizationId: ID!, projectId: ID!, input: PreviewEnvironmentInput!): EnvironmentPayload
@@ -617,23 +628,28 @@ type RootMutationType {
   ): PackagePayload
 
   """
-  Copy package params from one package to another with optional overrides.
+  Copy package params, version, and release strategy from one package to another with optional overrides.
 
   Both packages must be from the same manifest (e.g., api-prod-database and api-staging-database).
   Fields marked with `$md.copyable: false` in the params schema will be excluded from copying.
   The merged params are deep merged with the overrides, allowing you to override specific values.
+  Version and release strategy are always copied from the source package.
+  Secrets can optionally be copied by setting `includeSecrets` to true.
   """
-  copyPackageParams(
+  copyPackage(
     organizationId: ID!
 
     "Source package ID, slug, or name prefix to copy from"
     srcPackageId: ID!
 
     "Destination package ID, slug, or name prefix to copy to"
-    destPackageId: ID!
+    dstPackageId: ID!
 
     "Optional params to override via deep merge"
     overrides: JSON
+
+    "Whether to copy secrets from source package"
+    includeSecrets: Boolean
   ): PackagePayload
 
   "Set a secret value for the package."
@@ -1570,12 +1586,6 @@ type DefaultEnvironmentConnection {
   artifact: Artifact!
 }
 
-enum EnvironmentMode {
-  PREVIEW
-  DEMO
-  STANDARD
-}
-
 input Credential {
   artifactDefinitionType: String!
   artifactId: ID!
@@ -1598,8 +1608,6 @@ type Environment {
   slug: String
 
   description: String
-
-  mode: EnvironmentMode
 
   deletable: EnvironmentDeletionLifecycle!
 
@@ -2668,14 +2676,6 @@ enum ArtifactOrigin {
   PROVISIONED
 }
 
-"Supported artifact download formats"
-enum DownloadFormat {
-  RAW
-  YAML
-  PEM
-  OVPN
-}
-
 type ArtifactDeletionLifecycleArtifactError {
   message: String!
 }
@@ -2735,6 +2735,9 @@ type Artifact {
 
   type: String!
 
+  "Download formats supported for this artifact"
+  formats: [String!]
+
   "The bundle's artifact field (output field) that produced this artifact."
   field: String
 
@@ -2787,6 +2790,25 @@ type PendingInvitation {
   group: Group
 }
 
+"User avatar image"
+type Avatar {
+  id: ID!
+  fileName: String!
+  contentType: String!
+  fileSize: Int!
+  width: Int
+  height: Int
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"An identity linked to an account"
+type AccountIdentity {
+  provider: String!
+  providerId: String!
+  createdAt: DateTime!
+}
+
 "A user account in the system"
 type Account {
   id: ID!
@@ -2798,6 +2820,11 @@ type Account {
   createdAt: DateTime!
 
   updatedAt: DateTime!
+
+  avatar: Avatar
+
+  "Identities linked to the account"
+  identities: [AccountIdentity]
 
   "All groups a user belongs to"
   groups: [Group]
@@ -2811,6 +2838,17 @@ type Account {
   organizations: [Organization]
 
   defaultOrganization: Organization
+}
+
+type AvatarPayload {
+  "Indicates if the mutation completed successfully or not."
+  successful: Boolean!
+
+  "A list of failed validations. May be blank or null if mutation succeeded."
+  messages: [ValidationMessage]
+
+  "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
+  result: Avatar
 }
 
 enum PermissionAccessLevel {
@@ -2910,6 +2948,9 @@ type ValidationMessage {
   "A list of substitutions to be applied to a validation message template"
   options: [ValidationOption]
 }
+
+"Represents an uploaded file."
+scalar Upload
 
 """
 The `DateTime` scalar type represents a date and time in the UTC

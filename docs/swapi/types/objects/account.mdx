@@ -49,6 +49,8 @@ type Account {
   attribution: String
   createdAt: DateTime!
   updatedAt: DateTime!
+  avatar: Avatar
+  identities: [AccountIdentity]
   groups: [Group]
   token: String
   pendingInvitations: [PendingInvitation]
@@ -80,6 +82,14 @@ type Account {
 
 #### [<code style={{ fontWeight: 'normal' }}>Account.<b>updatedAt</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/swapi/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
 
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Account.<b>avatar</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Avatar</b></code>](/swapi/types/objects/avatar.mdx) <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Account.<b>identities</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[AccountIdentity]</b></code>](/swapi/types/objects/account-identity.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+Identities linked to the account
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Account.<b>groups</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Group]</b></code>](/swapi/types/objects/group.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
