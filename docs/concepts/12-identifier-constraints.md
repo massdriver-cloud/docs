@@ -316,11 +316,11 @@ This metadata is available to all bundle deployments and can be used for resourc
 
 ```json
 {
-  "name_prefix": "my-project-prod-my-package",           // Package name prefix (project-target-manifest-package)
-  "default_tags": {                                       // Standard tags for all resources
+  "name_prefix": "api-prod-database-1j39",                // Unique identifer for package
+  "default_tags": {                                       // A default set of tags to include on your resources to integrate with Massdriver (Costs & Alerting)
     "managed-by": "massdriver",                           // Always set to "massdriver"
     "md-project": "my-project",                           // Project slug
-    "md-target": "production",                            // Target (environment) slug
+    "md-target": "production",                            // Target (legacy name for Environment) slug. Target is legacy terminology.
     "md-manifest": "my-manifest",                         // Manifest slug
     "md-package": "my-package"                            // Package name prefix
   },
@@ -334,10 +334,9 @@ This metadata is available to all bundle deployments and can be used for resourc
     "created_at": "2024-01-15T10:30:00Z",                 // Package creation timestamp (ISO 8601)
     "updated_at": "2024-01-20T14:45:00Z",                 // Last update timestamp (ISO 8601)
     "deployment_enqueued_at": "2024-01-20T15:00:00Z",     // Current deployment enqueue time (ISO 8601)
-    "previous_status": "healthy"                          // Package status before this deployment
+    "previous_status": "provisioned"                          // Package status before this deployment
   }
 }
 ```
 
 For complete details on using `md_metadata` in your bundles, see [Using Bundle Deployment Metadata](/getting-started/using-bundle-metadata).
-
