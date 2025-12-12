@@ -207,11 +207,11 @@ Massdriver supports the OpenID Connect protocol for authentication to the platfo
 
 **Configuring OIDC**
 
-Update your `values-custom.yaml` file to include an `oidc` configuration.
+Update your `values-custom.yaml` file to include an `oidc` configuration. Massdriver currently supports 3 providers: `google`, `github` and `microsoft`.
 
 ```yaml
 oidc:
-  - name: "google"
+  - provider: "google"
     authorizeUrl: "https://..."
     tokenUrl: "https://..."
     clientId: "11111111-2222-3333-44444-555555555555"
