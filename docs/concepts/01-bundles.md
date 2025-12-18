@@ -640,4 +640,4 @@ ui:
 - [React JSON Schema Form UI Schema](https://react-jsonschema-form.readthedocs.io/en/docs/api-reference/uiSchema/) - UI customization reference
 - [JSON Schema Specification](https://json-schema.org/specification.html) - Schema validation reference
 - [JQ Manual](https://stedolan.github.io/jq/manual/) - JQ expression syntax
-
+- [Bundle Meta Schema](https://api.massdriver.cloud/json-schemas/bundle.json)
