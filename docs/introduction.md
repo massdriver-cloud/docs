@@ -63,8 +63,9 @@ We fully dogfood Massdriver, and all of [our bundles](https://github.com/orgs/ma
 
 ## Getting started
 
-* [Developing Custom Infrastructure Components](/getting-started/creating-bundles)
-* [Running Applications on Massdriver](/applications/create)
+* **[Massdriver Catalog](https://github.com/massdriver-cloud/massdriver-catalog)** - Model your entire platform architecture before writing code. Perfect for self-hosted users building their infrastructure catalog.
+* [Developing Custom Infrastructure Components](/getting-started/overview) - Learn how to create and publish bundles from existing IaC modules.
+* [Running Applications on Massdriver](/applications/create) - Deploy and manage containerized applications.
 
 We've got some great getting started tutorials on YouTube.
 

@@ -22,6 +22,33 @@ This getting started guide is organized into several focused sections:
 
 Each guide builds upon the previous one, giving you a comprehensive understanding of how to work with Massdriver effectively.
 
+## Two Paths to Getting Started
+
+Massdriver offers two approaches to building your infrastructure platform:
+
+### 🎨 **DevEx-First: The Massdriver Catalog**
+
+**[Massdriver Catalog on GitHub](https://github.com/massdriver-cloud/massdriver-catalog)**
+
+Start by designing your platform's developer experience before writing any infrastructure code. The Massdriver Catalog is a bootstrap repository containing artifact definitions, bundle schemas, and credential templates that help you:
+
+- **Model your architecture** - Design how bundles connect and what artifacts they produce
+- **Test the developer experience** - Add bundles to your canvas, configure parameters, and iterate on abstractions
+- **Design your platform** - Organize projects, environments, and infrastructure patterns
+- **Implement when ready** - Fill in OpenTofu/Terraform code once you've validated the experience
+
+This approach is ideal for platform teams who want to think through their entire infrastructure architecture and self-service interface before committing to implementation details. The catalog teaches you how to **use and organize** your IaC and projects in Massdriver.
+
+### 🔧 **Bundle Development: The Getting Started Guide** (This Guide)
+
+The guides below teach you how to **build custom bundles** from scratch or convert existing Terraform/OpenTofu modules. This is perfect for:
+
+- Teams already familiar with Massdriver who want to create new bundles
+- Converting existing infrastructure code to Massdriver bundles
+- Learning the technical details of bundle development
+
+**Which path should you choose?** If you're setting up a self-hosted Massdriver instance or want to design your entire platform architecture, start with the **Massdriver Catalog**. If you already have Massdriver set up and want to build specific bundles, follow this **Getting Started Guide**. Both paths complement each other!
+
 ## Prerequisites
 
 Before you begin, you'll need:

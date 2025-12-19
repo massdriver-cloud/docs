@@ -125,4 +125,8 @@ https://api.massdriver.cloud/artifact-definitions/ORG/NAME
 3. Include proper validation rules in the schema
 4. Document any special requirements or constraints
 
-For a complete guide to creating artifact definitions, see [Creating Artifact Definitions](/guides/custom-artifact-definition). 
+For a complete guide to creating artifact definitions, see [Creating Artifact Definitions](/guides/custom-artifact-definition).
+
+## Example Artifact Definitions
+
+For self-hosted instances or organizations building their own infrastructure catalogs, the **[Massdriver Catalog](https://github.com/massdriver-cloud/massdriver-catalog)** includes example artifact definitions for common infrastructure patterns (networks, databases, storage buckets). These examples provide a starting point for designing your own artifact contracts and can be customized to match your organization's specific needs. 

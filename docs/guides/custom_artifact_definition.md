@@ -17,6 +17,12 @@ In this guide, we're going to walk through the steps to create your own custom a
 
 Check out the Massdriver [artifact definitions GitHub repo](https://github.com/massdriver-cloud/artifact-definitions/tree/main/definitions/artifacts) first. If what you need is nowhere to be found, that's your green light to craft something custom.
 
+:::tip Bootstrap Your Artifact Definitions
+
+If you're setting up a self-hosted Massdriver instance, check out the **[Massdriver Catalog](https://github.com/massdriver-cloud/massdriver-catalog)**. It includes example artifact definitions for common infrastructure patterns (networks, databases, storage) that you can customize for your organization. This is a great starting point for designing your platform's artifact contracts before implementing infrastructure code.
+
+:::
+
 ### Step 2: Getting Started
 
 With the [Massdriver CLI](../cli/00-overview.md), you've got the toolkit you need to forge your own definitions. It's usually easier to tweak an existing one than to start from scratch:
