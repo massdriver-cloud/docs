@@ -42,8 +42,7 @@ Running Massdriver in your own cloud or data center offers unique advantages:
 ## Next Steps
 
 - [Install Massdriver Self-Hosted](/self-hosted/install)  
-- [Getting Started Guide](/getting-started/overview)  
-- [Customizing Cloud Support](/guides/customizing-cloud-support)  
+- **[Massdriver Catalog](https://github.com/massdriver-cloud/massdriver-catalog)** - Bootstrap your self-hosted instance with a complete catalog of artifact definitions and infrastructure bundles to model your platform architecture
 
 ---
 
