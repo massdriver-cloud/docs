@@ -14,7 +14,7 @@ This guide will walk you through how to import a template from the [Massdriver T
 ## Prerequisites
 
 - A [Massdriver](https://app.massdriver.cloud) account
-- `Org Admin` role of a Massdriver [organization](/docs/concepts/10-organizations.md)
+- `Org Admin` role of a Massdriver [organization](/docs/concepts/11-organizations.md)
 
 ## Import a template
 

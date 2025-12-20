@@ -28,16 +28,18 @@ Massdriver offers two approaches to building your infrastructure platform:
 
 ### 🎨 **DevEx-First: The Massdriver Catalog**
 
-**[Massdriver Catalog on GitHub](https://github.com/massdriver-cloud/massdriver-catalog)**
+**If you want to start by designing your entire developer experience before writing any infrastructure code**, explore the **[Massdriver Catalog](../guides/massdriver-catalog)**. This bootstrap repository helps you model your platform architecture first, implement later.
 
-Start by designing your platform's developer experience before writing any infrastructure code. The Massdriver Catalog is a bootstrap repository containing artifact definitions, bundle schemas, and credential templates that help you:
+The catalog is a collection of artifact definitions, bundle schemas, and credential templates that help you:
 
 - **Model your architecture** - Design how bundles connect and what artifacts they produce
 - **Test the developer experience** - Add bundles to your canvas, configure parameters, and iterate on abstractions
 - **Design your platform** - Organize projects, environments, and infrastructure patterns
 - **Implement when ready** - Fill in OpenTofu/Terraform code once you've validated the experience
 
-This approach is ideal for platform teams who want to think through their entire infrastructure architecture and self-service interface before committing to implementation details. The catalog teaches you how to **use and organize** your IaC and projects in Massdriver.
+This approach is ideal for platform teams setting up self-hosted Massdriver instances who want to think through their entire infrastructure architecture and self-service interface before committing to implementation details. The catalog teaches you how to **use and organize** your IaC and projects in Massdriver.
+
+**→ [Get started with the Massdriver Catalog guide](../guides/massdriver-catalog)**
 
 ### 🔧 **Bundle Development: The Getting Started Guide** (This Guide)
 
