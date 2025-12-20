@@ -26,9 +26,9 @@ Each guide builds upon the previous one, giving you a comprehensive understandin
 
 Massdriver offers two approaches to building your infrastructure platform:
 
-### 🎨 **DevEx-First: The Massdriver Catalog**
+### 🎨 **DevEx-First: Bootstrap Your Platform**
 
-**If you want to start by designing your entire developer experience before writing any infrastructure code**, explore the **[Massdriver Catalog](../guides/massdriver-catalog)**. This bootstrap repository helps you model your platform architecture first, implement later.
+**If you want to start by designing your entire developer experience before writing any infrastructure code**, explore **[Bootstrap Your Platform](../guides/bootstrap-platform)**. This bootstrap catalog helps you model your platform architecture first, implement later.
 
 The catalog is a collection of artifact definitions, bundle schemas, and credential templates that help you:
 
@@ -39,7 +39,7 @@ The catalog is a collection of artifact definitions, bundle schemas, and credent
 
 This approach is ideal for platform teams setting up self-hosted Massdriver instances who want to think through their entire infrastructure architecture and self-service interface before committing to implementation details. The catalog teaches you how to **use and organize** your IaC and projects in Massdriver.
 
-**→ [Get started with the Massdriver Catalog guide](../guides/massdriver-catalog)**
+**→ [Bootstrap Your Platform guide](../guides/bootstrap-platform)**
 
 ### 🔧 **Bundle Development: The Getting Started Guide** (This Guide)
 

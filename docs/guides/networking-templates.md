@@ -1,774 +1,598 @@
 ---
 id: networking-templates
 slug: /guides/networking-templates
-title: Networking Architecture Templates
-sidebar_label: Networking Templates
+title: Network Organization Templates
+sidebar_label: Network Organization Templates
 ---
 
-# Networking Architecture Templates
+# Network Organization Templates
 
-This guide provides common networking architecture patterns using Massdriver's project/environment hierarchy, environment defaults (ED), and remote references (RR). These templates help you model infrastructure isolation, cost efficiency, and developer workflows based on your organization's needs.
+This guide provides common patterns for organizing network infrastructure (VPCs, subnets, VPN tunnels) using Massdriver's project/environment hierarchy. These templates help you avoid "mostly undeployed" diagrams by correctly mapping network parity to your organizational needs.
 
 ## Key Concepts Refresher
 
-Before diving into templates, recall these principles:
-
 - **Projects**: Enforce architectural parity across all environments. All environments in a project share the same canvas/diagram.
-- **Environments**: Can differ in scale, configuration, and credentials, but maintain the same architecture as their project.
-- **Environment Defaults (ED)** 😂: Shared resources (networks, clusters, credentials) that auto-connect to all compatible bundles without cluttering the canvas.
-- **Remote References (RR)**: Allow packages to reference resources from other projects/environments, appearing as boxes on the canvas with the flexibility to swap between shared and dedicated resources per environment. RR enables **intentional disparity**: you can substitute a resource from elsewhere (e.g., use a shared staging database instead of deploying your own) or leave a resource undeployed entirely. Undeployed packages remain visible on the canvas with a clear status indicator, making architectural differences between environments explicit and auditable.
+- **Environments**: Can differ in scale and configuration, but maintain the same architecture as their project.
+- **Environment Defaults (ED)** 😂: Shared resources that auto-connect to all compatible bundles without cluttering the canvas. Networks are invisible when set as ED.
+- **Remote References (RR)**: Allow packages to reference resources from other projects/environments, appearing as boxes on the canvas. RR enables **intentional disparity**: you can substitute a resource from elsewhere or leave a resource undeployed entirely. Undeployed packages remain visible on the canvas with a clear status indicator, making architectural differences between environments explicit.
 
-:::tip Project Boundary Design
-Massdriver enforces parity by project, so scope your projects to boundaries where you're comfortable with parity enforcement. Keep directed graphs well-balanced—overly complex projects become harder to manage, while too many small projects lose the benefit of parity enforcement.
+:::tip The Parity Problem
+If you create a project with 5 network bundles on the canvas but only 2 are actually deployed in each environment (the other 3 showing as undeployed), you've mis-scoped your project. This guide helps you avoid that by thinking through which networks should have parity across environments.
 :::
 
-## Template 1: Fully Isolated Networks Per Environment
-
-**Scenario**: Maximum isolation for compliance, security, or tenant separation. Each environment has its own VPC/VNet with no shared networking infrastructure.
-
-**Use Cases**:
-- Multi-tenant SaaS with strict data isolation requirements
-- Regulated industries (healthcare, finance) requiring environment-level network segmentation
-- Organizations prioritizing security over cost efficiency
-
-### Project/Environment Structure
-
-```
-Project: Application Platform
-├── Environment: Production
-├── Environment: Staging  
-├── Environment: Development
-└── Environment: Preview (ephemeral)
-```
-
-### Canvas Architecture
-
-Each environment has identical architecture but independent networking:
-
-```
-[VPC/VNet] ──> [Kubernetes Cluster]
-              │
-              ├──> [Application 1]
-              ├──> [Application 2]
-              └──> [Application 3]
-              
-[VPC/VNet] ──> [Database Subnet]
-              │
-              └──> [PostgreSQL]
-```
-
-### Implementation Strategy
-
-**Environment Defaults**: None (or only cloud credentials)
-
-**Remote References**: None
-
-**Rationale**: Each environment provisions its own network, cluster, and data resources. No shared infrastructure means maximum isolation but higher cost.
-
-### Configuration Pattern
-
-- Production: Full-scale VPC, production-grade cluster, high-availability databases
-- Staging: Mid-scale VPC, smaller cluster, single-AZ databases
-- Development: Minimal VPC, small cluster, minimal databases
-- Preview: Minimal VPC, smallest cluster footprint, ephemeral lifecycle
-
-### Pros & Cons
-
-✅ **Pros**:
-- Maximum security and compliance isolation
-- No cross-environment risk or blast radius
-- Clear cost attribution per environment
-- Perfect for regulated workloads
-
-❌ **Cons**:
-- Highest infrastructure costs (duplicate networking in every environment)
-- More complexity managing multiple networks
-- Slower preview environment creation (must provision full network stack)
-
 ---
 
-## Template 2: Shared Network with Environment-Specific Compute
+## Template 1: Environment-Per-Network (Fully Isolated)
 
-**Scenario**: Cost-efficient approach where networking is shared, but compute resources (clusters, instances) are isolated per environment.
+**Scenario**: Each application environment (prod, staging, dev) needs its own completely isolated network. No shared networking infrastructure.
 
-**Use Cases**:
-- Startups and small teams optimizing cloud costs
-- Organizations with shared network policies but isolated workloads
-- Development teams wanting quick preview environments
+**When to use**:
+- Maximum isolation required (compliance, security)
+- Multi-tenant SaaS with strict tenant separation
+- Each environment managed by different teams
 
-### Project/Environment Structure
+### Project Structure
 
+**Project**: `corporate-networks`
+
+**Environments**:
+- `production`
+- `staging`
+- `development`
+
+**Canvas** (same for all environments):
 ```
-Project: Shared Infrastructure
-├── Environment: Shared Staging
-└── Environment: Shared Production
-
-Project: Application Platform
-├── Environment: Production
-├── Environment: Staging
-└── Environment: Preview (ephemeral)
-```
-
-### Canvas Architecture
-
-**Shared Infrastructure Project** (network only):
-
-```
-[VPC/VNet - Staging]
-[VPC/VNet - Production]
-```
-
-**Application Platform Project** (compute + apps):
-
-```
-[Kubernetes Cluster] ──> [Application 1]
-                    ├──> [Application 2]
-                    └──> [Application 3]
-                    
-[Database Cluster] ──> [PostgreSQL]
-```
-
-### Implementation Strategy
-
-**Environment Defaults**: 
-- VPC/VNet from Shared Infrastructure project set as ED for each Application Platform environment
-- Each environment uses a different VPC (prod → prod VPC, staging → staging VPC)
-
-**Remote References**: None (using ED instead)
-
-**Rationale**: Networks are provisioned once and shared via environment defaults. Compute resources are dedicated per environment for isolation, but leverage shared networking infrastructure for cost efficiency.
-
-### Configuration Pattern
-
-**Shared Infrastructure Project**:
-- Staging env: Shared VPC with subnets for staging/dev/preview workloads
-- Production env: Dedicated production VPC with strict security groups
-
-**Application Platform Project**:
-- Production env: Uses production VPC (ED), dedicated production cluster
-- Staging env: Uses staging VPC (ED), dedicated staging cluster  
-- Preview env: Uses staging VPC (ED), minimal ephemeral cluster
-
-### Pros & Cons
-
-✅ **Pros**:
-- Reduced networking costs (one VPC per tier instead of per environment)
-- Consistent network policies across environments
-- Faster preview environment setup (network already exists)
-- Reasonable compute isolation
-
-❌ **Cons**:
-- Shared network blast radius (network issues affect multiple environments)
-- Requires careful subnet planning and CIDR management
-- Security groups must be carefully designed for isolation
-
----
-
-## Template 3: Fully Shared Infrastructure for Preview Environments
-
-**Scenario**: Production and staging are isolated, but all preview environments share a single cluster and network to minimize cost and maximize speed.
-
-**Use Cases**:
-- Development teams with frequent pull request deployments
-- Organizations prioritizing developer velocity and cost efficiency for non-production
-- Companies with ephemeral preview environment workflows
-
-### Project/Environment Structure
-
-```
-Project: Shared Infrastructure
-├── Environment: Production Network
-├── Environment: Staging Network
-└── Environment: Preview Shared Resources
-
-Project: Application Platform  
-├── Environment: Production
-├── Environment: Staging
-└── Environment: Preview-PR-123 (ephemeral, many instances)
-```
-
-### Canvas Architecture
-
-**Shared Infrastructure Project** (provision once, use many times):
-
-```
-Preview Shared Resources environment:
-├── [VPC/VNet]
-└── [Kubernetes Cluster]
-```
-
-**Application Platform Project** (apps only):
-
-```
-[Application 1]
-[Application 2]
-[Application 3]
-```
-
-### Implementation Strategy
-
-**Environment Defaults**:
-- Preview environments: Set shared VPC and shared K8s cluster from "Preview Shared Resources" as ED
-
-**Remote References**: 
-- Could alternatively use RR to make the cluster "swappable" if specific preview envs need dedicated clusters
-
-**Rationale**: All preview environments deploy only their applications to the same shared cluster and network. This drastically reduces cost and speeds up environment creation (apps deploy in seconds, not minutes).
-
-### Configuration Pattern
-
-**Shared Infrastructure Project**:
-- Production Network env: Isolated production VPC
-- Staging Network env: Isolated staging VPC  
-- Preview Shared Resources env: Single shared VPC + single shared K8s cluster for ALL preview environments
-
-**Application Platform Project**:
-- Production env: Uses production network (ED), dedicated production cluster (ED from different source)
-- Staging env: Uses staging network (ED), dedicated staging cluster (ED from different source)
-- Preview-PR-* envs: All use the same shared network (ED) and shared cluster (ED) from "Preview Shared Resources"
-
-### Pros & Cons
-
-✅ **Pros**:
-- Minimal preview environment cost (only application resources provisioned)
-- Extremely fast preview environment creation (10-30 seconds for app deployment)
-- Encourages frequent testing with low overhead
-- Production and staging remain fully isolated
-
-❌ **Cons**:
-- Preview environments share resources (noisy neighbor potential)
-- Requires namespace/tenant isolation within shared cluster
-- All previews in same network (less isolation for testing network policies)
-- Shared cluster must be right-sized for many concurrent previews
-
----
-
-## Template 4: Regional Networks with Project-Level Compute
-
-**Scenario**: Global applications with regional network presence but centralized application deployment patterns.
-
-**Use Cases**:
-- Global SaaS with multi-region deployment requirements
-- Applications with region-specific compliance needs (GDPR, data residency)
-- Organizations optimizing latency with regional infrastructure
-
-### Project/Environment Structure
-
-```
-Project: Regional Networks
-├── Environment: US-West
-├── Environment: US-East  
-├── Environment: EU-West
-└── Environment: APAC
-
-Project: Application Platform - US
-├── Environment: Production-US
-└── Environment: Staging-US
-
-Project: Application Platform - EU
-├── Environment: Production-EU
-└── Environment: Staging-EU
-```
-
-### Canvas Architecture
-
-**Regional Networks Project** (one per region):
-
-```
-[VPC/VNet]
+[VPC/Virtual Network]
 ├── [Public Subnets]
 ├── [Private Subnets]
 └── [Database Subnets]
 ```
 
-**Application Platform Projects** (one per region):
+### What Gets Deployed
 
+**Production Environment**:
+- VPC: `10.0.0.0/16`, 3 AZs, multi-region replication
+- All subnets deployed
+
+**Staging Environment**:
+- VPC: `10.1.0.0/16`, 1 AZ, single-region
+- All subnets deployed
+
+**Development Environment**:
+- VPC: `10.2.0.0/16`, 1 AZ
+- All subnets deployed
+
+### Implementation
+
+**Environment Defaults**: None
+
+**Remote References**: None
+
+**Result**: All 3 environments deploy all 3 bundles. **No undeployed packages**. Parity is maintained (all envs have same network structure), scale differs (AZ count, CIDR size).
+
+### Pros & Cons
+
+✅ Clean parity - all environments deploy everything
+✅ Maximum isolation
+✅ Easy to understand
+
+❌ Highest cost (3 complete networks)
+❌ More resources to manage
+
+---
+
+## Template 2: Shared Networks with Per-Environment CIDRs
+
+**Scenario**: You want a single project to provision multiple networks for different application environments, but each network is independent.
+
+**When to use**:
+- Centralized network team manages all networks
+- Want single source of truth for all network configs
+- Networks don't connect to each other
+
+### Project Structure
+
+**Project**: `platform-networks`
+
+**Environments**:
+- `production-usw2`
+- `production-use1`
+- `staging`
+- `development`
+
+**Canvas** (same for all environments):
 ```
-[Kubernetes Cluster] ──> [Application 1]
-                    ├──> [Application 2]
-                    └──> [Application 3]
-
-[Database Cluster] ──> [Regional PostgreSQL]
+[VPC/Virtual Network]
+├── [Public Subnets]
+├── [Private Subnets]
+└── [Database Subnets]
 ```
 
-### Implementation Strategy
+### What Gets Deployed
 
-**Environment Defaults**:
-- Each Application Platform environment sets its regional VPC as an ED
-- Production-US → US-West VPC (ED)
-- Production-EU → EU-West VPC (ED)
+**Production-USW2 Environment**:
+- VPC: `10.0.0.0/16` in us-west-2
+- All subnets deployed
 
-**Remote References**: Optional for cross-region resources
+**Production-USE1 Environment**:
+- VPC: `10.10.0.0/16` in us-east-1
+- All subnets deployed
 
-**Network Peering**: Use separate "Peering" project for VPC peering between regions if needed
+**Staging Environment**:
+- VPC: `10.1.0.0/16` in us-west-2
+- All subnets deployed
 
-### Configuration Pattern
+**Development Environment**:
+- VPC: `10.2.0.0/16` in us-west-2
+- All subnets deployed
+
+### Implementation
+
+**Environment Defaults**: Each network artifact is set as ED in consuming application projects (different applications projects reference these networks)
+
+**Remote References**: None
+
+**Result**: All environments deploy all bundles. **No undeployed packages**. Each environment provisions one complete network with different configs.
+
+### Pros & Cons
+
+✅ Clean parity - every environment deploys everything
+✅ Single project for all network management
+✅ Easy to compare network configs across envs
+
+❌ Many environments to manage if you have many networks
+❌ Can't easily model cross-network connections in same project
+
+---
+
+## Template 3: Hub Network with Spoke Networks
+
+**Scenario**: You have a central hub network that provides shared services, plus multiple spoke networks for teams/applications. Spokes connect to hub via VPN tunnels, VPC peering, or Transit Gateway.
+
+**When to use**:
+- Enterprise with centralized shared services
+- Multiple teams need isolated networks but shared connectivity
+- Want to model network topology explicitly
+
+### Project Structure
+
+**Project 1**: `hub-network`
+
+**Environments**:
+- `production-hub`
+- `staging-hub`
+
+**Canvas**:
+```
+[Hub VPC]
+├── [Public Subnets]
+├── [Private Subnets]
+├── [Transit Gateway]
+└── [VPN Gateway]
+```
+
+**Project 2**: `spoke-networks`
+
+**Environments**:
+- `team-auth-production`
+- `team-payments-production`
+- `team-analytics-production`
+- `team-auth-staging`
+- `team-payments-staging`
+- `team-analytics-staging`
+
+**Canvas** (same for all environments):
+```
+[Spoke VPC]
+├── [Public Subnets]
+├── [Private Subnets]
+└── [Database Subnets]
+```
+
+**Project 3**: `network-connectivity`
+
+**Environment**:
+- `production-mesh`
+
+**Canvas**:
+```
+[Hub VPC] (RR from hub-network, undeployed)
+[Auth Spoke VPC] (RR from spoke-networks team-auth-production, undeployed)
+[Payments Spoke VPC] (RR from spoke-networks team-payments-production, undeployed)
+[Analytics Spoke VPC] (RR from spoke-networks team-analytics-production, undeployed)
+[Transit Gateway Attachment - Hub]
+[Transit Gateway Attachment - Auth]
+[Transit Gateway Attachment - Payments]
+[Transit Gateway Attachment - Analytics]
+[TGW Route Table]
+```
+
+### What Gets Deployed
+
+**Hub Network Project**:
+- Production-hub env: Hub VPC `10.0.0.0/16`, all subnets, Transit Gateway, VPN Gateway
+- Staging-hub env: Hub VPC `10.1.0.0/16`, all subnets, Transit Gateway, VPN Gateway
+
+**Spoke Networks Project**:
+- Team-auth-production: Spoke VPC `10.10.0.0/16`, all subnets
+- Team-payments-production: Spoke VPC `10.20.0.0/16`, all subnets
+- Team-analytics-production: Spoke VPC `10.30.0.0/16`, all subnets
+- (Staging envs deploy with different CIDRs)
+
+**Network Connectivity Project**:
+- Production-mesh env: 4 undeployed VPCs (RR), 4 deployed Transit Gateway attachments, 1 deployed route table
+
+### Implementation
+
+**Environment Defaults**: Application projects use these VPCs as ED (hub or specific spoke depending on the app)
+
+**Remote References**: network-connectivity project uses RR to reference VPCs from other projects, then creates connectivity resources (TGW attachments)
+
+**Result**: Connectivity project has intentional disparity - VPCs shown as undeployed (they exist elsewhere), only connectivity resources deployed.
+
+### Pros & Cons
+
+✅ Clear separation of concerns (networks vs connectivity)
+✅ Easy to see hub-spoke topology
+✅ Spokes have clean parity (all teams get same structure)
+
+❌ More complex (3 projects)
+❌ Connectivity project has undeployed packages (but this is intentional)
+
+---
+
+## Template 4: Regional Networks with Cross-Region Tunnels
+
+**Scenario**: You have networks in multiple regions and need to connect them with VPN tunnels or VPC peering for replication or failover.
+
+**When to use**:
+- Multi-region deployments
+- Active-active or DR architectures
+- Data replication across regions
+
+### Project Structure
+
+**Project 1**: `regional-networks`
+
+**Environments**:
+- `us-west-2`
+- `us-east-1`
+- `eu-west-1`
+- `ap-southeast-1`
+
+**Canvas** (same for all environments):
+```
+[VPC]
+├── [Public Subnets]
+├── [Private Subnets]
+├── [Database Subnets]
+└── [VPN Gateway]
+```
+
+**Project 2**: `cross-region-tunnels`
+
+**Environment**:
+- `global-mesh`
+
+**Canvas**:
+```
+[US-West-2 VPC] (RR, undeployed)
+[US-East-1 VPC] (RR, undeployed)
+[EU-West-1 VPC] (RR, undeployed)
+[VPN Connection - USW to USE]
+[VPN Connection - USW to EU]
+[VPN Connection - USE to EU]
+```
+
+### What Gets Deployed
 
 **Regional Networks Project**:
-- Each environment represents a region with its own VPC
-- All application projects reference these networks via ED
+- us-west-2: VPC `10.10.0.0/16`, all subnets, VPN Gateway
+- us-east-1: VPC `10.20.0.0/16`, all subnets, VPN Gateway
+- eu-west-1: VPC `10.30.0.0/16`, all subnets, VPN Gateway
+- ap-southeast-1: VPC `10.40.0.0/16`, all subnets, VPN Gateway
 
-**Application Platform Projects** (per region):
-- Each region has its own project for regional parity enforcement
-- Production and staging environments within each regional project
-- All leverage regional network from Regional Networks project
+**Cross-Region Tunnels Project**:
+- global-mesh: 3 undeployed VPCs (RR), 3 deployed VPN connections
 
-### Peering Project (Optional)
+### Implementation
 
-For cross-region communication:
+**Environment Defaults**: Regional application projects use regional VPCs as ED
 
-```
-Project: Network Peering
-└── Environment: Global
+**Remote References**: cross-region-tunnels project references regional VPCs, creates VPN connections between them
 
-Canvas:
-[US-West VPC] ←→ [Peering Connection] ←→ [EU-West VPC]
-```
-
-Use RR to reference VPCs from Regional Networks project, then peer them.
+**Result**: Tunnels project has intentional disparity (VPCs undeployed, tunnels deployed).
 
 ### Pros & Cons
 
-✅ **Pros**:
-- Clear regional boundaries for compliance and data residency
-- Centralized network management per region
-- Easy to add new regions (create new environment in Regional Networks)
-- Scales well for global applications
+✅ Clean regional network management
+✅ Easy to visualize cross-region connectivity
+✅ Simple to add new regions (add environment)
 
-❌ **Cons**:
-- More projects to manage (one per region for applications)
-- Cross-region communication requires peering setup
-- Increased complexity in multi-region deployment orchestration
+❌ Tunnels project has undeployed VPCs (but intentional)
+❌ Must manage CIDR allocation carefully
 
 ---
 
-## Template 5: Developer Sandbox Networks with Shared Production
+## Template 5: Per-Developer Networks
 
-**Scenario**: Individual developers get their own networks/subnets for experimentation, while production/staging use shared infrastructure.
+**Scenario**: Developers get their own isolated networks for testing infrastructure changes without affecting shared environments.
 
-**Use Cases**:
-- Platform teams providing self-service infrastructure to developers
-- Organizations encouraging infrastructure experimentation
-- Onboarding and training environments
+**When to use**:
+- Developers need to test network changes
+- Platform team provides self-service networking
+- Want isolation for experimentation
 
-### Project/Environment Structure
+### Project Structure
 
+**Project**: `developer-networks`
+
+**Environments**:
+- `alice-dev`
+- `bob-dev`
+- `carol-dev`
+- `dave-dev`
+
+**Canvas** (same for all environments):
 ```
-Project: Shared Infrastructure
-├── Environment: Production
-└── Environment: Staging
-
-Project: Application Platform
-├── Environment: Production
-└── Environment: Staging
-
-Project: Developer Sandboxes
-├── Environment: Alice-Dev
-├── Environment: Bob-Dev
-└── Environment: Carol-Dev
-```
-
-### Canvas Architecture
-
-**Shared Infrastructure Project**:
-
-```
-[VPC/VNet]
-└── [Shared Kubernetes Cluster]
+[VPC]
+├── [Public Subnets]
+├── [Private Subnets]
+└── [Database Subnets]
 ```
 
-**Application Platform Project** (uses shared infra via ED):
+### What Gets Deployed
 
-```
-[Application 1]
-[Application 2]
-[Application 3]
-```
+**Alice-Dev Environment**:
+- VPC: `10.10.0.0/16`, all subnets
 
-**Developer Sandboxes Project** (each dev gets full stack):
+**Bob-Dev Environment**:
+- VPC: `10.11.0.0/16`, all subnets
 
-```
-[VPC/VNet] ──> [Small K8s Cluster]
-              │
-              └──> [Application (dev version)]
-```
+**Carol-Dev Environment** (testing new subnet structure):
+- VPC: `10.12.0.0/16`, all subnets (but different sizes/CIDRs)
 
-### Implementation Strategy
+**Dave-Dev Environment**:
+- VPC: `10.13.0.0/16`, all subnets
 
-**Environment Defaults**:
-- Production and Staging in Application Platform use shared VPC/cluster from Shared Infrastructure (ED)
-- Developer environments provision their own networks and clusters (no ED, full isolation)
+### Implementation
 
-**Remote References**: 
-- Developers can use RR to "swap in" shared databases or services from staging when needed
-- Allows flexibility: "I want my own cluster but use the shared staging database"
+**Environment Defaults**: None (developers control everything)
 
-**Rationale**: Production uses cost-efficient shared infrastructure. Developers get full environment isolation for experimentation without affecting production, but can selectively reference shared resources.
+**Remote References**: None for this project (though developers might reference these from their app projects)
 
-### Configuration Pattern
-
-**Shared Infrastructure Project**:
-- Production env: Large VPC, production cluster
-- Staging env: Medium VPC, staging cluster
-
-**Application Platform Project**:
-- Uses shared infra via ED for all environments
-
-**Developer Sandboxes Project**:
-- Each developer environment is independent
-- Provisioning their own small VPC and minimal cluster
-- Can use RR to shared staging resources when useful (databases, caches, etc.)
-
-### Developer Options
-
-Developers can choose their connection strategy per resource:
-
-| Resource Type | Option 1: Independent | Option 2: Shared via RR |
-|---------------|----------------------|------------------------|
-| Network | Own VPC | Use staging VPC (RR) |
-| Cluster | Own small cluster | Use staging cluster (RR) |
-| Database | Own dev database | Use shared staging DB (RR) |
-| Cache | Own Redis | Use shared staging Redis (RR) |
+**Result**: All environments deploy all bundles. **No undeployed packages**. Clean parity with per-environment configuration.
 
 ### Pros & Cons
 
-✅ **Pros**:
-- Developers can experiment without production risk
-- Flexible: can use shared resources or provision their own
-- Clear separation between production and development infrastructure
-- Great for onboarding and training
+✅ Clean parity - all devs get same structure
+✅ Easy to provision new developer environments
+✅ Developers can experiment safely
 
-❌ **Cons**:
-- Can become expensive if many developers provision full stacks
-- Requires education on when to use shared vs. dedicated resources
-- More environments to manage and clean up
+❌ Can be expensive with many developers
+❌ Need cleanup policies
 
 ---
 
-## Template 6: Hub-and-Spoke Network Architecture
+## Template 6: Environment-Specific Network Features
 
-**Scenario**: Centralized networking hub with spoke networks for different teams/projects, all interconnected.
+**Scenario**: Production has advanced networking features (VPN, Transit Gateway, Network Firewall) that staging/dev don't need. You want to show these on the canvas but only deploy selectively.
 
-**Use Cases**:
-- Large enterprises with many teams requiring network connectivity
-- Organizations with centralized security/monitoring requirements
-- Complex microservices architectures with cross-team communication
+**When to use**:
+- Production has compliance requirements staging doesn't
+- Want to visualize full production architecture but not pay for it in all envs
+- Testing network features before full rollout
 
-### Project/Environment Structure
+### Project Structure
 
+**Project**: `corporate-network`
+
+**Environments**:
+- `production`
+- `staging`
+- `development`
+
+**Canvas** (same for all environments):
 ```
-Project: Network Hub
-├── Environment: Production Hub
-└── Environment: Staging Hub
+[VPC]
+├── [Public Subnets]
+├── [Private Subnets]
+├── [Database Subnets]
+└── [Transit Gateway]
 
-Project: Network Peering
-└── Environment: Hub Connections
-
-Project: Team A Applications
-├── Environment: Production
-└── Environment: Staging
-
-Project: Team B Applications  
-├── Environment: Production
-└── Environment: Staging
-```
-
-### Canvas Architecture
-
-**Network Hub Project** (shared services network):
-
-```
-[Hub VPC/VNet]
-├── [Shared Monitoring]
-├── [Shared Security Services]
-└── [Shared DNS]
+[VPN Gateway]
+[Network Firewall]
+[DNS Firewall]
 ```
 
-**Network Peering Project** (connect everything):
+### What Gets Deployed
 
-```
-[Hub VPC] ←→ [Peering] ←→ [Team A VPC]
-          ←→ [Peering] ←→ [Team B VPC]
-```
+**Production Environment**:
+- VPC + all subnets: Deployed
+- Transit Gateway: Deployed
+- VPN Gateway: Deployed
+- Network Firewall: Deployed
+- DNS Firewall: Deployed
 
-**Team Application Projects** (each team gets isolated network):
+**Staging Environment**:
+- VPC + all subnets: Deployed
+- Transit Gateway: **Undeployed** (not configured, skipped)
+- VPN Gateway: **Undeployed**
+- Network Firewall: **Undeployed**
+- DNS Firewall: **Undeployed**
 
-```
-[Spoke VPC/VNet] ──> [Kubernetes Cluster]
-                    │
-                    └──> [Team Applications]
-```
+**Development Environment**:
+- VPC + all subnets: Deployed
+- Transit Gateway: **Undeployed**
+- VPN Gateway: **Undeployed**
+- Network Firewall: **Undeployed**
+- DNS Firewall: **Undeployed**
 
-### Implementation Strategy
+### Implementation
 
-**Environment Defaults**:
-- Each team uses their own spoke VPC as ED
-- Shared services (monitoring, DNS) from Hub can be referenced
+**Environment Defaults**: VPC artifact can be set as ED for application projects
 
-**Remote References**:
-- Use RR in Network Peering project to reference Hub VPC and all Spoke VPCs
-- Creates mesh network connectivity
+**Remote References**: None
 
-**Rationale**: Teams get network isolation while maintaining connectivity to hub services and other teams. Centralized security/monitoring without sacrificing team autonomy.
+**Disparity**: Staging and dev environments have 4 undeployed packages (advanced networking features). This is **intentional disparity** - you're showing what production looks like while not paying for those features in lower environments.
 
-### Configuration Pattern
-
-**Network Hub Project**:
-- Provisions hub VPC with shared services
-- All security scanning, monitoring aggregation happens here
-
-**Network Peering Project**:
-- Uses RR to connect hub VPC to each team's spoke VPC
-- Manages all peering connections in one place
-
-**Team Application Projects**:
-- Each team provisions their own spoke VPC
-- Set spoke VPC as ED for their applications
-- Applications can communicate through hub or directly via peered spokes
-
-### Network Flow
-
-```
-Team A App ──> Team A VPC ──> Hub VPC ──> Monitoring
-                          ↓
-                     Team B VPC ──> Team B App
-```
+**Result**: This creates "undeployed" packages, but it's intentional. The canvas shows the full architecture across all environments with clear visibility into what's deployed where.
 
 ### Pros & Cons
 
-✅ **Pros**:
-- Centralized security and monitoring for all teams
-- Team isolation with controlled connectivity
-- Scales well to many teams
-- Clear network topology visualization
+✅ Single source of truth for network architecture
+✅ Clear visibility into production vs non-production features
+✅ Can promote features from dev → staging → prod
 
-❌ **Cons**:
-- Complex setup with multiple projects and peering relationships
-- Hub becomes single point of failure (design for HA)
-- Requires careful routing and firewall management
-- More expensive (multiple VPCs + peering costs)
+❌ Many undeployed packages in non-prod (but this is intentional)
+❌ Canvas looks "incomplete" for staging/dev (though accurately reflects reality)
+
+:::warning When to Use This Pattern
+Use this template when you WANT to show architectural differences between environments. If the undeployed packages bother you, consider splitting into separate projects instead (e.g., "basic-networks" vs "production-networks").
+:::
 
 ---
 
 ## Decision Matrix: Choosing the Right Template
 
-| Consideration | Template 1<br/>Fully Isolated | Template 2<br/>Shared Network | Template 3<br/>Shared Preview | Template 4<br/>Regional | Template 5<br/>Dev Sandboxes | Template 6<br/>Hub-Spoke |
-|---------------|-------------------------------|-------------------------------|-------------------------------|------------------------|------------------------------|--------------------------|
-| **Cost** | $$$$$ | $$$ | $$ | $$$$ | $$$ | $$$$$ |
-| **Security/Isolation** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
-| **Preview Env Speed** | ⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐ |
-| **Complexity** | ⭐⭐ | ⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| **Team Scaling** | ⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| **Compliance** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
+| Consideration | Template 1<br/>Isolated | Template 2<br/>Shared Mgmt | Template 3<br/>Hub-Spoke | Template 4<br/>Regional | Template 5<br/>Dev Sandboxes | Template 6<br/>Feature Disparity |
+|---------------|------------------------|---------------------------|--------------------------|------------------------|------------------------------|----------------------------------|
+| **Parity** | ✅ Clean | ✅ Clean | ✅ Clean | ✅ Clean | ✅ Clean | ⚠️ Intentional disparity |
+| **Undeployed Packages** | ❌ None | ❌ None | ⚠️ Some (connectivity project) | ⚠️ Some (tunnels project) | ❌ None | ⚠️ Many (non-prod envs) |
+| **Complexity** | ⭐ Simple | ⭐⭐ Moderate | ⭐⭐⭐⭐ Complex | ⭐⭐⭐ Moderate | ⭐ Simple | ⭐⭐ Moderate |
+| **Projects** | 1 | 1 | 3 | 2 | 1 | 1 |
+| **Best For** | Maximum isolation | Centralized mgmt | Enterprise hub-spoke | Multi-region | Developer enablement | Showing prod architecture |
 
 ---
 
-## Best Practices Across All Templates
+## Anti-Patterns to Avoid
 
-### Project Scope
+### ❌ Anti-Pattern 1: One Project Per Network
 
-- **Do**: Scope projects to boundaries where architectural parity makes sense
-- **Don't**: Create overly complex projects with dozens of bundles
-- **Do**: Keep directed graphs well-balanced and maintainable
-- **Don't**: Create too many micro-projects that lose parity benefits
-
-### Environment Defaults vs. Remote References
-
-| Use Environment Defaults When | Use Remote References When |
-|-------------------------------|---------------------------|
-| Resource is truly default for ALL packages in environment | Resource should be swappable between environments |
-| Canvas should stay clean (network, credentials) | Visual representation adds architectural value |
-| No per-environment variability needed | Some environments use shared, others use dedicated |
-| Automatic propagation is desired | Explicit control is required |
-
-### Naming Conventions
-
-Establish clear naming patterns:
-
-```bash
-# Projects
-{team}-{purpose}
-examples: platform-shared-infra, ecommerce-api, data-analytics
-
-# Environments  
-{stage} or {developer}-{stage} or {region}-{stage}
-examples: production, staging, alice-dev, usw-prod, eu-staging
-
-# Packages (bundles on canvas)
-{resource-type}-{purpose}
-examples: vpc-primary, eks-apps, postgres-users, redis-sessions
+**Don't**:
+```
+Project: production-vpc (1 environment: prod)
+Project: staging-vpc (1 environment: staging)
+Project: dev-vpc (1 environment: dev)
 ```
 
-### Network CIDR Planning
+**Why**: You lose parity enforcement. Each project is independent, so you can't ensure architectural consistency.
 
-When sharing networks across environments, plan CIDRs carefully:
-
-```
-Production:     10.0.0.0/16
-Staging:        10.1.0.0/16  
-Development:    10.2.0.0/16
-Preview Shared: 10.3.0.0/16
-Developer-1:    10.10.0.0/16
-Developer-2:    10.11.0.0/16
-...
-```
-
-### Migration Paths
-
-You can evolve between templates:
-
-1. **Start Simple** (Template 3: Shared everything for preview) → Fast iteration
-2. **Add Isolation** (Template 2: Dedicated staging infra) → Security improvements
-3. **Scale Teams** (Template 5: Developer sandboxes) → Team growth
-4. **Go Regional** (Template 4: Regional networks) → Global expansion
-5. **Enterprise Architecture** (Template 6: Hub-spoke) → Complex multi-team
+**Do instead**: Use Template 1 or 2 (single project, multiple environments).
 
 ---
 
-## Real-World Hybrid Examples
+### ❌ Anti-Pattern 2: Mixing Unrelated Networks in One Project
 
-### Example 1: Startup → Scale-Up Evolution
-
-**Phase 1** (1-5 developers):
-- Single project, dev/staging/prod environments
-- Shared VPC and cluster for dev/staging (Template 2)
-- Dedicated prod VPC and cluster
-
-**Phase 2** (5-20 developers):
-- Add preview environment shared infrastructure (Template 3)
-- Keep prod isolated, share staging/preview
-- Introduce developer sandboxes for specific needs (Template 5)
-
-**Phase 3** (20+ developers, multiple teams):
-- Split teams into separate projects
-- Maintain shared infrastructure project
-- Add hub-spoke networking for team communication (Template 6)
-
-### Example 2: Regulated SaaS Company
-
-**Structure**:
-- Fully isolated production per customer/tenant (Template 1)
-- Shared network for internal staging/dev (Template 2)
-- Regional deployment for GDPR compliance (Template 4)
-
-**Projects**:
+**Don't**:
 ```
-Regional Networks (per region)
-├── US-East VPC
-├── EU-West VPC  
-└── APAC VPC
+Project: all-networks
+Environments: production
 
-Customer A (tenant)
-├── Production (isolated network)
-└── Staging (shared network via ED)
-
-Customer B (tenant)
-├── Production (isolated network)
-└── Staging (shared network via ED)
-
-Internal Dev
-└── Preview (shared network + cluster)
+Canvas:
+[US-West Production VPC]
+[EU-West Production VPC]
+[Staging VPC]
+[Dev VPC]
+[Alice's Dev VPC]
+[Bob's Dev VPC]
+[DMZ VPC]
 ```
 
-### Example 3: Microservices Platform Team
+**Why**: These networks have nothing to do with each other. When you create a staging environment, you'd have to deploy 7 VPCs, most marked as "undeployed" because they don't make sense in staging context.
 
-**Structure**:
-- Hub-spoke network (Template 6) for team connectivity
-- Shared infrastructure for preview envs (Template 3)
-- Regional networks for production (Template 4)
-
-**Projects**:
-```
-Network Hub
-├── Production Hub (monitoring, security)
-└── Staging Hub
-
-Platform Infrastructure
-├── Prod Network
-├── Staging Network  
-└── Preview Shared Cluster
-
-Team Auth
-├── Production (peered to hub)
-└── Staging (peered to hub)
-
-Team Payments
-├── Production (peered to hub)
-└── Staging (peered to hub)
-
-Team Analytics
-├── Production (peered to hub)
-└── Staging (peered to hub)
-```
+**Do instead**: Split into logical projects (Template 4 for regional, Template 5 for dev sandboxes).
 
 ---
 
-## Troubleshooting Common Patterns
+### ❌ Anti-Pattern 3: Networks + Applications in Same Project
 
-### When Environment Defaults Don't Apply
+**Don't**:
+```
+Project: ecommerce
+Canvas:
+[VPC]
+[Subnets]
+[EKS Cluster]
+[RDS Database]
+[Applications]
+```
 
-**Problem**: Set a VPC as environment default, but bundles aren't connecting
+**Why**: Networks and applications have different lifecycles. Networks rarely change. Applications change constantly. If you want to test a new application, you shouldn't need to think about network configs.
 
-**Solution**:
-1. Check artifact definition compatibility (`$md.ui.environmentDefaultGroup`)
-2. Verify bundle's connection schema matches the artifact type
-3. Ensure environment default is set in correct group
-
-### When Remote References Break
-
-**Problem**: Remote reference works in staging but not production
-
-**Solution**:
-1. Verify source package exists in both source environments
-2. Check that artifact is actually deployed (package status = success)
-3. Confirm cross-project permissions are configured
-
-### Managing CIDR Conflicts
-
-**Problem**: VPC peering fails due to overlapping CIDRs
-
-**Solution**:
-1. Plan CIDR blocks before creating environments (see CIDR planning above)
-2. Use a CIDR registry or documentation to track assignments
-3. Reserve CIDR ranges for future expansion
-
-### Preview Environment Cleanup
-
-**Problem**: Preview environments accumulate and increase costs
-
-**Solution**:
-1. Use preview environment auto-cleanup features
-2. Implement CI/CD hooks to delete environments when PRs close
-3. Regular audits of orphaned environments
+**Do instead**: Separate projects for networks and applications. Networks provide artifacts via ED to application projects.
 
 ---
 
-## Additional Resources
+## Best Practices
 
-- [Sharing Infrastructure Guide](./sharing_infrastructure) - Detailed walkthrough of sharing resources
-- [Environment Default Connections](../concepts/environment-default-connections) - Deep dive into environment defaults
-- [Projects Concept](../concepts/projects) - Understanding project parity enforcement
-- [Environments Concept](../concepts/environments) - Environment configuration and management
-- [Custom Artifact Definitions](./custom_artifact_definition) - Creating artifact types that support environment defaults
+### ✅ Scope Projects by Network Lifecycle
+
+Networks that have the same lifecycle should be in the same project:
+- **Good**: Production network + Production DR network in one project (both change together)
+- **Bad**: Production network + Developer sandbox networks (completely different lifecycles)
+
+### ✅ Use Separate Projects for Cross-Network Connectivity
+
+If you have VPC peering, VPN tunnels, or Transit Gateway attachments:
+- Put the VPCs themselves in one project (or multiple projects if they have different lifecycles)
+- Put the connectivity resources in a separate project that uses RR to reference the VPCs
+
+This keeps the network projects clean and makes connectivity explicit.
+
+### ✅ Accept Intentional Disparity for Connectivity Projects
+
+Projects that handle connectivity (Template 3, Template 4) will have undeployed VPC packages because they're using RR. **This is OK**. The canvas is showing the network topology, not claiming to deploy the VPCs.
+
+### ✅ Document When Disparity Is Intentional
+
+If you're using Template 6 (environment-specific features), add notes in the bundle descriptions explaining why certain packages are undeployed in certain environments. This helps teammates understand the architecture.
+
+---
+
+## Migration Paths
+
+### Starting Small → Growing
+
+1. **Start with Template 2**: Single project, multiple environments, centralized network management
+2. **Add Template 5**: When developers need sandboxes
+3. **Split to Template 3**: When you grow to hub-spoke architecture
+4. **Add Template 4**: When you go multi-region
+
+### Consolidating Sprawl
+
+If you have many single-environment projects (Anti-Pattern 1):
+1. Identify networks with same lifecycle (prod networks, staging networks, dev networks)
+2. Create new project with multiple environments
+3. Migrate one environment at a time
+4. Delete old single-environment projects
+
+---
+
+## Alternative: Importing Existing Networks
+
+:::tip Already Managing Networks Elsewhere?
+If you're already managing networks outside Massdriver (CloudFormation, Terraform, manual), you don't need to migrate them to Massdriver immediately. You can:
+
+1. **Create artifact definitions** for your network types
+2. **Import network artifacts** using the Massdriver CLI or API with existing VPC/subnet IDs
+3. **Use as environment defaults** in application projects to assign landing zones to developers
+
+This lets you use Massdriver for application deployment while keeping network management where it is. Your teams get self-service access to networks without you rewriting all your network IaC.
+
+See the [Custom Artifact Definitions guide](./custom_artifact_definition) for creating importable network artifacts.
+:::
 
 ---
 
 ## Summary
 
-Choose your networking template based on:
+Choose your template based on:
 
-1. **Security requirements**: How much isolation do you need?
-2. **Cost constraints**: How much can you spend on infrastructure?
-3. **Team structure**: How many teams, how much autonomy?
-4. **Development velocity**: How fast do developers need environments?
-5. **Compliance needs**: Any regulatory requirements for isolation?
+1. **Do you want all environments to deploy everything?** → Templates 1, 2, 5 (no undeployed packages)
+2. **Do you need to model cross-network connectivity?** → Templates 3, 4 (separate connectivity project, some undeployed packages)
+3. **Do you want to show production features in all environments?** → Template 6 (intentional disparity)
 
-**Quick Recommendations**:
-- **Startups**: Template 2 or 3 (cost-efficient, fast)
-- **Security-focused**: Template 1 (maximum isolation)
-- **Global apps**: Template 4 (regional)
-- **Large enterprises**: Template 6 (hub-spoke)
-- **Platform teams**: Template 5 or 6 (team enablement)
+**Most Important Rule**: Scope projects so that architectural parity makes sense. If two networks should always have the same structure, they belong in the same project as different environments. If they have different structures, they belong in different projects (or use intentional disparity).
 
-Remember: These templates are starting points. Mix and match concepts to build the architecture that fits your organization's unique needs. Massdriver's flexibility with projects, environments, environment defaults, and remote references gives you the tools to model almost any network topology.
-
+The goal is to avoid accidental undeployed packages while allowing intentional disparity when it makes sense to visualize your architecture.
