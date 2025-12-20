@@ -151,7 +151,7 @@ Use `$md.ui.connectionOrientation` to control how artifacts appear:
 - `"environmentDefault"`: Artifact only appears as a default, not as a connectable box on the canvas
 - **Both**: You can enable both modes independently for maximum flexibility
 
-See the [Custom Artifact Definition Guide](/guides/custom_artifact_definition#customizing-the-artifact-types-that-can-be-defaulted-in-an-environment) for more details.
+See the [Custom Artifact Definition Guide](/guides/custom-artifact-definition#customizing-the-artifact-types-that-can-be-defaulted-in-an-environment) for more details.
 
 ## Best Practices
 
@@ -172,7 +172,7 @@ See the [Custom Artifact Definition Guide](/guides/custom_artifact_definition#cu
 
 - [Environments Concept](/concepts/environments) - Understanding environments in Massdriver
 - [Connections Concept](/concepts/connections) - How explicit connections work
-- [Custom Artifact Definitions](/guides/custom_artifact_definition) - Creating custom artifact types with environment defaults
+- [Custom Artifact Definitions](/guides/custom-artifact-definition) - Creating custom artifact types with environment defaults
 - [CLI: Setting Environment Defaults](/cli/commands/mass_environment_default) - Command-line management
-- [Sharing Infrastructure Guide](/guides/sharing_infrastructure) - Practical examples of using environment defaults
+- [Sharing Infrastructure Guide](/guides/sharing-infrastructure) - Practical examples of using environment defaults
 

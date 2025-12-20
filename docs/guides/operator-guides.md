@@ -202,7 +202,7 @@ ping {{connections.network.specs.gateway_ip}}
 - [Liquid Documentation](https://shopify.github.io/liquid/)
 - [Massdriver Documentation](https://docs.massdriver.cloud)
 - [Bundle Structure](../concepts/bundles)
-- [Creating Bundles Guide](../getting_started/creating-bundles)
+- [Creating Bundles Guide](../getting_started/03-creating-bundles.md)
 
 ---
 

@@ -1,598 +1,672 @@
 ---
 id: networking-templates
 slug: /guides/networking-templates
-title: Network Organization Templates
-sidebar_label: Network Organization Templates
+title: Network Organization Patterns
+sidebar_label: Network Organization Patterns
 ---
 
-# Network Organization Templates
+# Network Organization Patterns
 
-This guide provides common patterns for organizing network infrastructure (VPCs, subnets, VPN tunnels) using Massdriver's project/environment hierarchy. These templates help you avoid "mostly undeployed" diagrams by correctly mapping network parity to your organizational needs.
+This guide provides principles and patterns for organizing network infrastructure using Massdriver's project/environment hierarchy. The goal is to help you scope projects correctly and avoid diagrams full of undeployed packages.
 
-## Key Concepts Refresher
+## The Core Problem
 
-- **Projects**: Enforce architectural parity across all environments. All environments in a project share the same canvas/diagram.
-- **Environments**: Can differ in scale and configuration, but maintain the same architecture as their project.
-- **Environment Defaults (ED)** 😂: Shared resources that auto-connect to all compatible bundles without cluttering the canvas. Networks are invisible when set as ED.
-- **Remote References (RR)**: Allow packages to reference resources from other projects/environments, appearing as boxes on the canvas. RR enables **intentional disparity**: you can substitute a resource from elsewhere or leave a resource undeployed entirely. Undeployed packages remain visible on the canvas with a clear status indicator, making architectural differences between environments explicit.
+You're creating network bundles (VPCs, subnets, tunnels, VPN gateways, Transit Gateways, etc.). You need to decide:
+1. **Bundle scope**: What does each bundle provision?
+2. **Project scope**: Which bundles go in the same project?
+3. **Environment strategy**: Which environments should exist in each project?
 
-:::tip The Parity Problem
-If you create a project with 5 network bundles on the canvas but only 2 are actually deployed in each environment (the other 3 showing as undeployed), you've mis-scoped your project. This guide helps you avoid that by thinking through which networks should have parity across environments.
+**Get this wrong** and you'll have diagrams where most packages are marked "undeployed" because the project parity doesn't match your actual infrastructure needs.
+
+## Key Concepts
+
+- **Projects**: Enforce architectural parity. All environments in a project share the same canvas.
+- **Environments**: Can differ in scale/configuration, but must have the same architecture.
+- **Environment Defaults (ED)** 😂: Shared resources that auto-connect without appearing on canvas.
+- **Remote References (RR)**: Reference resources from other projects/environments. Appear on canvas as undeployed.
+
+:::tip The Golden Rule
+**If a bundle won't be deployed in every environment in a project, you've mis-scoped your project.**
+
+Either:
+- Split into separate projects (different architectures deserve different projects)
+- Make the bundle configurable so it deploys everywhere (just with different configs)
+- Use intentional disparity (show the architecture, mark as undeployed in some envs)
 :::
 
 ---
 
-## Template 1: Environment-Per-Network (Fully Isolated)
+## Principle 1: Match Project Scope to Architectural Parity
 
-**Scenario**: Each application environment (prod, staging, dev) needs its own completely isolated network. No shared networking infrastructure.
+### Question to Ask Yourself
 
-**When to use**:
-- Maximum isolation required (compliance, security)
-- Multi-tenant SaaS with strict tenant separation
-- Each environment managed by different teams
+**"Do these networks have the same architecture across environments?"**
 
-### Project Structure
+#### Example: VPC Bundle Scope
 
-**Project**: `corporate-networks`
+**Scenario A**: You create a "VPC" bundle that provisions a VPC + all subnets (public, private, database) in one bundle with parameters for AZ count, CIDR sizes, etc.
 
-**Environments**:
-- `production`
-- `staging`
-- `development`
+- Production: Deploy "VPC" bundle with `availability_zones: 3`, CIDR `/16`
+- Staging: Deploy "VPC" bundle with `availability_zones: 1`, CIDR `/20`
+- Development: Deploy "VPC" bundle with `availability_zones: 1`, CIDR `/22`
 
-**Canvas** (same for all environments):
+**Result**: ✅ All environments deploy the same bundle with different configs. **No undeployed packages.**
+
+**Project Structure**:
 ```
-[VPC/Virtual Network]
-├── [Public Subnets]
-├── [Private Subnets]
-└── [Database Subnets]
+Project: corporate-networks
+Environments: production, staging, development
+
+Canvas (same for all):
+[VPC] (includes all subnets)
 ```
-
-### What Gets Deployed
-
-**Production Environment**:
-- VPC: `10.0.0.0/16`, 3 AZs, multi-region replication
-- All subnets deployed
-
-**Staging Environment**:
-- VPC: `10.1.0.0/16`, 1 AZ, single-region
-- All subnets deployed
-
-**Development Environment**:
-- VPC: `10.2.0.0/16`, 1 AZ
-- All subnets deployed
-
-### Implementation
-
-**Environment Defaults**: None
-
-**Remote References**: None
-
-**Result**: All 3 environments deploy all 3 bundles. **No undeployed packages**. Parity is maintained (all envs have same network structure), scale differs (AZ count, CIDR size).
-
-### Pros & Cons
-
-✅ Clean parity - all environments deploy everything
-✅ Maximum isolation
-✅ Easy to understand
-
-❌ Highest cost (3 complete networks)
-❌ More resources to manage
 
 ---
 
-## Template 2: Shared Networks with Per-Environment CIDRs
+**Scenario B**: You create separate bundles: "VPC", "Public Subnets", "Private Subnets", "Database Subnets". Each creates N subnets based on a parameter.
 
-**Scenario**: You want a single project to provision multiple networks for different application environments, but each network is independent.
+- Production: Deploy all 4 bundles, each with `availability_zones: 3`
+- Staging: Deploy all 4 bundles, each with `availability_zones: 1`
+- Development: Deploy all 4 bundles, each with `availability_zones: 1`
 
-**When to use**:
-- Centralized network team manages all networks
-- Want single source of truth for all network configs
-- Networks don't connect to each other
+**Result**: ✅ All environments deploy all bundles with different configs. **No undeployed packages.**
 
-### Project Structure
-
-**Project**: `platform-networks`
-
-**Environments**:
-- `production-usw2`
-- `production-use1`
-- `staging`
-- `development`
-
-**Canvas** (same for all environments):
+**Project Structure**:
 ```
-[VPC/Virtual Network]
-├── [Public Subnets]
-├── [Private Subnets]
-└── [Database Subnets]
+Project: corporate-networks
+Environments: production, staging, development
+
+Canvas (same for all):
+[VPC]
+[Public Subnets]
+[Private Subnets]
+[Database Subnets]
 ```
-
-### What Gets Deployed
-
-**Production-USW2 Environment**:
-- VPC: `10.0.0.0/16` in us-west-2
-- All subnets deployed
-
-**Production-USE1 Environment**:
-- VPC: `10.10.0.0/16` in us-east-1
-- All subnets deployed
-
-**Staging Environment**:
-- VPC: `10.1.0.0/16` in us-west-2
-- All subnets deployed
-
-**Development Environment**:
-- VPC: `10.2.0.0/16` in us-west-2
-- All subnets deployed
-
-### Implementation
-
-**Environment Defaults**: Each network artifact is set as ED in consuming application projects (different applications projects reference these networks)
-
-**Remote References**: None
-
-**Result**: All environments deploy all bundles. **No undeployed packages**. Each environment provisions one complete network with different configs.
-
-### Pros & Cons
-
-✅ Clean parity - every environment deploys everything
-✅ Single project for all network management
-✅ Easy to compare network configs across envs
-
-❌ Many environments to manage if you have many networks
-❌ Can't easily model cross-network connections in same project
 
 ---
 
-## Template 3: Hub Network with Spoke Networks
+**Scenario C**: You create individual bundles per actual subnet: "Public Subnet AZ-A", "Public Subnet AZ-B", "Public Subnet AZ-C".
 
-**Scenario**: You have a central hub network that provides shared services, plus multiple spoke networks for teams/applications. Spokes connect to hub via VPN tunnels, VPC peering, or Transit Gateway.
+- Production: Deploy all 9 subnet bundles (3 AZs × 3 subnet types)
+- Staging: Deploy only 3 subnet bundles (1 AZ × 3 subnet types)
 
-**When to use**:
-- Enterprise with centralized shared services
-- Multiple teams need isolated networks but shared connectivity
-- Want to model network topology explicitly
+**Result**: ❌ Staging has 6 undeployed packages. **This is the problem we're trying to avoid.**
 
-### Project Structure
+**What to Do Instead**:
 
-**Project 1**: `hub-network`
-
-**Environments**:
-- `production-hub`
-- `staging-hub`
-
-**Canvas**:
+**Option 1**: Split into separate projects by AZ count:
 ```
+Project: multi-az-networks
+Environments: production
+Canvas: [VPC] + 9 subnet bundles
+
+Project: single-az-networks
+Environments: staging, development
+Canvas: [VPC] + 3 subnet bundles
+```
+**Result**: ✅ No undeployed packages, but you lose parity between prod and non-prod.
+
+**Option 2**: Make subnet bundles parameterized (like Scenario B).
+
+**Option 3**: Use monolithic VPC bundle (like Scenario A).
+
+---
+
+## Principle 2: Separate Projects by Network Lifecycle
+
+### Question to Ask Yourself
+
+**"Do these networks change together?"**
+
+If networks have different lifecycles, they probably belong in different projects.
+
+### Example: Production Networks vs Developer Sandboxes
+
+**Scenario**: You manage production VPCs and also provision developer sandbox networks on-demand.
+
+❌ **Don't do this**:
+```
+Project: all-networks
+Environments: production, staging, dev, alice-sandbox, bob-sandbox, carol-sandbox...
+
+Canvas:
+[Production VPC]
+[Staging VPC]
+[Dev VPC]
+[Sandbox VPC]
+```
+
+**Problem**: Creating alice-sandbox environment would require configuring 4 VPCs (production, staging, dev, sandbox). You'd mark 3 as undeployed. Messy.
+
+✅ **Do this instead**:
+```
+Project: corporate-networks
+Environments: production, staging, development
+Canvas: [VPC]
+
+Project: developer-sandboxes
+Environments: alice, bob, carol...
+Canvas: [VPC]
+```
+
+**Result**: Each project has clean parity. Developer sandboxes are independent from corporate networks.
+
+---
+
+## Principle 3: Use Separate Projects for Cross-Network Connectivity
+
+### Question to Ask Yourself
+
+**"Am I connecting existing networks together, or provisioning new networks?"**
+
+If you're creating resources that connect networks (VPC peering, VPN tunnels, Transit Gateway attachments), put those in a **separate project** that uses RR to reference the networks.
+
+### Example: Hub-and-Spoke Architecture
+
+**Scenario**: You have a hub VPC and 3 spoke VPCs. You want to connect them with Transit Gateway.
+
+✅ **Do this**:
+
+**Project 1: hub-network**
+```
+Environments: production, staging
+
+Canvas:
 [Hub VPC]
-├── [Public Subnets]
-├── [Private Subnets]
-├── [Transit Gateway]
-└── [VPN Gateway]
+[Transit Gateway]
+[VPN Gateway]
 ```
 
-**Project 2**: `spoke-networks`
-
-**Environments**:
-- `team-auth-production`
-- `team-payments-production`
-- `team-analytics-production`
-- `team-auth-staging`
-- `team-payments-staging`
-- `team-analytics-staging`
-
-**Canvas** (same for all environments):
+**Project 2: spoke-networks**
 ```
+Environments: team-auth-prod, team-payments-prod, team-analytics-prod, team-auth-staging...
+
+Canvas:
 [Spoke VPC]
-├── [Public Subnets]
-├── [Private Subnets]
-└── [Database Subnets]
 ```
 
-**Project 3**: `network-connectivity`
-
-**Environment**:
-- `production-mesh`
-
-**Canvas**:
+**Project 3: transit-gateway-connectivity**
 ```
+Environment: production-mesh
+
+Canvas:
 [Hub VPC] (RR from hub-network, undeployed)
-[Auth Spoke VPC] (RR from spoke-networks team-auth-production, undeployed)
-[Payments Spoke VPC] (RR from spoke-networks team-payments-production, undeployed)
-[Analytics Spoke VPC] (RR from spoke-networks team-analytics-production, undeployed)
-[Transit Gateway Attachment - Hub]
-[Transit Gateway Attachment - Auth]
-[Transit Gateway Attachment - Payments]
-[Transit Gateway Attachment - Analytics]
+[Auth VPC] (RR from spoke-networks, undeployed)
+[Payments VPC] (RR from spoke-networks, undeployed)
+[Analytics VPC] (RR from spoke-networks, undeployed)
+[TGW Attachment - Hub]
+[TGW Attachment - Auth]
+[TGW Attachment - Payments]
+[TGW Attachment - Analytics]
 [TGW Route Table]
 ```
 
-### What Gets Deployed
+**Why this works**:
+- Hub and spokes are provisioned independently
+- Connectivity project uses RR to "import" existing VPCs
+- Connectivity project has intentional undeployed packages (the VPCs)
+- Canvas clearly shows the network topology
 
-**Hub Network Project**:
-- Production-hub env: Hub VPC `10.0.0.0/16`, all subnets, Transit Gateway, VPN Gateway
-- Staging-hub env: Hub VPC `10.1.0.0/16`, all subnets, Transit Gateway, VPN Gateway
-
-**Spoke Networks Project**:
-- Team-auth-production: Spoke VPC `10.10.0.0/16`, all subnets
-- Team-payments-production: Spoke VPC `10.20.0.0/16`, all subnets
-- Team-analytics-production: Spoke VPC `10.30.0.0/16`, all subnets
-- (Staging envs deploy with different CIDRs)
-
-**Network Connectivity Project**:
-- Production-mesh env: 4 undeployed VPCs (RR), 4 deployed Transit Gateway attachments, 1 deployed route table
-
-### Implementation
-
-**Environment Defaults**: Application projects use these VPCs as ED (hub or specific spoke depending on the app)
-
-**Remote References**: network-connectivity project uses RR to reference VPCs from other projects, then creates connectivity resources (TGW attachments)
-
-**Result**: Connectivity project has intentional disparity - VPCs shown as undeployed (they exist elsewhere), only connectivity resources deployed.
-
-### Pros & Cons
-
-✅ Clear separation of concerns (networks vs connectivity)
-✅ Easy to see hub-spoke topology
-✅ Spokes have clean parity (all teams get same structure)
-
-❌ More complex (3 projects)
-❌ Connectivity project has undeployed packages (but this is intentional)
+**Result**: ⚠️ Connectivity project has undeployed VPC packages, **but this is intentional**. You're visualizing topology, not claiming to provision the VPCs.
 
 ---
 
-## Template 4: Regional Networks with Cross-Region Tunnels
+## Principle 4: Choose Your Parameters vs Disparity Trade-off
 
-**Scenario**: You have networks in multiple regions and need to connect them with VPN tunnels or VPC peering for replication or failover.
+### Question to Ask Yourself
+
+**"Should I use parameters to handle differences, or show disparity explicitly?"**
+
+There's a spectrum:
+
+### Option A: Highly Parameterized (No Disparity)
+
+**Bundle**: VPC with parameters for everything (AZ count, CIDR size, enable VPN, enable Transit Gateway, enable Network Firewall)
+
+**Project**:
+```
+Project: corporate-network
+Environments: production, staging
+
+Canvas:
+[VPC]
+[VPN Gateway]
+[Transit Gateway]
+[Network Firewall]
+```
+
+**Configuration**:
+- Production: All features enabled via params
+- Staging: Features disabled via params (bundles still "deployed", just no-op or minimal resources)
+
+**Result**: ✅ No undeployed packages. All features "deployed" everywhere (even if some are no-ops).
+
+**Pros**: Clean canvas, no disparity
+**Cons**: Complex parameter management, staging configs might be confusing
+
+---
+
+### Option B: Explicit Disparity (Show Architectural Differences)
+
+**Bundle**: VPC with minimal params. Separate bundles for each feature.
+
+**Project**:
+```
+Project: corporate-network
+Environments: production, staging
+
+Canvas:
+[VPC]
+[VPN Gateway]
+[Transit Gateway]
+[Network Firewall]
+```
+
+**Configuration**:
+- Production: All 4 bundles deployed
+- Staging: Only VPC deployed, other 3 marked undeployed
+
+**Result**: ⚠️ Staging has 3 undeployed packages, **but this shows the architectural difference explicitly**.
+
+**Pros**: Clear visibility into what production has that staging doesn't
+**Cons**: Undeployed packages on canvas
+
+**When to use**: When you WANT to show the full production architecture in all environments, even if some features aren't deployed in non-prod.
+
+---
+
+### Option C: Separate Projects (Complete Isolation)
+
+**Bundle**: VPC with minimal params.
+
+**Project 1**:
+```
+Project: production-network
+Environment: production
+
+Canvas:
+[VPC]
+[VPN Gateway]
+[Transit Gateway]
+[Network Firewall]
+```
+
+**Project 2**:
+```
+Project: non-production-networks
+Environments: staging, development
+
+Canvas:
+[VPC]
+```
+
+**Result**: ✅ No undeployed packages anywhere.
+
+**Pros**: Clean separation, no disparity
+**Cons**: Production and non-production architectures can drift apart
+
+**When to use**: When production and non-production have fundamentally different architectures.
+
+---
+
+## Pattern Catalog
+
+### Pattern 1: Single Project, Environment Per Network
+
+**Use when**: You manage multiple independent networks with the same architecture.
+
+```
+Project: corporate-networks
+Environments: production, staging, development
+
+Canvas:
+[VPC]
+
+Configuration:
+- Production: VPC 10.0.0.0/16, 3 AZs
+- Staging: VPC 10.1.0.0/16, 1 AZ
+- Development: VPC 10.2.0.0/16, 1 AZ
+```
+
+**Result**: ✅ Clean parity, no undeployed packages
+
+**When to use**:
+- Networks are architecturally identical (just different scale)
+- You want to compare configs across environments easily
+- Networks don't connect to each other
+
+---
+
+### Pattern 2: Multiple Projects, One Per Network Purpose
+
+**Use when**: Different types of networks have different architectures.
+
+```
+Project: hub-network
+Environments: production, staging
+Canvas: [Hub VPC] + [Transit Gateway] + [VPN Gateway]
+
+Project: spoke-networks
+Environments: team-a-prod, team-b-prod, team-c-prod...
+Canvas: [Spoke VPC]
+
+Project: developer-networks
+Environments: alice, bob, carol...
+Canvas: [Sandbox VPC]
+```
+
+**Result**: ✅ Clean parity within each project
+
+**When to use**:
+- Networks have different purposes (hub vs spoke vs sandbox)
+- Networks have different lifecycles
+- Networks are managed by different teams
+
+---
+
+### Pattern 3: Connectivity Projects with Remote References
+
+**Use when**: You're connecting existing networks together.
+
+```
+Project: networks
+Environments: us-west-2, us-east-1, eu-west-1
+Canvas: [VPC] + [VPN Gateway]
+
+Project: cross-region-vpn
+Environment: global-mesh
+Canvas:
+  [US-West VPC] (RR, undeployed)
+  [US-East VPC] (RR, undeployed)
+  [EU-West VPC] (RR, undeployed)
+  [VPN Connection US-West to US-East]
+  [VPN Connection US-West to EU-West]
+  [VPN Connection US-East to EU-West]
+```
+
+**Result**: ⚠️ VPN project has undeployed VPC packages (intentional, showing topology)
+
+**When to use**:
+- Connecting networks across regions or projects
+- Want to visualize network topology
+- Connectivity is managed separately from networks themselves
+
+---
+
+### Pattern 4: Regional Networks
+
+**Use when**: You deploy the same network architecture in multiple regions.
+
+```
+Project: regional-networks
+Environments: us-west-2, us-east-1, eu-west-1, ap-southeast-1
+
+Canvas:
+[VPC]
+[VPN Gateway]
+
+Configuration:
+- us-west-2: VPC 10.10.0.0/16 in us-west-2
+- us-east-1: VPC 10.20.0.0/16 in us-east-1
+- eu-west-1: VPC 10.30.0.0/16 in eu-west-1
+- ap-southeast-1: VPC 10.40.0.0/16 in ap-southeast-1
+```
+
+**Result**: ✅ Clean parity, no undeployed packages
 
 **When to use**:
 - Multi-region deployments
-- Active-active or DR architectures
-- Data replication across regions
-
-### Project Structure
-
-**Project 1**: `regional-networks`
-
-**Environments**:
-- `us-west-2`
-- `us-east-1`
-- `eu-west-1`
-- `ap-southeast-1`
-
-**Canvas** (same for all environments):
-```
-[VPC]
-├── [Public Subnets]
-├── [Private Subnets]
-├── [Database Subnets]
-└── [VPN Gateway]
-```
-
-**Project 2**: `cross-region-tunnels`
-
-**Environment**:
-- `global-mesh`
-
-**Canvas**:
-```
-[US-West-2 VPC] (RR, undeployed)
-[US-East-1 VPC] (RR, undeployed)
-[EU-West-1 VPC] (RR, undeployed)
-[VPN Connection - USW to USE]
-[VPN Connection - USW to EU]
-[VPN Connection - USE to EU]
-```
-
-### What Gets Deployed
-
-**Regional Networks Project**:
-- us-west-2: VPC `10.10.0.0/16`, all subnets, VPN Gateway
-- us-east-1: VPC `10.20.0.0/16`, all subnets, VPN Gateway
-- eu-west-1: VPC `10.30.0.0/16`, all subnets, VPN Gateway
-- ap-southeast-1: VPC `10.40.0.0/16`, all subnets, VPN Gateway
-
-**Cross-Region Tunnels Project**:
-- global-mesh: 3 undeployed VPCs (RR), 3 deployed VPN connections
-
-### Implementation
-
-**Environment Defaults**: Regional application projects use regional VPCs as ED
-
-**Remote References**: cross-region-tunnels project references regional VPCs, creates VPN connections between them
-
-**Result**: Tunnels project has intentional disparity (VPCs undeployed, tunnels deployed).
-
-### Pros & Cons
-
-✅ Clean regional network management
-✅ Easy to visualize cross-region connectivity
-✅ Simple to add new regions (add environment)
-
-❌ Tunnels project has undeployed VPCs (but intentional)
-❌ Must manage CIDR allocation carefully
+- Same network architecture in every region
+- Want single source of truth for network configs
 
 ---
 
-## Template 5: Per-Developer Networks
+## Decision Framework
 
-**Scenario**: Developers get their own isolated networks for testing infrastructure changes without affecting shared environments.
+Use this flowchart to decide how to organize your network projects:
 
-**When to use**:
-- Developers need to test network changes
-- Platform team provides self-service networking
-- Want isolation for experimentation
+### Step 1: Bundle Scope
 
-### Project Structure
+**Q**: How are you scoping your bundles?
 
-**Project**: `developer-networks`
+- **A1**: One monolithic bundle per network (VPC + all subnets + gateways)
+  → Continue to Step 2
 
-**Environments**:
-- `alice-dev`
-- `bob-dev`
-- `carol-dev`
-- `dave-dev`
+- **A2**: Separate bundles per network component (VPC, subnets, gateways)
+  → Ask: "Will all components be deployed in all environments?"
+    - **Yes** → Continue to Step 2
+    - **No** → Either:
+      - Make components optional via parameters (no undeployed packages)
+      - Accept intentional disparity (some packages undeployed)
+      - Split into separate projects (different architectures)
 
-**Canvas** (same for all environments):
-```
-[VPC]
-├── [Public Subnets]
-├── [Private Subnets]
-└── [Database Subnets]
-```
+### Step 2: Network Relationships
 
-### What Gets Deployed
+**Q**: Do your networks connect to each other?
 
-**Alice-Dev Environment**:
-- VPC: `10.10.0.0/16`, all subnets
+- **No**: Simple independent networks
+  → Use Pattern 1 (single project, env per network) or Pattern 4 (regional)
 
-**Bob-Dev Environment**:
-- VPC: `10.11.0.0/16`, all subnets
+- **Yes**: Networks have connections (peering, VPN, Transit Gateway)
+  → Use Pattern 3 (separate connectivity project with RR)
 
-**Carol-Dev Environment** (testing new subnet structure):
-- VPC: `10.12.0.0/16`, all subnets (but different sizes/CIDRs)
+### Step 3: Network Lifecycles
 
-**Dave-Dev Environment**:
-- VPC: `10.13.0.0/16`, all subnets
+**Q**: Do these networks change together?
 
-### Implementation
+- **Yes**: All networks managed by same team, similar lifecycle
+  → Keep in one project (Pattern 1 or 4)
 
-**Environment Defaults**: None (developers control everything)
+- **No**: Different teams, different purposes, different lifecycles
+  → Split into multiple projects (Pattern 2)
 
-**Remote References**: None for this project (though developers might reference these from their app projects)
+### Step 4: Environment Strategy
 
-**Result**: All environments deploy all bundles. **No undeployed packages**. Clean parity with per-environment configuration.
+**Q**: What environments do you need?
 
-### Pros & Cons
+- **One environment per physical network**: Use environments to represent actual networks (prod, staging, dev)
+  → Pattern 1
 
-✅ Clean parity - all devs get same structure
-✅ Easy to provision new developer environments
-✅ Developers can experiment safely
+- **Same architecture, multiple regions**: Use environments to represent regions
+  → Pattern 4
 
-❌ Can be expensive with many developers
-❌ Need cleanup policies
+- **Different network types**: Use projects to represent network types, environments for instances
+  → Pattern 2
 
 ---
 
-## Template 6: Environment-Specific Network Features
+## Common Mistakes and How to Fix Them
 
-**Scenario**: Production has advanced networking features (VPN, Transit Gateway, Network Firewall) that staging/dev don't need. You want to show these on the canvas but only deploy selectively.
+### Mistake 1: Mixing Unrelated Networks in One Project
 
-**When to use**:
-- Production has compliance requirements staging doesn't
-- Want to visualize full production architecture but not pay for it in all envs
-- Testing network features before full rollout
-
-### Project Structure
-
-**Project**: `corporate-network`
-
-**Environments**:
-- `production`
-- `staging`
-- `development`
-
-**Canvas** (same for all environments):
-```
-[VPC]
-├── [Public Subnets]
-├── [Private Subnets]
-├── [Database Subnets]
-└── [Transit Gateway]
-
-[VPN Gateway]
-[Network Firewall]
-[DNS Firewall]
-```
-
-### What Gets Deployed
-
-**Production Environment**:
-- VPC + all subnets: Deployed
-- Transit Gateway: Deployed
-- VPN Gateway: Deployed
-- Network Firewall: Deployed
-- DNS Firewall: Deployed
-
-**Staging Environment**:
-- VPC + all subnets: Deployed
-- Transit Gateway: **Undeployed** (not configured, skipped)
-- VPN Gateway: **Undeployed**
-- Network Firewall: **Undeployed**
-- DNS Firewall: **Undeployed**
-
-**Development Environment**:
-- VPC + all subnets: Deployed
-- Transit Gateway: **Undeployed**
-- VPN Gateway: **Undeployed**
-- Network Firewall: **Undeployed**
-- DNS Firewall: **Undeployed**
-
-### Implementation
-
-**Environment Defaults**: VPC artifact can be set as ED for application projects
-
-**Remote References**: None
-
-**Disparity**: Staging and dev environments have 4 undeployed packages (advanced networking features). This is **intentional disparity** - you're showing what production looks like while not paying for those features in lower environments.
-
-**Result**: This creates "undeployed" packages, but it's intentional. The canvas shows the full architecture across all environments with clear visibility into what's deployed where.
-
-### Pros & Cons
-
-✅ Single source of truth for network architecture
-✅ Clear visibility into production vs non-production features
-✅ Can promote features from dev → staging → prod
-
-❌ Many undeployed packages in non-prod (but this is intentional)
-❌ Canvas looks "incomplete" for staging/dev (though accurately reflects reality)
-
-:::warning When to Use This Pattern
-Use this template when you WANT to show architectural differences between environments. If the undeployed packages bother you, consider splitting into separate projects instead (e.g., "basic-networks" vs "production-networks").
-:::
-
----
-
-## Decision Matrix: Choosing the Right Template
-
-| Consideration | Template 1<br/>Isolated | Template 2<br/>Shared Mgmt | Template 3<br/>Hub-Spoke | Template 4<br/>Regional | Template 5<br/>Dev Sandboxes | Template 6<br/>Feature Disparity |
-|---------------|------------------------|---------------------------|--------------------------|------------------------|------------------------------|----------------------------------|
-| **Parity** | ✅ Clean | ✅ Clean | ✅ Clean | ✅ Clean | ✅ Clean | ⚠️ Intentional disparity |
-| **Undeployed Packages** | ❌ None | ❌ None | ⚠️ Some (connectivity project) | ⚠️ Some (tunnels project) | ❌ None | ⚠️ Many (non-prod envs) |
-| **Complexity** | ⭐ Simple | ⭐⭐ Moderate | ⭐⭐⭐⭐ Complex | ⭐⭐⭐ Moderate | ⭐ Simple | ⭐⭐ Moderate |
-| **Projects** | 1 | 1 | 3 | 2 | 1 | 1 |
-| **Best For** | Maximum isolation | Centralized mgmt | Enterprise hub-spoke | Multi-region | Developer enablement | Showing prod architecture |
-
----
-
-## Anti-Patterns to Avoid
-
-### ❌ Anti-Pattern 1: One Project Per Network
-
-**Don't**:
-```
-Project: production-vpc (1 environment: prod)
-Project: staging-vpc (1 environment: staging)
-Project: dev-vpc (1 environment: dev)
-```
-
-**Why**: You lose parity enforcement. Each project is independent, so you can't ensure architectural consistency.
-
-**Do instead**: Use Template 1 or 2 (single project, multiple environments).
-
----
-
-### ❌ Anti-Pattern 2: Mixing Unrelated Networks in One Project
-
-**Don't**:
+❌ **Problem**:
 ```
 Project: all-networks
-Environments: production
-
-Canvas:
-[US-West Production VPC]
-[EU-West Production VPC]
-[Staging VPC]
-[Dev VPC]
-[Alice's Dev VPC]
-[Bob's Dev VPC]
-[DMZ VPC]
+Environment: production
+Canvas: [Prod VPC] + [Staging VPC] + [Dev VPC] + [Alice VPC] + [Bob VPC]
 ```
 
-**Why**: These networks have nothing to do with each other. When you create a staging environment, you'd have to deploy 7 VPCs, most marked as "undeployed" because they don't make sense in staging context.
+When you create staging environment, you'd have to deploy 5 VPCs, but only one makes sense. 4 undeployed packages.
 
-**Do instead**: Split into logical projects (Template 4 for regional, Template 5 for dev sandboxes).
+✅ **Fix**: Split by lifecycle
+```
+Project: corporate-networks
+Environments: production, staging, development
+Canvas: [VPC]
+
+Project: developer-networks
+Environments: alice, bob
+Canvas: [VPC]
+```
 
 ---
 
-### ❌ Anti-Pattern 3: Networks + Applications in Same Project
+### Mistake 2: One Project Per Network
 
-**Don't**:
+❌ **Problem**:
+```
+Project: production-vpc (env: prod)
+Project: staging-vpc (env: staging)
+Project: dev-vpc (env: dev)
+```
+
+You lose parity enforcement. Each network can drift independently.
+
+✅ **Fix**: Single project with multiple environments
+```
+Project: corporate-networks
+Environments: production, staging, development
+Canvas: [VPC]
+```
+
+---
+
+### Mistake 3: Networks + Applications in Same Project
+
+❌ **Problem**:
 ```
 Project: ecommerce
-Canvas:
-[VPC]
-[Subnets]
-[EKS Cluster]
-[RDS Database]
-[Applications]
+Canvas: [VPC] + [Subnets] + [EKS Cluster] + [RDS] + [Apps]
 ```
 
-**Why**: Networks and applications have different lifecycles. Networks rarely change. Applications change constantly. If you want to test a new application, you shouldn't need to think about network configs.
+Networks and applications have different lifecycles. When you want to deploy a new app, you shouldn't think about network configs.
 
-**Do instead**: Separate projects for networks and applications. Networks provide artifacts via ED to application projects.
+✅ **Fix**: Separate projects
+```
+Project: ecommerce-network
+Canvas: [VPC] + [Subnets]
+→ Set VPC as environment default
 
----
-
-## Best Practices
-
-### ✅ Scope Projects by Network Lifecycle
-
-Networks that have the same lifecycle should be in the same project:
-- **Good**: Production network + Production DR network in one project (both change together)
-- **Bad**: Production network + Developer sandbox networks (completely different lifecycles)
-
-### ✅ Use Separate Projects for Cross-Network Connectivity
-
-If you have VPC peering, VPN tunnels, or Transit Gateway attachments:
-- Put the VPCs themselves in one project (or multiple projects if they have different lifecycles)
-- Put the connectivity resources in a separate project that uses RR to reference the VPCs
-
-This keeps the network projects clean and makes connectivity explicit.
-
-### ✅ Accept Intentional Disparity for Connectivity Projects
-
-Projects that handle connectivity (Template 3, Template 4) will have undeployed VPC packages because they're using RR. **This is OK**. The canvas is showing the network topology, not claiming to deploy the VPCs.
-
-### ✅ Document When Disparity Is Intentional
-
-If you're using Template 6 (environment-specific features), add notes in the bundle descriptions explaining why certain packages are undeployed in certain environments. This helps teammates understand the architecture.
+Project: ecommerce-apps
+Canvas: [EKS Cluster] + [RDS] + [Apps]
+→ Uses VPC via environment default
+```
 
 ---
 
-## Migration Paths
+### Mistake 4: Fine-Grained Subnet Bundles Without Parameterization
 
-### Starting Small → Growing
+❌ **Problem**:
+```
+Project: network
+Canvas:
+  [VPC]
+  [Public Subnet AZ-A]
+  [Public Subnet AZ-B]
+  [Public Subnet AZ-C]
+  [Private Subnet AZ-A]
+  [Private Subnet AZ-B]
+  [Private Subnet AZ-C]
 
-1. **Start with Template 2**: Single project, multiple environments, centralized network management
-2. **Add Template 5**: When developers need sandboxes
-3. **Split to Template 3**: When you grow to hub-spoke architecture
-4. **Add Template 4**: When you go multi-region
+Production: All 7 deployed
+Staging: Only VPC + 2 subnets deployed (5 undeployed packages)
+```
 
-### Consolidating Sprawl
+✅ **Fix**: Use parameterized subnet bundles
+```
+Project: network
+Canvas:
+  [VPC]
+  [Public Subnets] (param: az_count)
+  [Private Subnets] (param: az_count)
 
-If you have many single-environment projects (Anti-Pattern 1):
-1. Identify networks with same lifecycle (prod networks, staging networks, dev networks)
-2. Create new project with multiple environments
-3. Migrate one environment at a time
-4. Delete old single-environment projects
+Production: az_count=3
+Staging: az_count=1
+```
+
+Or: Use monolithic VPC bundle that creates all subnets internally.
 
 ---
 
-## Alternative: Importing Existing Networks
+## When Undeployed Packages Are OK
+
+Sometimes having undeployed packages is **intentional and valuable**:
+
+### Use Case 1: Showing Production Architecture Everywhere
+
+You want all environments to show what the production architecture looks like, even if non-prod doesn't deploy everything.
+
+```
+Project: corporate-network
+Canvas: [VPC] + [Transit Gateway] + [Network Firewall] + [VPN Gateway]
+
+Production: All deployed
+Staging: VPC deployed, others undeployed
+```
+
+**Why**: Makes it clear what production has that staging doesn't. Helps with planning and understanding.
+
+---
+
+### Use Case 2: Connectivity Visualization
+
+You want to show how networks connect together.
+
+```
+Project: network-connectivity
+Canvas: [Hub VPC] + [Spoke A] + [Spoke B] + [VPN Connections]
+
+Reality: VPCs deployed elsewhere (via RR), only VPN connections deployed here
+```
+
+**Why**: Shows network topology clearly. The undeployed VPCs are just references.
+
+---
+
+## Alternative: Import Existing Networks
 
 :::tip Already Managing Networks Elsewhere?
-If you're already managing networks outside Massdriver (CloudFormation, Terraform, manual), you don't need to migrate them to Massdriver immediately. You can:
+
+If you're managing networks outside Massdriver (CloudFormation, Terraform, ClickOps), you don't need to move them into Massdriver:
 
 1. **Create artifact definitions** for your network types
-2. **Import network artifacts** using the Massdriver CLI or API with existing VPC/subnet IDs
-3. **Use as environment defaults** in application projects to assign landing zones to developers
+2. **Import network artifacts** using CLI/API with existing VPC IDs, subnet IDs, etc.
+3. **Use as environment defaults** for application projects
 
-This lets you use Massdriver for application deployment while keeping network management where it is. Your teams get self-service access to networks without you rewriting all your network IaC.
+This lets you use Massdriver for applications while keeping network management where it is.
 
-See the [Custom Artifact Definitions guide](./custom_artifact_definition) for creating importable network artifacts.
+**Example**:
+```bash
+# Import existing production VPC
+mass artifact import \
+  --type "massdriver/aws-vpc" \
+  --data '{"vpc_id": "vpc-123abc", "subnet_ids": [...]}' \
+  --specs '{"region": "us-west-2"}' \
+  --name "production-vpc"
+
+# Set as environment default
+mass environment default prod-env <artifact-id>
+```
+
+Now application projects can use this network without Massdriver managing it.
 :::
 
 ---
 
-## Summary
+## Summary: The Checklist
 
-Choose your template based on:
+Before creating your network projects, answer these questions:
 
-1. **Do you want all environments to deploy everything?** → Templates 1, 2, 5 (no undeployed packages)
-2. **Do you need to model cross-network connectivity?** → Templates 3, 4 (separate connectivity project, some undeployed packages)
-3. **Do you want to show production features in all environments?** → Template 6 (intentional disparity)
+- [ ] **Bundle scope**: Are my bundles parameterized enough to deploy in all environments with just config changes?
+- [ ] **Project scope**: Do all these networks have the same architecture (ignoring scale)?
+- [ ] **Environment scope**: Does each environment represent one logical network deployment?
+- [ ] **Lifecycle alignment**: Do these networks change together?
+- [ ] **Connectivity**: If networks connect, am I using a separate project with RR?
+- [ ] **Intentional disparity**: If I have undeployed packages, is it intentional and documented?
 
-**Most Important Rule**: Scope projects so that architectural parity makes sense. If two networks should always have the same structure, they belong in the same project as different environments. If they have different structures, they belong in different projects (or use intentional disparity).
+**Goal**: Every environment in a project should deploy every bundle (or have an intentional reason for not deploying).
 
-The goal is to avoid accidental undeployed packages while allowing intentional disparity when it makes sense to visualize your architecture.
+If you can't answer "yes" to these questions, reconsider your project boundaries.
+
+---
+
+## Need Help?
+
+If you're unsure how to scope your projects:
+
+1. Start with **Pattern 1** (single project, environment per network) - it's the simplest
+2. Split into multiple projects only when lifecycles or architectures differ
+3. Use connectivity projects (Pattern 3) when you grow to hub-spoke or multi-region
+4. Document why you're using intentional disparity if you have undeployed packages
+
+Remember: **The goal is to avoid accidental undeployed packages.** Intentional disparity for visualization purposes is fine.
