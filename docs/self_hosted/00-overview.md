@@ -42,8 +42,9 @@ Running Massdriver in your own cloud or data center offers unique advantages:
 ## Next Steps
 
 - [Install Massdriver Self-Hosted](/self-hosted/install)  
-- **[Massdriver Catalog](https://github.com/massdriver-cloud/massdriver-catalog)** - Bootstrap your self-hosted instance with a complete catalog of artifact definitions and infrastructure bundles to model your platform architecture
 
 ---
 
 Massdriver Self-Hosted is the best option for organizations that need **security, compliance, and air-gap compatibility**—without the overhead of FedRAMP—while still delivering the modern developer experience of our cloud platform.
+
+Once installed, check out our [Bootstrap Your Platform](/guides/bootstrap-platform) guide to quickly model your platform architecture with the Massdriver Catalog.

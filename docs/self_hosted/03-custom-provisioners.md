@@ -169,3 +169,7 @@ For assistance with custom provisioners:
 
 Custom provisioners unlock the full potential of your self-hosted Massdriver installation, enabling you to integrate any tool or workflow into your infrastructure deployment pipeline.
 
+---
+
+**Next:** Ready to bootstrap your platform? Check out [Bootstrap Your Platform](/guides/bootstrap-platform) to model your entire platform architecture using the Massdriver Catalog.
+
