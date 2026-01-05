@@ -41,7 +41,33 @@ In order to view the structure of the params and connections fields you can run 
 
 ## Artifacts
 
-Artifacts can be created two ways using this provisioner: using OpenTofu `outputs`, and using the [Massdriver](https://registry.terraform.io/providers/massdriver-cloud/massdriver/latest) OpenTofu provider.
+Artifacts can be created two ways using this provisioner: using the [Massdriver](https://registry.terraform.io/providers/massdriver-cloud/massdriver/latest) OpenTofu provider, and using OpenTofu `outputs`.
+
+### Massdriver OpenTofu Provider
+
+Refer to the [provider documentation](https://registry.terraform.io/providers/massdriver-cloud/massdriver/latest/docs/resources/massdriver_artifact) for the `massdriver_artifact` resource. An example is below:
+
+```hcl
+resource "massdriver_artifact" "bucket" {
+  field                = "bucket"
+  provider_resource_id = aws_s3_bucket.main.arn
+  name                 = "AWS S3 Bucket: ${aws_s3_bucket.main.arn}"
+  artifact = jsonencode(
+    {
+      data = {
+        infrastructure = {
+          arn = aws_s3_bucket.main.arn
+        }
+      }
+      specs = {
+        aws = {
+          region = var.bucket.region
+        }
+      }
+    }
+  )
+}
+```
 
 ### OpenTofu Outputs
 
@@ -205,33 +231,5 @@ Now the artifact structure must be built through the `artifact_bucket.jq` templa
             "region": .params.region
         }
     }
-}
-```
-
-### Massdriver OpenTofu Provider
-
-This is the legacy approach to creating artifacts since it is unique to Terraform and OpenTofu provisioners. It may be deprecated and removed in the future.
-
-Refer to the [provider documentation](https://registry.terraform.io/providers/massdriver-cloud/massdriver/latest/docs/resources/massdriver_artifact) for the `massdriver_artifact` resource. An example is below:
-
-```hcl
-resource "massdriver_artifact" "bucket" {
-  field                = "bucket"
-  provider_resource_id = aws_s3_bucket.main.arn
-  name                 = "AWS S3 Bucket: ${aws_s3_bucket.main.arn}"
-  artifact = jsonencode(
-    {
-      data = {
-        infrastructure = {
-          arn = aws_s3_bucket.main.arn
-        }
-      }
-      specs = {
-        aws = {
-          region = var.bucket.region
-        }
-      }
-    }
-  )
 }
 ```
