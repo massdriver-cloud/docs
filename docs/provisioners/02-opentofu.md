@@ -9,6 +9,8 @@ sidebar_label: OpenTofu
 
 [Massdriver](https://www.massdriver.cloud/) provisioner for managing resources with [OpenTofu](https://opentofu.org/).
 
+All Massdriver provisioners are open source. You can view the GitHub repository for this provisioner [here](https://github.com/massdriver-cloud/provisioner-opentofu).
+
 ## Structure
 
 This provisioner expects the `path` to contain an OpenTofu module.
