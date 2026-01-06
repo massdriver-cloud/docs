@@ -1,3 +1,14 @@
+---
+id: provisioners-bicep
+slug: /provisioners/bicep
+title: Bicep Provisioner
+sidebar_label: Bicep
+---
+
+# Bicep Provisioner
+
+[Massdriver](https://www.massdriver.cloud/) provisioner for managing resources with [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/). You can view the GitHub repository for this provisioner [here](https://github.com/massdriver-cloud/provisioner-bicep).
+
 ## Structure
 
 This provisioner expects the `path` to contain a single bicep file named `template.bicep`. While other files may exists in the directory, this `template.bicep` file will be what is used for provisioning and managing the Azure resources.

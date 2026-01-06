@@ -7,11 +7,11 @@ sidebar_label: Helm
 
 # Helm Provisioner
 
-[Massdriver](https://www.massdriver.cloud/) provisioner for managing resources with [Helm](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/).
+[Massdriver](https://www.massdriver.cloud/) provisioner for managing resources with [Helm](https://helm.sh/). You can view the GitHub repository for this provisioner [here](https://github.com/massdriver-cloud/provisioner-helm).
 
 ## Structure
 
-This provisioner expects the `path` to be the base directory of a helm chart. This means it should contain the `Chart.yaml` and `values.yaml` files at a minimium.
+This provisioner expects the `path` to be the base directory of a helm chart if using a local chart. This means it should contain the `Chart.yaml` and `values.yaml` files at a minimium. If using a remote chart, the `path` should still include any relevant files for manipulating inputs or creating artifacts.
 
 ## Tooling
 
