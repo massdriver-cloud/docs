@@ -7,9 +7,7 @@ sidebar_label: Terraform
 
 # Terraform Provisioner
 
-[Massdriver](https://www.massdriver.cloud/) provisioner for managing resources with [Terraform](https://www.terraform.io/).
-
-All Massdriver provisioners are open source. You can view the GitHub repository for this provisioner [here](https://github.com/massdriver-cloud/provisioner-terraform).
+[Massdriver](https://www.massdriver.cloud/) provisioner for managing resources with [Terraform](https://www.terraform.io/). You can view the GitHub repository for this provisioner [here](https://github.com/massdriver-cloud/provisioner-terraform).
 
 ## Structure
 

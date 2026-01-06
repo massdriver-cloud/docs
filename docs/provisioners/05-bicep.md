@@ -7,9 +7,7 @@ sidebar_label: Bicep
 
 # Bicep Provisioner
 
-[Massdriver](https://www.massdriver.cloud/) provisioner for managing resources with [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/).
-
-All Massdriver provisioners are open source. You can view the GitHub repository for this provisioner [here](https://github.com/massdriver-cloud/provisioner-bicep).
+[Massdriver](https://www.massdriver.cloud/) provisioner for managing resources with [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/). You can view the GitHub repository for this provisioner [here](https://github.com/massdriver-cloud/provisioner-bicep).
 
 ## Structure
 
