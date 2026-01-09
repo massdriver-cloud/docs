@@ -183,13 +183,19 @@ Once published, snag your artifact definition with the `mass definition get org/
 
 Now that your custom artifact definition is published, you can use it in your bundles. Just reference it in your bundle's `artifacts` field and structure your `_artifacts.tf` file, and you're good to go.
 
+:::tip Recommended: Omit Organization Prefix
+When referencing artifact definitions from your own organization, you can omit the organization prefix. Massdriver will automatically use your organization's definitions. This keeps your bundle configuration cleaner and more portable.
+:::
+
 ``` yaml massdriver.yaml
 artifacts:
   required:
     - artifact_definition_name
   properties:
     artifact_definition_name:
-      $ref: acme/artifact-definition-name
+      # Recommended: omit org prefix for your own artifact definitions
+      $ref: artifact-definition-name
+      # Also valid: acme/artifact-definition-name
 ```
 
 ``` hcl src/_artifacts.tf

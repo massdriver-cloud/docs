@@ -157,7 +157,7 @@ Artifacts are identified differently based on their origin:
 
 Identified by: `{project-slug}-{environment-slug}-{manifest-slug}-{artifact_field}`
 
-Combines the project, environment, and manifest slugs with the artifact field name.
+This format creates human-friendly, unique identifiers for your infrastructure artifacts. Instead of remembering UUIDs, you get meaningful names like `api-prod-database-instance` that tell you exactly what resource you're looking at and where it lives.
 
 **Example**: 
 - Project: `api`
