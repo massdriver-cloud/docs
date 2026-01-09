@@ -30,36 +30,35 @@ Artifact definitions are used to:
 
 ## Structure
 
-Every artifact definition must contain two top-level fields:
-
-1. `data` (object): Contains data that will be encrypted-at-rest and is generally consider 'secret.'
-2. `specs` (object): Contains specs about the artifact that was provisioned or imported, and can be searched and displayed in the UI.
+Artifact definitions use JSON Schema to define the structure and validation rules for artifacts. You have complete flexibility in defining your schema structure to match your organization's needs.
 
 ### Example Structure
-
-All artifact definitions must include top-level `data` and `specs` fields. You can define your own structure using JSON Schema.
 
 ```json
 {
   "$schema": "http://json-schema.org/draft-07/schema",
   "type": "object",
-  "required": ["data", "specs"],
   "properties": {
-    "data": {
+    "authentication": {
       "type": "object",
       "properties": {
-        // Data properties here
+        "hostname": { "type": "string" },
+        "port": { "type": "integer" },
+        "username": { "type": "string" }
       }
     },
-    "specs": {
+    "infrastructure": {
       "type": "object",
       "properties": {
-        // Spec properties here
+        "arn": { "type": "string" },
+        "region": { "type": "string" }
       }
     }
   }
 }
 ```
+
+You can mark sensitive fields using the `$md.sensitive` annotation to mask them in GET operations. See the [Massdriver Annotations](/json-schema-cheat-sheet/massdriver-annotations) documentation for details.
 
 ## Artifact Lifecycle and Connection Phases
 
@@ -120,10 +119,11 @@ https://api.massdriver.cloud/artifact-definitions/ORG/NAME
 
 ## Best Practices
 
-1. Always include both `data` and `specs` fields
-2. Use clear, descriptive names for artifact types
-3. Include proper validation rules in the schema
+1. Use clear, descriptive names for artifact types
+2. Include proper validation rules in the schema
+3. Use `$md.sensitive` to protect sensitive fields
 4. Document any special requirements or constraints
+5. Structure your schema to match your infrastructure abstractions
 
 For a complete guide to creating artifact definitions, see [Creating Artifact Definitions](/guides/custom-artifact-definition).
 

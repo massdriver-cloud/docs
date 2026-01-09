@@ -19,75 +19,42 @@ Instead of manually copying connection strings, credentials, and resource identi
 
 ## Artifact Structure
 
-Every artifact contains two top-level fields that serve distinct purposes. The specific contents of `data` and `specs` are defined by the [artifact definition](/concepts/artifact-definitions) that the artifact conforms to. You decide what `data` comprises your abstraction (e.g., what makes up "postgresql" for your organization) and what `specs` about that resource you want available in the platform.
+Think of an [artifact definition](/concepts/artifact-definitions) as a class in object-oriented programming—it defines the schema and validation rules. An artifact is like an instance of that class—it's the actual data about a specific piece of infrastructure you've provisioned.
 
-### `data` - Secure, Encrypted Information
+Each artifact definition describes what data its artifacts will contain. For example:
 
-**Type**: `object` (encrypted at rest)  
-**Purpose**: Contains sensitive information about the provisioned resource
+- A **PostgreSQL artifact** might include connection credentials, IAM policies, database metadata, and secret manager IDs to access credentials
+- A **Kubernetes cluster artifact** might include kubeconfig data, API endpoints, and cluster version info
+- An **S3 bucket artifact** might include bucket ARNs, IAM policies to access it, and region information
 
-The `data` field stores encrypted, sensitive information that is only accessible to authorized packages. This typically includes:
+You decide what goes in your artifacts based on what downstream bundles need to connect and interact with that infrastructure.
 
-- **Connection credentials**: Database passwords, API keys, authentication tokens
-- **Cloud resource identifiers**: Resource ARNs, IDs, endpoints
-- **IAM configuration**: Policy documents, role ARNs, service account configurations
-- **Network configuration**: Private endpoints, security group IDs, VPC information
-
-**Example**:
+**Example PostgreSQL Artifact**:
 ```json
 {
-  "data": {
-    "authentication": {
-      "hostname": "db.example.com",
-      "port": 5432,
-      "username": "app_user",
-      "password": "encrypted_secret_value",
-      "ssl": true
-    },
-    "iam": {
-      "role_arn": "arn:aws:iam::123456789012:role/db-access-role",
-      "policy": "{...}"
-    }
+  "authentication": {
+    "hostname": "db.example.com",
+    "port": 5432,
+    "username": "app_user",
+    "password": "secret_value",
+    "ssl": true
+  },
+  "infrastructure": {
+    "arn": "arn:aws:rds:us-west-2:123456789012:db:mydb",
+    "region": "us-west-2"
+  },
+  "iam": {
+    "role_arn": "arn:aws:iam::123456789012:role/db-access-role",
+    "policy": "{...}"
   }
 }
 ```
 
-The `data` field is encrypted at rest using row-level encryption and is never displayed in the UI or exposed in logs. Only packages that have a valid connection to the artifact can access its data.
+### Sensitive Data Protection
 
-### `specs` - Public, Searchable Metadata
+You can mark specific fields as sensitive in your artifact definition using `$md.sensitive: true`. These fields will be automatically masked as `[SENSITIVE]` when you view artifacts in the UI or query them via the API. When you actually need the real values (like when deploying a bundle that connects to that database), use the `downloadArtifact` operation. All artifact data is encrypted at rest and in transit.
 
-**Type**: `object`  
-**Purpose**: Contains non-sensitive metadata for filtering, searching, and display
-
-The `specs` field stores public metadata that can be safely displayed in the UI and used for filtering and searching artifacts. This typically includes:
-
-- **Cloud provider information**: Region, availability zone, account ID
-- **Resource characteristics**: Instance size, storage type, feature flags
-- **Tags and labels**: Environment tags, cost allocation tags, organizational metadata
-- **Status information**: Resource state, health indicators
-
-**Example**:
-```json
-{
-  "specs": {
-    "aws": {
-      "region": "us-west-2",
-      "account_id": "123456789012"
-    },
-    "database": {
-      "engine": "postgresql",
-      "version": "15.2",
-      "instance_class": "db.t3.medium"
-    },
-    "tags": {
-      "Environment": "production",
-      "Team": "platform"
-    }
-  }
-}
-```
-
-The `specs` field is visible in the Massdriver UI, allowing users to search and filter artifacts by region, tags, or other metadata without exposing sensitive connection details.
+See [Massdriver Annotations](/json-schema-cheat-sheet/massdriver-annotations) for details on sensitive field masking.
 
 ## Artifact Origins
 
@@ -267,9 +234,9 @@ Artifacts enforce proper dependency ordering:
 
 Artifacts must conform to an [artifact definition](/concepts/artifact-definitions), which is a JSON Schema that defines:
 
-- The structure of the `data` field
-- The structure of the `specs` field
+- The structure and properties of the artifact
 - Validation rules and constraints
+- Sensitive field annotations
 - UI display configuration
 
 Artifact definitions ensure that:
@@ -281,23 +248,23 @@ See [Artifact Definitions](/concepts/artifact-definitions) for detailed informat
 
 ## Best Practices
 
-### Data vs Specs Separation
+### Sensitive Data Management
 
-**Keep sensitive data in `data`**:
+**Use `$md.sensitive` for sensitive fields**:
 - Credentials, passwords, API keys
 - Private endpoints and connection strings
-- IAM policies and role ARNs
-- Any information that should be encrypted
+- IAM policies and tokens
+- Any information that should be masked
 
-**Keep public metadata in `specs`**:
-- Region, availability zone, account information
-- Resource characteristics (size, type, version)
-- Tags and organizational metadata
-- Status and health information
+**Organize your artifact structure**:
+- Group related properties logically (e.g., `authentication`, `infrastructure`, `iam`)
+- Use clear, descriptive field names
+- Include metadata useful for filtering and searching
+- Document expected values and formats
 
-This separation enables:
-- Secure storage of sensitive information
-- UI display and filtering without exposing secrets
+This approach enables:
+- Secure storage with automatic field masking
+- Flexible schema design matching your needs
 - Compliance with security best practices
 
 ### Artifact Naming
@@ -339,34 +306,30 @@ A PostgreSQL bundle produces an artifact with connection details:
 
 ```json
 {
-  "data": {
-    "authentication": {
-      "hostname": "prod-db.region.rds.amazonaws.com",
-      "port": 5432,
-      "username": "app_user",
-      "password": "encrypted_password",
-      "database": "myapp_prod",
-      "ssl": true
-    },
-    "iam": {
-      "role_arn": "arn:aws:iam::123456789012:role/rds-access",
-      "policy": "{\"Version\":\"2012-10-17\",\"Statement\":[...]}"
-    }
+  "authentication": {
+    "hostname": "prod-db.region.rds.amazonaws.com",
+    "port": 5432,
+    "username": "app_user",
+    "password": "secret_password",
+    "database": "myapp_prod",
+    "ssl": true
   },
-  "specs": {
-    "aws": {
-      "region": "us-west-2",
-      "account_id": "123456789012"
-    },
-    "database": {
-      "engine": "postgresql",
-      "version": "15.2",
-      "instance_class": "db.r6g.xlarge"
-    },
-    "tags": {
-      "Environment": "production",
-      "Team": "platform"
-    }
+  "iam": {
+    "role_arn": "arn:aws:iam::123456789012:role/rds-access",
+    "policy": "{\"Version\":\"2012-10-17\",\"Statement\":[...]}"
+  },
+  "aws": {
+    "region": "us-west-2",
+    "account_id": "123456789012"
+  },
+  "database": {
+    "engine": "postgresql",
+    "version": "15.2",
+    "instance_class": "db.r6g.xlarge"
+  },
+  "tags": {
+    "Environment": "production",
+    "Team": "platform"
   }
 }
 ```
@@ -377,30 +340,26 @@ A Kubernetes cluster bundle produces an artifact with cluster connection details
 
 ```json
 {
-  "data": {
-    "authentication": {
-      "kubeconfig": "encrypted_kubeconfig_content",
-      "server": "https://cluster.example.com",
-      "certificate_authority_data": "encrypted_ca_data"
-    },
-    "service_account": {
-      "name": "massdriver-sa",
-      "namespace": "default",
-      "token": "encrypted_token"
-    }
+  "authentication": {
+    "kubeconfig": "kubeconfig_content",
+    "server": "https://cluster.example.com",
+    "certificate_authority_data": "ca_data"
   },
-  "specs": {
-    "kubernetes": {
-      "version": "1.28",
-      "provider": "eks"
-    },
-    "aws": {
-      "region": "us-west-2"
-    },
-    "cluster": {
-      "node_count": 3,
-      "node_instance_type": "m5.large"
-    }
+  "service_account": {
+    "name": "massdriver-sa",
+    "namespace": "default",
+    "token": "secret_token"
+  },
+  "kubernetes": {
+    "version": "1.28",
+    "provider": "eks"
+  },
+  "aws": {
+    "region": "us-west-2"
+  },
+  "cluster": {
+    "node_count": 3,
+    "node_instance_type": "m5.large"
   }
 }
 ```
@@ -411,31 +370,25 @@ An S3 bucket bundle produces an artifact with bucket details:
 
 ```json
 {
-  "data": {
-    "bucket": {
-      "name": "my-app-logs-prod",
-      "arn": "arn:aws:s3:::my-app-logs-prod",
-      "region": "us-west-2"
-    },
-    "iam": {
-      "policy": "{\"Version\":\"2012-10-17\",\"Statement\":[...]}",
-      "role_arn": "arn:aws:iam::123456789012:role/s3-access"
-    }
+  "bucket": {
+    "name": "my-app-logs-prod",
+    "arn": "arn:aws:s3:::my-app-logs-prod",
+    "region": "us-west-2",
+    "versioning": true,
+    "encryption": "AES256",
+    "lifecycle_rules": true
   },
-  "specs": {
-    "aws": {
-      "region": "us-west-2",
-      "account_id": "123456789012"
-    },
-    "bucket": {
-      "versioning": true,
-      "encryption": "AES256",
-      "lifecycle_rules": true
-    },
-    "tags": {
-      "Purpose": "application-logs",
-      "Environment": "production"
-    }
+  "iam": {
+    "policy": "{\"Version\":\"2012-10-17\",\"Statement\":[...]}",
+    "role_arn": "arn:aws:iam::123456789012:role/s3-access"
+  },
+  "aws": {
+    "region": "us-west-2",
+    "account_id": "123456789012"
+  },
+  "tags": {
+    "Purpose": "application-logs",
+    "Environment": "production"
   }
 }
 ```
