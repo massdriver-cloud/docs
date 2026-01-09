@@ -23,7 +23,7 @@ Think of an [artifact definition](/concepts/artifact-definitions) as a class in 
 
 Each artifact definition describes what data its artifacts will contain. For example:
 
-- A **PostgreSQL artifact** might include connection credentials, IAM policies, database metadata, and secret manager IDs to access credentials
+- A **PostgreSQL artifact** might include connection credentials, IAM policies, database metadata, and secret manager references
 - A **Kubernetes cluster artifact** might include kubeconfig data, API endpoints, and cluster version info
 - An **S3 bucket artifact** might include bucket ARNs, IAM policies to access it, and region information
 
@@ -69,7 +69,7 @@ Provisioned artifacts are the most common type. They are automatically created w
 **Characteristics**:
 - Created by deployments during the provisioning process
 - Associated with a specific [package](/concepts/packages) and bundle field
-- Identified by `package.name_prefix-field` (e.g., `api-prod-database-1234-instance`)
+- Identified by package slug (project-environment-manifest) + field name
 - Automatically updated when the package is redeployed
 - Can only be updated or deleted by deployments
 - Lifecycle is tied to the package that created them
@@ -155,25 +155,25 @@ Artifacts are identified differently based on their origin:
 
 ### Provisioned Artifacts
 
-Identified by: `package.name_prefix-field`
+Identified by: `{project-slug}-{environment-slug}-{manifest-slug}-{artifact_field}`
 
-**Format**: `{package_name_prefix}-{artifact_field}`
-
-The package name prefix follows the format `{project-slug}-{environment-slug}-{manifest-slug}-{suffix}`. Note that individual slugs (project, environment, manifest) cannot contain hyphens—hyphens are only used to separate the slug components.
+Combines the project, environment, and manifest slugs with the artifact field name.
 
 **Example**: 
-- Package name prefix: `api-prod-database-1234` (project: `api`, environment: `prod`, manifest: `database`, suffix: `1234`)
+- Project: `api`
+- Environment: `prod`
+- Manifest: `database`
 - Artifact field: `instance`
-- Artifact identifier: `api-prod-database-1234-instance`
+- **Artifact identifier**: `api-prod-database-instance`
 
 **Another example**:
-- Package name prefix: `api-prod-database-1234`
-- Artifact field: `authentication` (if the bundle output field was named `authentication`)
-- Artifact identifier: `api-prod-database-1234-authentication`
+- Project: `api`, Environment: `prod`, Manifest: `database`
+- Artifact field: `authentication`
+- **Artifact identifier**: `api-prod-database-authentication`
 
 This format provides:
 - Human-readable, meaningful identifiers
-- Consistency across related artifacts
+- Stable identifiers across package redeployments
 - Support for IaC tools that don't maintain state
 - Clear association with the source package
 
@@ -272,7 +272,7 @@ This approach enables:
 **For Provisioned Artifacts**:
 - Use descriptive field names in your bundle's `artifacts` section
 - The artifact name should clearly indicate what resource it represents
-- Consider the package name prefix when choosing field names
+- Remember the field name becomes part of the artifact identifier (e.g., `api-prod-database-instance`)
 
 **For Imported Artifacts**:
 - Use clear, descriptive names that indicate the artifact's purpose
