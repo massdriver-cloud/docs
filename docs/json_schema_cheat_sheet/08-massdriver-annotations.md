@@ -9,6 +9,10 @@ Massdriver extends JSON Schema with custom annotations prefixed with `$md.` to p
 
 ## `$md.immutable`
 
+### Scope
+
+**Bundle params schemas only** - Used in bundle `params` field to control field editability in package configuration.
+
 ### Use Case
 
 Prevents modification of critical infrastructure parameters after initial provisioning that would cause resource recreation or breaking changes. Common examples include VPC CIDR blocks, database identifiers, or storage bucket names that cannot be changed without destroying and recreating the resource.
@@ -60,6 +64,10 @@ Internally, `$md.immutable` is transformed to the JSON Schema standard `readOnly
 ---
 
 ## `$md.enum`
+
+### Scope
+
+**Bundle params schemas only** - Used in bundle `params` field to create dynamic dropdowns based on connected artifact data.
 
 ### Use Case
 
@@ -197,6 +205,10 @@ The `$md.enum` extension:
 ---
 
 ## `$md.copyable`
+
+### Scope
+
+**Bundle params schemas only** - Used in bundle `params` field to control which fields are copied during `copyPackageParams` operations.
 
 ### Use Case
 
@@ -356,6 +368,121 @@ The `$md.copyable` annotation:
 3. **Allow copying of operational settings**: timeouts, retry counts, feature flags
 4. **Use overrides for environment-specific values** when copying between environments
 5. **Test your copy workflow** to ensure secrets don't leak between environments
+
+---
+
+## `$md.sensitive`
+
+### Scope
+
+**Artifact definition schemas only** - Used in artifact definition `schema` field to mask sensitive data in GraphQL queries and API responses.
+
+### Use Case
+
+Marks fields in artifact payloads as sensitive, causing their values to be masked when artifacts are retrieved via GraphQL queries or REST API GET operations. This is essential for:
+- Protecting credentials (passwords, API keys, tokens, certificates)
+- Masking connection strings with embedded secrets
+- Hiding sensitive configuration data
+- Preventing accidental exposure in logs, UIs, or monitoring tools
+
+:::note
+All artifacts are encrypted at rest and in transit. The `$md.sensitive` annotation controls whether field values are **masked in API responses and UI displays**, not whether they are encrypted for storage or transmission.
+:::
+
+### Problem Solved
+
+- **Data protection**: Prevents sensitive values from being exposed in API responses and UI displays
+- **Compliance**: Helps meet security and compliance requirements for credential handling
+- **Auditability**: Allows users to see artifact structure without exposing actual secrets
+- **Debugging**: Preserves field names and structure while hiding sensitive values
+
+### Behavior
+
+When an artifact is queried via GraphQL or REST API:
+- Fields marked with `$md.sensitive: true` are replaced with `"[SENSITIVE]"` in the response
+- The structure of the artifact is preserved (object keys, array lengths)
+- The `downloadArtifact` operation returns unmasked values for actual usage
+- **All `downloadArtifact` operations are tracked in the audit log** for security and compliance
+- Masking is applied recursively to nested objects and arrays
+
+**Masking behavior:**
+- **Scalar fields**: Value becomes `"[SENSITIVE]"`
+- **Objects marked sensitive**: All nested values become `"[SENSITIVE]"`, keys preserved
+- **Arrays marked sensitive**: All items become `"[SENSITIVE]"`, length preserved
+
+### Example
+
+```yaml
+$md:
+  name: massdriver/postgresql-authentication
+properties:
+  username:
+    type: string
+  password:
+    type: string
+    $md.sensitive: true
+  connection_string:
+    type: string
+    $md.sensitive: true
+  infrastructure:
+    type: object
+    properties:
+      arn:
+        type: string
+```
+
+**GraphQL response:**
+```json
+{
+  "username": "admin",
+  "password": "[SENSITIVE]",
+  "connection_string": "[SENSITIVE]",
+  "infrastructure": {
+    "arn": "arn:aws:rds:us-east-1:123456789012:db:mydb"
+  }
+}
+```
+
+### Download Endpoint
+
+To retrieve unmasked artifact values for actual usage (e.g., connecting to infrastructure):
+
+```graphql
+mutation {
+  downloadArtifact(
+    organizationId: "org-123"
+    artifactId: "art-456"
+    format: "json"
+  ) {
+    url
+  }
+}
+```
+
+The download endpoint returns the complete, unmasked artifact payload.
+
+:::important
+All `downloadArtifact` operations are tracked in the audit log, providing a complete record of when sensitive artifact data is accessed and by whom. This ensures compliance and security monitoring for credential access.
+:::
+
+### Technical Details
+
+The `$md.sensitive` annotation:
+1. Is evaluated when resolving the GraphQL `payload` field on artifacts
+2. Walks the artifact payload in parallel with the artifact definition schema
+3. Replaces values marked as sensitive with `"[SENSITIVE]"`
+4. Preserves structure for objects (keeps keys) and arrays (keeps length)
+5. Does not affect the stored artifact data - masking only occurs in API responses
+6. Does not affect the `downloadArtifact` operation - full payload is downloadable
+
+### Best Practices
+
+1. **Mark all credentials as sensitive**: passwords, tokens, API keys, certificates, private keys
+2. **Consider connection strings**: Often contain embedded credentials
+3. **Protect PII**: Personal identification information should be marked sensitive
+4. **Balance visibility**: Mark fields as sensitive only if they contain actual secrets
+5. **Document requirements**: Include comments in schemas explaining why fields are sensitive
+6. **Test masking**: Verify sensitive fields are properly masked in GraphQL responses
 
 ---
 
