@@ -30,7 +30,7 @@ The following configuration options are available:
 | `release_name` | string | (package name) | Specifies the release name for the helm chart. Defaults to the Massdriver package name if not specified. |
 | `.chart.repo` | string | `null` | Specifies the URL of the chart repo (required if using [remote chart](#local-vs-remote-chart)) |
 | `.chart.name` | string | `null` | Specifies the name of the chart from the repo to use (required if using [remote chart](#local-vs-remote-chart)) |
-| `.chart.version` | string | `null` | Specifies the chart version to use (required if using [remote chart](#local-vs-remote-chart)) |
+| `.chart.version` | string | `null` | Specifies the chart version to use (optional if using [remote chart](#local-vs-remote-chart), defaults to latest) |
 | `debug` | boolean | `true` | Enables the `--debug` flag for Helm (verbose output) |
 | `wait` | boolean | `true` | Enables the `--wait` flag for Helm (waits for pods, PVCs, services, etc. to be ready before marking the release as successful)  |
 | `wait_for_jobs` | string | `true` | Enables the `--wait-for-jobs` flag for Helm (waits for jobs to complete before marking the release as successful) |
