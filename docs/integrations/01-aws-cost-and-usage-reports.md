@@ -5,7 +5,7 @@ The AWS Cost and Usage Reports integration enables Massdriver to collect detaile
 ## Prerequisites
 
 - AWS account with billing access
-- [OpenTofu](https://opentofu.org/) or Terraform installed
+- [OpenTofu](https://opentofu.org/) installed
 - Permissions to create IAM roles, S3 buckets, and CUR reports
 
 ## Setup
@@ -19,7 +19,7 @@ cd integrations/aws-cost-and-usage-reports
 
 ### Step 2: Configure Variables
 
-Create a `terraform.tfvars` file:
+Create a `tofu.tfvars` file:
 
 ```hcl
 massdriver_aws_account_id = "YOUR_MASSDRIVER_ACCOUNT_ID"

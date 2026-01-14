@@ -5,7 +5,7 @@ The Azure Cost Management Exports integration enables Massdriver to collect deta
 ## Prerequisites
 
 - Azure subscription with Cost Management access
-- [OpenTofu](https://opentofu.org/) or Terraform installed
+- [OpenTofu](https://opentofu.org/) installed
 - Permissions to create resource groups, storage accounts, and service principals
 
 ## Setup
