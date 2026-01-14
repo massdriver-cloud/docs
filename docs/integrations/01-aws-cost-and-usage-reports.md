@@ -6,7 +6,7 @@ The AWS Cost and Usage Reports integration enables Massdriver to collect detaile
 
 - AWS account with billing access
 - [OpenTofu](https://opentofu.org/) installed
-- Permissions to create IAM roles, S3 buckets, and CUR reports
+- Permissions to create IAM users, S3 buckets, and CUR reports
 
 ## Setup
 
@@ -17,17 +17,7 @@ git clone https://github.com/massdriver-cloud/integrations.git
 cd integrations/aws-cost-and-usage-reports
 ```
 
-### Step 2: Configure Variables
-
-Create a `tofu.tfvars` file:
-
-```hcl
-massdriver_aws_account_id = "YOUR_MASSDRIVER_ACCOUNT_ID"
-```
-
-Contact Massdriver support for your `massdriver_aws_account_id` value.
-
-### Step 3: Apply the Module
+### Step 2: Apply the Module
 
 ```bash
 tofu init
@@ -35,7 +25,7 @@ tofu plan
 tofu apply
 ```
 
-### Step 4: Retrieve Outputs
+### Step 3: Retrieve Outputs
 
 After applying, retrieve the configuration values:
 
@@ -47,20 +37,20 @@ This outputs:
 
 ```json
 {
-  "iam_role_arn": "arn:aws:iam::123456789012:role/massdriver-cur-reader",
-  "external_id": "abc123-def456-...",
+  "access_key_id": "AKIAIOSFODNN7EXAMPLE",
+  "secret_access_key": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
   "bucket_name": "massdriver-costs-a1b2c3d4"
 }
 ```
 
-### Step 5: Configure Massdriver
+### Step 4: Configure Massdriver
 
 Provide the following values when configuring the integration in Massdriver:
 
 | Field | Description | Source |
 |-------|-------------|--------|
-| IAM Role ARN | The role Massdriver assumes to read reports | `iam_role_arn` output |
-| External ID | Security token for role assumption | `external_id` output |
+| Access Key ID | IAM user access key | `access_key_id` output |
+| Secret Access Key | IAM user secret key | `secret_access_key` output |
 | S3 Bucket Name | Where CUR reports are stored | `bucket_name` output |
 
 ## Resources Created
@@ -72,17 +62,23 @@ The OpenTofu module creates:
 | S3 Bucket | `massdriver-costs-{hash}` | Stores Cost and Usage Reports |
 | S3 Bucket Policy | - | Allows AWS Billing to write reports |
 | CUR Report | `massdriver-costs` | Daily cost report with resource-level details |
-| IAM Role | `massdriver-cur-reader` | Cross-account role for Massdriver |
-| IAM Policy | `massdriver-cur-reader-policy` | Minimal S3 read + tagging permissions |
+| IAM User | `massdriver-costs` | Dedicated user for Massdriver access |
+| IAM Policy | `massdriver-costs-policy` | Minimal S3 read + tagging permissions |
+| Access Key | - | Credentials for the IAM user |
 
 ## IAM Permissions
 
-The IAM role grants Massdriver these minimal permissions:
+The IAM user has these minimal permissions:
 
 ```json
 {
   "Version": "2012-10-17",
   "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["s3:HeadBucket"],
+      "Resource": "*"
+    },
     {
       "Effect": "Allow",
       "Action": ["s3:ListBucket"],
@@ -120,7 +116,7 @@ Cost and Usage Reports can only be created in `us-east-1`. The S3 bucket is also
 
 Once enabled, Massdriver:
 
-1. Assumes the IAM role using the external ID
+1. Authenticates using the IAM user credentials
 2. Lists the S3 bucket for available reports
 3. Downloads and parses the latest report
 4. Aggregates costs by `md-package` tag
@@ -132,11 +128,11 @@ Data is collected every 24 hours.
 
 ### Enable fails with "access_denied"
 
-The IAM role trust policy may not include the correct Massdriver AWS account ID. Verify the `massdriver_aws_account_id` variable and re-apply.
+The IAM user may not have the required permissions. Verify the OpenTofu module was applied successfully and the policy is attached.
 
 ### Enable fails with "bucket_not_found"
 
-The S3 bucket doesn't exist or the IAM role doesn't have `s3:ListBucket` permission. Verify the OpenTofu module was applied successfully.
+The S3 bucket doesn't exist or the IAM user doesn't have `s3:HeadBucket` permission. Verify the OpenTofu module was applied successfully.
 
 ### No cost data appears
 
