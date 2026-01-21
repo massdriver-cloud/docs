@@ -39,7 +39,8 @@ This outputs:
 {
   "access_key_id": "AKIAIOSFODNN7EXAMPLE",
   "secret_access_key": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
-  "bucket_name": "massdriver-costs-a1b2c3d4"
+  "bucket_name": "massdriver-costs-a1b2c3d4",
+  "region": "us-west-2"
 }
 ```
 
@@ -52,6 +53,7 @@ Provide the following values when configuring the integration in Massdriver:
 | Access Key ID | IAM user access key | `access_key_id` output |
 | Secret Access Key | IAM user secret key | `secret_access_key` output |
 | S3 Bucket Name | Where CUR reports are stored | `bucket_name` output |
+| AWS Region | The AWS region where the S3 bucket is located | `region` output |
 
 ## Resources Created
 
@@ -109,7 +111,7 @@ The CUR report is configured with:
 - **Report Versioning**: OVERWRITE_REPORT
 
 :::note
-Cost and Usage Reports can only be created in `us-east-1`. The S3 bucket is also created in this region.
+Cost and Usage Reports can only be created in `us-east-1`, but the S3 bucket can be created in any AWS region. Specify the region where your bucket is located when configuring the integration.
 :::
 
 ## Data Collection
