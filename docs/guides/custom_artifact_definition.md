@@ -39,18 +39,14 @@ With the [Massdriver CLI](../cli/00-overview.md), you've got the toolkit you nee
   "title": "Artifact Definition Name",
   "description": "",
   "additionalProperties": false,
-  "required": [
-    "data",
-    "specs"
-  ],
   "properties": {
-    "data": {
-      "title": "Artifact Data",
+    "authentication": {
+      "title": "Authentication",
       "type": "object",
       "properties": {}
     },
-    "specs": {
-      "title": "Artifact Specs",
+    "infrastructure": {
+      "title": "Infrastructure",
       "type": "object",
       "properties": {}
     }
@@ -62,15 +58,13 @@ With the [Massdriver CLI](../cli/00-overview.md), you've got the toolkit you nee
 
 ### Step 3: Key Components of an Artifact Definition
 
-Every custom artifact definition should include:
-
-- **Data Block**: This is where you stash the sensitive details (passwords, connection strings, you name it).
-- **Specs Block**: Here's where the non-sensitive details go, like API versions and cloud regions.
+Structure your artifact definition to match your infrastructure abstraction. Group related properties logically and use `$md.sensitive: true` to protect sensitive fields like passwords and tokens.
 
 ### Step 4: Tailoring Your Definition
 
-1. **Refine the Data and Specs Blocks**: Adapt these sections to match your specific artifact needs.
-2. **Prune What You Don't Need**: If the copied definition includes irrelevant bits (like RBAC settings you're not using), cut them out or alter them.
+1. **Define Your Structure**: Add properties that match your infrastructure needs.
+2. **Mark Sensitive Fields**: Use `$md.sensitive: true` for passwords, tokens, and other secrets.
+3. **Prune What You Don't Need**: If the copied definition includes irrelevant bits, cut them out or alter them.
 
 By the end of this step, your definition should look something like this:
 ```json
@@ -84,115 +78,92 @@ By the end of this step, your definition should look something like this:
   "description": "",
   "additionalProperties": false,
   "required": [
-    "data",
-    "specs"
+    "infrastructure",
+    "authentication"
   ],
   "properties": {
-    "data": {
-      "title": "Artifact Data",
+    "infrastructure": {
+      "title": "Infrastructure configuration",
       "type": "object",
       "required": [
-        "infrastructure",
-        "authentication",
-        "security"
+        "foo",
+        "bar"
       ],
       "properties": {
-        "infrastructure": {
-          "title": "Infrastructure configuration",
-          "type": "object",
-          "required": [
-            "foo",
-            "bar"
-          ],
-          "properties": {
-            "foo": {
-              "type": "string",
-              "title": "Foo",
-              "description": "Foo description",
-              "examples": [
-              ],
-              "pattern": "^.*+$",
-              "message": {
-                "pattern": "Must be a valid format for foo."
-              }
-            },
-            "bar": {
-              "title": "Bar",
-              "description": "Bar description",
-              "additionalProperties": false,
-              "examples": [
-              ],
-              "type": "string"
-            }
+        "foo": {
+          "type": "string",
+          "title": "Foo",
+          "description": "Foo description",
+          "examples": [],
+          "pattern": "^.*+$",
+          "message": {
+            "pattern": "Must be a valid format for foo."
           }
         },
-        "authentication": {
-          "title": "Authentication configuration",
-          "type": "object",
-          "required": [
-            "foobar"
-          ],
-          "properties": {
-            "foobar": {
-              "title": "Foobar",
-              "type": "string"
-            }
-          }
-        },
-        "security": {
-          "title": "Security",
-          "description": "Security Configuration",
+        "bar": {
+          "title": "Bar",
+          "description": "Bar description",
           "additionalProperties": false,
-          "required": [],
+          "examples": [],
+          "type": "string"
+        }
+      }
+    },
+    "authentication": {
+      "title": "Authentication configuration",
+      "type": "object",
+      "required": [
+        "token"
+      ],
+      "properties": {
+        "token": {
+          "title": "Token",
+          "type": "string",
+          "$md": {
+            "sensitive": true
+          }
+        }
+      }
+    },
+    "iam": {
+      "title": "IAM",
+      "description": "IAM Roles And Scopes",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^[a-z]+[a-z_]*[a-z]$": {
+          "type": "object",
+          "required": [
+            "role",
+            "scope"
+          ],
           "properties": {
-            "iam": {
-              "title": "IAM",
-              "description": "IAM Roles And Scopes",
-              "additionalProperties": false,
-              "patternProperties": {
-                "^[a-z]+[a-z_]*[a-z]$": {
-                  "type": "object",
-                  "required": [
-                    "role",
-                    "scope"
-                  ],
-                  "properties": {
-                    "role": {
-                      "title": "Role",
-                      "description": "Cloud Role",
-                      "pattern": "^[a-zA-Z ]+$",
-                      "message": {
-                        "pattern": "Must be a valid Cloud Role (uppercase, lowercase letters and spaces)"
-                      },
-                      "examples": [
-                        "Data Reader"
-                      ]
-                    },
-                    "scope": {
-                      "title": "Scope",
-                      "description": "Cloud IAM Scope (cloud resource identifier)",
-                      "type": "string"
-                    }
-                  }
-                }
-              }
+            "role": {
+              "title": "Role",
+              "description": "Cloud Role",
+              "pattern": "^[a-zA-Z ]+$",
+              "message": {
+                "pattern": "Must be a valid Cloud Role (uppercase, lowercase letters and spaces)"
+              },
+              "examples": [
+                "Data Reader"
+              ]
+            },
+            "scope": {
+              "title": "Scope",
+              "description": "Cloud IAM Scope (cloud resource identifier)",
+              "type": "string"
             }
           }
         }
       }
     },
-    "specs": {
-      "title": "Artifact Specs",
+    "cloud": {
       "type": "object",
       "properties": {
-        "cloud": {
-          "properties": {
-            "region": {
-              "type": "string",
-              "title": "Cloud Region",
-              "description": "Select the cloud region you'd like to provision your resources in."
-            }
-          }
+        "region": {
+          "type": "string",
+          "title": "Cloud Region",
+          "description": "Select the cloud region you'd like to provision your resources in."
         }
       }
     }
@@ -212,13 +183,19 @@ Once published, snag your artifact definition with the `mass definition get org/
 
 Now that your custom artifact definition is published, you can use it in your bundles. Just reference it in your bundle's `artifacts` field and structure your `_artifacts.tf` file, and you're good to go.
 
+:::tip Recommended: Omit Organization Prefix
+When referencing artifact definitions from your own organization, you can omit the organization prefix. Massdriver will automatically use your organization's definitions. This keeps your bundle configuration cleaner and more portable.
+:::
+
 ``` yaml massdriver.yaml
 artifacts:
   required:
     - artifact_definition_name
   properties:
     artifact_definition_name:
-      $ref: acme/artifact-definition-name
+      # Recommended: omit org prefix for your own artifact definitions
+      $ref: artifact-definition-name
+      # Also valid: acme/artifact-definition-name
 ```
 
 ``` hcl src/_artifacts.tf
@@ -228,27 +205,21 @@ resource "massdriver_artifact" "artifact_definition_name" {
   name                 = "Artifact Dummy Resource ${var.md_metadata.name_prefix}"
   artifact = jsonencode(
     {
-      data = {
-        infrastructure = {
-          foo = artifact_dummy_resource.main.foo
-          bar = artifact_dummy_resource.main.bar
-        }
-        authentication = {
-          foobar = artifact_dummy_resource.main.foobar
-        }
-        security = {
-          iam = {
-            "read" = {
-              role  = "Data Reader"
-              scope = artifact_dummy_resource.main.id
-            }
-          }
+      infrastructure = {
+        foo = artifact_dummy_resource.main.foo
+        bar = artifact_dummy_resource.main.bar
+      }
+      authentication = {
+        token = artifact_dummy_resource.main.token
+      }
+      iam = {
+        "read" = {
+          role  = "Data Reader"
+          scope = artifact_dummy_resource.main.id
         }
       }
-      specs = {
-        cloud = {
-          region = artifact_dummy_resource.main.region
-        }
+      cloud = {
+        region = artifact_dummy_resource.main.region
       }
     }
   )

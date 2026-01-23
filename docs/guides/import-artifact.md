@@ -22,48 +22,36 @@ We'll also need a custom artifact that meets that schema, populated with actual 
   "title": "AWS VPC",
   "description": "My custom AWS VPC",
   "required": [
-    "data"
+    "infrastructure"
   ],
   "properties": {
-    "data": {
-      "title": "Artifact Data",
-      "type": "object",
+    "infrastructure": {
+      "title": "Infrastructure configuration",
       "required": [
-        "infrastructure"
+        "arn",
+        "cidr"
       ],
+      "type": "object",
       "properties": {
-        "infrastructure": {
-          "title": "Infrastructure configuration",
-          "required": [
-            "arn",
-            "cidr",
-          ],
-          "type": "object",
-          "properties": {
-            "arn": {
-              "type": "string",
-              "title": "AWS ARN",
-              "description": "Amazon Resource Name",
-            }
-            "cidr": {
-                "type" : "string",
-                "title": "CIDR",
-                "description": "CIDR block for the VPC"
-            }
-          }
+        "arn": {
+          "type": "string",
+          "title": "AWS ARN",
+          "description": "Amazon Resource Name"
+        },
+        "cidr": {
+          "type": "string",
+          "title": "CIDR",
+          "description": "CIDR block for the VPC"
         }
       }
     },
-    "specs": {
-      "title": "Artifact Specs",
+    "aws": {
       "type": "object",
       "properties": {
-        "aws": {
-          "region": {
-            "type": "string",
-            "title": "Region",
-            "description": "AWS Region to provision in.",
-          }
+        "region": {
+          "type": "string",
+          "title": "Region",
+          "description": "AWS Region to provision in."
         }
       }
     }
@@ -72,16 +60,12 @@ We'll also need a custom artifact that meets that schema, populated with actual 
 ```
 ```json title="artifact.json"
 {
-  "data": {
-    "infrastructure": {
-      "arn": "arn:aws:ec2:us-west-2:123456789012:vpc/vpc-1234567890abcdef0",
-      "cidr": "10.0.0.0/16"
-    }
+  "infrastructure": {
+    "arn": "arn:aws:ec2:us-west-2:123456789012:vpc/vpc-1234567890abcdef0",
+    "cidr": "10.0.0.0/16"
   },
-  "specs": {
-    "aws": {
-      "region": "us-west-2"
-    }
+  "aws": {
+    "region": "us-west-2"
   }
 }
 ```
@@ -119,10 +103,9 @@ You can access our GraphiQL interface [here](https://api.massdriver.cloud/api/gr
 ```graphql title="createArtifact.gql"
 mutation importVpc($orgId: ID!) {
   createArtifact(
-    data: "{\"infrastructure\":{\"arn\":\"arn:aws:ec2:us-west-2:123456789012:vpc/vpc-1234567890abcdef0\",\"cidr\":\"10.0.0.0/16\"}}"
+    payload: "{\"infrastructure\":{\"arn\":\"arn:aws:ec2:us-west-2:123456789012:vpc/vpc-1234567890abcdef0\",\"cidr\":\"10.0.0.0/16\"},\"aws\":{\"region\":\"us-west-2\"}}"
     name: "my-artifact-name"
     organizationId: $orgId
-    specs: "{\"aws\":{\"region\":\"us-west-2\"}}"
     type: "mymdorg/myartifactdef"
   ){
     result{id}
@@ -153,10 +136,9 @@ function setItem() {
   return client.request(`
     {
       createArtifact(
-        data: "{\"infrastructure\":{\"arn\":\"arn:aws:ec2:us-west-2:123456789012:vpc/vpc-1234567890abcdef0\",\"cidr\":\"10.0.0.0/16\"}}"
+        payload: "{\"infrastructure\":{\"arn\":\"arn:aws:ec2:us-west-2:123456789012:vpc/vpc-1234567890abcdef0\",\"cidr\":\"10.0.0.0/16\"},\"aws\":{\"region\":\"us-west-2\"}}"
         name: "my-artifact-name"
         organizationId: $orgId
-        specs: "{\"aws\":{\"region\":\"us-west-2\"}}"
         type: "mymdorg/myartifactdef"
       ){
         result{id}
@@ -181,7 +163,7 @@ function setItem() {
       'Content-Type': 'application/json',
     //'Authorization': 'Bearer YOUR_AUTH_TOKEN'
     },
-    body: '{"query":"mutationimportVpc($orgId:ID!){createArtifact(data:\"{\\\"infrastructure\\\":{\\\"arn\\\":\\\"arn:aws:ec2:us-west-2:123456789012:vpc/vpc-1234567890abcdef0\\\",\\\"cidr\\\":\\\"10.0.0.0/16\\\"}}\"name:\"my-artifact-name\"organizationId:$orgIdspecs:\"{\\\"aws\\\":{\\\"region\\\":\\\"us-west-2\\\"}}\"type:\"mymdorg/myartifactdef\"){result{id}messages{message}successful}}"}', 
+    body: '{"query":"mutationimportVpc($orgId:ID!){createArtifact(payload:\"{\\\"infrastructure\\\":{\\\"arn\\\":\\\"arn:aws:ec2:us-west-2:123456789012:vpc/vpc-1234567890abcdef0\\\",\\\"cidr\\\":\\\"10.0.0.0/16\\\"},\\\"aws\\\":{\\\"region\\\":\\\"us-west-2\\\"}}\"name:\"my-artifact-name\"organizationId:$orgIdtype:\"mymdorg/myartifactdef\"){result{id}messages{message}successful}}"}', 
   }) 
 }
 ```
@@ -192,6 +174,6 @@ function setItem() {
 ```bash title="cURL"
 curl 'https://api.massdriver.cloud/api/graphiql'  
   -H 'Authorization: Bearer YOUR_AUTH_TOKEN'  
-  -d '{"query":"mutationimportVpc($orgId:ID!){createArtifact(data:\"{\\\"infrastructure\\\":{\\\"arn\\\":\\\"arn:aws:ec2:us-west-2:123456789012:vpc/vpc-1234567890abcdef0\\\",\\\"cidr\\\":\\\"10.0.0.0/16\\\"}}\"name:\"my-artifact-name\"organizationId:$orgIdspecs:\"{\\\"aws\\\":{\\\"region\\\":\\\"us-west-2\\\"}}\"type:\"mymdorg/myartifactdef\"){result{id}messages{message}successful}}"}'
+  -d '{"query":"mutationimportVpc($orgId:ID!){createArtifact(payload:\"{\\\"infrastructure\\\":{\\\"arn\\\":\\\"arn:aws:ec2:us-west-2:123456789012:vpc/vpc-1234567890abcdef0\\\",\\\"cidr\\\":\\\"10.0.0.0/16\\\"},\\\"aws\\\":{\\\"region\\\":\\\"us-west-2\\\"}}\"name:\"my-artifact-name\"organizationId:$orgIdtype:\"mymdorg/myartifactdef\"){result{id}messages{message}successful}}"}'
 ```
 

@@ -30,36 +30,51 @@ Artifact definitions are used to:
 
 ## Structure
 
-Every artifact definition must contain two top-level fields:
-
-1. `data` (object): Contains data that will be encrypted-at-rest and is generally consider 'secret.'
-2. `specs` (object): Contains specs about the artifact that was provisioned or imported, and can be searched and displayed in the UI.
+Artifact definitions use JSON Schema to define the structure and validation rules for artifacts. You have complete flexibility in defining your schema structure to match your organization's needs.
 
 ### Example Structure
 
-All artifact definitions must include top-level `data` and `specs` fields. You can define your own structure using JSON Schema.
+Let's say you're defining a PostgreSQL database artifact. By creating a concrete schema for "what is a PostgreSQL database" in your organization, you enable:
+
+- **Automated Security & Credential Management**: Applications automatically receive the correct credentials—no secrets in code, no manual rotation, no credential leaks
+- **Tool Interoperability**: A Terraform bundle provisions a database, a Helm chart consumes it—different tools, zero manual wiring
+- **Prevent Misconfigurations**: Type-safe connections stop you from wiring a Redis client to a PostgreSQL database. Misconfigurations cause most production outages—artifact definitions prevent them at deploy time
+- **Automated Operations**: Monitoring and runbooks auto-generate from artifact data—every database gets the right alerts without manual setup
+
+Here's what a PostgreSQL artifact definition might look like:
 
 ```json
 {
   "$schema": "http://json-schema.org/draft-07/schema",
   "type": "object",
-  "required": ["data", "specs"],
+  "title": "PostgreSQL Database",
   "properties": {
-    "data": {
+    "authentication": {
       "type": "object",
       "properties": {
-        // Data properties here
+        "hostname": { "type": "string" },
+        "port": { "type": "integer" },
+        "username": { "type": "string" },
+        "password": { 
+          "type": "string",
+          "$md.sensitive": true
+        }
       }
     },
-    "specs": {
+    "infrastructure": {
       "type": "object",
       "properties": {
-        // Spec properties here
+        "arn": { "type": "string" },
+        "region": { "type": "string" }
       }
     }
   }
 }
 ```
+
+Any bundle that produces a PostgreSQL artifact must include all these fields. Any bundle that consumes a PostgreSQL artifact knows exactly what data it will receive. This contract eliminates manual configuration and enables true infrastructure automation.
+
+You can mark sensitive fields using `$md.sensitive` to automatically mask them in GET operations. See the [Massdriver Annotations](/json-schema-cheat-sheet/massdriver-annotations) documentation for details.
 
 ## Artifact Lifecycle and Connection Phases
 
@@ -76,7 +91,7 @@ Once the upstream package completes provisioning and emits its artifact data, th
 ### Linking Process
 The connection lifecycle follows these steps:
 
-1. When two manifests are linked on the canvas, the system validates that the artifact types are compatible
+1. When two bundles are linked on the canvas, the system validates that the artifact types are compatible
 2. The connection is established when the source artifact's type matches the destination's expected type
 3. The system ensures no cyclical links are created
 4. Each destination field can only have one active link at a time
@@ -85,8 +100,8 @@ The connection lifecycle follows these steps:
 
 Artifact definitions are referenced in massdriver.yaml files under two main sections:
 
-1. `:artifacts`: Defines the artifacts that a bundle can produce
-2. `:connections`: Defines the artifacts that a bundle can consume
+1. `artifacts`: Defines the artifacts that a bundle can produce
+2. `connections`: Defines the artifacts that a bundle can consume
 
 An example `massdriver.yaml` file for an RDS OpenTofu Module:
 ```yaml
@@ -120,10 +135,11 @@ https://api.massdriver.cloud/artifact-definitions/ORG/NAME
 
 ## Best Practices
 
-1. Always include both `data` and `specs` fields
-2. Use clear, descriptive names for artifact types
-3. Include proper validation rules in the schema
+1. Use clear, descriptive names for artifact types
+2. Include proper validation rules in the schema
+3. Use `$md.sensitive` to protect sensitive fields
 4. Document any special requirements or constraints
+5. Structure your schema to match your infrastructure abstractions
 
 For a complete guide to creating artifact definitions, see [Creating Artifact Definitions](/guides/custom-artifact-definition).
 
