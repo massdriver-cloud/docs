@@ -39,7 +39,7 @@ Before beginning, be sure you've created 2 AWS S3 buckets - one for Massdriver, 
 
 ### Migrating Data
 
-To migrate data from MinIO to S3, use the following commands
+To migrate data from MinIO to S3, use the following commands.
 
 ```bash
 # In one terminal, port-forward to MinIO in order to access existing data
