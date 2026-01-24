@@ -115,7 +115,7 @@ The `massdriverBucket` and `stateBucket` values **must match the actual S3 bucke
 
 ## Azure Storage Account
 
-Massdriver also supports using an Azure Storage Account via S3Proxy. Before you begin, make sure you've create a storage account, and have a `massdriver` container and a `state` container.
+Massdriver also supports using an Azure Storage Account via S3Proxy. Before you begin, make sure you've created a storage account, and have a `massdriver` container and a `state` container.
 
 :::info Storage Account Type
 
