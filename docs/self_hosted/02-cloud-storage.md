@@ -35,7 +35,7 @@ Each backend is accessed via [S3Proxy](https://github.com/gaul/s3proxy), which p
 
 ## Amazon S3
 
-Before beginning, be sure you've create 2 AWS S3 buckets - one for Massdriver, which stores deployment logs and Bundle/OCI data, and one for Terraform/OpenTofu state.
+Before beginning, be sure you've created 2 AWS S3 buckets - one for Massdriver, which stores deployment logs and Bundle/OCI data, and one for Terraform/OpenTofu state.
 
 ### Migrating Data
 
