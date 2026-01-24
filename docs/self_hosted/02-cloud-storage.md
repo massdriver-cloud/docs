@@ -273,7 +273,7 @@ After migrating your data and updating your Helm configuration, verify the migra
 2. **Verify application functionality:**
    - Log into Massdriver and check that you can view the files of existing bundles
    - Check deployment logs and make sure that historical logs are visible
-   - Execute a "plan" on a test package to confirm state is being properly being read
+   - Execute a "plan" on a test package to confirm state is being read properly
 
 ---
 
