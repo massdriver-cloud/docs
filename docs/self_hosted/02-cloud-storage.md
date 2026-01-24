@@ -222,9 +222,9 @@ export RCLONE_CONFIG_MINIO_ENDPOINT=http://localhost:9000
 export RCLONE_CONFIG_MINIO_FORCE_PATH_STYLE=true
 
 # GCS destination
-RCLONE_CONFIG_GCS_TYPE=googlecloudstorage
-RCLONE_CONFIG_GCS_PROJECT_NUMBER=<gcp project>
-RCLONE_CONFIG_GCS_SERVICE_ACCOUNT_FILE=<path to gcp credentials>
+export RCLONE_CONFIG_GCS_TYPE=googlecloudstorage
+export RCLONE_CONFIG_GCS_PROJECT_NUMBER=<gcp project>
+export RCLONE_CONFIG_GCS_SERVICE_ACCOUNT_FILE=<path to gcp credentials>
 
 # Copy data
 rclone copy MINIO:massdriver AZ:<massdriver bucket name> --ignore-checksum --size-only --progress
