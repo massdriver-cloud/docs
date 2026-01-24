@@ -11,7 +11,7 @@ Massdriver requires blob storage for several key functions:
 
 Argo Workflows also requires blob storage, but only for [**workflow artifact storage**](https://argo-workflows.readthedocs.io/en/latest/walk-through/artifacts/) (not to be confused with [Massdriver artifacts](../concepts/03-artifacts.md)).
 
-By default, Massdriver installs and configures [Minio](https://www.min.io/) for all these use cases. However for **production** Massdriver installations, we strongly recommend using **cloud object storage** instead of the included MinIO instance. Cloud object storage provides higher durability, richer configuration options and easier data browsing and inspection.
+By default, Massdriver installs and configures [MinIO](https://www.min.io/) for all these use cases. However for **production** Massdriver installations, we strongly recommend using **cloud object storage** instead of the included MinIO instance. Cloud object storage provides higher durability, richer configuration options and easier data browsing and inspection.
 
 :::warning Data Migration
 
@@ -104,6 +104,12 @@ massdriver:
     s3:
       region: <bucket region>
 ```
+
+:::tip Bucket Names
+
+The `massdriverBucket` and `stateBucket` values **must match the actual S3 bucket names** you created in your AWS account. These buckets must exist before configuring Massdriver to use them.
+
+:::
 
 ---
 
@@ -259,7 +265,9 @@ After migrating your data and updating your Helm configuration, verify the migra
 
 1. **Test Massdriver access:**
    - Deploy the updated Helm chart
-   - Check s3proxy logs for successful connections: `kubectl logs -n massdriver deployment/massdriver-s3proxy`
+     - `helm upgrade massdriver massdriver/massdriver -n massdriver -f custom-values.yaml`
+   - Check s3proxy logs for successful connections
+     - `kubectl logs -n massdriver deployment/massdriver-s3proxy`
    - Verify no authentication or permission errors in the logs
 
 2. **Verify application functionality:**
@@ -294,7 +302,7 @@ Your original MinIO data will still be available if you haven't deleted the MinI
 
 **S3Proxy won't start / authentication errors:**
 - Verify your credentials are correct
-- For AWS: Check IAM role permissions include `s3:GetObject`, `s3:PutObject`, `s3:ListBucket`
+- For AWS: Check IAM role permissions include `s3:GetObject*`, `s3:PutObject*`, `s3:ListBucket*`, `s3:DeleteObject*`
 - For Azure: Verify Service Principal has **Storage Blob Data Contributor** role
 - For GCS: Ensure service account has **Storage Object Admin** permissions
 
@@ -310,7 +318,7 @@ Your original MinIO data will still be available if you haven't deleted the MinI
 
 :::warning
 
-Argo Workflows depends on MinIO for artifact storage by default. If you wish to remove MinIO entirely, *make sure you update Argo Workflows to use another solution for artifact storage!!!**
+Argo Workflows depends on MinIO for artifact storage by default. If you wish to remove MinIO entirely, **make sure you update Argo Workflows to use another solution for artifact storage!!!**
 
 :::
 
