@@ -337,7 +337,7 @@ minio:
   enabled: false
 ```
 
-This remove the MinIO statefulsets and configuration, but the Persistent Volume Claims (PVCs) will remain, preserving your data.
+This removes the MinIO statefulsets and configuration, but the Persistent Volume Claims (PVCs) will remain, preserving your data.
 
 ### Option 3: Completely Remove MinIO
 
