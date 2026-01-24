@@ -227,8 +227,8 @@ export RCLONE_CONFIG_GCS_PROJECT_NUMBER=<gcp project>
 export RCLONE_CONFIG_GCS_SERVICE_ACCOUNT_FILE=<path to gcp credentials>
 
 # Copy data
-rclone copy MINIO:massdriver AZ:<massdriver bucket name> --ignore-checksum --size-only --progress
-rclone copy MINIO:state AZ:<state bucket name> --ignore-checksum --size-only --progress
+rclone copy MINIO:massdriver GCS:<massdriver bucket name> --ignore-checksum --size-only --progress --gcs-bucket-policy-only
+rclone copy MINIO:state GCS:<state bucket name> --ignore-checksum --size-only --progress --gcs-bucket-policy-only
 ```
 
 ### Configuring S3Proxy with GCP Service Account
