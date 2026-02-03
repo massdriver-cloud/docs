@@ -33,7 +33,7 @@ The following configuration options are available:
 | `.chart.oci` | string | `null` | Specifies the OCI URI of the chart to use (required if using [OCI chart](#local-vs-remote-chart-vs-oci-chart)) |
 | `.chart.version` | string | `null` | Specifies the chart version to use (optional, only applies to [remote or OCI chart](#local-vs-remote-chart-vs-oci-chart), defaults to latest) |
 | `debug` | boolean | `true` | Enables or disables the `--debug` flag for Helm (verbose output) |
-| `skip_crds` | boolean | `false` | Enables or disables the `--skip_crds` flag for Helm (conditionally installing CRD's) |
+| `skip_crds` | boolean | `false` | Enables or disables the `--skip_crds` flag for Helm (conditionally installing CRDs) |
 | `wait` | boolean | `true` | Enables the `--wait` flag for Helm (waits for pods, PVCs, services, etc. to be ready before marking the release as successful)  |
 | `wait_for_jobs` | string | `true` | Enables or disables the `--wait-for-jobs` flag for Helm (waits for jobs to complete before marking the release as successful) |
 | `timeout` | integer | 300 | Sets the `--timeout` flag for Helm (how long to wait for release to complete before marking as failed) |
