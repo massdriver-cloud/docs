@@ -78,7 +78,7 @@ steps:
   config:
     chart:
       oci: '@text "oci://path.to/your/chart"' # Note: jq query notation must be used to specify a static string
-      version: ".params.version"              # Note: jq query notation must be used to specify a static string
+      version: ".params.version"
     namespace: ".params.namespace"
 ```
 
