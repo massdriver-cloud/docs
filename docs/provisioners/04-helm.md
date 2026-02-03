@@ -43,7 +43,7 @@ The following configuration options are available:
 
 ### Local vs Remote Chart vs OCI Chart
 
-This provisioner supports local, remote and OCI charts. By default the provisioner will assume a local chart exists in directory specified by the `path` field of the bundle step. However, if **both** `.chart.repo` and `.chart.name` are specified then the provisioner will attempt to use the specified remote chart. Similarly, if `.chart.oci` is set, the provisioner will attempt to use the specified OCI registry to pull the chart. Regarding inputs and artifacts, provisioner behavior is the same for all charts. If a `values.yaml` file exists in the `path` directory, then it will be used to override the specified default values in the remote chart (as Helm typically does with the `-f/--values` flag).
+This provisioner supports local, remote and OCI charts. By default the provisioner will assume a local chart exists in the directory specified by the `path` field of the bundle step. However, if **both** `.chart.repo` and `.chart.name` are specified then the provisioner will attempt to use the specified remote chart. Similarly, if `.chart.oci` is set, the provisioner will attempt to use the specified OCI registry to pull the chart. Regarding inputs and artifacts, provisioner behavior is the same for all charts. If a `values.yaml` file exists in the `path` directory, then it will be used to override the specified default values in the remote chart (as Helm typically does with the `-f/--values` flag).
 
 #### Local Chart Example
 
