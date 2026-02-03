@@ -28,20 +28,22 @@ The following configuration options are available:
 | `kubernetes_cluster` | object | `.connections.kubernetes_cluster` | `jq` path to a `massdriver/kubernetes-cluster` connection for authentication to Kubernetes |
 | `namespace` | string | `"default"` | Kubernetes namespace to install the chart into. Defaults to the `default` namespace |
 | `release_name` | string | (package name) | Specifies the release name for the helm chart. Defaults to the Massdriver package name if not specified. |
-| `.chart.repo` | string | `null` | Specifies the URL of the chart repo (required if using [remote chart](#local-vs-remote-chart)) |
-| `.chart.name` | string | `null` | Specifies the name of the chart from the repo to use (required if using [remote chart](#local-vs-remote-chart)) |
-| `.chart.version` | string | `null` | Specifies the chart version to use (optional if using [remote chart](#local-vs-remote-chart), defaults to latest) |
-| `debug` | boolean | `true` | Enables the `--debug` flag for Helm (verbose output) |
+| `.chart.repo` | string | `null` | Specifies the URL of the chart repo (required if using [remote chart](#local-vs-remote-chart-vs-oci-chart)) |
+| `.chart.name` | string | `null` | Specifies the name of the chart from the repo to use (required if using [remote chart](#local-vs-remote-chart-vs-oci-chart)) |
+| `.chart.oci` | string | `null` | Specifies the OCI URI of the chart to use (required if using [OCI chart](#local-vs-remote-chart-vs-oci-chart)) |
+| `.chart.version` | string | `null` | Specifies the chart version to use (optional, only applies to [remote or OCI chart](#local-vs-remote-chart-vs-oci-chart), defaults to latest) |
+| `debug` | boolean | `true` | Enables or disables the `--debug` flag for Helm (verbose output) |
+| `skip_crds` | boolean | `false` | Enables or disables the `--skip_crds` flag for Helm (conditionally installing CRD's) |
 | `wait` | boolean | `true` | Enables the `--wait` flag for Helm (waits for pods, PVCs, services, etc. to be ready before marking the release as successful)  |
-| `wait_for_jobs` | string | `true` | Enables the `--wait-for-jobs` flag for Helm (waits for jobs to complete before marking the release as successful) |
+| `wait_for_jobs` | string | `true` | Enables or disables the `--wait-for-jobs` flag for Helm (waits for jobs to complete before marking the release as successful) |
 | `timeout` | integer | 300 | Sets the `--timeout` flag for Helm (how long to wait for release to complete before marking as failed) |
-| `checkov.enable` | boolean | `true` | Enables Checkov policy evaluation. If `false`, Checkov will not be run. |
+| `checkov.enable` | boolean | `true` | Enables or disables Checkov policy evaluation. If `false`, Checkov will not be run. |
 | `checkov.quiet` | boolean | `true` | Only display failed checks if `true` (adds the `--quiet` flag). |
 | `checkov.halt_on_failure` | boolean | `false` | Halt provisioning run and mark deployment as failed on a policy failure (removes the `--soft-fail` flag). |
 
-### Local vs Remote Chart
+### Local vs Remote Chart vs OCI Chart
 
-This provisioner supports both local and remote charts. By default the provisioner will assume a local chart exists in directory specified by the `path` field of the bundle step. However if `.chart.repo`, `.chart.name` and `.chart.version` are specified then the provisioner will attempt to use the specified remote chart. All 3 fields must be set, or none of them set. Regarding inputs and artifacts, provisioner behavior is the same for both remote and local charts. If a `values.yaml` file exists in the `path` directory, then it will be used to override the specified default values in the remote chart (as Helm typically does with the `-f/--values` flag).
+This provisioner supports local, remote and OCI charts. By default the provisioner will assume a local chart exists in directory specified by the `path` field of the bundle step. However, if **both** `.chart.repo` and `.chart.name` are specified then the provisioner will attempt to use the specified remote chart. Similarly, if `.chart.oci` is set, the provisioner will attempt to use the specified OCI registry to pull the chart. Regarding inputs and artifacts, provisioner behavior is the same for all charts. If a `values.yaml` file exists in the `path` directory, then it will be used to override the specified default values in the remote chart (as Helm typically does with the `-f/--values` flag).
 
 #### Local Chart Example
 
@@ -61,9 +63,22 @@ steps:
   provisioner: helm
   config:
     chart:
-      repo: '@text "https://my.helm.net"' # Note: jq query notation must be used to specify a static string
-      name: '@text "mychart"'             # Note: jq query notation must be used to specify a static string
-      version: '@text "1.2.3"'            # Note: jq query notation must be used to specify a static string
+      repo: '@text "https://my.helm.net"'     # Note: jq query notation must be used to specify a static string
+      name: '@text "mychart"'                 # Note: jq query notation must be used to specify a static string
+      version: '@text "1.2.3"'                # Note: jq query notation must be used to specify a static string
+    namespace: ".params.namespace"
+```
+
+#### OCI Chart Example
+
+```yaml
+steps:
+- path: chart
+  provisioner: helm
+  config:
+    chart:
+      oci: '@text "oci://path.to/your/chart"' # Note: jq query notation must be used to specify a static string
+      version: ".params.version"              # Note: jq query notation must be used to specify a static string
     namespace: ".params.namespace"
 ```
 
