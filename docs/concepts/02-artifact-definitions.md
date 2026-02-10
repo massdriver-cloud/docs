@@ -72,6 +72,8 @@ Here's what a PostgreSQL artifact definition might look like:
 }
 ```
 
+_Note: This is an example artifact definition schema. You'll need to add an `$md` config block to customize the UI and publishing details for your organization. See [`$md` docs](https://docs.massdriver.cloud/guides/custom-artifact-definition#customizing-massdriver)._
+
 Any bundle that produces a PostgreSQL artifact must include all these fields. Any bundle that consumes a PostgreSQL artifact knows exactly what data it will receive. This contract eliminates manual configuration and enables true infrastructure automation.
 
 You can mark sensitive fields using `$md.sensitive` to automatically mask them in GET operations. See the [Massdriver Annotations](/json-schema-cheat-sheet/massdriver-annotations) documentation for details.
