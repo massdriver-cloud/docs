@@ -173,7 +173,7 @@ By the end of this step, your definition should look something like this:
 
 ### Step 5: Publishing to Massdriver
 
-Got your definition looking sharp? Use the `mass definition publish -f /path/to/definition.json` command in the CLI to send it out into the world.
+Got your definition looking sharp? Use the `mass definition publish /path/to/definition.json` command in the CLI to send it out into the world.
 
 ### Step 6: Fetching Your Masterpiece
 
