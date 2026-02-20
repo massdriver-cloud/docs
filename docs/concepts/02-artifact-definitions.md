@@ -130,7 +130,7 @@ For more information about bundle configuration, see [Bundle Configuration](/con
 
 All JSON schemas are hosted at:
 ```
-https://api.massdriver.cloud/artifact-definitions/ORG/NAME
+https://api.massdriver.cloud/v1/artifact-definitions/ORG/NAME
 ```
 
 [Artifact Definition Meta Schema](https://api.massdriver.cloud/json-schemas/artifact-definition.json)
