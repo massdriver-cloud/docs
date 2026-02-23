@@ -82,7 +82,9 @@ The following environment variables are injected into the container and provide 
 | Variable                          | Description                                                                    |
 |-----------------------------------|--------------------------------------------------------------------------------|
 | `MASSDRIVER_BUNDLE_ID`            | Globally unique identifier for the bundle being deployed.                      |
-| `MASSDRIVER_BUNDLE_TYPE`          | The type of the bundle (`application` or `infrastructure`).                    |
+| `MASSDRIVER_BUNDLE_NAME`          | The name of the bundle being deployed.                                         |
+| `MASSDRIVER_BUNDLE_TYPE`          | (Deprecated) The type of the bundle (`application` or `infrastructure`).       |
+| `MASSDRIVER_BUNDLE_VERSION`       | The version of the bundle being deployed.                                      |
 | `MASSDRIVER_DEPLOYMENT_ACTION`    | Action being executed: `plan`, `provision`, or `decommission`.                 |
 | `MASSDRIVER_DEPLOYMENT_ID`        | Unique identifier for the deployment operation.                                |
 | `MASSDRIVER_MANIFEST_ID`          | Identifier for the specific manifest file in the bundle.                       |
