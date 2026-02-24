@@ -1,7 +1,7 @@
 ---
 id: guides-module-patterns
 slug: /guides/module-patterns
-title: Mapping Terraform Module Patterns to Massdriver
+title: Mapping Terraform and OpenTofu Module Patterns to Massdriver
 sidebar_label: Module Patterns
 ---
 
@@ -24,7 +24,7 @@ Before diving into each pattern, here's the quick reference:
 
 **These go away entirely.**
 
-If you have Terraform modules that generate consistent resource names, apply standard tags, or enforce naming conventions, Massdriver replaces them with [`md_metadata`](/getting-started/using-bundle-metadata) — a context object automatically injected into every bundle deployment.
+If you have OpenTofu or Terraform modules that generate consistent resource names, apply standard tags, or enforce naming conventions, Massdriver replaces them with [`md_metadata`](/getting-started/using-bundle-metadata) — a context object automatically injected into every bundle deployment.
 
 :::tip Entire Module Categories Can Disappear
 
@@ -96,10 +96,12 @@ massdriver-catalog/
 │   ├── azure-cognitive-search/
 │   └── ...
 └── modules/
-    ├── terraform/
+    ├── opentofu/
     │   ├── azure-diagnostic-settings/
     │   ├── azure-role-assignment/
     │   └── azure-keyvault-secret-reader/
+    ├── terraform/
+    │   └── ...
     ├── charts/
     │   └── ...
     ├── bicep/
@@ -112,7 +114,7 @@ Any bundle in the catalog can reference these modules using relative paths:
 
 ```hcl
 module "role_assignment" {
-  source = "../../../modules/terraform/azure-role-assignment"
+  source = "../../../modules/opentofu/azure-role-assignment"
 
   principal_id = azurerm_user_assigned_identity.main.principal_id
   role_name    = "Storage Blob Data Reader"
@@ -139,7 +141,7 @@ Inside the bundle, a shared child module processes that connection:
 
 ```hcl
 module "postgres_access" {
-  source = "../../../modules/terraform/azure-postgres-artifact"
+  source = "../../../modules/opentofu/azure-postgres-artifact"
 
   # The connection artifact provides everything needed
   postgres_artifact = var.database
@@ -177,7 +179,7 @@ resource "azurerm_storage_account" "main" {
 }
 
 module "diagnostics" {
-  source = "../../../modules/terraform/azure-diagnostic-settings"
+  source = "../../../modules/opentofu/azure-diagnostic-settings"
 
   target_resource_id         = azurerm_storage_account.main.id
   log_analytics_workspace_id = var.log_analytics.data.infrastructure.workspace_id
@@ -304,49 +306,6 @@ artifacts:
 ```
 
 Now when someone needs to update SSO settings, they configure it through the bundle — with validation, audit trail, and the ability to test the change in a preview environment first.
-
-## Migrating from Git Submodules
-
-If your current setup uses git submodules to import a shared module repository, here's the migration path:
-
-### Step 1: Set up your catalog
-
-Clone or fork the [massdriver-catalog](https://github.com/massdriver-cloud/massdriver-catalog) and create the `modules/` directory structure:
-
-```bash
-mkdir -p modules/terraform modules/charts modules/bicep modules/cloudformation
-```
-
-### Step 2: Categorize your existing modules
-
-Walk through your submodule repository and categorize each module using the migration map at the top of this guide:
-
-- **Naming / tagging** — Delete after confirming `md_metadata` covers the use case
-- **Child modules** — Copy into `modules/{iacTool}/`
-- **Decorator modules** — Either copy into `modules/` (Option A) or create a new bundle in `bundles/` (Option B)
-- **Meta config** — Create a new bundle in `bundles/`
-
-### Step 3: Update module references
-
-Replace git submodule references with relative paths within the catalog:
-
-```hcl
-# Before: git submodule reference
-module "diagnostics" {
-  source = "../../vendor/terraform-modules/diagnostic"
-  # ...
-}
-
-# After: catalog-relative reference
-module "diagnostics" {
-  source = "../../../modules/terraform/azure-diagnostic-settings"
-  # ...
-}
-```
-
-### Step 4: Remove the git submodule
-
-Once all references are updated and tested, remove the git submodule from your repository.
 
 ## What's Next?
 
