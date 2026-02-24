@@ -122,6 +122,36 @@ module "role_assignment" {
 }
 ```
 
+:::caution Referencing external modules requires access
+
+If your child modules are sourced from a **private** Git repository (e.g., `git::https://github.com/your-org/terraform-modules.git//some-module`), the default Massdriver provisioners won't have access to clone them. You have two options:
+
+1. **Make the module repository public** — simplest if the modules don't contain sensitive information.
+2. **Use a [custom provisioner](/self-hosted/custom-provisioners)** that has credentials to your Git host. You can inject secrets from your connections into the provisioner's `config` block using jq queries:
+
+```yaml title="massdriver.yaml"
+steps:
+  - path: src
+    provisioner: custom-opentofu:1.x
+    config:
+      git:
+        token: .connections.landing_zone.git_read_token
+```
+
+This makes the token available to the provisioner at deploy time, allowing it to authenticate and clone private module sources. Any value from `params` or `connections` can be injected this way — for example, a Snyk token for policy scanning:
+
+```yaml
+    config:
+      snyk:
+        api_token: .connections.landing_zone.snyk_cfg_object
+      git:
+        token: .connections.landing_zone.git_read_token
+```
+
+Custom provisioners are available in [self-hosted Massdriver installations](/self-hosted/custom-provisioners).
+
+:::
+
 ### How connections supercharge child modules
 
 The real power of this pattern comes from combining child modules with Massdriver [connections](/concepts/connections). When a bundle declares a connection, it receives the full artifact data from another bundle — including infrastructure IDs, IAM policies, authentication details, and network configuration.
