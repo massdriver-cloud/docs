@@ -155,24 +155,25 @@ Artifacts are identified differently based on their origin:
 
 ### Provisioned Artifacts
 
-Identified by: `{project-slug}-{environment-slug}-{manifest-slug}-{artifact_field}`
+Identified by: `{project-slug}-{environment-slug}-{manifest-slug}.{artifact_field}`
 
-This format creates human-friendly, unique identifiers for your infrastructure artifacts. Instead of remembering UUIDs, you get meaningful names like `api-prod-database-instance` that tell you exactly what resource you're looking at and where it lives.
+This format creates human-friendly, unique identifiers for your infrastructure artifacts. The dot (`.`) separates the package slug from the artifact field, making it unambiguous where one ends and the other begins. Instead of remembering UUIDs, you get meaningful names like `api-prod-database.instance` that tell you exactly what resource you're looking at and where it lives.
 
-**Example**: 
+**Example**:
 - Project: `api`
 - Environment: `prod`
 - Manifest: `database`
 - Artifact field: `instance`
-- **Artifact identifier**: `api-prod-database-instance`
+- **Artifact identifier**: `api-prod-database.instance`
 
 **Another example**:
 - Project: `api`, Environment: `prod`, Manifest: `database`
 - Artifact field: `authentication`
-- **Artifact identifier**: `api-prod-database-authentication`
+- **Artifact identifier**: `api-prod-database.authentication`
 
 This format provides:
 - Human-readable, meaningful identifiers
+- Unambiguous separation between package and field (the dot makes parsing trivial)
 - Stable identifiers across package redeployments
 - Support for IaC tools that don't maintain state
 - Clear association with the source package
@@ -272,7 +273,7 @@ This approach enables:
 **For Provisioned Artifacts**:
 - Use descriptive field names in your bundle's `artifacts` section
 - The artifact name should clearly indicate what resource it represents
-- Remember the field name becomes part of the artifact identifier (e.g., `api-prod-database-instance`)
+- Remember the field name becomes part of the artifact identifier (e.g., `api-prod-database.instance`)
 
 **For Imported Artifacts**:
 - Use clear, descriptive names that indicate the artifact's purpose
