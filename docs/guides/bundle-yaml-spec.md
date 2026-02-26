@@ -468,15 +468,6 @@ app:
       json: true
       title: Service Account Credentials
       description: GCP service account key in JSON format
-
-  # policies (deprecated)
-  # Use $md.enum in params schema instead for dynamic IAM policy selection.
-  # See: https://docs.massdriver.cloud/json-schema-cheat-sheet/massdriver-annotations
-  #
-  # JQ expressions referencing IAM policies from params or connections.
-  policies:
-    - .connections.s3_bucket.data.security.iam.read
-    - .connections.database.data.security.iam.write
 ```
 
 ## Minimal Example
@@ -737,7 +728,6 @@ ui:
 |-------|------|-------------|
 | `envs` | `object` | Environment variables (JQ expressions) |
 | `secrets` | `object` | Secret definitions for secure values |
-| `policies` | `array` | IAM policy references (deprecated) |
 
 ## See Also
 
