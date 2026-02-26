@@ -332,6 +332,25 @@ connections:
       title: Monitoring
       description: Optional Datadog agent for metrics
 
+    # Constrained connection - only accepts artifacts matching additional criteria
+    # You can add `properties` alongside `$ref` to validate artifact fields
+    # before allowing the connection.
+    database:
+      $ref: postgresql
+      title: PostgreSQL Database
+      description: Database connection (requires PostgreSQL 16)
+      # Only allow PostgreSQL 16 artifacts to connect
+      properties:
+        version:
+          const: "16"
+
+    # Another example: constrain by region using enum
+    # regional_cache:
+    #   $ref: redis-cluster
+    #   properties:
+    #     region:
+    #       enum: ["us-east-1", "us-west-2"]
+
 # =============================================================================
 # ARTIFACTS (Outputs)
 # =============================================================================
