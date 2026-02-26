@@ -19,7 +19,6 @@ This document provides a complete reference for the `massdriver.yaml` file forma
 # schema (optional)
 # The JSON Schema version used for params, connections, and artifacts schemas.
 # Currently only "draft-07" is supported.
-schema: draft-07
 
 # name (required)
 # The bundle's unique identifier within your organization.
@@ -494,7 +493,6 @@ app:
 A minimal bundle with just the required fields:
 
 ```yaml
-schema: draft-07
 name: simple-bucket
 description: A simple S3 bucket for file storage
 version: 1.0.0
@@ -532,7 +530,6 @@ artifacts:
 A complete infrastructure bundle for a managed database:
 
 ```yaml
-schema: draft-07
 name: aws-rds-postgres
 description: Managed PostgreSQL on AWS RDS with automated backups and encryption
 version: 2.1.0
@@ -618,7 +615,6 @@ ui:
 A bundle for deploying a containerized application:
 
 ```yaml
-schema: draft-07
 name: containerized-api
 description: Deploy a containerized API to Kubernetes
 version: 1.0.0
