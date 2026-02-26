@@ -409,6 +409,12 @@ ui:
 # app (optional)
 # Configuration for bundles deploying application workloads.
 # Defines how to inject secrets, environment variables, and IAM policies.
+#
+# The app block is processed by the massdriver-application Terraform module,
+# which handles cloud-agnostic IAM identity creation, policy binding, and
+# environment variable injection for your application workloads.
+#
+# Module: https://github.com/massdriver-cloud/terraform-modules/tree/main/massdriver-application
 app:
   # envs (optional)
   # Map environment variable names to JQ expressions.
