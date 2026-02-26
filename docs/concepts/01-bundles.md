@@ -202,6 +202,34 @@ connections:
       description: The database to connect to
 ```
 
+#### Constraining Connections
+
+You can add additional validation constraints to connections by including `properties` alongside `$ref`. This allows you to restrict which artifacts can connect based on their field values.
+
+**Example: Require a specific PostgreSQL version**
+```yaml
+connections:
+  required:
+    - database
+  properties:
+    database:
+      $ref: massdriver/postgresql-authentication
+      title: PostgreSQL Database
+      # Only allow PostgreSQL 16 artifacts to connect
+      properties:
+        version:
+          const: "16"
+```
+
+This validates that the connected artifact has a `version` field with value `"16"` before allowing the connection. If a user tries to connect a PostgreSQL 15 artifact, the connection will be rejected.
+
+Common use cases for connection constraints:
+- **Version pinning**: Ensure applications connect to compatible database versions
+- **Region matching**: Require artifacts from specific cloud regions
+- **Feature requirements**: Only allow artifacts with specific capabilities enabled
+
+You can use any JSON Schema validation keywords (`const`, `enum`, `pattern`, `minimum`, etc.) to constrain connection properties.
+
 When a bundle is deployed, the connection values are populated from artifacts produced by other bundles in the same project. The system validates that:
 1. The artifact type matches the connection's artifact definition
 2. The artifact is available in the target environment
