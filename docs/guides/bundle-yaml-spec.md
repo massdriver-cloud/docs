@@ -415,7 +415,7 @@ ui:
 # environment variables, connections, and policies.
 #
 # Module:   https://github.com/massdriver-cloud/terraform-massdriver-application
-# Registry: https://registry.terraform.io/modules/massdriver-cloud/massdriver-application
+# Registry: https://registry.terraform.io/modules/massdriver-cloud/application/massdriver
 app:
   # envs (optional)
   # Map environment variable names to JQ expressions.
