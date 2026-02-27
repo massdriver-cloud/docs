@@ -60,7 +60,6 @@ Open `artifact-definitions/getting-started.json` and examine its structure:
 
 ```json
 {
-    "$schema": "http://json-schema.org/draft-07/schema",
     "$md": {
         "name": "getting-started"
     },

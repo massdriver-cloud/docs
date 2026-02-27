@@ -53,7 +53,6 @@ cd my-templates/my-opentofu-bundle
 The `massdriver.yaml` file uses Liquid templating to interpolate user-provided values. Here's a complete example:
 
 ```yaml
-schema: draft-07
 name: "{{ name }}"
 description: "{{ description }}"
 source_url: github.com/YOUR_ORG/{{ name }}
@@ -302,7 +301,6 @@ s3-bucket/
 
 **massdriver.yaml:**
 ```yaml
-schema: draft-07
 name: "{{ name }}"
 description: "{{ description }}"
 source_url: github.com/YOUR_ORG/{{ name }}

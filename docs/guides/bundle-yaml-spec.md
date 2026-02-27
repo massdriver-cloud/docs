@@ -16,10 +16,6 @@ This document provides a complete reference for the `massdriver.yaml` file forma
 # BUNDLE METADATA
 # =============================================================================
 
-# schema (optional)
-# The JSON Schema version used for params, connections, and artifacts schemas.
-# Currently only "draft-07" is supported.
-
 # name (required)
 # The bundle's unique identifier within your organization.
 # When published, the full name becomes: <org-slug>/<name>
@@ -711,7 +707,6 @@ ui:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `schema` | `string` | JSON Schema version (`draft-07`) |
 | `name` | `string` | Bundle identifier (3-53 chars, lowercase with hyphens) |
 | `description` | `string` | Human-readable description (10-1024 chars) |
 | `params` | `object` | JSON Schema for user parameters |

@@ -31,7 +31,6 @@ With the [Massdriver CLI](../cli/00-overview.md), you've got the toolkit you nee
 
 ```json artifact-definition-name.json
 {
-  "$schema": "http://json-schema.org/draft-07/schema",
   "$md": {
     "name": "artifact-definition-name"
   },
@@ -69,7 +68,6 @@ Structure your artifact definition to match your infrastructure abstraction. Gro
 By the end of this step, your definition should look something like this:
 ```json
 {
-  "$schema": "http://json-schema.org/draft-07/schema",
   "$md": {
     "name": "artifact-definition-name"
   },

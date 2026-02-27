@@ -133,7 +133,6 @@ For example, a package on channel `~2.5` will automatically deploy any patch rel
 In your `massdriver.yaml`, you now specify a `version` field:
 
 ```yaml
-schema: draft-07
 name: aws-rds-postgres
 description: "PostgreSQL database on AWS RDS"
 version: "1.2.3"  # Must be valid semantic version

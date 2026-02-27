@@ -223,7 +223,6 @@ This guarantees compliance — there's no way to deploy the storage account with
 If the decorator is **optional or varies by environment** (e.g., production VMs get a security extension but dev VMs don't), make it a standalone bundle that takes a connection to the resource it decorates:
 
 ```yaml title="massdriver.yaml"
-schema: draft-07
 name: azure-vm-monitoring-extension
 description: Attaches Azure Monitor Agent to a virtual machine
 
@@ -297,7 +296,6 @@ DNS zone management is a common case where the meta config pattern intersects wi
 ### Example: Entra ID Application Bundle
 
 ```yaml title="massdriver.yaml"
-schema: draft-07
 name: azure-entra-app
 description: Manages an Azure Entra ID application registration for SSO integration
 

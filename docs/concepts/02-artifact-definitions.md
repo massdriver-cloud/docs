@@ -45,7 +45,6 @@ Here's what a PostgreSQL artifact definition might look like:
 
 ```json
 {
-  "$schema": "http://json-schema.org/draft-07/schema",
   "type": "object",
   "title": "PostgreSQL Database",
   "properties": {

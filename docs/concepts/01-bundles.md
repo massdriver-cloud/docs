@@ -92,18 +92,6 @@ A human-readable description of what the bundle does. This appears in the regist
 description: A managed PostgreSQL database with automated backups and high availability
 ```
 
-### `schema`
-
-**Type**: `string`  
-**Enum**: `["draft-07"]`
-
-The JSON Schema version used to define the bundle. Currently, only `draft-07` is supported.
-
-**Example**:
-```yaml
-schema: draft-07
-```
-
 ### `params`
 
 **Type**: JSON Schema object (draft-07)  
@@ -544,7 +532,6 @@ ui:
 ### PostgreSQL Bundle
 
 ```yaml
-schema: draft-07
 name: postgresql-database
 description: A managed PostgreSQL database with automated backups
 
@@ -594,7 +581,6 @@ ui:
 ### Application Bundle (Web Service)
 
 ```yaml
-schema: draft-07
 name: web-service
 description: A containerized web service
 

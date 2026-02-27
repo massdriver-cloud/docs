@@ -17,7 +17,6 @@ We'll also need a custom artifact that meets that schema, populated with actual 
 
 ```json title="schema.json"
 {
-  "$schema": "http://json-schema.org/draft-07/schema",
   "type": "object",
   "title": "AWS VPC",
   "description": "My custom AWS VPC",
