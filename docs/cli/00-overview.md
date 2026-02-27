@@ -113,6 +113,12 @@ profiles:
     organization_id: internal
     api_key: internal-api-key
     url: https://api.massdriver.yourdomain.com
+    # Build custom bundle templates for `mass bundle new`
+    #   https://docs.massdriver.cloud/guides/bundle-templates
+    #
+    # Or get started with the Massdriver Catalog
+    # https://github.com/massdriver-cloud/massdriver-catalog
+    templates_path: ./massdriver-catalog/templates
 ```
 
 By default, this file should be located at `$HOME/.config/massdriver/config.yaml`, however it will respect the `XDG_CONFIG_HOME` environment variable if present in which case the file should be located at `$XDG_CONFIG_HOME/massdriver/config.yaml`.
