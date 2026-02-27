@@ -128,10 +128,6 @@ exports:
 # This schema validates artifact data and enables type-safe connections
 # between bundles.
 schema:
-  # $schema (recommended)
-  # JSON Schema version. Use draft-07 for compatibility.
-  $schema: http://json-schema.org/draft-07/schema
-
   # title (recommended)
   # Human-readable title for the schema
   title: My Artifact Type
@@ -297,7 +293,6 @@ label: Simple Credential
 icon: https://example.com/icon.png
 
 schema:
-  $schema: http://json-schema.org/draft-07/schema
   title: Simple Credential
   type: object
   required:
@@ -339,7 +334,6 @@ exports:
     templateLang: liquid
 
 schema:
-  $schema: http://json-schema.org/draft-07/schema
   title: PostgreSQL Database
   description: A PostgreSQL database connection artifact
   type: object
