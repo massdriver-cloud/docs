@@ -89,7 +89,7 @@ The following directory structure will be created:
 
 :::info
 
-The `massdriver.yaml` is covered in detail under [Bundle Configuration](/concepts/bundles) section.
+The `massdriver.yaml` is covered in detail in the [Bundle YAML Specification](/bundle-development/bundle-yaml-spec).
 
 It's important to note that the generated code is a great way to _get started_, but you can customize the fields in `massdriver.yaml` and the rigging code in `src` to meet your needs.
 
@@ -102,7 +102,6 @@ In this example, we generated a Kubernetes deployment with a Helm chart. The gen
 In addition to the configuration options exposed in the _bundle guide_, two additional configuration options are exposed to application bundles:
 
 * `app.envs` - _Map_ of environment variables to set on the running application.
-* `app.policies` - _Array_ of IAM policies / permissions to attach to this application's cloud role / service account.
 * `app.secrets` - _Map_ of secret **definitions**. These will be presented in your application's configuration interface in Massdriver and can be set per-package or for preview environments.
 
 Both of these configuration options expect [jq](https://stedolan.github.io/jq/manual/) queries to extract values from `parameters` or upstream `connections`.
@@ -145,28 +144,6 @@ app:
   envs:
     POSTGRES_URL: '@text "postgres://" + .connections.postgres.data.authentication.username + ":" + .connections.postgres.data.authentication.password + "@" + .connections.postgres.data.authentication.hostname + ":" + (.connections.postgres.data.authentication.port|tostring) + "/chat?sslmode=disable"'
 ```
-### Policy Examples
-
-Similarly to Environment Variables, IAM policies can also be mapped to your running application using JQ.
-
-Massdriver bundles will typically emit IAM Policies or Permissions information for their use case under the `security` field in the artifact. [Example](https://github.com/massdriver-cloud/artifact-definitions/blob/main/definitions/artifacts/postgresql-authentication.json#L28)
-
-For this walkthrough our application doesn't have any requirements that need to bind IAM permissions, but here is an example _if_ our application depended on AWS SQS and we wanted to bind the `subscribe` policy. Don't add this to your bundle without including SQS as a connection dependency.
-
-```yaml title="Binding IAM Policies to Cloud Workloads"
-app:
-  policies:
-    - .connections.sqs.data.security.iam.subscribe
-```
-
-A breakdown of the fields:
-
-* `.connections` - all connected infrastructure and applications.
-* `.connections.sqs` - the connected SQS queue (if required & present).
-* `.connections.sqs.data` - sensitive information in the SQS artifact.
-* `.connections.sqs.data.security` - security-related information for SQS.
-* `.connections.sqs.data.security.iam` - Principal of least privilege IAM policies exposed by this SQS bundle.
-* `.connections.sqs.data.security.iam.subscribe` - The `subscribe` policy your application needs.
 
 ### Secret Examples
 

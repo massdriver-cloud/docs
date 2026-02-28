@@ -29,8 +29,9 @@ module.exports = {
     navbar: {
       title: 'Massdriver',
       logo: {
-        alt: 'Jimmy @ Massdriver',
-        src: 'img/logo.png'
+        alt: 'Massdriver',
+        src: 'img/logo.svg',
+        srcDark: 'img/logo-dark.svg'
       },
       items: [
         {
