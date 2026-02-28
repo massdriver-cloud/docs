@@ -1,20 +1,6 @@
-/* Massdriver docs - minimal theme */
+/* Massdriver docs theme */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
-/* Prevent logo flash during theme switch */
-html:not([data-theme]) .navbar__logo img[src*="white"] {
-  display: none;
-}
-
-@media (prefers-color-scheme: dark) {
-  html:not([data-theme]) .navbar__logo img[src*="black"] {
-    display: none;
-  }
-  html:not([data-theme]) .navbar__logo img[src*="white"] {
-    display: block;
-  }
-}
 
 :root {
   --ifm-color-primary: #0f172a;
@@ -26,6 +12,11 @@ html:not([data-theme]) .navbar__logo img[src*="white"] {
   --ifm-color-primary-lightest: #475569;
   --ifm-font-family-base: 'Inter', system-ui, sans-serif;
   --ifm-code-font-size: 95%;
+
+  /* Dark header always */
+  --ifm-navbar-background-color: #0f172a;
+  --ifm-navbar-link-color: #e2e8f0;
+  --ifm-navbar-link-hover-color: #ffffff;
 }
 
 [data-theme='dark'] {
@@ -36,6 +27,36 @@ html:not([data-theme]) .navbar__logo img[src*="white"] {
   --ifm-color-primary-light: #f1f5f9;
   --ifm-color-primary-lighter: #f8fafc;
   --ifm-color-primary-lightest: #ffffff;
+}
+
+/* Navbar always dark */
+.navbar {
+  background-color: #0f172a !important;
+  box-shadow: 0 1px 0 0 #1e293b;
+}
+
+.navbar__link {
+  color: #e2e8f0 !important;
+}
+
+.navbar__link:hover {
+  color: #ffffff !important;
+}
+
+/* Search box styling */
+.DocSearch-Button {
+  background-color: #1e293b !important;
+  color: #94a3b8 !important;
+}
+
+/* Announcement bar */
+div[class*='announcementBar'] {
+  background-color: #1e293b !important;
+  color: #e2e8f0 !important;
+}
+
+div[class*='announcementBar'] a {
+  color: #ffffff !important;
 }
 
 .docusaurus-highlight-code-line {
