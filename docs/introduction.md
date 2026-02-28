@@ -27,16 +27,16 @@ Massdriver transforms infrastructure as code (IaC) into reusable software compon
 ### [Bundles](/concepts/bundles)
 Bundles are the building blocks of your infrastructure. Each bundle packages IaC modules, policies, runbooks, and cloud dependencies into a deliverable software component. Think of them as pre-built infrastructure components that developers can use without deep cloud expertise.
 
-### [Project Architecture](/concepts/projects)
+### [Project Architecture](/concepts/projects-and-environments)
 Your project architecture is represented as a canvas where you can place and connect bundles. Each bundle instance on your canvas is called a **manifest**, which provides context for how the bundle is used in your project. For example, you might have two Redis manifests - one for user sessions and another for page caching.
 
-### [Environments](/concepts/environments)
+### [Environments](/concepts/projects-and-environments)
 Environments (formerly called targets) are where your bundles get deployed. Each environment represents a deployment target (like staging or production) where your infrastructure components run.
 
-### [Artifact Definitions](/concepts/artifact-definitions)
+### [Artifact Definitions](/concepts/artifacts-and-definitions)
 Artifact definitions are standardized contracts that enable state passing between infrastructure modules, even across different IaC tools. They allow bundles to automatically configure resources based on their inputs - for example, binding IAM policies, fetching AWS Secrets Manager secrets, or injecting database credentials into environment variables. This standardization makes it easy to connect cloud resources regardless of how they were provisioned.
 
-### [Packages](/concepts/packages)
+### [Packages](/concepts/manifests-packages-deployments)
 When you deploy a bundle in the context of its manifest, it becomes a package - a running instance of your infrastructure component in a specific environment.
 
 This modular approach allows teams to build, share, and deploy infrastructure components with the same ease as traditional software development.

@@ -10,7 +10,7 @@ sidebar_label: Create
 Before getting started you'll need:
 
 * [Massdriver CLI](https://github.com/massdriver-cloud/mass/releases)
-* [Service Account key](/security/service-accounts)
+* [Service Account key](/platform-operations/security/service-accounts)
 * A containerized application. Quick start application examples are available [here](https://github.com/massdriver-cloud/application-examples#source-code-for-example-applications).
 
 :::
@@ -248,7 +248,7 @@ Add Kubernetes and Postgres to your canvas, connect, and [deploy](/applications/
 
 ![Published Application](./published-application.gif)
 
-If you would like to automatically publish your application bundle in CI/CD, see the [GitHub Actions guide](/ci-cd/github-action).
+If you would like to automatically publish your application bundle in CI/CD, see the [GitHub Actions guide](/platform-operations/ci-cd/github-action).
 
 :::info
 

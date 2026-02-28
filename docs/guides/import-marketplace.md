@@ -14,7 +14,7 @@ This guide will walk you through how to import a template from the [Massdriver T
 ## Prerequisites
 
 - A [Massdriver](https://app.massdriver.cloud) account
-- `Org Admin` role of a Massdriver [organization](/docs/concepts/11-organizations.md)
+- `Org Admin` role of a Massdriver [organization](/concepts/organizations)
 
 ## Import a template
 
@@ -60,4 +60,4 @@ After you have [customized](#step-1-customize-the-template) and [deployed](#step
 
 You can integrate CD pipelines with your source control to automatically publish changes to your infrastructure. This will help you maintain a consistent and reliable infrastructure.
 
-Check out our [GitHub Actions](/docs/ci_cd/01-github.md) or [Azure DevOps Pipelines](/docs/ci_cd/02-devops.md) guides to learn more about setting up CI/CD pipelines.
+Check out our [GitHub Actions](/platform-operations/ci-cd/github-action) or [Azure DevOps Pipelines](/platform-operations/ci-cd/azure-devops) guides to learn more about setting up CI/CD pipelines.

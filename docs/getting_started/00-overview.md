@@ -55,7 +55,7 @@ The guides below teach you how to **build custom bundles** from scratch or conve
 
 Before you begin, you'll need:
 - A **free** Massdriver account - [Create one here](https://app.massdriver.cloud/register)
-- The **Mass CLI** installed and configured - [Installation guide](../cli/overview)
+- The **Mass CLI** installed and configured - [Installation guide](../reference/cli/overview)
 
 
 :::tip Need Help?

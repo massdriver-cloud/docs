@@ -39,7 +39,7 @@ When a bundle alarm is triggered, that means that the threshold you set for the 
 
 There are a few reasons why the save/deploy buttons might not be working. Here are a few things to check:
 * Reload browser as you might have been logged out
-* Check if your [environment](./concepts/05-environments.md) has default credentials assigned
+* Check if your [environment](/concepts/projects-and-environments) has default credentials assigned
 * Clear cache and cookies
 * Review your `massdriver.yaml` file for any params that are **required** but do not exist (example below)
 
