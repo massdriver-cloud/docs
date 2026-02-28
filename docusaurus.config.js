@@ -27,11 +27,12 @@ module.exports = {
       additionalLanguages: ['yaml', 'hcl', 'shell-session']
     },
     navbar: {
-      title: 'Massdriver',
+      title: '',
       logo: {
         alt: 'Massdriver',
         src: 'img/logo.svg',
-        srcDark: 'img/logo-dark.svg'
+        srcDark: 'img/logo-dark.svg',
+        height: '28px'
       },
       items: [
         {
