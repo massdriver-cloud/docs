@@ -31,7 +31,7 @@ module.exports = {
       logo: {
         alt: 'Massdriver',
         src: 'img/logo-black.svg',
-        srcDark: 'img/logo.svg',
+        srcDark: 'img/logo-white.svg',
         height: '28px'
       },
       items: [
