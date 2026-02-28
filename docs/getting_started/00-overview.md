@@ -7,20 +7,21 @@ sidebar_label: Overview
 
 Welcome to Massdriver! This guide walks you through setting up your platform and building your first bundles.
 
-## Start with the Catalog
+## DevEx-First: Start with the Catalog
 
-**[Massdriver Catalog](https://github.com/massdriver-cloud/massdriver-catalog)** is the foundation for your infrastructure platform. Clone it, customize it, and use it to model your architecture before writing code.
+**[Massdriver Catalog](https://github.com/massdriver-cloud/massdriver-catalog)** is the foundation for your infrastructure platform. Design your developer experience before writing infrastructure code.
 
-The catalog includes:
-- **Artifact definitions** — Contracts for networks, databases, storage, credentials
-- **Bundle schemas** — Complete `massdriver.yaml` configurations with parameter schemas and connections
-- **Project templates** — Patterns for organizing environments and infrastructure
+The catalog includes artifact definitions, bundle schemas, and project templates that let you:
 
-Start here to design how bundles connect, what parameters developers configure, and how artifacts flow between components. Once you've validated the experience in the UI, implement the actual OpenTofu/Terraform.
+- **Model your architecture** — Design how bundles connect and what artifacts they produce
+- **Test the developer experience** — Add bundles to your canvas, configure parameters, iterate on abstractions
+- **Validate before implementing** — Once you've confirmed the experience works, fill in the OpenTofu/Terraform
+
+Clone the catalog, publish it to your instance, and start designing. When you're ready to implement, the guides below teach you how to build the actual infrastructure code.
 
 **→ [Bootstrap Your Platform](../guides/bootstrap-platform)**
 
-## Learn Bundle Development
+## Build Your Bundles
 
 Work through these guides using example bundles from the catalog:
 

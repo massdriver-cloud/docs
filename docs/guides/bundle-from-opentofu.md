@@ -7,9 +7,9 @@ sidebar_label: Create a Bundle from OpenTofu
 
 If you already have existing Infrastructure-as-Code (IaC) modules you'd like to deploy and manage through Massdriver, you'll need to import the IaC into a Massdriver [bundle](https://docs.massdriver.cloud/concepts/bundles). Fortunately, the Massdriver CLI makes it easy to create bundles from existing IaC. To demonstrate, this guide provides step-by-step instructions on how to create a new bundle in Massdriver from an existing OpenTofu module.
 
-:::tip Start with the Catalog
+:::tip DevEx-First
 
-If you're building a catalog of bundles, start with the **[Massdriver Catalog](https://github.com/massdriver-cloud/massdriver-catalog)** to model your platform architecture first. Design bundle interfaces and artifact contracts, validate the experience in the UI, then implement. This guide is for converting individual modules once your catalog structure is in place.
+If you're building a catalog of bundles, start with the **[Massdriver Catalog](https://github.com/massdriver-cloud/massdriver-catalog)** to design your developer experience first. Model bundle interfaces and artifact contracts, validate the experience in the UI, then implement. This guide is for filling in the infrastructure code once your catalog structure is in place.
 
 :::
 
