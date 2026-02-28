@@ -110,8 +110,8 @@
 
   /* Sidebar */
   --ifm-menu-color: var(--md-slate-600);
-  --ifm-menu-color-active: var(--md-teal-darker);
-  --ifm-menu-color-background-active: var(--md-teal-glow);
+  --ifm-menu-color-active: var(--md-slate-900);
+  --ifm-menu-color-background-active: var(--md-slate-100);
   --ifm-menu-color-background-hover: var(--md-slate-100);
 
   /* Borders */
@@ -177,8 +177,8 @@
 
   /* Sidebar */
   --ifm-menu-color: var(--md-slate-400);
-  --ifm-menu-color-active: var(--md-teal);
-  --ifm-menu-color-background-active: var(--md-teal-glow);
+  --ifm-menu-color-active: var(--md-slate-50);
+  --ifm-menu-color-background-active: var(--md-slate-800);
   --ifm-menu-color-background-hover: var(--md-slate-800);
 
   /* Borders */
@@ -201,14 +201,6 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Subtle grid background for dark mode */
-[data-theme='dark'] .main-wrapper {
-  background-image:
-    linear-gradient(var(--md-slate-800) 1px, transparent 1px),
-    linear-gradient(90deg, var(--md-slate-800) 1px, transparent 1px);
-  background-size: 64px 64px;
-  background-position: -1px -1px;
-}
 
 /* ============================================
    Navbar
@@ -255,17 +247,23 @@ html {
   background-color: var(--md-slate-800) !important;
   border: 1px solid var(--md-slate-700) !important;
   transition: all 0.15s ease !important;
+  color: var(--md-slate-400) !important;
 }
 
 .DocSearch-Button:hover {
-  border-color: var(--md-teal) !important;
-  box-shadow: 0 0 0 1px var(--md-teal-glow) !important;
+  border-color: var(--md-slate-600) !important;
+  background-color: var(--md-slate-700) !important;
+}
+
+.DocSearch-Button-Placeholder {
+  color: var(--md-slate-400) !important;
 }
 
 .DocSearch-Button-Key {
   background: var(--md-slate-700) !important;
   border-radius: 0.25rem !important;
   box-shadow: none !important;
+  color: var(--md-slate-400) !important;
 }
 
 /* Theme toggle */
@@ -282,7 +280,7 @@ html {
    ============================================ */
 
 div[class*='announcementBar'] {
-  background: linear-gradient(90deg, var(--md-slate-900) 0%, var(--md-slate-800) 50%, var(--md-slate-900) 100%);
+  background: var(--md-slate-800);
   border-bottom: 1px solid var(--md-slate-700);
   color: var(--md-slate-200);
   font-size: 0.875rem;
@@ -290,7 +288,7 @@ div[class*='announcementBar'] {
 }
 
 div[class*='announcementBar'] a {
-  color: var(--md-teal);
+  color: var(--md-slate-50);
   font-weight: 600;
   text-decoration: underline;
   text-underline-offset: 2px;
@@ -298,7 +296,7 @@ div[class*='announcementBar'] a {
 }
 
 div[class*='announcementBar'] a:hover {
-  color: var(--md-teal-light);
+  color: white;
 }
 
 /* ============================================
@@ -325,19 +323,6 @@ div[class*='announcementBar'] a:hover {
 .menu__link--active {
   font-weight: 600;
   background-color: var(--ifm-menu-color-background-active);
-  position: relative;
-}
-
-.menu__link--active::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 3px;
-  height: 60%;
-  background-color: var(--md-teal);
-  border-radius: 0 2px 2px 0;
 }
 
 .menu__list-item-collapsible {
