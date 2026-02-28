@@ -324,7 +324,6 @@ Always review the changelog before upgrading to check for changes that are requi
 
 For assistance with your self-hosted installation:
 
-- Check the [troubleshooting guide](/troubleshooting)
 - Join our [Slack community](https://join.slack.com/t/massdrivercommunity/shared_invite/zt-1smvckvdj-jVFpBG2jF5XiYzX2njDCWA)
 - Contact the Massdriver team for enterprise support
 
