@@ -15,7 +15,7 @@ To finish this guide you will need:
 
 * A connected cloud (AWS, Azure, or GCP)
 * A domain name registered with your cloud
-* A [Service Account](/security/service-accounts)
+* A [Service Account](/platform-operations/security/service-accounts)
 
 :::
 
@@ -25,11 +25,11 @@ Navigate to [Organization > Credentials](https://app.massdriver.cloud/organizati
 
 ![Add AWS Credential](./add-credential.gif)
 
-Next navigate to [projects](https://app.massdriver.cloud/projects) and create a new project named `Example`. A [project](/concepts/projects) is a parity boundary and used to replicate infrastructure and applications between _environments_ like application environments (staging, production) and/or regions (us-west-1, us-west-2, or prod us west 2).
+Next navigate to [projects](https://app.massdriver.cloud/projects) and create a new project named `Example`. A [project](/concepts/projects-and-environments) is a parity boundary and used to replicate infrastructure and applications between _environments_ like application environments (staging, production) and/or regions (us-west-1, us-west-2, or prod us west 2).
 
 ![Create Project](./create-project.gif).
 
-Add an [environment](/concepts/environments) named `Staging`.
+Add an [environment](/concepts/projects-and-environments) named `Staging`.
 
 ![Create Environment](./create-environment.gif)
 

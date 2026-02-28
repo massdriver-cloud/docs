@@ -11,7 +11,7 @@ In self-hosted environments, you must publish these definitions yourself to onbo
 
 ## 🔍 What Are Artifact Definitions?
 
-[Artifact definitions](/concepts/artifact-definitions) are schema files that describe how structured data—like a cloud credential, Kubernetes configuration, or an ETL pipeline—should be validated, visualized in the UI, and connected to provisioning workflows. These definitions power the artifact system, enabling teams to plug and play infrastructure building blocks securely and consistently.
+[Artifact definitions](/concepts/artifacts-and-definitions) are schema files that describe how structured data—like a cloud credential, Kubernetes configuration, or an ETL pipeline—should be validated, visualized in the UI, and connected to provisioning workflows. These definitions power the artifact system, enabling teams to plug and play infrastructure building blocks securely and consistently.
 
 In both managed and self-hosted environments, artifact definitions shape the Massdriver experience: they define how cloud credentials are onboarded, how services are linked, and how deployment data is standardized across environments. When a Massdriver instance starts up, these definitions populate the cloud onboarind flows, canvas defaults sidebar, and the connections between infrastructure bundles on your canvs.
 
@@ -34,7 +34,7 @@ These quickstarts are fully customizable—you can fork, modify, and republish t
 To publish these definitions to your self-hosted Massdriver instance, run the following commands using the Massdriver CLI. Each artifact you publish enables support for that cloud in your environment.
 
 :::note 
-For self-hosted, make sure to configure the mass CLI is [configured to work with your instance](/cli/overview#configuration-file).
+For self-hosted, make sure to configure the mass CLI is [configured to work with your instance](/reference/cli/overview#configuration-file).
 :::
 
 ```bash

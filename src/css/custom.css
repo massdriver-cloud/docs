@@ -1,25 +1,71 @@
-/* stylelint-disable docusaurus/copyright-header */
-/**
- * Any CSS included here will be global. The classic template
- * bundles Infima by default. Infima is a CSS framework designed to
- * work well for content-centric websites.
- */
+/* Massdriver docs theme */
 
-/* You can override the default Infima variables here. */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 :root {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: rgb(33, 175, 144);
-  --ifm-color-primary-darker: rgb(31, 165, 136);
-  --ifm-color-primary-darkest: rgb(26, 136, 112);
-  --ifm-color-primary-light: rgb(70, 203, 174);
-  --ifm-color-primary-lighter: rgb(102, 212, 189);
-  --ifm-color-primary-lightest: rgb(146, 224, 208);
+  --ifm-color-primary: #0f172a;
+  --ifm-color-primary-dark: #0c1322;
+  --ifm-color-primary-darker: #0b1120;
+  --ifm-color-primary-darkest: #090e1a;
+  --ifm-color-primary-light: #1e293b;
+  --ifm-color-primary-lighter: #334155;
+  --ifm-color-primary-lightest: #475569;
+  --ifm-font-family-base: 'Inter', system-ui, sans-serif;
   --ifm-code-font-size: 95%;
+
+  /* Dark header always */
+  --ifm-navbar-background-color: #0f172a;
+  --ifm-navbar-link-color: #e2e8f0;
+  --ifm-navbar-link-hover-color: #ffffff;
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary: #e2e8f0;
+  --ifm-color-primary-dark: #cbd5e1;
+  --ifm-color-primary-darker: #94a3b8;
+  --ifm-color-primary-darkest: #64748b;
+  --ifm-color-primary-light: #f1f5f9;
+  --ifm-color-primary-lighter: #f8fafc;
+  --ifm-color-primary-lightest: #ffffff;
+}
+
+/* Navbar always dark */
+.navbar {
+  background-color: #0f172a !important;
+  box-shadow: 0 1px 0 0 #1e293b;
+}
+
+.navbar__link {
+  color: #e2e8f0 !important;
+}
+
+.navbar__link:hover {
+  color: #ffffff !important;
+}
+
+/* Search box styling */
+.DocSearch-Button {
+  background-color: #1e293b !important;
+  color: #94a3b8 !important;
+}
+
+/* Announcement bar */
+div[class*='announcementBar'] {
+  background-color: #1e293b !important;
+  color: #e2e8f0 !important;
+}
+
+div[class*='announcementBar'] a {
+  color: #ffffff !important;
 }
 
 .docusaurus-highlight-code-line {
-  background-color: rgb(72, 77, 91);
+  background-color: rgba(0, 0, 0, 0.1);
   display: block;
   margin: 0 calc(-1 * var(--ifm-pre-padding));
   padding: 0 var(--ifm-pre-padding);
+}
+
+[data-theme='dark'] .docusaurus-highlight-code-line {
+  background-color: rgba(255, 255, 255, 0.1);
 }

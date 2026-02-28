@@ -21,3 +21,9 @@ yarn-error.log*
 
 .vercel
 tmp
+*.pdf
+PLAN.md
+REORGANIZATION_PLAN.md
+blog-draft-*.md
+package-lock.json
+.claude/
