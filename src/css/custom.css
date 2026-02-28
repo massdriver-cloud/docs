@@ -2,6 +2,20 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
+/* Prevent logo flash during theme switch */
+html:not([data-theme]) .navbar__logo img[src*="white"] {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme]) .navbar__logo img[src*="black"] {
+    display: none;
+  }
+  html:not([data-theme]) .navbar__logo img[src*="white"] {
+    display: block;
+  }
+}
+
 :root {
   --ifm-color-primary: #0f172a;
   --ifm-color-primary-dark: #0c1322;
