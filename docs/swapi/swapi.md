@@ -22,7 +22,7 @@ The GraphQL API is available at: `https://api.massdriver.cloud/graphql`
 
 ## Authentication
 
-All API requests require authentication using a **service account key**. You'll need to create a service account and obtain a key. [Learn more about service accounts here.](/security/service-accounts)
+All API requests require authentication using a **service account key**. You'll need to create a service account and obtain a key. [Learn more about service accounts here.](/platform-operations/security/service-accounts)
 
 **Authorization header format:**
 

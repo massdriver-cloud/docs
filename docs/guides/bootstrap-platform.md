@@ -27,12 +27,12 @@ This is useful for answering questions like: Should you have separate `postgres`
 
 1. **Model** - Publish the catalog to your instance, add bundles to canvases, connect them, configure parameters
 2. **Implement** - Replace placeholder code with your OpenTofu/Terraform
-3. **Iterate** - Add more bundles, create [custom artifacts](/guides/custom-artifact-definition), use [release channels](/concepts/versions#release-channels)
+3. **Iterate** - Add more bundles, create [custom artifacts](/guides/custom-artifact-definition), use [release channels](/bundle-development/publishing/versioning#release-channels)
 
 ## Prerequisites
 
-- Self-hosted Massdriver instance ([install guide](/self-hosted/install))
-- [Massdriver CLI](/cli/overview) installed
+- Self-hosted Massdriver instance ([install guide](/platform-operations/self-hosted/install))
+- [Massdriver CLI](/reference/cli/overview) installed
 
 ## Get Started
 

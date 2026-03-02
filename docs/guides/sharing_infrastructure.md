@@ -128,7 +128,7 @@ Click the **bundle** bar button and drag both bundles from the bundle sidebar on
 
 If you haven't published an application to Massdriver before, its super easy:
 
-First [install and setup the Massdriver CLI](https://docs.massdriver.cloud/cli/overview).
+First [install and setup the Massdriver CLI](https://docs.massdriver.cloud/reference/cli/overview).
 
 Then run:
 

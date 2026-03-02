@@ -99,7 +99,7 @@ Open `artifact-definitions/getting-started.json` and examine its structure:
 
 This schema defines exactly what JSON structure bundles must produce and consume. Some key points:
 * The name of the artifact definition is in the top level `$md` block. In this case it's named `getting-started`.
-* There are two top level fields: `data` and `specs`. These are **`required`** and have significance in Massdriver. Review the [artifact definition docs](https://docs.massdriver.cloud/concepts/artifact-definitions#structure) for more information.
+* There are two top level fields: `data` and `specs`. These are **`required`** and have significance in Massdriver. Review the [artifact definition docs](https://docs.massdriver.cloud/concepts/artifacts-and-definitions#structure) for more information.
 * Within the `data` block there are separate fields each piece of data produced in the `getting-started` bundle: a `pet-name` string, a `password` string, and a list of strings called `shuffle`. All 3 of these fields are **`required`**.
 * The `specs` field is empty.
 

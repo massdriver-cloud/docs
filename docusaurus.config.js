@@ -10,11 +10,11 @@ module.exports = {
     image: 'img/opengraph-md.png',
     metadata: [{ name: 'twitter:card', content: 'summary' }],
     announcementBar: {
-      id: 'were_hiring',
+      id: 'agentic_infra',
       content:
-        "⭐ &nbsp;Take a look at our latest post! <a target='_blank' rel='noopener noreferrer' href='https://www.massdriver.cloud/blogs/the-case-for-abstractions-in-iac'>The Case for Abstractions in IaC</a>",
-      backgroundColor: 'var(--ifm-color-primary-lightest)',
-      textColor: '#091E42',
+        "🤖 &nbsp;New post! <a target='_blank' rel='noopener noreferrer' href='https://www.massdriver.cloud/blogs/development-environments-for-agentic-infrastructure'>Development Environments for Agentic Infrastructure</a>",
+      // backgroundColor: 'var(--ifm-color-primary-lightest)',
+      // textColor: '#091E42',
       isCloseable: false
     },
     metadata: [
@@ -27,10 +27,12 @@ module.exports = {
       additionalLanguages: ['yaml', 'hcl', 'shell-session']
     },
     navbar: {
-      title: 'Massdriver',
+      title: '',
       logo: {
-        alt: 'Jimmy @ Massdriver',
-        src: 'img/logo.png'
+        alt: 'Massdriver',
+        src: 'img/logo-black.svg',
+        srcDark: 'img/logo-white.svg',
+        height: '28px'
       },
       items: [
         {

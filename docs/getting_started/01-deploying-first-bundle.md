@@ -21,7 +21,7 @@ By the end of this guide, you'll understand:
 
 ## Prerequisites
 
-Before you begin, make sure you have completed the [prerequisites](../cli/00-overview.md#prerequisites) to install the Massdriver CLI and authenticate with the platform.
+Before you begin, make sure you have completed the [prerequisites](/reference/cli/overview#prerequisites) to install the Massdriver CLI and authenticate with the platform.
 
 ## Step 1: Download the Getting Started Repository
 

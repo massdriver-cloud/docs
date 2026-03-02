@@ -360,12 +360,12 @@ Now that you understand how to use Bundle Deployment Metadata, you can:
 - **Create new bundles** - Design bundles that leverage automatic metadata injection
 - **Implement observability** - Integrate alarms with Massdriver's monitoring system
 
-For a complete reference of the `md_metadata` structure, see the [Identifier Constraints](/concepts/identifier-constraints#bundle-deployment-metadata) documentation.
+For a complete reference of the `md_metadata` structure, see the [Identifier Constraints](/reference/identifier-constraints#bundle-deployment-metadata) documentation.
 
 ## Related Documentation
 
 - [Creating Your Own Bundle](03-creating-bundles.md) - Previous guide in this series
-- [Identifier Constraints](/concepts/identifier-constraints) - Reference documentation including `md_metadata` structure
+- [Identifier Constraints](/reference/identifier-constraints) - Reference documentation including `md_metadata` structure
 - [Bundles](/concepts/bundles) - Overview of bundles and their structure
 
 
