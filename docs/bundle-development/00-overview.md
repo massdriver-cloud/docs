@@ -12,7 +12,7 @@ This section covers everything you need to build, test, and publish Massdriver b
 - **[Bundle YAML Specification](./bundle-yaml-spec)** - Complete reference for the `massdriver.yaml` file format
 - **[Schema Design](./schema-design/overview)** - JSON Schema patterns and Massdriver annotations for building parameter forms
 - **[Connections & Artifacts](./connections-artifacts/overview)** - How bundles consume and produce artifacts for type-safe infrastructure composition
-- **[Provisioners](./bundle-development/provisioners/overview)** - Configure OpenTofu, Terraform, Helm, and Bicep provisioning steps
+- **[Provisioners](./provisioners/overview)** - Configure OpenTofu, Terraform, Helm, and Bicep provisioning steps
 - **[Publishing](./publishing/versioning)** - Version, template, and publish bundles to the registry
 
 ## Quick start
