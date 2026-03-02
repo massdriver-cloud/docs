@@ -108,7 +108,7 @@ config_path="$workdir/config.json"
 envs_path="$workdir/envs.json"
 secrets_path="$workdir/secrets.json"
 
-# Navigate to the proper bundle directory for this setp
+# Navigate to the proper bundle directory for this step
 cd /massdriver/bundle/$MASSDRIVER_STEP_PATH
 
 echo "Starting action: $MASSDRIVER_DEPLOYMENT_ACTION"
