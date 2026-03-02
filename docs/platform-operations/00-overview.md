@@ -13,7 +13,7 @@ This section covers operating and administering the Massdriver platform.
 - **[Monitoring & Alarms](./monitoring-and-alarms)** - Configure alerts and observability
 - **[CI/CD Integration](./ci-cd/github-action)** - Automate deployments with GitHub Actions and Azure DevOps
 - **[Security](./security/overview)** - Service accounts, authorization, and access control
-- **[Self-Hosted](./platform-operations/self-hosted/overview)** - Deploy Massdriver in your own infrastructure
+- **[Self-Hosted](./self-hosted/overview)** - Deploy Massdriver in your own infrastructure
 
 ## Common operations
 
