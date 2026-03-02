@@ -13,8 +13,8 @@ module.exports = {
       id: 'agentic_infra',
       content:
         "🤖 &nbsp;New post! <a target='_blank' rel='noopener noreferrer' href='https://www.massdriver.cloud/blogs/development-environments-for-agentic-infrastructure'>Development Environments for Agentic Infrastructure</a>",
-      backgroundColor: 'var(--ifm-color-primary-lightest)',
-      textColor: '#091E42',
+      // backgroundColor: 'var(--ifm-color-primary-lightest)',
+      // textColor: '#091E42',
       isCloseable: false
     },
     metadata: [
@@ -30,7 +30,8 @@ module.exports = {
       title: '',
       logo: {
         alt: 'Massdriver',
-        src: 'img/logo-white.svg',
+        src: 'img/logo-black.svg',
+        srcDark: 'img/logo-white.svg',
         height: '28px'
       },
       items: [
