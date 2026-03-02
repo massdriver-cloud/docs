@@ -1,0 +1,168 @@
+/* Massdriver docs theme */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --ifm-font-family-base: 'Inter', system-ui, -apple-system, sans-serif;
+  --ifm-code-font-size: 95%;
+}
+
+/* ==========================================================================
+   Search Local - Algolia Autocomplete Theme Overrides
+   Match Docusaurus Infima theme
+   ========================================================================== */
+
+:root {
+  /* Typography */
+  --aa-font-family: var(--ifm-font-family-base);
+  --aa-font-size: 14px;
+
+  /* Primary color - matches Infima primary */
+  --aa-primary-color-rgb: 37, 194, 160;
+  --aa-primary-color-alpha: 1;
+
+  /* Text colors */
+  --aa-text-color-rgb: 28, 30, 33;
+  --aa-text-color-alpha: 1;
+  --aa-muted-color-rgb: 150, 159, 175;
+  --aa-muted-color-alpha: 1;
+
+  /* Background */
+  --aa-background-color-rgb: 255, 255, 255;
+  --aa-background-color-alpha: 1;
+  --aa-input-background-color-rgb: 255, 255, 255;
+  --aa-input-background-color-alpha: 1;
+  --aa-selected-color-rgb: 245, 246, 247;
+  --aa-selected-color-alpha: 1;
+
+  /* Borders */
+  --aa-panel-border-color-rgb: 218, 221, 225;
+  --aa-panel-border-color-alpha: 1;
+  --aa-input-border-color-rgb: 218, 221, 225;
+  --aa-input-border-color-alpha: 1;
+
+  /* Icons */
+  --aa-icon-color-rgb: 150, 159, 175;
+  --aa-icon-color-alpha: 1;
+  --aa-icon-stroke-width: 1.6;
+
+  /* Panel shadow - matches Infima dropdown */
+  --aa-panel-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  /* Overlay */
+  --aa-overlay-color-rgb: 0, 0, 0;
+  --aa-overlay-color-alpha: 0.4;
+
+  /* Scrollbar */
+  --aa-scrollbar-thumb-background-color-rgb: 218, 221, 225;
+  --aa-scrollbar-thumb-background-color-alpha: 1;
+  --aa-scrollbar-track-background-color-rgb: 245, 246, 247;
+  --aa-scrollbar-track-background-color-alpha: 1;
+
+  /* Highlight */
+  --aa-description-highlight-background-color-rgb: 37, 194, 160;
+  --aa-description-highlight-background-color-alpha: 0.2;
+}
+
+/* Dark mode */
+[data-theme='dark'] {
+  --aa-primary-color-rgb: 37, 194, 160;
+  --aa-primary-color-alpha: 1;
+
+  /* Text colors */
+  --aa-text-color-rgb: 227, 227, 227;
+  --aa-text-color-alpha: 1;
+  --aa-muted-color-rgb: 150, 159, 175;
+  --aa-muted-color-alpha: 0.8;
+
+  /* Background */
+  --aa-background-color-rgb: 27, 27, 29;
+  --aa-background-color-alpha: 1;
+  --aa-input-background-color-rgb: 36, 37, 38;
+  --aa-input-background-color-alpha: 1;
+  --aa-selected-color-rgb: 56, 58, 60;
+  --aa-selected-color-alpha: 1;
+
+  /* Borders */
+  --aa-panel-border-color-rgb: 68, 73, 80;
+  --aa-panel-border-color-alpha: 1;
+  --aa-input-border-color-rgb: 68, 73, 80;
+  --aa-input-border-color-alpha: 1;
+
+  /* Icons */
+  --aa-icon-color-rgb: 150, 159, 175;
+  --aa-icon-color-alpha: 0.8;
+
+  /* Panel shadow */
+  --aa-panel-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+
+  /* Overlay */
+  --aa-overlay-color-rgb: 0, 0, 0;
+  --aa-overlay-color-alpha: 0.6;
+
+  /* Scrollbar */
+  --aa-scrollbar-thumb-background-color-rgb: 68, 73, 80;
+  --aa-scrollbar-thumb-background-color-alpha: 1;
+  --aa-scrollbar-track-background-color-rgb: 36, 37, 38;
+  --aa-scrollbar-track-background-color-alpha: 1;
+}
+
+/* Search button styling to match navbar */
+.aa-DetachedSearchButton {
+  border-radius: var(--ifm-global-radius) !important;
+  border: 1px solid var(--ifm-color-emphasis-300) !important;
+  background: var(--ifm-background-surface-color) !important;
+  padding: 0.5rem 0.75rem !important;
+}
+
+.aa-DetachedSearchButton:hover {
+  border-color: var(--ifm-color-emphasis-400) !important;
+}
+
+.aa-DetachedSearchButtonPlaceholder {
+  color: var(--ifm-color-emphasis-600) !important;
+}
+
+/* Panel styling */
+.aa-Panel {
+  border-radius: var(--ifm-global-radius) !important;
+  border: 1px solid var(--ifm-color-emphasis-200) !important;
+}
+
+[data-theme='dark'] .aa-Panel {
+  border-color: var(--ifm-color-emphasis-300) !important;
+}
+
+/* Input styling */
+.aa-Input {
+  font-family: var(--ifm-font-family-base) !important;
+}
+
+/* Result items */
+.aa-Item[aria-selected='true'] {
+  background: var(--ifm-color-emphasis-100) !important;
+}
+
+[data-theme='dark'] .aa-Item[aria-selected='true'] {
+  background: var(--ifm-color-emphasis-200) !important;
+}
+
+/* Highlight mark styling */
+.aa-ItemContentTitle mark,
+.aa-ItemContentDescription mark {
+  background: rgba(37, 194, 160, 0.25) !important;
+  color: inherit !important;
+  font-weight: 600;
+}
+
+/* Code highlighting */
+.docusaurus-highlight-code-line {
+  background-color: rgba(0, 0, 0, 0.1);
+  display: block;
+  margin: 0 calc(-1 * var(--ifm-pre-padding));
+  padding: 0 var(--ifm-pre-padding);
+}
+
+[data-theme='dark'] .docusaurus-highlight-code-line {
+  background-color: rgba(255, 255, 255, 0.1);
+}
