@@ -27,10 +27,12 @@ The following configuration options are available:
 
 | Configuration Option | Type | Default | Description |
 |-|-|-|-|
+| `log_level` | string | `null` | Sets the `TF_LOG` environment variable to control OpenTofu log verbosity. Supported values: `TRACE`, `DEBUG`, `INFO`, `WARN`, `ERROR` |
 | `json` | boolean | `false` | Enables JSON output for OpenTofu. |
 | `checkov.enable` | boolean | `true` | Enables Checkov policy evaluation. If `false`, Checkov will not be run. |
 | `checkov.quiet` | boolean | `true` | Only display failed checks if `true` (adds the `--quiet` flag). |
 | `checkov.halt_on_failure` | boolean | `false` | Halt provisioning run and mark deployment as failed on a policy failure (removes the `--soft-fail` flag). |
+| `ssh.private_key` | string | `null` | A private SSH key used to access private module repositories. When set, the provisioner configures SSH authentication and rewrites HTTPS git URLs to use SSH. |
 
 
 ## Inputs
