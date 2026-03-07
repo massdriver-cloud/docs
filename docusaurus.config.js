@@ -172,20 +172,9 @@ module.exports = {
     ]
   ],
   scripts: [
-    // {
-    //   src: '/js/chatwoot.js',
-    //   async: true
-    // },
     {
-      src: "https://widget.kapa.ai/kapa-widget.bundle.js",
-      async: true,
-      "data-website-id": "66cf3e4f-fcd3-4bcf-b7e7-e8bbe4bc4a66",
-      "data-project-name": "Massdriver Knowledge",
-      "data-project-color": "#ffffff",
-      "data-button-text-color": "#272727",
-      "data-project-logo": "https://docs.massdriver.cloud/img/logo.png",
-      "data-mcp-enabled": "true",
-      "data-mcp-server-url": "https://massdriver.mcp.kapa.ai",
-    },
+      src: '/js/chatwoot.js',
+      async: true
+    }
   ]
 }
