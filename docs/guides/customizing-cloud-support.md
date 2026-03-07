@@ -15,34 +15,4 @@ In self-hosted environments, you must publish these definitions yourself to onbo
 
 In both managed and self-hosted environments, artifact definitions shape the Massdriver experience: they define how cloud credentials are onboarded, how services are linked, and how deployment data is standardized across environments. When a Massdriver instance starts up, these definitions populate the cloud onboarind flows, canvas defaults sidebar, and the connections between infrastructure bundles on your canvs.
 
-## ☁️ Cloud Auth Quickstart Artifact Definitions
-
-To help you get started quickly, Massdriver provides prebuilt artifact definitions for the three major cloud providers. These definitions map directly to the way most Infrastructure as Code (IaC) tools authenticate with cloud platforms:
-
-| Artifact Key              | Cloud Provider | Purpose                                               |
-| ------------------------- | -------------- | ----------------------------------------------------- |
-| `aws-iam-role`            | AWS            | Federated IAM role used for secure cross-account auth |
-| `azure-service-principal` | Azure          | Service principal credential used for deployments     |
-| `gcp-service-account`     | GCP            | GCP service account with appropriate IAM permissions  |
-
-These quickstarts are fully customizable—you can fork, modify, and republish them to match your organization’s naming standards, policies, or credential rotation strategies.
-
----
-
-## 📦 Publishing Artifact Definitions
-
-To publish these definitions to your self-hosted Massdriver instance, run the following commands using the Massdriver CLI. Each artifact you publish enables support for that cloud in your environment.
-
-:::note 
-For self-hosted, make sure to configure the mass CLI is [configured to work with your instance](/reference/cli/overview#configuration-file).
-:::
-
-```bash
-# AWS IAM Role Artifact Definition
-curl -s https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/refs/heads/main/dist/aws-iam-role.json | mass definition publish -f -
-
-# Azure Service Principal Artifact Definition
-curl -s https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/refs/heads/main/dist/azure-service-principal.json | mass definition publish -f -
-
-# GCP Service Account Artifact Definition
-curl -s https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/refs/heads/main/dist/gcp-service-account.json | mass definition publish -f -
+Check out the [Massdriver Catalog](https://github.com/massdriver-cloud/massdriver-catalog?tab=readme-ov-file#-platforms) for quick start platform configurations.
