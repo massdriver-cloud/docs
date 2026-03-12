@@ -1,7 +1,4 @@
 ---
-pagination_next: null
-pagination_prev: null
-hide_table_of_contents: true
 id: update-project
 title: updateProject
 ---
@@ -38,11 +35,16 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-
+<Badge class="badge badge--secondary badge--primary" text="form schema"/>
 
 
 
 Update a project's name or description.
+
+This mutation supports dynamic form generation.
+
+- [JSON Schema](https://api.massdriver.cloud/api/v1/schemas/updateProject.json)
+- [UI Schema](https://api.massdriver.cloud/api/v1/schemas/updateProject.ui.json)
 
 
 ```graphql
@@ -53,6 +55,15 @@ updateProject(
 ): ProjectPayload
 ```
 
+
+### Directives
+
+#### [<code style={{ fontWeight: 'normal' }}><b>formSchema</b></code>](/api/graphql/v1/types/directives/form-schema.mdx)
+ This mutation supports dynamic form generation.
+
+- [JSON Schema](https://api.massdriver.cloud/api/v1/schemas/updateProject.json)
+- [UI Schema](https://api.massdriver.cloud/api/v1/schemas/updateProject.ui.json)
+ 
 
 
 

@@ -1,7 +1,4 @@
 ---
-pagination_next: null
-pagination_prev: null
-hide_table_of_contents: true
 id: create-project
 title: createProject
 ---
@@ -38,11 +35,16 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-
+<Badge class="badge badge--secondary badge--primary" text="form schema"/>
 
 
 
 Create a new project in your organization.
+
+This mutation supports dynamic form generation.
+
+- [JSON Schema](https://api.massdriver.cloud/api/v1/schemas/createProject.json)
+- [UI Schema](https://api.massdriver.cloud/api/v1/schemas/createProject.ui.json)
 
 
 ```graphql
@@ -52,6 +54,15 @@ createProject(
 ): ProjectPayload
 ```
 
+
+### Directives
+
+#### [<code style={{ fontWeight: 'normal' }}><b>formSchema</b></code>](/api/graphql/v1/types/directives/form-schema.mdx)
+ This mutation supports dynamic form generation.
+
+- [JSON Schema](https://api.massdriver.cloud/api/v1/schemas/createProject.json)
+- [UI Schema](https://api.massdriver.cloud/api/v1/schemas/createProject.ui.json)
+ 
 
 
 

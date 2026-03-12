@@ -1,3 +1,16 @@
+"""
+Links a mutation to its JSON Schema and UI Schema for form generation.
+These schemas enable dynamic form rendering with validation in client applications.
+"""
+directive @formSchema(
+  "Schema name matching the mutation (e.g., createProject)"
+  name: String!
+  "URL to the JSON Schema for validation"
+  schema: String!
+  "URL to the UI Schema for form layout"
+  ui_schema: String!
+) on FIELD_DEFINITION
+
 schema {
   mutation: RootMutationType
   query: RootQueryType
@@ -130,7 +143,7 @@ type RootMutationType {
 
     "Project details"
     input: CreateProjectInput!
-  ): ProjectPayload
+  ): ProjectPayload @formSchema(name: "createProject", schema: "\/api\/v1\/schemas\/createProject.json", ui_schema: "\/api\/v1\/schemas\/createProject.ui.json")
 
   "Update a project's name or description."
   updateProject(
@@ -142,7 +155,7 @@ type RootMutationType {
 
     "Fields to update"
     input: UpdateProjectInput!
-  ): ProjectPayload
+  ): ProjectPayload @formSchema(name: "updateProject", schema: "\/api\/v1\/schemas\/updateProject.json", ui_schema: "\/api\/v1\/schemas\/updateProject.ui.json")
 
   "Delete a project. You must delete all environments first."
   deleteProject(
@@ -163,7 +176,7 @@ type RootMutationType {
 
     "Environment details"
     input: CreateEnvironmentInput!
-  ): EnvironmentPayload
+  ): EnvironmentPayload @formSchema(name: "createEnvironment", schema: "\/api\/v1\/schemas\/createEnvironment.json", ui_schema: "\/api\/v1\/schemas\/createEnvironment.ui.json")
 
   "Update an environment's name or description."
   updateEnvironment(
@@ -175,7 +188,7 @@ type RootMutationType {
 
     "Fields to update"
     input: UpdateEnvironmentInput!
-  ): EnvironmentPayload
+  ): EnvironmentPayload @formSchema(name: "updateEnvironment", schema: "\/api\/v1\/schemas\/updateEnvironment.json", ui_schema: "\/api\/v1\/schemas\/updateEnvironment.ui.json")
 
   "Delete an environment. You must decommission all packages first."
   deleteEnvironment(

@@ -1,7 +1,5 @@
 label: Unions
-position: 10
-link: 
-  type: generated-index
-  title: 'Unions overview'
+position: 1
+link: null
 collapsible: true
 collapsed: true

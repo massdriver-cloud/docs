@@ -1,8 +1,6 @@
 label: Operations
 position: 1
 className: graphql-markdown-api-section
-link: 
-  type: generated-index
-  title: 'Operations overview'
+link: null
 collapsible: false
 collapsed: false
