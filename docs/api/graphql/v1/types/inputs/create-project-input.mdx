@@ -1,4 +1,7 @@
 ---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
 id: create-project-input
 title: CreateProjectInput
 ---
@@ -39,14 +42,14 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Input for creating a new project.
+No description
 
 
 ```graphql
 input CreateProjectInput {
+  description: String
   id: String!
   name: String!
-  description: String
 }
 ```
 
@@ -55,18 +58,16 @@ input CreateProjectInput {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>CreateProjectInput.<b>id</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
-Unique identifier for the project, used in URLs and API calls.
-Must be 1-20 lowercase alphanumeric characters or hyphens.
-Choose carefully - this cannot be changed after creation.
+#### [<code style={{ fontWeight: 'normal' }}>CreateProjectInput.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+Create a new project. A project is the complete model of your application—its infrastructure, architecture, configurations, and environments.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CreateProjectInput.<b>name</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
-Display name shown in the UI
+#### [<code style={{ fontWeight: 'normal' }}>CreateProjectInput.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+A short, memorable identifier for looking up this project in the API and CLI. This becomes the first segment of all resource identifiers within the project. For example, a project 'ecomm' with environment 'prod' and component 'db' creates the package identifier 'ecomm-prod-db'. Choose something concise and meaningful—human-readable, not a UUID. Max 20 characters, lowercase alphanumeric only (a-z, 0-9). Immutable after creation.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CreateProjectInput.<b>description</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
-What this project is for
+#### [<code style={{ fontWeight: 'normal' }}>CreateProjectInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+A human-readable name for the project
 
 
 

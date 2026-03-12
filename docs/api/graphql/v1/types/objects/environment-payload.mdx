@@ -1,4 +1,7 @@
 ---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
 id: environment-payload
 title: EnvironmentPayload
 ---
@@ -55,15 +58,15 @@ type EnvironmentPayload {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>EnvironmentPayload.<b>successful</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/api/graphql/v1/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentPayload.<b>successful</b></code>](#successful)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/api/graphql/v1/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#successful\} 
 Indicates if the mutation completed successfully or not.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>EnvironmentPayload.<b>messages</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ValidationMessage]</b></code>](/api/graphql/v1/types/objects/validation-message.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentPayload.<b>messages</b></code>](#messages)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ValidationMessage]</b></code>](/api/graphql/v1/types/objects/validation-message.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> \{#messages\} 
 A list of failed validations. May be blank or null if mutation succeeded.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>EnvironmentPayload.<b>result</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Environment</b></code>](/api/graphql/v1/types/objects/environment.mdx) <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentPayload.<b>result</b></code>](#result)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Environment</b></code>](/api/graphql/v1/types/objects/environment.mdx) <Badge class="badge badge--secondary " text="object"/> \{#result\} 
 The object created/updated/deleted by the mutation. May be null if mutation failed.
 
 

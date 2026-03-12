@@ -1,4 +1,7 @@
 ---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
 id: update-project-input
 title: UpdateProjectInput
 ---
@@ -39,13 +42,13 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Input for updating a project.
+No description
 
 
 ```graphql
 input UpdateProjectInput {
-  name: String
   description: String
+  name: String
 }
 ```
 
@@ -54,12 +57,12 @@ input UpdateProjectInput {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>UpdateProjectInput.<b>name</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
-Display name shown in the UI
+#### [<code style={{ fontWeight: 'normal' }}>UpdateProjectInput.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+Update an existing project's name and description. The ID cannot be changed after creation.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>UpdateProjectInput.<b>description</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
-What this project is for
+#### [<code style={{ fontWeight: 'normal' }}>UpdateProjectInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+A human-readable name for the project
 
 
 

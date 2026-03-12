@@ -1,4 +1,7 @@
 ---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
 id: create-environment-input
 title: CreateEnvironmentInput
 ---
@@ -39,14 +42,14 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Input for creating a new environment.
+No description
 
 
 ```graphql
 input CreateEnvironmentInput {
+  description: String
   id: String!
   name: String!
-  description: String
 }
 ```
 
@@ -55,18 +58,16 @@ input CreateEnvironmentInput {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>CreateEnvironmentInput.<b>id</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
-Unique identifier for the environment within its project.
-Must be 1-20 lowercase alphanumeric characters or hyphens.
-Choose carefully - this cannot be changed after creation.
+#### [<code style={{ fontWeight: 'normal' }}>CreateEnvironmentInput.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+Create a new environment. Environments are isolated deployment contexts like production, staging, or development, each with independent secrets and configurations.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CreateEnvironmentInput.<b>name</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
-Display name shown in the UI
+#### [<code style={{ fontWeight: 'normal' }}>CreateEnvironmentInput.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+A short, memorable identifier for looking up this environment in the API and CLI. This becomes the second segment of package identifiers. For example, project 'ecomm' with environment 'prod' and component 'db' creates 'ecomm-prod-db'. Use familiar names like 'prod', 'staging', 'dev'—human-readable, not a UUID. Max 20 characters, lowercase alphanumeric only (a-z, 0-9). Immutable after creation.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CreateEnvironmentInput.<b>description</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
-What this environment is for (e.g., 'Production workloads')
+#### [<code style={{ fontWeight: 'normal' }}>CreateEnvironmentInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+A human-readable name for the environment
 
 
 

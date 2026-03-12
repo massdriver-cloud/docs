@@ -1,7 +1,3 @@
-"""
-Links a mutation to its JSON Schema and UI Schema for form generation.
-These schemas enable dynamic form rendering with validation in client applications.
-"""
 directive @formSchema(
   "Schema name matching the mutation (e.g., createProject)"
   name: String!
@@ -143,7 +139,7 @@ type RootMutationType {
 
     "Project details"
     input: CreateProjectInput!
-  ): ProjectPayload @formSchema(name: "createProject", schema: "\/api\/v1\/schemas\/createProject.json", ui_schema: "\/api\/v1\/schemas\/createProject.ui.json")
+  ): ProjectPayload @formSchema(name: "createProject", schema: "\/graphql\/v1\/schemas\/createProject.json", ui_schema: "\/graphql\/v1\/schemas\/createProject.ui.json")
 
   "Update a project's name or description."
   updateProject(
@@ -155,7 +151,7 @@ type RootMutationType {
 
     "Fields to update"
     input: UpdateProjectInput!
-  ): ProjectPayload @formSchema(name: "updateProject", schema: "\/api\/v1\/schemas\/updateProject.json", ui_schema: "\/api\/v1\/schemas\/updateProject.ui.json")
+  ): ProjectPayload @formSchema(name: "updateProject", schema: "\/graphql\/v1\/schemas\/updateProject.json", ui_schema: "\/graphql\/v1\/schemas\/updateProject.ui.json")
 
   "Delete a project. You must delete all environments first."
   deleteProject(
@@ -176,7 +172,7 @@ type RootMutationType {
 
     "Environment details"
     input: CreateEnvironmentInput!
-  ): EnvironmentPayload @formSchema(name: "createEnvironment", schema: "\/api\/v1\/schemas\/createEnvironment.json", ui_schema: "\/api\/v1\/schemas\/createEnvironment.ui.json")
+  ): EnvironmentPayload @formSchema(name: "createEnvironment", schema: "\/graphql\/v1\/schemas\/createEnvironment.json", ui_schema: "\/graphql\/v1\/schemas\/createEnvironment.ui.json")
 
   "Update an environment's name or description."
   updateEnvironment(
@@ -188,7 +184,7 @@ type RootMutationType {
 
     "Fields to update"
     input: UpdateEnvironmentInput!
-  ): EnvironmentPayload @formSchema(name: "updateEnvironment", schema: "\/api\/v1\/schemas\/updateEnvironment.json", ui_schema: "\/api\/v1\/schemas\/updateEnvironment.ui.json")
+  ): EnvironmentPayload @formSchema(name: "updateEnvironment", schema: "\/graphql\/v1\/schemas\/updateEnvironment.json", ui_schema: "\/graphql\/v1\/schemas\/updateEnvironment.ui.json")
 
   "Delete an environment. You must decommission all packages first."
   deleteEnvironment(
@@ -713,29 +709,23 @@ input EnvironmentsFilter {
   ids: [String!]
 }
 
-"Input for creating a new environment."
 input CreateEnvironmentInput {
-  """
-  Unique identifier for the environment within its project.
-  Must be 1-20 lowercase alphanumeric characters or hyphens.
-  Choose carefully - this cannot be changed after creation.
-  """
+  "Create a new environment. Environments are isolated deployment contexts like production, staging, or development, each with independent secrets and configurations."
+  description: String
+
+  "A short, memorable identifier for looking up this environment in the API and CLI. This becomes the second segment of package identifiers. For example, project 'ecomm' with environment 'prod' and component 'db' creates 'ecomm-prod-db'. Use familiar names like 'prod', 'staging', 'dev'—human-readable, not a UUID. Max 20 characters, lowercase alphanumeric only (a-z, 0-9). Immutable after creation."
   id: String!
 
-  "Display name shown in the UI"
+  "A human-readable name for the environment"
   name: String!
-
-  "What this environment is for (e.g., 'Production workloads')"
-  description: String
 }
 
-"Input for updating an environment."
 input UpdateEnvironmentInput {
-  "Display name shown in the UI"
-  name: String
-
-  "What this environment is for"
+  "Update an existing environment's name and description. The ID cannot be changed after creation."
   description: String
+
+  "A human-readable name for the environment"
+  name: String
 }
 
 "An environment returned in list results."
@@ -824,29 +814,23 @@ input ProjectsSort {
   order: SortOrder!
 }
 
-"Input for creating a new project."
 input CreateProjectInput {
-  """
-  Unique identifier for the project, used in URLs and API calls.
-  Must be 1-20 lowercase alphanumeric characters or hyphens.
-  Choose carefully - this cannot be changed after creation.
-  """
+  "Create a new project. A project is the complete model of your application—its infrastructure, architecture, configurations, and environments."
+  description: String
+
+  "A short, memorable identifier for looking up this project in the API and CLI. This becomes the first segment of all resource identifiers within the project. For example, a project 'ecomm' with environment 'prod' and component 'db' creates the package identifier 'ecomm-prod-db'. Choose something concise and meaningful—human-readable, not a UUID. Max 20 characters, lowercase alphanumeric only (a-z, 0-9). Immutable after creation."
   id: String!
 
-  "Display name shown in the UI"
+  "A human-readable name for the project"
   name: String!
-
-  "What this project is for"
-  description: String
 }
 
-"Input for updating a project."
 input UpdateProjectInput {
-  "Display name shown in the UI"
-  name: String
-
-  "What this project is for"
+  "Update an existing project's name and description. The ID cannot be changed after creation."
   description: String
+
+  "A human-readable name for the project"
+  name: String
 }
 
 "A project returned in list results."

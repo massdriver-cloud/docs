@@ -7,20 +7,9 @@ const { getTypeDirectiveArgValue } = require("@graphql-markdown/graphql");
  * that can be used for form generation and validation.
  */
 const formSchemaDirective = {
-  descriptor: (directive, node) => {
-    const name = getTypeDirectiveArgValue(directive, node, "name");
-    const schema = getTypeDirectiveArgValue(directive, node, "schema");
-    const uiSchema = getTypeDirectiveArgValue(directive, node, "ui_schema");
-
-    if (!name) return undefined;
-
-    const baseUrl = "https://api.massdriver.cloud";
-    const schemaUrl = `${baseUrl}${schema}`;
-    const uiSchemaUrl = `${baseUrl}${uiSchema}`;
-
-    return `This mutation supports dynamic form generation.\n\n- [JSON Schema](${schemaUrl})\n- [UI Schema](${uiSchemaUrl})`;
-  },
-  tag: (directive, node) => ({
+  // Descriptor returns undefined - SchemaForm is added via post-process script
+  descriptor: () => undefined,
+  tag: () => ({
     text: "form schema",
     classname: "primary",
   }),

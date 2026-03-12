@@ -1,4 +1,7 @@
 ---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
 id: account-viewer
 title: AccountViewer
 ---
@@ -63,41 +66,41 @@ type AccountViewer {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>id</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
 
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>email</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>email</b></code>](#email)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#email\} 
 Email address
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>firstName</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>firstName</b></code>](#first-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#first-name\} 
 First name
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>lastName</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>lastName</b></code>](#last-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#last-name\} 
 Last name
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>createdAt</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
 When you signed up (UTC)
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>updatedAt</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
 When your profile was last updated (UTC)
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>organizations</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ViewerOrganizationsPage</b></code>](/api/graphql/v1/types/objects/viewer-organizations-page.mdx) <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>organizations</b></code>](#organizations)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ViewerOrganizationsPage</b></code>](/api/graphql/v1/types/objects/viewer-organizations-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#organizations\} 
 Organizations you belong to.
-##### [<code style={{ fontWeight: 'normal' }}>AccountViewer.organizations.<b>sort</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ViewerOrganizationsSort</b></code>](/api/graphql/v1/types/inputs/viewer-organizations-sort.mdx) <Badge class="badge badge--secondary " text="input"/> 
+##### [<code style={{ fontWeight: 'normal' }}>AccountViewer.organizations.<b>sort</b></code>](#account-viewer-organizations-sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ViewerOrganizationsSort</b></code>](/api/graphql/v1/types/inputs/viewer-organizations-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#account-viewer-organizations-sort\} 
 How to sort results
 
 
-##### [<code style={{ fontWeight: 'normal' }}>AccountViewer.organizations.<b>cursor</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> 
+##### [<code style={{ fontWeight: 'normal' }}>AccountViewer.organizations.<b>cursor</b></code>](#account-viewer-organizations-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#account-viewer-organizations-cursor\} 
 Pagination cursor from a previous response
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>defaultOrganization</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ViewerOrganization</b></code>](/api/graphql/v1/types/objects/viewer-organization.mdx) <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>defaultOrganization</b></code>](#default-organization)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ViewerOrganization</b></code>](/api/graphql/v1/types/objects/viewer-organization.mdx) <Badge class="badge badge--secondary " text="object"/> \{#default-organization\} 
 Your most recently joined organization. Useful for setting a default context.
 
 
