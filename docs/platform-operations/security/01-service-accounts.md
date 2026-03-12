@@ -5,7 +5,7 @@ title: Service Accounts
 sidebar_label: Service Accounts
 ---
 
-Service accounts are a special type of non-human privileged account used to execute publish bundles, deploy applications, and other functions in our [API](/swapi). In some cases, they may have administrative privileges.
+Service accounts are a special type of non-human privileged account used to execute publish bundles, deploy applications, and other functions in our [API](/api/graphql/v0). In some cases, they may have administrative privileges.
 
 Service account keys are required for using the [Massdriver CLI](https://github.com/massdriver-cloud/mass).
 

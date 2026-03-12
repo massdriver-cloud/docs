@@ -1,0 +1,89 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: deployment-status
+title: DeploymentStatus
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+The current state of a deployment operation.
+
+
+```graphql
+enum DeploymentStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+  ABORTED
+}
+```
+
+
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentStatus.<b>PENDING</b></code>](#)  
+Waiting to start
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentStatus.<b>RUNNING</b></code>](#)  
+Currently executing
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentStatus.<b>COMPLETED</b></code>](#)  
+Finished successfully
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentStatus.<b>FAILED</b></code>](#)  
+Failed - check logs for details
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentStatus.<b>ABORTED</b></code>](#)  
+Manually stopped before completion
+
+
+
+
+
+
+### Member Of
+
+[`Deployment`](/api/graphql/v1/types/objects/deployment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`DeploymentLeaf`](/api/graphql/v1/types/objects/deployment-leaf.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`DeploymentsFilter`](/api/graphql/v1/types/inputs/deployments-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

@@ -1,0 +1,63 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: json
+title: JSON
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+The `JSON` scalar type represents arbitrary json string data, represented as UTF-8
+character sequences. The JSON type is most often used to represent a free-form
+human-readable JSON string.
+
+
+```graphql
+scalar JSON
+```
+
+
+
+
+
+
+
+
+### Member Of
+
+[`Artifact`](/api/graphql/v0/types/objects/artifact.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ArtifactDefinition`](/api/graphql/v0/types/objects/artifact-definition.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ArtifactPropertySummary`](/api/graphql/v0/types/objects/artifact-property-summary.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ArtifactUpdateParams`](/api/graphql/v0/types/inputs/artifact-update-params.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`AuditLog`](/api/graphql/v0/types/objects/audit-log.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Bundle`](/api/graphql/v0/types/objects/bundle.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Changeset`](/api/graphql/v0/types/objects/changeset.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`configurePackage`](/api/graphql/v0/operations/mutations/configure-package.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`copyPackage`](/api/graphql/v0/operations/mutations/copy-package.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`createArtifact`](/api/graphql/v0/operations/mutations/create-artifact.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`CreateIntegrationInput`](/api/graphql/v0/types/inputs/create-integration-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`Deployment`](/api/graphql/v0/types/objects/deployment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`IntegrationActivation`](/api/graphql/v0/types/objects/integration-activation.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`IntegrationConfig`](/api/graphql/v0/types/objects/integration-config.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`IntegrationType`](/api/graphql/v0/types/objects/integration-type.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Package`](/api/graphql/v0/types/objects/package.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PackageAlarmState`](/api/graphql/v0/types/objects/package-alarm-state.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PreviewEnvironmentInput`](/api/graphql/v0/types/inputs/preview-environment-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`Project`](/api/graphql/v0/types/objects/project.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`publishArtifactDefinition`](/api/graphql/v0/operations/mutations/publish-artifact-definition.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

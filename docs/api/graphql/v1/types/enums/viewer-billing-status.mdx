@@ -1,0 +1,104 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: viewer-billing-status
+title: ViewerBillingStatus
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Billing status of an organization.
+
+
+```graphql
+enum ViewerBillingStatus {
+  TRIAL
+  ACTIVE
+  PAST_DUE
+  EXPIRED
+  CANCELED
+  SUSPENDED
+  PAYMENT_PENDING
+  PAYMENT_FAILED
+}
+```
+
+
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>ViewerBillingStatus.<b>TRIAL</b></code>](#)  
+Free trial period
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ViewerBillingStatus.<b>ACTIVE</b></code>](#)  
+Subscription is active and paid
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ViewerBillingStatus.<b>PAST&#x005F;DUE</b></code>](#)  
+Payment is overdue
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ViewerBillingStatus.<b>EXPIRED</b></code>](#)  
+Trial has expired
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ViewerBillingStatus.<b>CANCELED</b></code>](#)  
+Subscription was canceled
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ViewerBillingStatus.<b>SUSPENDED</b></code>](#)  
+Account is temporarily suspended
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ViewerBillingStatus.<b>PAYMENT&#x005F;PENDING</b></code>](#)  
+Waiting for payment to process
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ViewerBillingStatus.<b>PAYMENT&#x005F;FAILED</b></code>](#)  
+Payment failed
+
+
+
+
+
+
+### Member Of
+
+[`ViewerOrganizationBilling`](/api/graphql/v1/types/objects/viewer-organization-billing.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

@@ -1,0 +1,99 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: change-event
+title: ChangeEvent
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Union of all changefeed event types for Project, Environment, and Package lifecycle events
+
+
+```graphql
+union ChangeEvent = ProjectCreated | ProjectUpdated | ProjectDeleted | EnvironmentCreated | EnvironmentUpdated | EnvironmentDeleted | PackageCreated | PackageUpdated | PackageDeleted
+```
+
+
+
+
+### Possible types
+
+#### [<code style={{ fontWeight: 'normal' }}>ChangeEvent.<b>ProjectCreated</b></code>](/api/graphql/v0/types/objects/project-created.mdx) <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ChangeEvent.<b>ProjectUpdated</b></code>](/api/graphql/v0/types/objects/project-updated.mdx) <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ChangeEvent.<b>ProjectDeleted</b></code>](/api/graphql/v0/types/objects/project-deleted.mdx) <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ChangeEvent.<b>EnvironmentCreated</b></code>](/api/graphql/v0/types/objects/environment-created.mdx) <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ChangeEvent.<b>EnvironmentUpdated</b></code>](/api/graphql/v0/types/objects/environment-updated.mdx) <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ChangeEvent.<b>EnvironmentDeleted</b></code>](/api/graphql/v0/types/objects/environment-deleted.mdx) <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ChangeEvent.<b>PackageCreated</b></code>](/api/graphql/v0/types/objects/package-created.mdx) <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ChangeEvent.<b>PackageUpdated</b></code>](/api/graphql/v0/types/objects/package-updated.mdx) <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ChangeEvent.<b>PackageDeleted</b></code>](/api/graphql/v0/types/objects/package-deleted.mdx) <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+
+
+
+
+### Returned By
+
+[`changefeed`](/api/graphql/v0/operations/subscriptions/changefeed.mdx)  <Badge class="badge badge--secondary badge--relation" text="subscription"/>

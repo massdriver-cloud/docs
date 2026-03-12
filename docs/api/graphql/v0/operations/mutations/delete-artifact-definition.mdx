@@ -1,0 +1,70 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: delete-artifact-definition
+title: deleteArtifactDefinition
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Delete an artifact definition. Requires administrator permissions and ensures the definition is not in use by any bundles or provisioned artifacts
+
+
+```graphql
+deleteArtifactDefinition(
+  organizationId: ID!
+  name: String!
+): ArtifactDefinitionPayload
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>deleteArtifactDefinition.<b>organizationId</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v0/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+The organization that owns this artifact definition
+
+
+#### [<code style={{ fontWeight: 'normal' }}>deleteArtifactDefinition.<b>name</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v0/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+The name of the artifact definition (e.g., 'my-org/aws-iam-role' or 'aws-iam-role' for short name)
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ArtifactDefinitionPayload</b></code>](/api/graphql/v0/types/objects/artifact-definition-payload.mdx) <Badge class="badge badge--secondary " text="object"/>

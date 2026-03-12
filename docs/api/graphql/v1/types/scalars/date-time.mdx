@@ -1,0 +1,64 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: date-time
+title: DateTime
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+The `DateTime` scalar type represents a date and time in the UTC
+timezone. The DateTime appears in a JSON response as an ISO8601 formatted
+string, including UTC timezone ("Z"). The parsed date and time string will
+be converted to UTC if there is an offset.
+
+
+```graphql
+scalar DateTime
+```
+
+
+
+
+
+
+
+
+### Member Of
+
+[`AccountViewer`](/api/graphql/v1/types/objects/account-viewer.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Deployment`](/api/graphql/v1/types/objects/deployment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`DeploymentLeaf`](/api/graphql/v1/types/objects/deployment-leaf.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Environment`](/api/graphql/v1/types/objects/environment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentLeaf`](/api/graphql/v1/types/objects/environment-leaf.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Package`](/api/graphql/v1/types/objects/package.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PackageLeaf`](/api/graphql/v1/types/objects/package-leaf.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Project`](/api/graphql/v1/types/objects/project.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ProjectLeaf`](/api/graphql/v1/types/objects/project-leaf.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ServiceAccountViewer`](/api/graphql/v1/types/objects/service-account-viewer.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

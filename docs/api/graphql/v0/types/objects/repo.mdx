@@ -1,0 +1,130 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: repo
+title: Repo
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+An IaC bundle repository
+
+
+```graphql
+type Repo {
+  id: ID!
+  name: String!
+  createdAt: DateTime!
+  deletable: Boolean!
+  releaseChannels: [ReleaseChannel]
+  releases(
+    strategy: ReleaseStrategy
+    sort: ReleasesSort
+    cursor: Cursor
+  ): ReleasesPage
+  activePackages: Int
+  lastMonthsCost: Float
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>Repo.<b>id</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v0/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Unique identifier
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Repo.<b>name</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v0/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Name of the repository
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Repo.<b>createdAt</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v0/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+When the repository was created
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Repo.<b>deletable</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/api/graphql/v0/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Whether the repository can be deleted
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Repo.<b>releaseChannels</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ReleaseChannel]</b></code>](/api/graphql/v0/types/objects/release-channel.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+Distribution channels for artifact releases
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Repo.<b>releases</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ReleasesPage</b></code>](/api/graphql/v0/types/objects/releases-page.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Paginated releases for this repository.
+
+Returns releases based on the selected release strategy:
+- STABLE (default): Only strict semantic version releases (e.g., 1.0.0, 2.1.3)
+- DEVELOPMENT: All releases including pre-release versions (e.g., 2.0.0-dev.20231201T120000Z)
+
+Defaulted sorted by "latest" stable version descending, not chronologically.
+##### [<code style={{ fontWeight: 'normal' }}>Repo.releases.<b>strategy</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ReleaseStrategy</b></code>](/api/graphql/v0/types/enums/release-strategy.mdx) <Badge class="badge badge--secondary " text="enum"/> 
+Release channel strategy selector. Defaults to STABLE.
+- STABLE: Returns only production-ready strict semver releases
+- DEVELOPMENT: Returns all releases (stable + pre-release) for development/testing
+
+
+##### [<code style={{ fontWeight: 'normal' }}>Repo.releases.<b>sort</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ReleasesSort</b></code>](/api/graphql/v0/types/inputs/releases-sort.mdx) <Badge class="badge badge--secondary " text="input"/> 
+Sort by version or creation date. Defaults to version descending.
+
+
+##### [<code style={{ fontWeight: 'normal' }}>Repo.releases.<b>cursor</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v0/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> 
+Pagination cursor with limit and next/previous tokens
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Repo.<b>activePackages</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/api/graphql/v0/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+Count of active packages deployed from this repository
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Repo.<b>lastMonthsCost</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/api/graphql/v0/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+Total cost for the last month across all packages
+
+
+
+
+
+
+### Returned By
+
+[`repo`](/api/graphql/v0/operations/queries/repo.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+
+### Member Of
+
+[`Manifest`](/api/graphql/v0/types/objects/manifest.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ReposPage`](/api/graphql/v0/types/objects/repos-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

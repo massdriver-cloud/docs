@@ -1,0 +1,79 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: integration-activation-payload
+title: IntegrationActivationPayload
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+No description
+
+
+```graphql
+type IntegrationActivationPayload {
+  successful: Boolean!
+  messages: [ValidationMessage]
+  result: IntegrationActivation
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationActivationPayload.<b>successful</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/api/graphql/v0/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Indicates if the mutation completed successfully or not.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationActivationPayload.<b>messages</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ValidationMessage]</b></code>](/api/graphql/v0/types/objects/validation-message.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+A list of failed validations. May be blank or null if mutation succeeded.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationActivationPayload.<b>result</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IntegrationActivation</b></code>](/api/graphql/v0/types/objects/integration-activation.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The object created/updated/deleted by the mutation. May be null if mutation failed.
+
+
+
+
+
+
+### Returned By
+
+[`createIntegration`](/api/graphql/v0/operations/mutations/create-integration.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`enableIntegration`](/api/graphql/v0/operations/mutations/enable-integration.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

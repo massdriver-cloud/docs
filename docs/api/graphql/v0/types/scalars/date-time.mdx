@@ -1,0 +1,64 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: date-time
+title: DateTime
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+The `DateTime` scalar type represents a date and time in the UTC
+timezone. The DateTime appears in a JSON response as an ISO8601 formatted
+string, including UTC timezone ("Z"). The parsed date and time string will
+be converted to UTC if there is an offset.
+
+
+```graphql
+scalar DateTime
+```
+
+
+
+
+
+
+
+
+### Member Of
+
+[`Account`](/api/graphql/v0/types/objects/account.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AccountIdentity`](/api/graphql/v0/types/objects/account-identity.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Artifact`](/api/graphql/v0/types/objects/artifact.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ArtifactDefinition`](/api/graphql/v0/types/objects/artifact-definition.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Avatar`](/api/graphql/v0/types/objects/avatar.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Bundle`](/api/graphql/v0/types/objects/bundle.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`BundleAlertSummary`](/api/graphql/v0/types/objects/bundle-alert-summary.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`BundleDeploymentSummary`](/api/graphql/v0/types/objects/bundle-deployment-summary.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`BundlePackageSummary`](/api/graphql/v0/types/objects/bundle-package-summary.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Connection`](/api/graphql/v0/types/objects/connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Deployment`](/api/graphql/v0/types/objects/deployment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`DeploymentLogStreamLogMetadata`](/api/graphql/v0/types/objects/deployment-log-stream-log-metadata.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Environment`](/api/graphql/v0/types/objects/environment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentConnection`](/api/graphql/v0/types/objects/environment-connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Group`](/api/graphql/v0/types/objects/group.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`IntegrationActivation`](/api/graphql/v0/types/objects/integration-activation.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`IntegrationConfig`](/api/graphql/v0/types/objects/integration-config.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Link`](/api/graphql/v0/types/objects/link.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Manifest`](/api/graphql/v0/types/objects/manifest.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`OciRepo`](/api/graphql/v0/types/objects/oci-repo.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`OciTag`](/api/graphql/v0/types/objects/oci-tag.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Organization`](/api/graphql/v0/types/objects/organization.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`OrganizationBilling`](/api/graphql/v0/types/objects/organization-billing.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Package`](/api/graphql/v0/types/objects/package.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PackageAlarmState`](/api/graphql/v0/types/objects/package-alarm-state.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Project`](/api/graphql/v0/types/objects/project.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`RecentAlarm`](/api/graphql/v0/types/objects/recent-alarm.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`RecentDeployment`](/api/graphql/v0/types/objects/recent-deployment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Release`](/api/graphql/v0/types/objects/release.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Repo`](/api/graphql/v0/types/objects/repo.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`SecretMetadata`](/api/graphql/v0/types/objects/secret-metadata.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

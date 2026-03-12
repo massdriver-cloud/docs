@@ -1,0 +1,109 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: node-context
+title: NodeContext
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Contextual information about a node in the diagram
+
+
+```graphql
+type NodeContext {
+  manifestId: ID!
+  packageId: ID
+  packageSlug: String
+  packageVersion: VersionConstraint!
+  name: String!
+  icon: String
+  type: String!
+  artifactHandles: [Handle]!
+  connectionHandles: [Handle]!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>NodeContext.<b>manifestId</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v0/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+ID of the manifest
+
+
+#### [<code style={{ fontWeight: 'normal' }}>NodeContext.<b>packageId</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID</b></code>](/api/graphql/v0/types/scalars/id.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+ID of the package
+
+
+#### [<code style={{ fontWeight: 'normal' }}>NodeContext.<b>packageSlug</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v0/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+Slug of the package
+
+
+#### [<code style={{ fontWeight: 'normal' }}>NodeContext.<b>packageVersion</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>VersionConstraint!</b></code>](/api/graphql/v0/types/scalars/version-constraint.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Version constraint of the package
+
+
+#### [<code style={{ fontWeight: 'normal' }}>NodeContext.<b>name</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v0/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Manifest Name
+
+
+#### [<code style={{ fontWeight: 'normal' }}>NodeContext.<b>icon</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v0/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+Icon of the package
+
+
+#### [<code style={{ fontWeight: 'normal' }}>NodeContext.<b>type</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v0/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Type of the node (organization/bundle)
+
+
+#### [<code style={{ fontWeight: 'normal' }}>NodeContext.<b>artifactHandles</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Handle]!</b></code>](/api/graphql/v0/types/objects/handle.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> 
+Handles for artifact connections
+
+
+#### [<code style={{ fontWeight: 'normal' }}>NodeContext.<b>connectionHandles</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Handle]!</b></code>](/api/graphql/v0/types/objects/handle.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> 
+Handles for resource connections
+
+
+
+
+
+
+### Returned By
+
+[`nodeContextCreated`](/api/graphql/v0/operations/subscriptions/node-context-created.mdx)  <Badge class="badge badge--secondary badge--relation" text="subscription"/><Bullet />[`nodeContextDeleted`](/api/graphql/v0/operations/subscriptions/node-context-deleted.mdx)  <Badge class="badge badge--secondary badge--relation" text="subscription"/><Bullet />[`nodeContexts`](/api/graphql/v0/operations/queries/node-contexts.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

@@ -1,0 +1,79 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: deployment-action
+title: DeploymentAction
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+The type of infrastructure operation.
+
+
+```graphql
+enum DeploymentAction {
+  PROVISION
+  DECOMMISSION
+  PLAN
+}
+```
+
+
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentAction.<b>PROVISION</b></code>](#)  
+Create or update infrastructure
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentAction.<b>DECOMMISSION</b></code>](#)  
+Tear down infrastructure
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentAction.<b>PLAN</b></code>](#)  
+Preview changes without applying them
+
+
+
+
+
+
+### Member Of
+
+[`Deployment`](/api/graphql/v1/types/objects/deployment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`DeploymentLeaf`](/api/graphql/v1/types/objects/deployment-leaf.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`DeploymentsFilter`](/api/graphql/v1/types/inputs/deployments-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

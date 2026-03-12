@@ -1,0 +1,79 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: artifact-property-summary
+title: ArtifactPropertySummary
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A flattened artifact payload property summary with display name, path, and value. Sensitive fields are masked as [SENSITIVE].
+
+
+```graphql
+type ArtifactPropertySummary {
+  name: String!
+  path: String!
+  value: JSON
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ArtifactPropertySummary.<b>name</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v0/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Display name for the property summary (e.g., 'Database: Hostname', 'Database: Port')
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ArtifactPropertySummary.<b>path</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v0/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Full path to the value in the artifact payload (e.g., '.database.hostname', '.database.port')
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ArtifactPropertySummary.<b>value</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>JSON</b></code>](/api/graphql/v0/types/scalars/json.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+The scalar value. Sensitive fields (marked with $md.sensitive: true) are masked as '[SENSITIVE]'
+
+
+
+
+
+
+### Member Of
+
+[`Package`](/api/graphql/v0/types/objects/package.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

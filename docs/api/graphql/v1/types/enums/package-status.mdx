@@ -1,0 +1,89 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: package-status
+title: PackageStatus
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+The current state of a package.
+
+
+```graphql
+enum PackageStatus {
+  INITIALIZED
+  PROVISIONED
+  DECOMMISSIONED
+  FAILED
+  EXTERNAL
+}
+```
+
+
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>PackageStatus.<b>INITIALIZED</b></code>](#)  
+Created but not yet deployed
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PackageStatus.<b>PROVISIONED</b></code>](#)  
+Successfully deployed and running
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PackageStatus.<b>DECOMMISSIONED</b></code>](#)  
+Infrastructure has been torn down
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PackageStatus.<b>FAILED</b></code>](#)  
+Deployment failed - check the deployment logs
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PackageStatus.<b>EXTERNAL</b></code>](#)  
+Imported infrastructure managed outside Massdriver
+
+
+
+
+
+
+### Member Of
+
+[`Package`](/api/graphql/v1/types/objects/package.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PackageLeaf`](/api/graphql/v1/types/objects/package-leaf.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PackagesFilter`](/api/graphql/v1/types/inputs/packages-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

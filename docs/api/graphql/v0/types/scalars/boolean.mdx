@@ -1,0 +1,65 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: boolean
+title: Boolean
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+The `Boolean` scalar type represents `true` or `false`.
+
+
+```graphql
+scalar Boolean
+```
+
+
+
+
+
+
+
+
+### Returned By
+
+[`removeAccountAvatar`](/api/graphql/v0/operations/mutations/remove-account-avatar.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
+
+### Member Of
+
+[`AccountMemberPayload`](/api/graphql/v0/types/objects/account-member-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AccountMembershipPayload`](/api/graphql/v0/types/objects/account-membership-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ArtifactDefinitionFilters`](/api/graphql/v0/types/inputs/artifact-definition-filters.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`ArtifactDefinitionPayload`](/api/graphql/v0/types/objects/artifact-definition-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ArtifactDeletionLifecycle`](/api/graphql/v0/types/objects/artifact-deletion-lifecycle.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ArtifactPayload`](/api/graphql/v0/types/objects/artifact-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ArtifactsFilters`](/api/graphql/v0/types/inputs/artifacts-filters.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`AvatarPayload`](/api/graphql/v0/types/objects/avatar-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`BundleDeletionLifecycle`](/api/graphql/v0/types/objects/bundle-deletion-lifecycle.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`BundlePayload`](/api/graphql/v0/types/objects/bundle-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`copyPackage`](/api/graphql/v0/operations/mutations/copy-package.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`deleteEnvironment`](/api/graphql/v0/operations/mutations/delete-environment.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`DeploymentPayload`](/api/graphql/v0/types/objects/deployment-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentConnectionPayload`](/api/graphql/v0/types/objects/environment-connection-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentDeletionLifecycle`](/api/graphql/v0/types/objects/environment-deletion-lifecycle.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentPayload`](/api/graphql/v0/types/objects/environment-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ForkEnvironmentInput`](/api/graphql/v0/types/inputs/fork-environment-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`GroupPayload`](/api/graphql/v0/types/objects/group-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Handle`](/api/graphql/v0/types/objects/handle.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`include`](/api/graphql/v0/operations/directives/include.mdx)  <Badge class="badge badge--secondary badge--relation" text="directive"/><Bullet />[`IntegrationActivationPayload`](/api/graphql/v0/types/objects/integration-activation-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`IntegrationPayload`](/api/graphql/v0/types/objects/integration-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`InvitationPayload`](/api/graphql/v0/types/objects/invitation-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Link`](/api/graphql/v0/types/objects/link.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`LinkPayload`](/api/graphql/v0/types/objects/link-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ManifestDeletionLifecycle`](/api/graphql/v0/types/objects/manifest-deletion-lifecycle.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ManifestPayload`](/api/graphql/v0/types/objects/manifest-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`MergeEnvironmentInput`](/api/graphql/v0/types/inputs/merge-environment-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`Organization`](/api/graphql/v0/types/objects/organization.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`OrganizationPayload`](/api/graphql/v0/types/objects/organization-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PackageDeletionLifecycle`](/api/graphql/v0/types/objects/package-deletion-lifecycle.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PackagePayload`](/api/graphql/v0/types/objects/package-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ProjectDeletionLifecycle`](/api/graphql/v0/types/objects/project-deletion-lifecycle.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ProjectPayload`](/api/graphql/v0/types/objects/project-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`RemoteReferencePayload`](/api/graphql/v0/types/objects/remote-reference-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Repo`](/api/graphql/v0/types/objects/repo.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`resetPackage`](/api/graphql/v0/operations/mutations/reset-package.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`SecretField`](/api/graphql/v0/types/objects/secret-field.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`SecretMetadataPayload`](/api/graphql/v0/types/objects/secret-metadata-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ServerFeatures`](/api/graphql/v0/types/objects/server-features.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ServiceAccount`](/api/graphql/v0/types/objects/service-account.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ServiceAccountMember`](/api/graphql/v0/types/objects/service-account-member.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ServiceAccountMemberPayload`](/api/graphql/v0/types/objects/service-account-member-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ServiceAccountPayload`](/api/graphql/v0/types/objects/service-account-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ServiceAccountWithSecret`](/api/graphql/v0/types/objects/service-account-with-secret.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ServiceAccountWithSecretPayload`](/api/graphql/v0/types/objects/service-account-with-secret-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`skip`](/api/graphql/v0/operations/directives/skip.mdx)  <Badge class="badge badge--secondary badge--relation" text="directive"/><Bullet />[`UnsettableResult`](/api/graphql/v0/types/objects/unsettable-result.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

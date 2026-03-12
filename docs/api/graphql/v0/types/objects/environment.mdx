@@ -1,0 +1,138 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: environment
+title: Environment
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+No description
+
+
+```graphql
+type Environment {
+  id: ID
+  name: String
+  slug: String
+  description: String
+  parent: Environment
+  deletable: EnvironmentDeletionLifecycle!
+  createdAt: DateTime
+  updatedAt: DateTime
+  manifests: [Manifest]
+  project: Project
+  packages: [Package]
+  connections: [EnvironmentConnection]
+  defaultConnections: [DefaultEnvironmentConnection]
+  cost: Cost!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>id</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID</b></code>](/api/graphql/v0/types/scalars/id.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>name</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v0/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>slug</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v0/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>description</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v0/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>parent</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Environment</b></code>](/api/graphql/v0/types/objects/environment.mdx) <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>deletable</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EnvironmentDeletionLifecycle!</b></code>](/api/graphql/v0/types/objects/environment-deletion-lifecycle.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>createdAt</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/api/graphql/v0/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>updatedAt</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/api/graphql/v0/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>manifests</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Manifest]</b></code>](/api/graphql/v0/types/objects/manifest.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+Manifests for this environment's package
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>project</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Project</b></code>](/api/graphql/v0/types/objects/project.mdx) <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>packages</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Package]</b></code>](/api/graphql/v0/types/objects/package.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>connections</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[EnvironmentConnection]</b></code>](/api/graphql/v0/types/objects/environment-connection.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>defaultConnections</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[DefaultEnvironmentConnection]</b></code>](/api/graphql/v0/types/objects/default-environment-connection.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>cost</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cost!</b></code>](/api/graphql/v0/types/objects/cost.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> 
+Cloud provider costs for this environment
+
+
+
+
+
+
+### Returned By
+
+[`environment`](/api/graphql/v0/operations/queries/environment.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+
+### Member Of
+
+[`Environment`](/api/graphql/v0/types/objects/environment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentConnection`](/api/graphql/v0/types/objects/environment-connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentCreated`](/api/graphql/v0/types/objects/environment-created.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentDeleted`](/api/graphql/v0/types/objects/environment-deleted.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentPayload`](/api/graphql/v0/types/objects/environment-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentUpdated`](/api/graphql/v0/types/objects/environment-updated.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Package`](/api/graphql/v0/types/objects/package.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Project`](/api/graphql/v0/types/objects/project.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ProjectDeletionLifecyclePackageError`](/api/graphql/v0/types/objects/project-deletion-lifecycle-package-error.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

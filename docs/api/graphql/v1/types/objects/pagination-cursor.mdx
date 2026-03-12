@@ -1,0 +1,74 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: pagination-cursor
+title: PaginationCursor
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+No description
+
+
+```graphql
+type PaginationCursor {
+  next: String
+  previous: String
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PaginationCursor.<b>next</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+Cursor to the next page
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PaginationCursor.<b>previous</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+Cursor to the previous page
+
+
+
+
+
+
+### Member Of
+
+[`DeploymentsPage`](/api/graphql/v1/types/objects/deployments-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentsPage`](/api/graphql/v1/types/objects/environments-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PackageParamsDimensionsPage`](/api/graphql/v1/types/objects/package-params-dimensions-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PackagesPage`](/api/graphql/v1/types/objects/packages-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ProjectsPage`](/api/graphql/v1/types/objects/projects-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ViewerOrganizationsPage`](/api/graphql/v1/types/objects/viewer-organizations-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

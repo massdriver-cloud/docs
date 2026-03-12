@@ -1,0 +1,75 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: projects
+title: projects
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+List all projects you have access to. Returns a paginated list sorted by name.
+
+
+```graphql
+projects(
+  organizationId: ID!
+  sort: ProjectsSort
+  cursor: Cursor
+): ProjectsPage
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>projects.<b>organizationId</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+Your organization ID
+
+
+#### [<code style={{ fontWeight: 'normal' }}>projects.<b>sort</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ProjectsSort</b></code>](/api/graphql/v1/types/inputs/projects-sort.mdx) <Badge class="badge badge--secondary " text="input"/> 
+How to sort results
+
+
+#### [<code style={{ fontWeight: 'normal' }}>projects.<b>cursor</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> 
+Pagination cursor from a previous response
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ProjectsPage</b></code>](/api/graphql/v1/types/objects/projects-page.mdx) <Badge class="badge badge--secondary " text="object"/>
