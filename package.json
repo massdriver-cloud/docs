@@ -22,6 +22,7 @@
     "react-dom": "^16.8.4"
   },
   "resolutions": {
+    "cheerio": "1.0.0-rc.12",
     "cytoscape": "3.23.0",
     "mermaid": "^9.1.7"
   },
