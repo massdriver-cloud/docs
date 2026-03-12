@@ -5,6 +5,7 @@
  */
 const fs = require('fs');
 const path = require('path');
+const { parse, visit } = require('graphql');
 
 const mutationsDir = path.join(__dirname, '../docs/api/graphql/v1/operations/mutations');
 const schemaPath = path.join(__dirname, '../schema/v1/schema.graphql');
@@ -12,18 +13,36 @@ const schemaPath = path.join(__dirname, '../schema/v1/schema.graphql');
 // Base URL for schema endpoints
 const BASE_URL = process.env.SCHEMA_BASE_URL || 'http://localhost:4000';
 
-// Parse schema to find mutations with @formSchema directive
+// Parse schema using graphql-js to find mutations with @formSchema directive
 const schemaContent = fs.readFileSync(schemaPath, 'utf8');
-const formSchemaRegex = /@formSchema\(\s*name:\s*"([^"]+)",\s*schema:\s*"([^"]+)",\s*ui_schema:\s*"([^"]+)"\s*\)/g;
+const ast = parse(schemaContent);
 
 const formSchemaMutations = {};
-let match;
-while ((match = formSchemaRegex.exec(schemaContent)) !== null) {
-  formSchemaMutations[match[1]] = {
-    schema: match[2].replace(/\\\//g, '/'),
-    uiSchema: match[3].replace(/\\\//g, '/')
-  };
-}
+
+visit(ast, {
+  FieldDefinition(node) {
+    if (!node.directives) return;
+
+    const formSchemaDirective = node.directives.find(
+      d => d.name.value === 'formSchema'
+    );
+
+    if (!formSchemaDirective) return;
+
+    const getArgValue = (argName) => {
+      const arg = formSchemaDirective.arguments.find(a => a.name.value === argName);
+      return arg?.value?.value;
+    };
+
+    const name = getArgValue('name');
+    const schema = getArgValue('schema');
+    const uiSchema = getArgValue('ui_schema');
+
+    if (name && schema && uiSchema) {
+      formSchemaMutations[name] = { schema, uiSchema };
+    }
+  }
+});
 
 console.log(`Found ${Object.keys(formSchemaMutations).length} mutations with @formSchema directive`);
 
