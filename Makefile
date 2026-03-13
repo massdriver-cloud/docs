@@ -16,7 +16,7 @@ sync-gql-v0: # Generate v0 GraphQL docs from remote schema
 sync-gql-v1: # Generate v1 GraphQL docs from remote schema
 	rm -rf ./docs/api/graphql/v1/{operations,types}
 	curl -s https://api.massdriver.cloud/graphql/v1/schema.graphql -o ./schema/v1/schema.graphql
-	npx docusaurus graphql-to-doc:graphql-v1
+	yarn gen:graphql-v1
 
 .PHONY: yarn
 yarn:

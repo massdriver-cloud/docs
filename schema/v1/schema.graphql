@@ -1,16 +1,19 @@
-directive @formSchema(
-  "Schema name matching the mutation (e.g., createProject)"
-  name: String!
-  "URL to the JSON Schema for validation"
-  schema: String!
-  "URL to the UI Schema for form layout"
-  ui_schema: String!
-) on FIELD_DEFINITION
-
 schema {
   mutation: RootMutationType
   query: RootQueryType
 }
+
+"Links a mutation to its JSON Schema and UI Schema for form generation"
+directive @inputs(
+  "URL to the UI Schema"
+  ui_schema: String!
+
+  "URL to the JSON Schema"
+  schema: String!
+
+  "Schema name matching the mutation (e.g., createProject)"
+  name: String!
+) on FIELD_DEFINITION
 
 type RootQueryType {
   "List all projects you have access to. Returns a paginated list sorted by name."
@@ -139,7 +142,7 @@ type RootMutationType {
 
     "Project details"
     input: CreateProjectInput!
-  ): ProjectPayload @formSchema(name: "createProject", schema: "\/graphql\/v1\/schemas\/createProject.json", ui_schema: "\/graphql\/v1\/schemas\/createProject.ui.json")
+  ): ProjectPayload @inputs(name: "createProject", schema: "\/graphql\/v1\/schemas\/createProject.json", ui_schema: "\/graphql\/v1\/schemas\/createProject.ui.json")
 
   "Update a project's name or description."
   updateProject(
@@ -151,7 +154,7 @@ type RootMutationType {
 
     "Fields to update"
     input: UpdateProjectInput!
-  ): ProjectPayload @formSchema(name: "updateProject", schema: "\/graphql\/v1\/schemas\/updateProject.json", ui_schema: "\/graphql\/v1\/schemas\/updateProject.ui.json")
+  ): ProjectPayload @inputs(name: "updateProject", schema: "\/graphql\/v1\/schemas\/updateProject.json", ui_schema: "\/graphql\/v1\/schemas\/updateProject.ui.json")
 
   "Delete a project. You must delete all environments first."
   deleteProject(
@@ -172,7 +175,7 @@ type RootMutationType {
 
     "Environment details"
     input: CreateEnvironmentInput!
-  ): EnvironmentPayload @formSchema(name: "createEnvironment", schema: "\/graphql\/v1\/schemas\/createEnvironment.json", ui_schema: "\/graphql\/v1\/schemas\/createEnvironment.ui.json")
+  ): EnvironmentPayload @inputs(name: "createEnvironment", schema: "\/graphql\/v1\/schemas\/createEnvironment.json", ui_schema: "\/graphql\/v1\/schemas\/createEnvironment.ui.json")
 
   "Update an environment's name or description."
   updateEnvironment(
@@ -184,7 +187,7 @@ type RootMutationType {
 
     "Fields to update"
     input: UpdateEnvironmentInput!
-  ): EnvironmentPayload @formSchema(name: "updateEnvironment", schema: "\/graphql\/v1\/schemas\/updateEnvironment.json", ui_schema: "\/graphql\/v1\/schemas\/updateEnvironment.ui.json")
+  ): EnvironmentPayload @inputs(name: "updateEnvironment", schema: "\/graphql\/v1\/schemas\/updateEnvironment.json", ui_schema: "\/graphql\/v1\/schemas\/updateEnvironment.ui.json")
 
   "Delete an environment. You must decommission all packages first."
   deleteEnvironment(

@@ -10,8 +10,8 @@ const { parse, visit } = require('graphql');
 const mutationsDir = path.join(__dirname, '../docs/api/graphql/v1/operations/mutations');
 const schemaPath = path.join(__dirname, '../schema/v1/schema.graphql');
 
-// Base URL for schema endpoints
-const BASE_URL = process.env.SCHEMA_BASE_URL || 'http://localhost:4000';
+// Base URL for schema endpoints (override with SCHEMA_BASE_URL for local dev)
+const BASE_URL = process.env.SCHEMA_BASE_URL || 'https://api.massdriver.cloud';
 
 // Parse schema using graphql-js to find mutations with @formSchema directive
 const schemaContent = fs.readFileSync(schemaPath, 'utf8');
@@ -24,7 +24,7 @@ visit(ast, {
     if (!node.directives) return;
 
     const formSchemaDirective = node.directives.find(
-      d => d.name.value === 'formSchema'
+      d => d.name.value === 'inputs'
     );
 
     if (!formSchemaDirective) return;

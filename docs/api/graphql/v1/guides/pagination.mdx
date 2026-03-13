@@ -1,0 +1,148 @@
+---
+id: pagination
+title: Pagination
+sidebar_label: Pagination
+---
+
+# Pagination
+
+All list queries in the Massdriver GraphQL API use cursor-based pagination for efficient, stable traversal of large datasets.
+
+## Cursor Input
+
+List queries accept an optional `cursor` argument:
+
+```graphql
+input Cursor {
+  limit: Int       # Max items per page (default: 25, max: 100)
+  next: String     # Cursor for next page
+  previous: String # Cursor for previous page
+}
+```
+
+## Paginated Response
+
+List queries return a page object with items and cursor information:
+
+```graphql
+type ProjectsPage {
+  items: [ProjectLeaf]      # The items for this page
+  cursor: PaginationCursor! # Cursors for navigation
+}
+
+type PaginationCursor {
+  next: String     # Cursor for next page (null if last page)
+  previous: String # Cursor for previous page (null if first page)
+}
+```
+
+## Basic Example
+
+### First Page
+
+```graphql
+query {
+  projects(organizationId: "your-org-id", cursor: { limit: 10 }) {
+    items {
+      id
+      name
+    }
+    cursor {
+      next
+      previous
+    }
+  }
+}
+```
+
+### Next Page
+
+Use the `next` cursor from the previous response:
+
+```graphql
+query {
+  projects(
+    organizationId: "your-org-id"
+    cursor: { limit: 10, next: "eyJpZCI6..." }
+  ) {
+    items {
+      id
+      name
+    }
+    cursor {
+      next
+      previous
+    }
+  }
+}
+```
+
+## Sorting
+
+List queries also accept a `sort` argument for ordering results:
+
+```graphql
+enum SortOrder {
+  ASC  # Ascending (A-Z, oldest first)
+  DESC # Descending (Z-A, newest first)
+}
+
+input ProjectsSort {
+  field: ProjectsSortField!
+  order: SortOrder!
+}
+
+enum ProjectsSortField {
+  NAME       # Sort alphabetically by name
+  CREATED_AT # Sort by creation date
+}
+```
+
+### Example with Sorting
+
+```graphql
+query {
+  projects(
+    organizationId: "your-org-id"
+    sort: { field: CREATED_AT, order: DESC }
+    cursor: { limit: 25 }
+  ) {
+    items {
+      id
+      name
+    }
+    cursor {
+      next
+    }
+  }
+}
+```
+
+## Pagination Best Practices
+
+1. **Use reasonable page sizes** - Default is 25, max is 100. Smaller pages are faster.
+
+2. **Don't store cursors long-term** - Cursors are meant for immediate navigation, not persistent bookmarks.
+
+3. **Handle empty pages** - When `cursor.next` is `null`, you've reached the last page.
+
+4. **Combine with sorting** - Always specify sort order for predictable pagination.
+
+```graphql
+query ListAllProjects($orgId: ID!, $cursor: String) {
+  projects(
+    organizationId: $orgId
+    sort: { field: NAME, order: ASC }
+    cursor: { limit: 50, next: $cursor }
+  ) {
+    items {
+      id
+      name
+      description
+    }
+    cursor {
+      next
+    }
+  }
+}
+```

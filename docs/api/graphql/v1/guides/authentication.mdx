@@ -1,0 +1,114 @@
+---
+id: authentication
+title: Authentication
+sidebar_label: Authentication
+---
+
+# Authentication
+
+The Massdriver GraphQL API uses API keys for authentication. All requests must include a valid API key in the `Authorization` header.
+
+## Getting an API Key
+
+1. Log in to the [Massdriver Console](https://app.massdriver.cloud)
+2. Navigate to **Organization Settings** → **Service Accounts**
+3. Create a new service account and copy the API key
+
+## Making Authenticated Requests
+
+Include your API key in the `Authorization` header as a Bearer token:
+
+```bash
+curl -X POST https://api.massdriver.cloud/graphql/v1 \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{"query": "{ viewer { ... on AccountViewer { email } } }"}'
+```
+
+## GraphQL Clients
+
+### JavaScript/TypeScript
+
+```typescript
+import { GraphQLClient } from 'graphql-request';
+
+const client = new GraphQLClient('https://api.massdriver.cloud/graphql/v1', {
+  headers: {
+    Authorization: `Bearer ${process.env.MASSDRIVER_API_KEY}`,
+  },
+});
+
+const data = await client.request(query, variables);
+```
+
+### Python
+
+```python
+import requests
+
+headers = {
+    "Content-Type": "application/json",
+    "Authorization": f"Bearer {api_key}"
+}
+
+response = requests.post(
+    "https://api.massdriver.cloud/graphql/v1",
+    json={"query": query, "variables": variables},
+    headers=headers
+)
+```
+
+## Error Responses
+
+### Unauthenticated
+
+If no API key is provided or the key is invalid:
+
+```json
+{
+  "errors": [{
+    "message": "Authentication required",
+    "code": "UNAUTHENTICATED"
+  }]
+}
+```
+
+### Forbidden
+
+If the API key doesn't have permission for the requested resource:
+
+```json
+{
+  "errors": [{
+    "message": "You do not have permission to view this environment",
+    "code": "FORBIDDEN"
+  }]
+}
+```
+
+## Viewer Query
+
+Use the `viewer` query to verify your authentication and see the current user or service account:
+
+```graphql
+query {
+  viewer {
+    ... on AccountViewer {
+      email
+      organizations {
+        items {
+          id
+          name
+        }
+      }
+    }
+    ... on ServiceAccountViewer {
+      name
+      organization {
+        id
+        name
+      }
+    }
+  }
+}
+```

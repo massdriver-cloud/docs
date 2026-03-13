@@ -1,5 +1,7 @@
 label: Mutations
-position: 1
-link: null
+position: 5
+link: 
+  type: generated-index
+  title: 'Mutations overview'
 collapsible: true
 collapsed: true

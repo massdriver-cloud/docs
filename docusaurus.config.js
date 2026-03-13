@@ -172,7 +172,7 @@ module.exports = {
         },
         diffMethod: "SCHEMA-HASH",
         customDirective: {
-          formSchema: formSchemaDirective,
+          inputs: formSchemaDirective,
         },
       },
     ],    

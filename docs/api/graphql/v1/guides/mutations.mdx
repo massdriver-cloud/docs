@@ -1,0 +1,186 @@
+---
+id: mutations
+title: Mutations
+sidebar_label: Mutations
+---
+
+# Mutations
+
+Mutations in the Massdriver GraphQL API follow consistent patterns for inputs and responses.
+
+## Input Object Pattern
+
+All mutable fields are wrapped in a typed `input` argument:
+
+```graphql
+mutation {
+  createEnvironment(
+    organizationId: "acme"
+    projectId: "myproj"
+    input: {
+      id: "staging"
+      name: "Staging Environment"
+      description: "For QA and testing"
+    }
+  ) {
+    successful
+    result {
+      id
+      name
+    }
+    messages {
+      field
+      message
+    }
+  }
+}
+```
+
+## Payload Response Pattern
+
+All mutations return a payload object with:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `successful` | `Boolean!` | Whether the mutation succeeded |
+| `result` | Resource type | The created/updated resource (null on failure) |
+| `messages` | `[ValidationMessage]` | Validation errors (empty on success) |
+
+## Identifier Pattern
+
+When creating resources, you provide a short `id` in the input:
+
+```graphql
+input: {
+  id: "staging"        # Short identifier you choose
+  name: "Staging"
+}
+```
+
+The API returns a full identifier that includes parent context:
+
+```json
+{
+  "result": {
+    "id": "myproj-staging"  # Full identifier
+  }
+}
+```
+
+Use the full identifier for subsequent queries and mutations:
+
+```graphql
+query {
+  environment(organizationId: "acme", id: "myproj-staging") {
+    name
+  }
+}
+```
+
+## Common Mutations
+
+### Create Project
+
+```graphql
+mutation CreateProject($orgId: ID!, $input: CreateProjectInput!) {
+  createProject(organizationId: $orgId, input: $input) {
+    successful
+    result {
+      id
+      name
+      description
+    }
+    messages {
+      field
+      message
+    }
+  }
+}
+```
+
+Variables:
+```json
+{
+  "orgId": "your-org-id",
+  "input": {
+    "id": "ecommerce",
+    "name": "E-Commerce Platform",
+    "description": "Main e-commerce application"
+  }
+}
+```
+
+### Create Environment
+
+```graphql
+mutation CreateEnvironment(
+  $orgId: ID!
+  $projectId: ID!
+  $input: CreateEnvironmentInput!
+) {
+  createEnvironment(
+    organizationId: $orgId
+    projectId: $projectId
+    input: $input
+  ) {
+    successful
+    result {
+      id
+      name
+    }
+    messages {
+      field
+      message
+    }
+  }
+}
+```
+
+Variables:
+```json
+{
+  "orgId": "your-org-id",
+  "projectId": "ecommerce",
+  "input": {
+    "id": "prod",
+    "name": "Production",
+    "description": "Live production environment"
+  }
+}
+```
+
+### Update Project
+
+```graphql
+mutation UpdateProject($orgId: ID!, $id: ID!, $input: UpdateProjectInput!) {
+  updateProject(organizationId: $orgId, id: $id, input: $input) {
+    successful
+    result {
+      id
+      name
+      description
+    }
+    messages {
+      field
+      message
+    }
+  }
+}
+```
+
+### Delete Environment
+
+```graphql
+mutation DeleteEnvironment($orgId: ID!, $id: ID!) {
+  deleteEnvironment(organizationId: $orgId, id: $id) {
+    successful
+    messages {
+      message
+    }
+  }
+}
+```
+
+## Form Schemas
+
+Some mutations support dynamic form generation using JSON Schema. Look for the **form schema** badge on mutation documentation pages to find interactive form builders.
