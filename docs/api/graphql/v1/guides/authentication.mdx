@@ -6,23 +6,36 @@ sidebar_label: Authentication
 
 # Authentication
 
-The Massdriver GraphQL API uses API keys for authentication. All requests must include a valid API key in the `Authorization` header.
+The Massdriver GraphQL API uses service account tokens for authentication. All requests must include valid credentials in the `Authorization` header.
 
-## Getting an API Key
+## Getting a Service Account Token
 
 1. Log in to the [Massdriver Console](https://app.massdriver.cloud)
 2. Navigate to **Organization Settings** → **Service Accounts**
-3. Create a new service account and copy the API key
+3. Create a new service account and copy the token
+4. Note your **organization identifier** (slug) from the URL or settings
 
 ## Making Authenticated Requests
 
-Include your API key in the `Authorization` header as a Bearer token:
+Use HTTP Basic authentication with your organization identifier as the username and service account token as the password:
 
 ```bash
-curl -X POST https://api.massdriver.cloud/graphql/v1 \
+# Encode credentials: org_identifier:service_account_token
+CREDENTIALS=$(echo -n "your-org-id:your-service-account-token" | base64)
+
+curl -X POST https://api.massdriver.cloud/api/v1 \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_API_KEY" \
-  -d '{"query": "{ viewer { ... on AccountViewer { email } } }"}'
+  -H "Authorization: Basic $CREDENTIALS" \
+  -d '{"query": "{ viewer { ... on ServiceAccountViewer { name } } }"}'
+```
+
+### One-liner
+
+```bash
+curl -X POST https://api.massdriver.cloud/api/v1 \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Basic $(echo -n 'your-org-id:your-token' | base64)" \
+  -d '{"query": "{ server { mode version } }"}'
 ```
 
 ## GraphQL Clients
@@ -32,9 +45,13 @@ curl -X POST https://api.massdriver.cloud/graphql/v1 \
 ```typescript
 import { GraphQLClient } from 'graphql-request';
 
-const client = new GraphQLClient('https://api.massdriver.cloud/graphql/v1', {
+const orgId = process.env.MASSDRIVER_ORG_ID;
+const token = process.env.MASSDRIVER_API_TOKEN;
+const credentials = Buffer.from(`${orgId}:${token}`).toString('base64');
+
+const client = new GraphQLClient('https://api.massdriver.cloud/api/v1', {
   headers: {
-    Authorization: `Bearer ${process.env.MASSDRIVER_API_KEY}`,
+    Authorization: `Basic ${credentials}`,
   },
 });
 
@@ -45,14 +62,19 @@ const data = await client.request(query, variables);
 
 ```python
 import requests
+import base64
+
+org_id = "your-org-id"
+token = "your-service-account-token"
+credentials = base64.b64encode(f"{org_id}:{token}".encode()).decode()
 
 headers = {
     "Content-Type": "application/json",
-    "Authorization": f"Bearer {api_key}"
+    "Authorization": f"Basic {credentials}"
 }
 
 response = requests.post(
-    "https://api.massdriver.cloud/graphql/v1",
+    "https://api.massdriver.cloud/api/v1",
     json={"query": query, "variables": variables},
     headers=headers
 )
@@ -62,7 +84,7 @@ response = requests.post(
 
 ### Unauthenticated
 
-If no API key is provided or the key is invalid:
+If credentials are missing or invalid:
 
 ```json
 {
@@ -75,7 +97,7 @@ If no API key is provided or the key is invalid:
 
 ### Forbidden
 
-If the API key doesn't have permission for the requested resource:
+If the service account doesn't have permission for the requested resource:
 
 ```json
 {
@@ -88,20 +110,11 @@ If the API key doesn't have permission for the requested resource:
 
 ## Viewer Query
 
-Use the `viewer` query to verify your authentication and see the current user or service account:
+Use the `viewer` query to verify your authentication and see the current service account:
 
 ```graphql
 query {
   viewer {
-    ... on AccountViewer {
-      email
-      organizations {
-        items {
-          id
-          name
-        }
-      }
-    }
     ... on ServiceAccountViewer {
       name
       organization {
@@ -112,3 +125,7 @@ query {
   }
 }
 ```
+
+## Deprecated: x-md-api-key Header
+
+The `x-md-api-key` header is deprecated and will be removed in a future version. Migrate to Basic authentication as shown above.
