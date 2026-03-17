@@ -21,8 +21,8 @@ Each entity has two GraphQL types:
 |------------|---------|---------------------|
 | Getter (`project`) | Full type | ✅ Yes |
 | List (`projects`) | Leaf types | ❌ No (terminal) |
-| One-to-one from Full (e.g., `environment.project`) | Full type | ✅ Yes |
-| One-to-many from Full (e.g., `project.environments`) | Leaf types | ❌ No (terminal) |
+| Single resource from Full (e.g., `environment.project`) | Full type | ✅ Yes |
+| List of resources from Full (e.g., `project.environments`) | Leaf types | ❌ No (terminal) |
 | Any field from Leaf | Leaf type | ❌ No (terminal) |
 
 ## Examples
