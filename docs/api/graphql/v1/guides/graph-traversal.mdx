@@ -6,7 +6,7 @@ sidebar_label: Graph Traversal
 
 # Graph Traversal (Full vs Leaf Types)
 
-The Massdriver GraphQL API uses a **Rooted Traversal Pattern** to ensure efficient, bounded queries. This pattern prevents runaway queries and N+1 explosions while still allowing flexible graph exploration.
+The Massdriver GraphQL API uses a **Rooted Traversal Pattern** to ensure predictable, bounded queries while still allowing flexible graph exploration.
 
 ## Core Concept
 
@@ -71,13 +71,10 @@ query {
 ## Why This Pattern?
 
 ### Bounded Queries
-Lists are the expensive operation (N+1 risk). Making list items terminal prevents exponential query explosion.
+Making list items terminal keeps queries predictable and fast.
 
 ### Explicit Depth
-Users who need deeper traversal from a list item make a separate getter call for that specific resource.
-
-### Efficient Backend
-The backend can optimize queries knowing exactly how deep the graph will be traversed.
+When you need details from a list item, make a separate getter call for that specific resource.
 
 ## Practical Pattern
 
