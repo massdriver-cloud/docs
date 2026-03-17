@@ -1,4 +1,7 @@
 ---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
 id: packages-filter
 title: PackagesFilter
 ---
@@ -44,8 +47,8 @@ Filter which packages to return.
 
 ```graphql
 input PackagesFilter {
-  environmentIds: [ID!]
-  statuses: [PackageStatus!]
+  environmentId: IdFilter
+  status: PackageStatusFilter
 }
 ```
 
@@ -54,12 +57,12 @@ input PackagesFilter {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>PackagesFilter.<b>environmentIds</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ID!]</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> 
-Only return packages in these environments
+#### [<code style={{ fontWeight: 'normal' }}>PackagesFilter.<b>environmentId</b></code>](#environment-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IdFilter</b></code>](/api/graphql/v1/types/inputs/id-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#environment-id\} 
+Filter by environment ID
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PackagesFilter.<b>statuses</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[PackageStatus!]</b></code>](/api/graphql/v1/types/enums/package-status.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="enum"/> 
-Only return packages with these statuses
+#### [<code style={{ fontWeight: 'normal' }}>PackagesFilter.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PackageStatusFilter</b></code>](/api/graphql/v1/types/inputs/package-status-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#status\} 
+Filter by package status
 
 
 

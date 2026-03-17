@@ -20,3 +20,11 @@ repos:
         files: ^definitions/
         types: [json]
         args: ["--check-metaschema"]
+  - repo: local
+    hooks:
+      - id: sync-gql-and-gen
+        name: "Sync GraphQL schema and generate docs"
+        entry: bash -c 'make sync-gql-v1 && yarn gen'
+        language: system
+        pass_filenames: false
+        stages: [commit]

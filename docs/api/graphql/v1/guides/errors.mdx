@@ -1,0 +1,138 @@
+---
+id: errors
+title: Error Handling
+sidebar_label: Error Handling
+---
+
+# Error Handling
+
+The Massdriver GraphQL API returns structured errors with codes for programmatic handling.
+
+## Error Response Format
+
+```json
+{
+  "errors": [{
+    "message": "Environment not found",
+    "code": "NOT_FOUND",
+    "path": ["environment"],
+    "locations": [{"line": 2, "column": 3}]
+  }]
+}
+```
+
+## Standard Error Codes
+
+| Code | Description | Example |
+|------|-------------|---------|
+| `NOT_FOUND` | Resource doesn't exist | Project with given ID not found |
+| `FORBIDDEN` | User lacks permission | Cannot delete this environment |
+| `UNAUTHENTICATED` | No valid API key provided | Missing Authorization header |
+
+## Handling Errors
+
+### JavaScript/TypeScript
+
+```typescript
+try {
+  const data = await client.request(query, variables);
+} catch (error) {
+  if (error.response?.errors) {
+    for (const err of error.response.errors) {
+      switch (err.code) {
+        case 'NOT_FOUND':
+          console.log(`Resource not found: ${err.message}`);
+          break;
+        case 'FORBIDDEN':
+          console.log(`Permission denied: ${err.message}`);
+          break;
+        case 'UNAUTHENTICATED':
+          console.log('Please check your API key');
+          break;
+        default:
+          console.log(`Error: ${err.message}`);
+      }
+    }
+  }
+}
+```
+
+### Python
+
+```python
+response = requests.post(url, json=payload, headers=headers)
+data = response.json()
+
+if 'errors' in data:
+    for error in data['errors']:
+        code = error.get('code', 'UNKNOWN')
+        message = error.get('message', 'Unknown error')
+
+        if code == 'NOT_FOUND':
+            print(f"Resource not found: {message}")
+        elif code == 'FORBIDDEN':
+            print(f"Permission denied: {message}")
+        elif code == 'UNAUTHENTICATED':
+            print("Please check your API key")
+        else:
+            print(f"Error: {message}")
+```
+
+## Mutation Validation Errors
+
+Mutations return a payload object with validation details:
+
+```graphql
+mutation {
+  createProject(organizationId: "acme", input: { id: "", name: "" }) {
+    successful
+    result {
+      id
+    }
+    messages {
+      field
+      message
+      code
+    }
+  }
+}
+```
+
+Response when validation fails:
+
+```json
+{
+  "data": {
+    "createProject": {
+      "successful": false,
+      "result": null,
+      "messages": [
+        {
+          "field": "id",
+          "message": "can't be blank",
+          "code": "required"
+        },
+        {
+          "field": "name",
+          "message": "can't be blank",
+          "code": "required"
+        }
+      ]
+    }
+  }
+}
+```
+
+### Handling Mutation Results
+
+```typescript
+const result = await client.request(createProjectMutation, variables);
+
+if (result.createProject.successful) {
+  console.log('Created:', result.createProject.result.id);
+} else {
+  for (const msg of result.createProject.messages) {
+    console.log(`${msg.field}: ${msg.message}`);
+  }
+}
+```

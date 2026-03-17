@@ -1,4 +1,7 @@
 ---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
 id: validation-message
 title: ValidationMessage
 ---
@@ -70,7 +73,7 @@ type ValidationMessage {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>ValidationMessage.<b>field</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>ValidationMessage.<b>field</b></code>](#field)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#field\} 
 The input field that the error applies to. The field can be used to
 identify which field the error message should be displayed next to in the
 presentation layer.
@@ -81,7 +84,7 @@ messages will be in the result.
 This field may be null in cases where an error cannot be applied to a specific field.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ValidationMessage.<b>message</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>ValidationMessage.<b>message</b></code>](#message)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#message\} 
 A friendly error message, appropriate for display to the end user.
 
 The message is interpolated to include the appropriate variables.
@@ -92,11 +95,11 @@ This message may change without notice, so we do not recommend you match against
 Instead, use the &#x002A;code&#x002A; field for matching.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ValidationMessage.<b>code</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>ValidationMessage.<b>code</b></code>](#code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#code\} 
 A unique error code for the type of validation used.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ValidationMessage.<b>template</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>ValidationMessage.<b>template</b></code>](#template)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#template\} 
 A template used to generate the error message, with placeholders for option substiution.
 
 Example: `Username must be at least {count} characters`
@@ -105,7 +108,7 @@ This message may change without notice, so we do not recommend you match against
 Instead, use the &#x002A;code&#x002A; field for matching.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ValidationMessage.<b>options</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ValidationOption]</b></code>](/api/graphql/v1/types/objects/validation-option.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}>ValidationMessage.<b>options</b></code>](#options)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ValidationOption]</b></code>](/api/graphql/v1/types/objects/validation-option.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> \{#options\} 
 A list of substitutions to be applied to a validation message template
 
 

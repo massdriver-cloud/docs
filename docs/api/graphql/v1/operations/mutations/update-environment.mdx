@@ -1,4 +1,7 @@
 ---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
 id: update-environment
 title: updateEnvironment
 ---
@@ -41,10 +44,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 Update an environment's name or description.
 
-This mutation supports dynamic form generation.
 
-- [JSON Schema](https://api.massdriver.cloud/api/v1/schemas/updateEnvironment.json)
-- [UI Schema](https://api.massdriver.cloud/api/v1/schemas/updateEnvironment.ui.json)
 
 
 ```graphql
@@ -56,29 +56,34 @@ updateEnvironment(
 ```
 
 
-### Directives
-
-#### [<code style={{ fontWeight: 'normal' }}><b>formSchema</b></code>](/api/graphql/v1/types/directives/form-schema.mdx)
- This mutation supports dynamic form generation.
-
-- [JSON Schema](https://api.massdriver.cloud/api/v1/schemas/updateEnvironment.json)
-- [UI Schema](https://api.massdriver.cloud/api/v1/schemas/updateEnvironment.ui.json)
- 
 
 
+
+### Form Schema
+
+This mutation supports dynamic form generation using JSON Schema.
+
+- [JSON Schema](https://api.massdriver.cloud/graphql/v1/inputs/updateEnvironment.json)
+- [UI Schema](https://api.massdriver.cloud/graphql/v1/inputs/updateEnvironment.ui.json)
+
+<SchemaForm
+  schemaUrl="https://api.massdriver.cloud/graphql/v1/inputs/updateEnvironment.json"
+  uiSchemaUrl="https://api.massdriver.cloud/graphql/v1/inputs/updateEnvironment.ui.json"
+  name="updateEnvironment"
+/>
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>updateEnvironment.<b>organizationId</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>updateEnvironment.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
 Your organization ID
 
 
-#### [<code style={{ fontWeight: 'normal' }}>updateEnvironment.<b>id</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>updateEnvironment.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
 The environment ID to update
 
 
-#### [<code style={{ fontWeight: 'normal' }}>updateEnvironment.<b>input</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UpdateEnvironmentInput!</b></code>](/api/graphql/v1/types/inputs/update-environment-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> 
-Fields to update
+#### [<code style={{ fontWeight: 'normal' }}>updateEnvironment.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UpdateEnvironmentInput!</b></code>](/api/graphql/v1/types/inputs/update-environment-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Update an existing environment's name and description. The ID cannot be changed after creation.
 
 
 ### Type

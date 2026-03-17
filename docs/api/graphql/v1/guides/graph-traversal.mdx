@@ -1,0 +1,120 @@
+---
+id: graph-traversal
+title: Graph Traversal
+sidebar_label: Graph Traversal
+---
+
+# Graph Traversal (Full vs Leaf Types)
+
+The Massdriver GraphQL API uses a **Rooted Traversal Pattern** to ensure predictable, bounded queries while still allowing flexible graph exploration.
+
+## Core Concept
+
+Each entity has two GraphQL types:
+
+- **Full type** (e.g., `Project`) - Returned by getter queries, allows deep traversal
+- **Leaf type** (e.g., `ProjectLeaf`) - Returned by list queries, terminal (no further traversal)
+
+## The Rules
+
+| Query Type | Returns | Can Traverse Deeper? |
+|------------|---------|---------------------|
+| Getter (`project`) | Full type | ✅ Yes |
+| List (`projects`) | Leaf types | ❌ No (terminal) |
+| Single resource from Full (e.g., `environment.project`) | Full type | ✅ Yes |
+| List of resources from Full (e.g., `project.environments`) | Leaf types | ❌ No (terminal) |
+| Any field from Leaf | Leaf type | ❌ No (terminal) |
+
+## Examples
+
+### List Query (Returns Leaves - Terminal)
+
+```graphql
+query {
+  environments(organizationId: "acme") {
+    items {
+      id
+      name
+      project {  # Returns ProjectLeaf
+        id
+        name
+        # ❌ NO environments field - it's a leaf!
+      }
+    }
+  }
+}
+```
+
+### Getter Query (Returns Full - Can Traverse)
+
+```graphql
+query {
+  environment(organizationId: "acme", id: "myproj-staging") {
+    id
+    name
+    project {  # Returns Project (full type)
+      id
+      name
+      environments {  # ✅ Can access list because project is full type
+        items {
+          id
+          project {  # But this is ProjectLeaf - terminal!
+            id
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+## Why This Pattern?
+
+### Bounded Queries
+Making list items terminal keeps queries predictable and fast.
+
+### Explicit Depth
+When you need details from a list item, make a separate getter call for that specific resource.
+
+## Practical Pattern
+
+When you need to traverse deeply from a list:
+
+```graphql
+# Step 1: Get the list
+query {
+  environments(organizationId: "acme") {
+    items {
+      id  # Collect IDs you want to explore
+      name
+    }
+  }
+}
+
+# Step 2: Get full details for specific items
+query {
+  environment(organizationId: "acme", id: "myproj-staging") {
+    id
+    name
+    project {
+      environments {
+        items { id name }
+      }
+    }
+    packages {
+      items { id name status }
+    }
+  }
+}
+```
+
+## Type Naming Convention
+
+| Full Type | Leaf Type |
+|-----------|-----------|
+| `Project` | `ProjectLeaf` |
+| `Environment` | `EnvironmentLeaf` |
+| `Package` | `PackageLeaf` |
+| `Deployment` | `DeploymentLeaf` |
+
+The Leaf suffix indicates the type is terminal and cannot be used for further graph exploration.

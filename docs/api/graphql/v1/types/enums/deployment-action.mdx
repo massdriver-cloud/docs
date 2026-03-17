@@ -1,4 +1,7 @@
 ---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
 id: deployment-action
 title: DeploymentAction
 ---
@@ -55,15 +58,15 @@ enum DeploymentAction {
 
 ### Values
 
-#### [<code style={{ fontWeight: 'normal' }}>DeploymentAction.<b>PROVISION</b></code>](#)  
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentAction.<b>PROVISION</b></code>](#provision) \{#provision\} 
 Create or update infrastructure
 
 
-#### [<code style={{ fontWeight: 'normal' }}>DeploymentAction.<b>DECOMMISSION</b></code>](#)  
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentAction.<b>DECOMMISSION</b></code>](#decommission) \{#decommission\} 
 Tear down infrastructure
 
 
-#### [<code style={{ fontWeight: 'normal' }}>DeploymentAction.<b>PLAN</b></code>](#)  
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentAction.<b>PLAN</b></code>](#plan) \{#plan\} 
 Preview changes without applying them
 
 
@@ -73,4 +76,4 @@ Preview changes without applying them
 
 ### Member Of
 
-[`Deployment`](/api/graphql/v1/types/objects/deployment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`DeploymentLeaf`](/api/graphql/v1/types/objects/deployment-leaf.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`DeploymentsFilter`](/api/graphql/v1/types/inputs/deployments-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>
+[`Deployment`](/api/graphql/v1/types/objects/deployment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`DeploymentActionFilter`](/api/graphql/v1/types/inputs/deployment-action-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`DeploymentLeaf`](/api/graphql/v1/types/objects/deployment-leaf.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

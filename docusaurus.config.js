@@ -1,26 +1,11 @@
-const { getTypeDirectiveArgValue } = require("@graphql-markdown/graphql");
-
 /**
- * Custom directive rendering for @formSchema
- *
- * The @formSchema directive links mutations to JSON Schema definitions
- * that can be used for form generation and validation.
+ * Custom directive for @inputs - renders a "form schema" badge.
+ * The SchemaForm component is injected via post-processing script
+ * because the library's descriptor output appears twice (once escaped).
  */
-const formSchemaDirective = {
-  descriptor: (directive, node) => {
-    const name = getTypeDirectiveArgValue(directive, node, "name");
-    const schema = getTypeDirectiveArgValue(directive, node, "schema");
-    const uiSchema = getTypeDirectiveArgValue(directive, node, "ui_schema");
-
-    if (!name) return undefined;
-
-    const baseUrl = "https://api.massdriver.cloud";
-    const schemaUrl = `${baseUrl}${schema}`;
-    const uiSchemaUrl = `${baseUrl}${uiSchema}`;
-
-    return `This mutation supports dynamic form generation.\n\n- [JSON Schema](${schemaUrl})\n- [UI Schema](${uiSchemaUrl})`;
-  },
-  tag: (directive, node) => ({
+const inputsDirective = {
+  descriptor: () => undefined,
+  tag: () => ({
     text: "form schema",
     classname: "primary",
   }),
@@ -183,7 +168,7 @@ module.exports = {
         },
         diffMethod: "SCHEMA-HASH",
         customDirective: {
-          formSchema: formSchemaDirective,
+          inputs: inputsDirective,
         },
       },
     ],    

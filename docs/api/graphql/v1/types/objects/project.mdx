@@ -1,4 +1,7 @@
 ---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
 id: project
 title: Project
 ---
@@ -63,41 +66,41 @@ type Project {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>Project.<b>id</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>Project.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
 
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Project.<b>name</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>Project.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
 Display name
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Project.<b>description</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>Project.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
 What this project is for
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Project.<b>createdAt</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>Project.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
 When this project was created (UTC)
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Project.<b>updatedAt</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> 
+#### [<code style={{ fontWeight: 'normal' }}>Project.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
 When this project was last modified (UTC)
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Project.<b>deletable</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Deletable!</b></code>](/api/graphql/v1/types/objects/deletable.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}>Project.<b>deletable</b></code>](#deletable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Deletable!</b></code>](/api/graphql/v1/types/objects/deletable.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#deletable\} 
 Whether this project can be deleted and any constraints preventing deletion.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Project.<b>cost</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CostSummary!</b></code>](/api/graphql/v1/types/objects/cost-summary.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}>Project.<b>cost</b></code>](#cost)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CostSummary!</b></code>](/api/graphql/v1/types/objects/cost-summary.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#cost\} 
 Cloud provider costs for this project.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Project.<b>environments</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EnvironmentsPage</b></code>](/api/graphql/v1/types/objects/environments-page.mdx) <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}>Project.<b>environments</b></code>](#environments)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EnvironmentsPage</b></code>](/api/graphql/v1/types/objects/environments-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#environments\} 
 The environments in this project, like staging or production.
-##### [<code style={{ fontWeight: 'normal' }}>Project.environments.<b>sort</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EnvironmentsSort</b></code>](/api/graphql/v1/types/inputs/environments-sort.mdx) <Badge class="badge badge--secondary " text="input"/> 
+##### [<code style={{ fontWeight: 'normal' }}>Project.environments.<b>sort</b></code>](#project-environments-sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EnvironmentsSort</b></code>](/api/graphql/v1/types/inputs/environments-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#project-environments-sort\} 
 
 
 
-##### [<code style={{ fontWeight: 'normal' }}>Project.environments.<b>cursor</b></code>](#)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> 
+##### [<code style={{ fontWeight: 'normal' }}>Project.environments.<b>cursor</b></code>](#project-environments-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#project-environments-cursor\} 
 
 
 
