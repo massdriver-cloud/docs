@@ -6,7 +6,7 @@ schema {
 "Links a mutation to its JSON Schema and UI Schema for form generation"
 directive @inputs(
   "URL to the UI Schema"
-  ui_schema: String!
+  ui: String!
 
   "URL to the JSON Schema"
   schema: String!
@@ -140,9 +140,9 @@ type RootMutationType {
     "Your organization ID"
     organizationId: ID!
 
-    "Project details"
+    "Create a new project. A project is the complete model of your application—its infrastructure, architecture, configurations, and environments."
     input: CreateProjectInput!
-  ): ProjectPayload @inputs(name: "createProject", schema: "\/graphql\/v1\/schemas\/createProject.json", ui_schema: "\/graphql\/v1\/schemas\/createProject.ui.json")
+  ): ProjectPayload @inputs(name: "createProject", schema: "\/graphql\/v1\/inputs\/createProject.json", ui: "\/graphql\/v1\/inputs\/createProject.ui.json")
 
   "Update a project's name or description."
   updateProject(
@@ -152,9 +152,9 @@ type RootMutationType {
     "The project ID to update"
     id: ID!
 
-    "Fields to update"
+    "Update an existing project's name and description. The ID cannot be changed after creation."
     input: UpdateProjectInput!
-  ): ProjectPayload @inputs(name: "updateProject", schema: "\/graphql\/v1\/schemas\/updateProject.json", ui_schema: "\/graphql\/v1\/schemas\/updateProject.ui.json")
+  ): ProjectPayload @inputs(name: "updateProject", schema: "\/graphql\/v1\/inputs\/updateProject.json", ui: "\/graphql\/v1\/inputs\/updateProject.ui.json")
 
   "Delete a project. You must delete all environments first."
   deleteProject(
@@ -173,9 +173,9 @@ type RootMutationType {
     "The project to create the environment in"
     projectId: ID!
 
-    "Environment details"
+    "Create a new environment. Environments are isolated deployment contexts like production, staging, or development, each with independent secrets and configurations."
     input: CreateEnvironmentInput!
-  ): EnvironmentPayload @inputs(name: "createEnvironment", schema: "\/graphql\/v1\/schemas\/createEnvironment.json", ui_schema: "\/graphql\/v1\/schemas\/createEnvironment.ui.json")
+  ): EnvironmentPayload @inputs(name: "createEnvironment", schema: "\/graphql\/v1\/inputs\/createEnvironment.json", ui: "\/graphql\/v1\/inputs\/createEnvironment.ui.json")
 
   "Update an environment's name or description."
   updateEnvironment(
@@ -185,9 +185,9 @@ type RootMutationType {
     "The environment ID to update"
     id: ID!
 
-    "Fields to update"
+    "Update an existing environment's name and description. The ID cannot be changed after creation."
     input: UpdateEnvironmentInput!
-  ): EnvironmentPayload @inputs(name: "updateEnvironment", schema: "\/graphql\/v1\/schemas\/updateEnvironment.json", ui_schema: "\/graphql\/v1\/schemas\/updateEnvironment.ui.json")
+  ): EnvironmentPayload @inputs(name: "updateEnvironment", schema: "\/graphql\/v1\/inputs\/updateEnvironment.json", ui: "\/graphql\/v1\/inputs\/updateEnvironment.ui.json")
 
   "Delete an environment. You must decommission all packages first."
   deleteEnvironment(
@@ -428,14 +428,14 @@ input DeploymentsSort {
 
 "Filter which deployments to return."
 input DeploymentsFilter {
-  "Only return deployments for these packages"
-  packageIds: [ID!]
+  "Filter by package ID"
+  packageId: IdFilter
 
-  "Only return deployments with these statuses"
-  statuses: [DeploymentStatus!]
+  "Filter by deployment status"
+  status: DeploymentStatusFilter
 
-  "Only return these types of operations"
-  actions: [DeploymentAction!]
+  "Filter by deployment action"
+  action: DeploymentActionFilter
 }
 
 "A deployment returned in list results."
@@ -601,11 +601,11 @@ input PackagesSort {
 
 "Filter which packages to return."
 input PackagesFilter {
-  "Only return packages in these environments"
-  environmentIds: [ID!]
+  "Filter by environment ID"
+  environmentId: IdFilter
 
-  "Only return packages with these statuses"
-  statuses: [PackageStatus!]
+  "Filter by package status"
+  status: PackageStatusFilter
 }
 
 "Sorting options for the package params dimensions list."
@@ -705,11 +705,11 @@ input EnvironmentsSort {
 
 "Filter which environments to return."
 input EnvironmentsFilter {
-  "Only return environments in these projects"
-  projectIds: [ID!]
+  "Filter by project ID"
+  projectId: IdFilter
 
-  "Only return environments with these IDs"
-  ids: [String!]
+  "Filter by environment ID"
+  id: StringFilter
 }
 
 input CreateEnvironmentInput {
@@ -947,6 +947,51 @@ type Deletable {
 
   "Constraints preventing deletion, if any"
   constraints: [DeletionConstraint]
+}
+
+"Filter for ID fields. All provided operators are combined with AND."
+input IdFilter {
+  "Exact match"
+  eq: ID
+
+  "Match any of these values"
+  in: [ID!]
+}
+
+"Filter for string fields. All provided operators are combined with AND."
+input StringFilter {
+  "Exact match"
+  eq: String
+
+  "Match any of these values"
+  in: [String!]
+}
+
+"Filter for package status. All provided operators are combined with AND."
+input PackageStatusFilter {
+  "Exact match"
+  eq: PackageStatus
+
+  "Match any of these statuses"
+  in: [PackageStatus!]
+}
+
+"Filter for deployment status. All provided operators are combined with AND."
+input DeploymentStatusFilter {
+  "Exact match"
+  eq: DeploymentStatus
+
+  "Match any of these statuses"
+  in: [DeploymentStatus!]
+}
+
+"Filter for deployment action. All provided operators are combined with AND."
+input DeploymentActionFilter {
+  "Exact match"
+  eq: DeploymentAction
+
+  "Match any of these actions"
+  in: [DeploymentAction!]
 }
 
 input Cursor {

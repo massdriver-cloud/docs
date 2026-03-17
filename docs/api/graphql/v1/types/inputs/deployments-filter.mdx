@@ -47,9 +47,9 @@ Filter which deployments to return.
 
 ```graphql
 input DeploymentsFilter {
-  packageIds: [ID!]
-  statuses: [DeploymentStatus!]
-  actions: [DeploymentAction!]
+  packageId: IdFilter
+  status: DeploymentStatusFilter
+  action: DeploymentActionFilter
 }
 ```
 
@@ -58,16 +58,16 @@ input DeploymentsFilter {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>DeploymentsFilter.<b>packageIds</b></code>](#package-ids)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ID!]</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#package-ids\} 
-Only return deployments for these packages
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentsFilter.<b>packageId</b></code>](#package-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IdFilter</b></code>](/api/graphql/v1/types/inputs/id-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#package-id\} 
+Filter by package ID
 
 
-#### [<code style={{ fontWeight: 'normal' }}>DeploymentsFilter.<b>statuses</b></code>](#statuses)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[DeploymentStatus!]</b></code>](/api/graphql/v1/types/enums/deployment-status.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="enum"/> \{#statuses\} 
-Only return deployments with these statuses
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentsFilter.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DeploymentStatusFilter</b></code>](/api/graphql/v1/types/inputs/deployment-status-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#status\} 
+Filter by deployment status
 
 
-#### [<code style={{ fontWeight: 'normal' }}>DeploymentsFilter.<b>actions</b></code>](#actions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[DeploymentAction!]</b></code>](/api/graphql/v1/types/enums/deployment-action.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="enum"/> \{#actions\} 
-Only return these types of operations
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentsFilter.<b>action</b></code>](#action)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DeploymentActionFilter</b></code>](/api/graphql/v1/types/inputs/deployment-action-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#action\} 
+Filter by deployment action
 
 
 

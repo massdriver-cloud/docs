@@ -47,8 +47,8 @@ Filter which environments to return.
 
 ```graphql
 input EnvironmentsFilter {
-  projectIds: [ID!]
-  ids: [String!]
+  projectId: IdFilter
+  id: StringFilter
 }
 ```
 
@@ -57,12 +57,12 @@ input EnvironmentsFilter {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>EnvironmentsFilter.<b>projectIds</b></code>](#project-ids)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ID!]</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#project-ids\} 
-Only return environments in these projects
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentsFilter.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IdFilter</b></code>](/api/graphql/v1/types/inputs/id-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#project-id\} 
+Filter by project ID
 
 
-#### [<code style={{ fontWeight: 'normal' }}>EnvironmentsFilter.<b>ids</b></code>](#ids)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#ids\} 
-Only return environments with these IDs
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentsFilter.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>StringFilter</b></code>](/api/graphql/v1/types/inputs/string-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#id\} 
+Filter by environment ID
 
 
 

@@ -2,8 +2,8 @@
 pagination_next: null
 pagination_prev: null
 hide_table_of_contents: true
-id: deployment-action
-title: DeploymentAction
+id: deployment-status-filter
+title: DeploymentStatusFilter
 ---
 
 
@@ -42,32 +42,27 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-The type of infrastructure operation.
+Filter for deployment status. All provided operators are combined with AND.
 
 
 ```graphql
-enum DeploymentAction {
-  PROVISION
-  DECOMMISSION
-  PLAN
+input DeploymentStatusFilter {
+  eq: DeploymentStatus
+  in: [DeploymentStatus!]
 }
 ```
 
 
 
 
-### Values
+### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>DeploymentAction.<b>PROVISION</b></code>](#provision) \{#provision\} 
-Create or update infrastructure
-
-
-#### [<code style={{ fontWeight: 'normal' }}>DeploymentAction.<b>DECOMMISSION</b></code>](#decommission) \{#decommission\} 
-Tear down infrastructure
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentStatusFilter.<b>eq</b></code>](#eq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DeploymentStatus</b></code>](/api/graphql/v1/types/enums/deployment-status.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#eq\} 
+Exact match
 
 
-#### [<code style={{ fontWeight: 'normal' }}>DeploymentAction.<b>PLAN</b></code>](#plan) \{#plan\} 
-Preview changes without applying them
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentStatusFilter.<b>in</b></code>](#in)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[DeploymentStatus!]</b></code>](/api/graphql/v1/types/enums/deployment-status.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="enum"/> \{#in\} 
+Match any of these statuses
 
 
 
@@ -76,4 +71,4 @@ Preview changes without applying them
 
 ### Member Of
 
-[`Deployment`](/api/graphql/v1/types/objects/deployment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`DeploymentActionFilter`](/api/graphql/v1/types/inputs/deployment-action-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`DeploymentLeaf`](/api/graphql/v1/types/objects/deployment-leaf.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`DeploymentsFilter`](/api/graphql/v1/types/inputs/deployments-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

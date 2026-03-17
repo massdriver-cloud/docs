@@ -36,7 +36,7 @@ visit(ast, {
 
     const name = getArgValue('name');
     const schema = getArgValue('schema');
-    const uiSchema = getArgValue('ui_schema');
+    const uiSchema = getArgValue('ui');
 
     if (name && schema && uiSchema) {
       formSchemaMutations[name] = { schema, uiSchema };

@@ -1,13 +1,9 @@
-const { getTypeDirectiveArgValue } = require("@graphql-markdown/graphql");
-
 /**
- * Custom directive rendering for @formSchema
- *
- * The @formSchema directive links mutations to JSON Schema definitions
- * that can be used for form generation and validation.
+ * Custom directive for @inputs - renders a "form schema" badge.
+ * The SchemaForm component is injected via post-processing script
+ * because the library's descriptor output appears twice (once escaped).
  */
-const formSchemaDirective = {
-  // Descriptor returns undefined - SchemaForm is added via post-process script
+const inputsDirective = {
   descriptor: () => undefined,
   tag: () => ({
     text: "form schema",
@@ -172,7 +168,7 @@ module.exports = {
         },
         diffMethod: "SCHEMA-HASH",
         customDirective: {
-          inputs: formSchemaDirective,
+          inputs: inputsDirective,
         },
       },
     ],    
