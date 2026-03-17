@@ -13,7 +13,7 @@ The Massdriver GraphQL API uses a **Rooted Traversal Pattern** to ensure predict
 Each entity has two GraphQL types:
 
 - **Full type** (e.g., `Project`) - Returned by getter queries, allows deep traversal
-- **Leaf type** (e.g., `ProjectLeaf`) - Returned by list queries, terminal (no further has_many traversal)
+- **Leaf type** (e.g., `ProjectLeaf`) - Returned by list queries, terminal (no further traversal)
 
 ## The Rules
 
@@ -21,8 +21,8 @@ Each entity has two GraphQL types:
 |------------|---------|---------------------|
 | Getter (`project`) | Full type | ✅ Yes |
 | List (`projects`) | Leaf types | ❌ No (terminal) |
-| belongs_to from Full | Full type | ✅ Yes |
-| has_many from Full | Leaf types | ❌ No (terminal) |
+| Single resource from Full (e.g., `environment.project`) | Full type | ✅ Yes |
+| List of resources from Full (e.g., `project.environments`) | Leaf types | ❌ No (terminal) |
 | Any field from Leaf | Leaf type | ❌ No (terminal) |
 
 ## Examples
@@ -55,7 +55,7 @@ query {
     project {  # Returns Project (full type)
       id
       name
-      environments {  # ✅ Can access has_many because project is full
+      environments {  # ✅ Can access list because project is full type
         items {
           id
           project {  # But this is ProjectLeaf - terminal!
