@@ -58,6 +58,7 @@ type Project {
     sort: EnvironmentsSort
     cursor: Cursor
   ): EnvironmentsPage
+  blueprint: Blueprint
 }
 ```
 
@@ -104,6 +105,10 @@ The environments in this project, like staging or production.
 
 
 
+#### [<code style={{ fontWeight: 'normal' }}>Project.<b>blueprint</b></code>](#blueprint)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Blueprint</b></code>](/api/graphql/v1/types/objects/blueprint.mdx) <Badge class="badge badge--secondary " text="object"/> \{#blueprint\} 
+The infrastructure blueprint for this project (components and links).
+
+
 
 
 
@@ -114,4 +119,4 @@ The environments in this project, like staging or production.
 
 ### Member Of
 
-[`Environment`](/api/graphql/v1/types/objects/environment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ProjectPayload`](/api/graphql/v1/types/objects/project-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`Component`](/api/graphql/v1/types/objects/component.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Environment`](/api/graphql/v1/types/objects/environment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ProjectPayload`](/api/graphql/v1/types/objects/project-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

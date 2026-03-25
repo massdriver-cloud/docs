@@ -1,0 +1,84 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: param-dimension
+title: ParamDimension
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A configuration field available in instance params. Use these to build search filters.
+
+
+```graphql
+type ParamDimension {
+  field: String!
+  label: String!
+  description: String
+  type: String
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ParamDimension.<b>field</b></code>](#field)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#field\} 
+Path to the field (e.g., 'database.instance&#x005F;type')
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ParamDimension.<b>label</b></code>](#label)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#label\} 
+Human-readable field name
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ParamDimension.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+What this field configures
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ParamDimension.<b>type</b></code>](#type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#type\} 
+Data type (string, number, boolean, etc.)
+
+
+
+
+
+
+### Member Of
+
+[`ParamDimensionsPage`](/api/graphql/v1/types/objects/param-dimensions-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

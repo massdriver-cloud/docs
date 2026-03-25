@@ -57,7 +57,7 @@ type Deployment {
   lastTransitionedAt: DateTime
   elapsedTime: Int!
   deployedBy: String
-  package: Package
+  instance: Instance
 }
 ```
 
@@ -106,8 +106,8 @@ How long the deployment has been running, in seconds.
 Who started this deployment.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Deployment.<b>package</b></code>](#package)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Package</b></code>](/api/graphql/v1/types/objects/package.mdx) <Badge class="badge badge--secondary " text="object"/> \{#package\} 
-The package being deployed.
+#### [<code style={{ fontWeight: 'normal' }}>Deployment.<b>instance</b></code>](#instance)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Instance</b></code>](/api/graphql/v1/types/objects/instance.mdx) <Badge class="badge badge--secondary " text="object"/> \{#instance\} 
+The instance being deployed.
 
 
 

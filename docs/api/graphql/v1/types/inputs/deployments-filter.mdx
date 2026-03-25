@@ -47,7 +47,7 @@ Filter which deployments to return.
 
 ```graphql
 input DeploymentsFilter {
-  packageId: IdFilter
+  instanceId: IdFilter
   status: DeploymentStatusFilter
   action: DeploymentActionFilter
 }
@@ -58,8 +58,8 @@ input DeploymentsFilter {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>DeploymentsFilter.<b>packageId</b></code>](#package-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IdFilter</b></code>](/api/graphql/v1/types/inputs/id-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#package-id\} 
-Filter by package ID
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentsFilter.<b>instanceId</b></code>](#instance-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IdFilter</b></code>](/api/graphql/v1/types/inputs/id-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#instance-id\} 
+Filter by instance ID
 
 
 #### [<code style={{ fontWeight: 'normal' }}>DeploymentsFilter.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DeploymentStatusFilter</b></code>](/api/graphql/v1/types/inputs/deployment-status-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#status\} 

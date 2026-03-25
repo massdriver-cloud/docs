@@ -1,0 +1,74 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: instances-sort
+title: InstancesSort
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Sorting options for the instances list.
+
+
+```graphql
+input InstancesSort {
+  field: InstancesSortField!
+  order: SortOrder!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>InstancesSort.<b>field</b></code>](#field)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InstancesSortField!</b></code>](/api/graphql/v1/types/enums/instances-sort-field.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#field\} 
+Which field to sort by
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InstancesSort.<b>order</b></code>](#order)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SortOrder!</b></code>](/api/graphql/v1/types/enums/sort-order.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#order\} 
+Sort direction
+
+
+
+
+
+
+### Member Of
+
+[`instances`](/api/graphql/v1/operations/queries/instances.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

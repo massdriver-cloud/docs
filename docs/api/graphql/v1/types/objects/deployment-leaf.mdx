@@ -57,7 +57,7 @@ type DeploymentLeaf {
   lastTransitionedAt: DateTime
   elapsedTime: Int!
   deployedBy: String
-  package: PackageLeaf
+  instance: InstanceLeaf
 }
 ```
 
@@ -106,8 +106,8 @@ How long the deployment has been running, in seconds.
 Who started this deployment.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>DeploymentLeaf.<b>package</b></code>](#package)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PackageLeaf</b></code>](/api/graphql/v1/types/objects/package-leaf.mdx) <Badge class="badge badge--secondary " text="object"/> \{#package\} 
-The package being deployed.
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentLeaf.<b>instance</b></code>](#instance)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InstanceLeaf</b></code>](/api/graphql/v1/types/objects/instance-leaf.mdx) <Badge class="badge badge--secondary " text="object"/> \{#instance\} 
+The instance being deployed.
 
 
 

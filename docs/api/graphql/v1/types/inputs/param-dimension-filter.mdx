@@ -1,0 +1,85 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: param-dimension-filter
+title: ParamDimensionFilter
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Filter instances by a configuration parameter value at a specific path.
+Use `paramDimensions` query to discover available dimensions.
+
+
+```graphql
+input ParamDimensionFilter {
+  dimension: String!
+  eq: String
+  in: [String!]
+  contains: String
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ParamDimensionFilter.<b>dimension</b></code>](#dimension)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#dimension\} 
+Dot-path to the param field (e.g., 'database.instance&#x005F;type')
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ParamDimensionFilter.<b>eq</b></code>](#eq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#eq\} 
+Exact match
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ParamDimensionFilter.<b>in</b></code>](#in)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#in\} 
+Match any of these values
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ParamDimensionFilter.<b>contains</b></code>](#contains)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#contains\} 
+Case-insensitive substring match
+
+
+
+
+
+
+### Member Of
+
+[`InstancesFilter`](/api/graphql/v1/types/inputs/instances-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

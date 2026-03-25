@@ -1,0 +1,84 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: invite-group-viewer
+title: InviteGroupViewer
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Group info from an invitation.
+
+
+```graphql
+type InviteGroupViewer {
+  id: ID!
+  name: String!
+  type: ViewerGroupType!
+  organization: InviteOrganizationViewer!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>InviteGroupViewer.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InviteGroupViewer.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Group name
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InviteGroupViewer.<b>type</b></code>](#type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ViewerGroupType!</b></code>](/api/graphql/v1/types/enums/viewer-group-type.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#type\} 
+Type of group.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InviteGroupViewer.<b>organization</b></code>](#organization)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InviteOrganizationViewer!</b></code>](/api/graphql/v1/types/objects/invite-organization-viewer.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#organization\} 
+The organization this group belongs to.
+
+
+
+
+
+
+### Member Of
+
+[`InviteViewer`](/api/graphql/v1/types/objects/invite-viewer.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

@@ -1,0 +1,104 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: logo-organization
+title: LogoOrganization
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+An organization's logo image.
+
+
+```graphql
+type LogoOrganization {
+  id: ID!
+  url: String!
+  contentType: String!
+  fileSize: Int!
+  width: Int
+  height: Int
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>LogoOrganization.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>LogoOrganization.<b>url</b></code>](#url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#url\} 
+URL to the logo image. Uses the organization's internal ID for privacy.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>LogoOrganization.<b>contentType</b></code>](#content-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#content-type\} 
+MIME type (e.g., image/png)
+
+
+#### [<code style={{ fontWeight: 'normal' }}>LogoOrganization.<b>fileSize</b></code>](#file-size)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/api/graphql/v1/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#file-size\} 
+File size in bytes
+
+
+#### [<code style={{ fontWeight: 'normal' }}>LogoOrganization.<b>width</b></code>](#width)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/api/graphql/v1/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#width\} 
+Image width in pixels
+
+
+#### [<code style={{ fontWeight: 'normal' }}>LogoOrganization.<b>height</b></code>](#height)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/api/graphql/v1/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#height\} 
+Image height in pixels
+
+
+#### [<code style={{ fontWeight: 'normal' }}>LogoOrganization.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When the logo was uploaded (UTC)
+
+
+#### [<code style={{ fontWeight: 'normal' }}>LogoOrganization.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+When the logo was last changed (UTC)
+
+
+
+
+
+
+### Member Of
+
+[`LogoOrganizationPayload`](/api/graphql/v1/types/objects/logo-organization-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Organization`](/api/graphql/v1/types/objects/organization.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
