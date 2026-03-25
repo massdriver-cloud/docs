@@ -106,7 +106,7 @@ export default function SchemaForm({ schemaUrl, uiSchemaUrl, name }) {
 
   // GraphiQL deep link - encode query and variables
   const playgroundUrl = mutation
-    ? `https://api.massdriver.cloud/graphql/v1/graphiql?query=${encodeURIComponent(mutation)}&variables=${encodeURIComponent(JSON.stringify(variables, null, 2))}`
+    ? `https://api.massdriver.cloud/api/v1/graphiql?query=${encodeURIComponent(mutation)}&variables=${encodeURIComponent(JSON.stringify(variables, null, 2))}`
     : null;
 
   if (loading) {
