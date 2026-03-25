@@ -318,7 +318,7 @@ Your original MinIO data will still be available if you haven't deleted the MinI
 
 :::warning Argo Workflows
 
-Argo Workflows depends on MinIO for artifact storage by default. If you wish to remove MinIO entirely, **make sure you update Argo Workflows to use another solution for artifact storage!!!**
+Argo Workflows depends on MinIO for artifact storage by default. [If you wish to remove MinIO entirely, **make sure you update Argo Workflows to use another solution for artifact storage!!!**](https://argo-workflows.readthedocs.io/en/latest/configure-artifact-repository/)
 
 :::
 
