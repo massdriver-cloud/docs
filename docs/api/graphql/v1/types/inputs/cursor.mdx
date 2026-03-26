@@ -59,7 +59,7 @@ input Cursor {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>Cursor.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/api/graphql/v1/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
-Maximum number of items to return
+Maximum number of items per page. Default: 25. Minimum: 1. Maximum: 100.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Cursor.<b>next</b></code>](#next)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#next\} 
@@ -76,4 +76,4 @@ Cursor before which to return items
 
 ### Member Of
 
-[`deployments`](/api/graphql/v1/operations/queries/deployments.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`environments`](/api/graphql/v1/operations/queries/environments.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`packageParamsDimensions`](/api/graphql/v1/operations/queries/package-params-dimensions.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`packages`](/api/graphql/v1/operations/queries/packages.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`projects`](/api/graphql/v1/operations/queries/projects.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+[`deployments`](/api/graphql/v1/operations/queries/deployments.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`environments`](/api/graphql/v1/operations/queries/environments.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`instances`](/api/graphql/v1/operations/queries/instances.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`paramDimensions`](/api/graphql/v1/operations/queries/param-dimensions.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`projects`](/api/graphql/v1/operations/queries/projects.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

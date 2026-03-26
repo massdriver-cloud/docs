@@ -1,0 +1,79 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: viewer-group-type
+title: ViewerGroupType
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Type of group.
+
+
+```graphql
+enum ViewerGroupType {
+  ORGANIZATION_ADMIN
+  ORGANIZATION_VIEWER
+  CUSTOM
+}
+```
+
+
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>ViewerGroupType.<b>ORGANIZATION&#x005F;ADMIN</b></code>](#organization-admin) \{#organization-admin\} 
+Organization administrators
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ViewerGroupType.<b>ORGANIZATION&#x005F;VIEWER</b></code>](#organization-viewer) \{#organization-viewer\} 
+Organization viewers
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ViewerGroupType.<b>CUSTOM</b></code>](#custom) \{#custom\} 
+Custom group with specific permissions
+
+
+
+
+
+
+### Member Of
+
+[`InviteGroupViewer`](/api/graphql/v1/types/objects/invite-group-viewer.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

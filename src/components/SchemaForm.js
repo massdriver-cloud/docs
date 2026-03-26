@@ -104,11 +104,6 @@ export default function SchemaForm({ schemaUrl, uiSchemaUrl, name }) {
     ...formData,
   };
 
-  // GraphiQL deep link - encode query and variables
-  const playgroundUrl = mutation
-    ? `https://api.massdriver.cloud/graphql/v1/graphiql?query=${encodeURIComponent(mutation)}&variables=${encodeURIComponent(JSON.stringify(variables, null, 2))}`
-    : null;
-
   if (loading) {
     return (
       <div className="ui segment">
@@ -149,16 +144,6 @@ export default function SchemaForm({ schemaUrl, uiSchemaUrl, name }) {
           {showQuery ? "Hide" : "Generate"} Query
         </button>
 
-        {playgroundUrl && (
-          <a
-            href={playgroundUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="ui button"
-          >
-            Open in GraphiQL
-          </a>
-        )}
       </div>
 
       {showQuery && mutation && (

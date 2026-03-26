@@ -1,0 +1,71 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: bundle-id
+title: BundleId
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Bundle identifier in `name@version` format.
+
+Returns the fully resolved version of a bundle (e.g., `aws-aurora-postgres@1.2.3`
+or `aws-aurora-postgres@1.2.3-dev.20060102T150405Z`).
+
+As an input, accepts:
+- `aws-aurora-postgres` — bare name, resolves to latest
+- `aws-aurora-postgres@1.2.3` — exact version
+- `aws-aurora-postgres@~1.2` — release channel (resolved server-side)
+- `aws-aurora-postgres@latest` — latest stable release
+- `aws-aurora-postgres@latest+dev` — latest including dev builds
+
+
+```graphql
+scalar BundleId
+```
+
+
+
+
+
+
+
+
+### Member Of
+
+[`bundle`](/api/graphql/v1/operations/queries/bundle.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`Bundle`](/api/graphql/v1/types/objects/bundle.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`BundleLeaf`](/api/graphql/v1/types/objects/bundle-leaf.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

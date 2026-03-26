@@ -1,0 +1,79 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: param-dimensions-filter
+title: ParamDimensionsFilter
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Filter which param dimensions to return. Scopes which instances' schemas are introspected.
+
+
+```graphql
+input ParamDimensionsFilter {
+  projectId: IdFilter
+  environmentId: IdFilter
+  ociRepoName: OciRepoNameFilter
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ParamDimensionsFilter.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IdFilter</b></code>](/api/graphql/v1/types/inputs/id-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#project-id\} 
+Only include dimensions from instances in these projects
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ParamDimensionsFilter.<b>environmentId</b></code>](#environment-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IdFilter</b></code>](/api/graphql/v1/types/inputs/id-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#environment-id\} 
+Only include dimensions from instances in these environments
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ParamDimensionsFilter.<b>ociRepoName</b></code>](#oci-repo-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoNameFilter</b></code>](/api/graphql/v1/types/inputs/oci-repo-name-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#oci-repo-name\} 
+Only include dimensions from instances using these bundles
+
+
+
+
+
+
+### Member Of
+
+[`paramDimensions`](/api/graphql/v1/operations/queries/param-dimensions.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

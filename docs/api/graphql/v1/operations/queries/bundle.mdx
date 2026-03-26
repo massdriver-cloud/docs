@@ -1,0 +1,81 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: bundle
+title: bundle
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Get a bundle by its identifier.
+
+The ID format is `name@version` where version can be an exact version,
+a constraint, or a channel:
+
+- `aws-aurora-postgres@1.2.3` — exact version
+- `aws-aurora-postgres@~1.2` — latest patch in 1.2.x
+- `aws-aurora-postgres@~1` — latest minor in 1.x.x
+- `aws-aurora-postgres@latest` — newest stable release
+- `aws-aurora-postgres@latest+dev` — newest release including dev builds
+- `aws-aurora-postgres` — shorthand for `name@latest`
+
+
+```graphql
+bundle(
+  organizationId: ID!
+  id: BundleId!
+): Bundle
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>bundle.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization ID
+
+
+#### [<code style={{ fontWeight: 'normal' }}>bundle.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BundleId!</b></code>](/api/graphql/v1/types/scalars/bundle-id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+Bundle identifier (e.g., 'aws-aurora-postgres@1.2.3' or 'aws-aurora-postgres@latest')
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Bundle</b></code>](/api/graphql/v1/types/objects/bundle.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A bundle with its full details and related resources.

@@ -1,0 +1,113 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: instance
+title: Instance
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+An instance with its full details and related resources.
+
+
+```graphql
+type Instance {
+  id: ID!
+  name: String!
+  status: InstanceStatus!
+  version: String!
+  releaseStrategy: ReleaseStrategy!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  environment: Environment
+  bundle: Bundle
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>Instance.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Instance.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Instance display name
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Instance.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InstanceStatus!</b></code>](/api/graphql/v1/types/enums/instance-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
+Current state of the instance
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Instance.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version\} 
+Version constraint (e.g., '~1.0' or '1.2.3')
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Instance.<b>releaseStrategy</b></code>](#release-strategy)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ReleaseStrategy!</b></code>](/api/graphql/v1/types/enums/release-strategy.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#release-strategy\} 
+Whether to use stable or development releases
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Instance.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When this instance was created (UTC)
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Instance.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+When this instance was last modified (UTC)
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Instance.<b>environment</b></code>](#environment)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Environment</b></code>](/api/graphql/v1/types/objects/environment.mdx) <Badge class="badge badge--secondary " text="object"/> \{#environment\} 
+The environment this instance is deployed in.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Instance.<b>bundle</b></code>](#bundle)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Bundle</b></code>](/api/graphql/v1/types/objects/bundle.mdx) <Badge class="badge badge--secondary " text="object"/> \{#bundle\} 
+The bundle version currently deployed.
+
+
+
+
+
+
+### Returned By
+
+[`instance`](/api/graphql/v1/operations/queries/instance.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+
+### Member Of
+
+[`Deployment`](/api/graphql/v1/types/objects/deployment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

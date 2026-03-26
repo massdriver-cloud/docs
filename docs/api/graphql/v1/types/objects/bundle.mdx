@@ -1,0 +1,113 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: bundle
+title: Bundle
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A bundle with its full details and related resources.
+
+
+```graphql
+type Bundle {
+  id: BundleId!
+  name: OciRepoName!
+  version: Semver!
+  description: String
+  icon: String
+  sourceUrl: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  repo: String!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BundleId!</b></code>](/api/graphql/v1/types/scalars/bundle-id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+Bundle identifier in `name@version` format (e.g., 'aws-aurora-postgres@1.2.3')
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoName!</b></code>](/api/graphql/v1/types/scalars/oci-repo-name.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Bundle name (e.g., 'aws-aurora-postgres')
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Semver!</b></code>](/api/graphql/v1/types/scalars/semver.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version\} 
+Resolved semantic version (e.g., '1.2.3')
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+What this bundle provides
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>icon</b></code>](#icon)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#icon\} 
+URL to the bundle icon
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>sourceUrl</b></code>](#source-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#source-url\} 
+URL to the bundle source code
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When this bundle version was published (UTC)
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+When this bundle version was last modified (UTC)
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>repo</b></code>](#repo)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#repo\} 
+OCI repository path for this bundle (e.g., 'aws-aurora-postgres')
+
+
+
+
+
+
+### Returned By
+
+[`bundle`](/api/graphql/v1/operations/queries/bundle.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+
+### Member Of
+
+[`Instance`](/api/graphql/v1/types/objects/instance.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

@@ -1,0 +1,74 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: create-organization-input
+title: CreateOrganizationInput
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Create a new organization. An organization is the top-level container for all your projects, environments, and infrastructure resources.
+
+
+```graphql
+input CreateOrganizationInput {
+  id: String!
+  name: String!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateOrganizationInput.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+A short, memorable identifier for looking up this organization in the API and CLI. Choose something concise and meaningful—human-readable, not a UUID. Max 20 characters, lowercase alphanumeric only (a-z, 0-9). Immutable after creation.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateOrganizationInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+A human-readable name for the organization
+
+
+
+
+
+
+### Member Of
+
+[`createOrganization`](/api/graphql/v1/operations/mutations/create-organization.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

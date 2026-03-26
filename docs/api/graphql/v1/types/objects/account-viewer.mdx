@@ -53,11 +53,20 @@ type AccountViewer {
   lastName: String
   createdAt: DateTime!
   updatedAt: DateTime!
+  avatar: AvatarViewer
   organizations(
     sort: ViewerOrganizationsSort
     cursor: Cursor
   ): ViewerOrganizationsPage
   defaultOrganization: ViewerOrganization
+  identities(
+    sort: IdentitiesSort
+    cursor: Cursor
+  ): IdentitiesViewerPage
+  invites(
+    sort: InvitesSort
+    cursor: Cursor
+  ): InvitesViewerPage
 }
 ```
 
@@ -90,6 +99,10 @@ When you signed up (UTC)
 When your profile was last updated (UTC)
 
 
+#### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>avatar</b></code>](#avatar)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AvatarViewer</b></code>](/api/graphql/v1/types/objects/avatar-viewer.mdx) <Badge class="badge badge--secondary " text="object"/> \{#avatar\} 
+Your profile avatar.
+
+
 #### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>organizations</b></code>](#organizations)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ViewerOrganizationsPage</b></code>](/api/graphql/v1/types/objects/viewer-organizations-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#organizations\} 
 Organizations you belong to.
 ##### [<code style={{ fontWeight: 'normal' }}>AccountViewer.organizations.<b>sort</b></code>](#account-viewer-organizations-sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ViewerOrganizationsSort</b></code>](/api/graphql/v1/types/inputs/viewer-organizations-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#account-viewer-organizations-sort\} 
@@ -102,6 +115,26 @@ Pagination cursor from a previous response
 
 #### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>defaultOrganization</b></code>](#default-organization)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ViewerOrganization</b></code>](/api/graphql/v1/types/objects/viewer-organization.mdx) <Badge class="badge badge--secondary " text="object"/> \{#default-organization\} 
 Your most recently joined organization. Useful for setting a default context.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>identities</b></code>](#identities)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IdentitiesViewerPage</b></code>](/api/graphql/v1/types/objects/identities-viewer-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#identities\} 
+OAuth/OIDC identities linked to your account.
+##### [<code style={{ fontWeight: 'normal' }}>AccountViewer.identities.<b>sort</b></code>](#account-viewer-identities-sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IdentitiesSort</b></code>](/api/graphql/v1/types/inputs/identities-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#account-viewer-identities-sort\} 
+How to sort
+
+
+##### [<code style={{ fontWeight: 'normal' }}>AccountViewer.identities.<b>cursor</b></code>](#account-viewer-identities-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#account-viewer-identities-cursor\} 
+Pagination cursor
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>invites</b></code>](#invites)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InvitesViewerPage</b></code>](/api/graphql/v1/types/objects/invites-viewer-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#invites\} 
+Pending group membership invitations.
+##### [<code style={{ fontWeight: 'normal' }}>AccountViewer.invites.<b>sort</b></code>](#account-viewer-invites-sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InvitesSort</b></code>](/api/graphql/v1/types/inputs/invites-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#account-viewer-invites-sort\} 
+How to sort
+
+
+##### [<code style={{ fontWeight: 'normal' }}>AccountViewer.invites.<b>cursor</b></code>](#account-viewer-invites-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#account-viewer-invites-cursor\} 
+Pagination cursor
 
 
 

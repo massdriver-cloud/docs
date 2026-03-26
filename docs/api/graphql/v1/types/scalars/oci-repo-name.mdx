@@ -1,0 +1,63 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: oci-repo-name
+title: OciRepoName
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+OCI repository name (e.g., 'aws-aurora-postgres').
+
+The short name of an OCI repository in your organization's catalog.
+
+
+```graphql
+scalar OciRepoName
+```
+
+
+
+
+
+
+
+
+### Member Of
+
+[`AddComponentInput`](/api/graphql/v1/types/inputs/add-component-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`Bundle`](/api/graphql/v1/types/objects/bundle.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`BundleLeaf`](/api/graphql/v1/types/objects/bundle-leaf.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`OciRepo`](/api/graphql/v1/types/objects/oci-repo.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`OciRepoLeaf`](/api/graphql/v1/types/objects/oci-repo-leaf.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`OciRepoNameFilter`](/api/graphql/v1/types/inputs/oci-repo-name-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

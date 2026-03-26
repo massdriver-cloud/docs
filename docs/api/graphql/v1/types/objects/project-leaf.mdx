@@ -52,7 +52,6 @@ type ProjectLeaf {
   description: String
   createdAt: DateTime!
   updatedAt: DateTime!
-  deletable: Deletable!
   cost: CostSummary!
 }
 ```
@@ -82,10 +81,6 @@ When this project was created (UTC)
 When this project was last modified (UTC)
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ProjectLeaf.<b>deletable</b></code>](#deletable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Deletable!</b></code>](/api/graphql/v1/types/objects/deletable.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#deletable\} 
-Whether this project can be deleted and any constraints preventing deletion.
-
-
 #### [<code style={{ fontWeight: 'normal' }}>ProjectLeaf.<b>cost</b></code>](#cost)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CostSummary!</b></code>](/api/graphql/v1/types/objects/cost-summary.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#cost\} 
 Cloud provider costs for this project.
 
@@ -96,4 +91,4 @@ Cloud provider costs for this project.
 
 ### Member Of
 
-[`EnvironmentLeaf`](/api/graphql/v1/types/objects/environment-leaf.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ProjectsPage`](/api/graphql/v1/types/objects/projects-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`ComponentLeaf`](/api/graphql/v1/types/objects/component-leaf.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentLeaf`](/api/graphql/v1/types/objects/environment-leaf.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ProjectsPage`](/api/graphql/v1/types/objects/projects-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

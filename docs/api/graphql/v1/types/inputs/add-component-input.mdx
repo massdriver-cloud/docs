@@ -1,0 +1,84 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: add-component-input
+title: AddComponentInput
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Add an infrastructure component to a project's blueprint. Each component is a specific instance of a bundle (like a Redis cache or PostgreSQL database) that composes with other components to form your application.
+
+
+```graphql
+input AddComponentInput {
+  description: String
+  id: String!
+  name: String!
+  ociRepoName: OciRepoName!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AddComponentInput.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+Optional description of this component's purpose
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AddComponentInput.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+A short, memorable identifier for this component. This becomes the final segment of package identifiers. For example, project 'ecomm' with environment 'prod' and component 'db' creates 'ecomm-prod-db'. Max 20 characters, lowercase alphanumeric only (a-z, 0-9). Immutable after creation.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AddComponentInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Display name for this component (e.g., 'Billing Database')
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AddComponentInput.<b>ociRepoName</b></code>](#oci-repo-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoName!</b></code>](/api/graphql/v1/types/scalars/oci-repo-name.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#oci-repo-name\} 
+Name of the OCI repository for the bundle to add (e.g., 'aws-aurora-postgres')
+
+
+
+
+
+
+### Member Of
+
+[`addComponent`](/api/graphql/v1/operations/mutations/add-component.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

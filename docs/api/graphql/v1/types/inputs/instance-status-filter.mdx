@@ -1,0 +1,74 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: instance-status-filter
+title: InstanceStatusFilter
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Filter for instance status. All provided operators are combined with AND.
+
+
+```graphql
+input InstanceStatusFilter {
+  eq: InstanceStatus
+  in: [InstanceStatus!]
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>InstanceStatusFilter.<b>eq</b></code>](#eq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InstanceStatus</b></code>](/api/graphql/v1/types/enums/instance-status.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#eq\} 
+Exact match
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InstanceStatusFilter.<b>in</b></code>](#in)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[InstanceStatus!]</b></code>](/api/graphql/v1/types/enums/instance-status.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="enum"/> \{#in\} 
+Match any of these statuses
+
+
+
+
+
+
+### Member Of
+
+[`InstancesFilter`](/api/graphql/v1/types/inputs/instances-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>
