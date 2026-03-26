@@ -16,8 +16,8 @@ oidc:
   - provider: "google"
     authorizeUrl: "https://accounts.google.com/o/oauth2/v2/auth"
     tokenUrl: "https://oauth2.googleapis.com/token"
-    clientId: "your-client-id"
-    clientSecret: "your-client-secret"
+    clientId: "<your-client-id>"
+    clientSecret: "<your-client-secret>"
 ```
 
 ### Redirect URI
@@ -83,9 +83,9 @@ oidc:
   - provider: "github"
     authorizeUrl: "https://github.com/login/oauth/authorize"
     tokenUrl: "https://github.com/login/oauth/access_token"
-    clientId: <your-github-client-id>
-    clientSecret: <your-github-client-secret>
-    autojoinOrganization: <your org>
+    clientId: "<your-github-client-id>"
+    clientSecret: "<your-github-client-secret>"
+    autojoinOrganization: "<your org>"
     uiLabel: "GitHub"
     uiIconUrl: "https://cdn.jsdelivr.net/npm/simple-icons@v16/icons/github.svg"
 ```
@@ -112,9 +112,9 @@ oidc:
   - provider: "google"
     authorizeUrl: "https://accounts.google.com/o/oauth2/v2/auth"
     tokenUrl: "https://oauth2.googleapis.com/token"
-    clientId: <your-google-client-id>
-    clientSecret: <your-google-client-secret>
-    autojoinOrganization: <your org>
+    clientId: "<your-google-client-id>"
+    clientSecret: "<your-google-client-secret>"
+    autojoinOrganization: "<your org>"
     uiLabel: "Google"
     uiIconUrl: "https://cdn.jsdelivr.net/npm/simple-icons@v16/icons/google.svg"
 ```
@@ -145,9 +145,9 @@ oidc:
   - provider: "microsoft"
     authorizeUrl: "https://login.microsoftonline.com/<tenant-id>/oauth2/v2.0/authorize"
     tokenUrl: "https://login.microsoftonline.com/<tenant-id>/oauth2/v2.0/token"
-    clientId: <your-microsoft-client-id>
-    clientSecret: <your-microsoft-client-secret>
-    autojoinOrganization: <your org>
+    clientId: "<your-microsoft-client-id>"
+    clientSecret: "<your-microsoft-client-secret>"
+    autojoinOrganization: "<your org>"
     uiLabel: "Microsoft"
 ```
 
@@ -178,12 +178,12 @@ oidc:
   - provider: "okta"
     authorizeUrl: "https://your-org.okta.com/oauth2/v1/authorize"
     tokenUrl: "https://your-org.okta.com/oauth2/v1/token"
-    clientId: <your-okta-client-id>
-    clientSecret: <your-okta-client-secret>
-    autojoinOrganization: <your org>
+    clientId: "<your-okta-client-id>"
+    clientSecret: "<your-okta-client-secret>"
+    autojoinOrganization: "<your org>"
     uiLabel: "Okta"
     okta:
-      site: "https://your-org.okta.com"
+      site: "<https://your-org.okta.com>"
 ```
 
 **Using a custom authorization server:**
@@ -195,12 +195,12 @@ oidc:
   - provider: "okta"
     authorizeUrl: "https://your-org.okta.com/oauth2/<authorization-server-id>/v1/authorize"
     tokenUrl: "https://your-org.okta.com/oauth2/<authorization-server-id>/v1/token"
-    clientId: <your-okta-client-id>
-    clientSecret: <your-okta-client-secret>
-    autojoinOrganization: <your org>
+    clientId: "<your-okta-client-id>"
+    clientSecret: "<your-okta-client-secret>"
+    autojoinOrganization: "<your org>"
     uiLabel: "Okta"
     okta:
-      site: "https://your-org.okta.com"
+      site: "<https://your-org.okta.com>"
       authorizationServerId: "<authorization-server-id>"
 ```
 
@@ -213,14 +213,14 @@ oidc:
   - provider: "github"
     authorizeUrl: "https://github.com/login/oauth/authorize"
     tokenUrl: "https://github.com/login/oauth/access_token"
-    clientId: "github-client-id"
-    clientSecret: "github-client-secret"
+    clientId: "<your-github-client-id>"
+    clientSecret: "<your-github-client-secret>"
     uiLabel: "Sign in with GitHub"
   - provider: "google"
     authorizeUrl: "https://accounts.google.com/o/oauth2/v2/auth"
     tokenUrl: "https://oauth2.googleapis.com/token"
-    clientId: "google-client-id"
-    clientSecret: "google-client-secret"
+    clientId: "<your-google-client-id>"
+    clientSecret: "<your-google-client-secret>"
     uiLabel: "Sign in with Google"
 ```
 
