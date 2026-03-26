@@ -203,23 +203,7 @@ massdriver:
 
 ### Step 5: Configure Access
 
-Massdriver supports the OpenID Connect protocol for authentication to the platform.
-
-**Configuring OIDC**
-
-Update your `values-custom.yaml` file to include an `oidc` configuration. Massdriver currently supports 3 providers: `google`, `github` and `microsoft`.
-
-```yaml
-oidc:
-  - provider: "google"
-    authorizeUrl: "https://..."
-    tokenUrl: "https://..."
-    clientId: "11111111-2222-3333-44444-555555555555"
-    clientSecret: "some-secret-value"
-    autojoinOrganization: "myorg"  # The Massdriver organization to autojoin after OIDC authentication (optional)
-```
-
-The `autojoinOrganization` field will automatically associate new users who sign up with this OIDC method to specified Massdriver organization. Without this setting, new users will be prompted to create a new organization when signing up. Be sure to use the organization ID (such as `myorg`) not the organization name (such as `"My First Organization"`).
+Massdriver supports the [OpenID Connect (OIDC)](https://openid.net/connect/) protocol for authentication. You can configure one or more OIDC providers in your `values-custom.yaml` file. For full setup instructions including provider-specific configuration, see the [OIDC Configuration guide](./oidc).
 
 **QuickStart Login**
 
@@ -229,7 +213,7 @@ QuickStart login is intended to be used only for short-term access after install
 
 :::
 
-Massdriver also supports a single "QuickStart" user for testing purposes without requiring a full OIDC configuration.
+For initial testing, Massdriver supports a single "QuickStart" user without requiring OIDC configuration:
 
 ```yaml
 quickstart:
@@ -237,11 +221,7 @@ quickstart:
   password: p@ssw0rd
 ```
 
-:::tip Disabling QuickStart
-
-QuickStart login should be disabled as soon as OIDC is configured. This can be done by simply removing the QuickStart configuration from `values-custom.yaml`, or setting it to an empty object (`quickstart: {}`)
-
-:::
+Once OIDC is configured, disable QuickStart by removing the section from `values-custom.yaml` or setting it to an empty object (`quickstart: {}`).
 
 ### Step 6: Install Massdriver
 
