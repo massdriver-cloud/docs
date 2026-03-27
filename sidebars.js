@@ -91,6 +91,7 @@ module.exports = {
           link: { type: "doc", id: "platform-operations/self-hosted/self-hosted-overview" },
           items: [
             "platform-operations/self-hosted/self-hosted-install",
+            "platform-operations/self-hosted/self-hosted-oidc",
             "platform-operations/self-hosted/self-hosted-cloud-storage",
             "platform-operations/self-hosted/self-hosted-custom-provisioners",
           ],
