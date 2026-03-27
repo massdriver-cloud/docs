@@ -73,17 +73,17 @@
 [data-theme='dark'] .markdown h4,
 [data-theme='dark'] .markdown h5,
 [data-theme='dark'] .markdown h6 {
-  color: #ffffff;
+  color: var(--ifm-heading-color);
 }
 
 [data-theme='dark'] .markdown p,
 [data-theme='dark'] .markdown li,
 [data-theme='dark'] .markdown td {
-  color: #e3e3e3;
+  color: var(--ifm-font-color-base);
 }
 
 [data-theme='dark'] .markdown strong {
-  color: #ffffff;
+  color: var(--ifm-heading-color);
 }
 
 /* Breadcrumbs */
@@ -101,10 +101,8 @@
   background-color: #333;
 }
 
-/* Doc page wrapper and sidebar container */
-[data-theme='dark'] .docMainWrapper,
-[data-theme='dark'] [class*='docPage'],
-[data-theme='dark'] [class*='docMainContainer'] {
+/* Doc page wrapper */
+[data-theme='dark'] #__docusaurus {
   background-color: var(--ifm-background-color);
 }
 
@@ -121,11 +119,11 @@
   color: var(--ifm-color-primary);
 }
 
-/* Inline code in dark mode */
-[data-theme='dark'] code {
+/* Inline code in dark mode (exclude code blocks) */
+[data-theme='dark'] :not(pre) > code {
   background-color: #2a2a2d;
   border-color: #444;
-  color: #e3e3e3;
+  color: var(--ifm-font-color-base);
 }
 
 /* Announcement bar dark mode */
