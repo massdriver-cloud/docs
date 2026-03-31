@@ -1,6 +1,6 @@
 ---
-id: integrations-azure-cost-management
-slug: /reference/integrations/azure-cost-management
+id: azure-cost-management-exports
+slug: /reference/integrations/azure-cost-management-exports
 title: Azure Cost Management Exports
 sidebar_label: Azure Cost Management
 ---
