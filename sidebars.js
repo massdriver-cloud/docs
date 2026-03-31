@@ -123,10 +123,11 @@ module.exports = {
         {
           type: "category",
           label: "Integrations",
-          link: { type: "doc", id: "reference/integrations/integrations-overview" },
+          link: { type: "doc", id: "reference/integrations/overview" },
           items: [
-            "reference/integrations/integrations-aws-cost-reports",
-            "reference/integrations/integrations-azure-cost-management",
+            "reference/integrations/aws-cost-and-usage-reports",
+            "reference/integrations/azure-cost-management-exports",
+            "reference/integrations/scim",
           ],
         },
         "reference/identifier-constraints",

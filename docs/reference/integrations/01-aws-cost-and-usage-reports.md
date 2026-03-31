@@ -1,6 +1,6 @@
 ---
-id: integrations-aws-cost-reports
-slug: /reference/integrations/aws-cost-reports
+id: aws-cost-and-usage-reports
+slug: /reference/integrations/aws-cost-and-usage-reports
 title: AWS Cost and Usage Reports
 sidebar_label: AWS Cost Reports
 ---
