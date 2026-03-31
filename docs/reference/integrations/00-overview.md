@@ -15,8 +15,8 @@ Massdriver integrations connect your cloud accounts to enable cost tracking, res
 
 | Integration | Cloud Provider | Description |
 |-------------|----------------|-------------|
-| [AWS Cost and Usage Reports](./aws-cost-reports) | AWS | Collect detailed billing data from AWS using Cost and Usage Reports |
-| [Azure Cost Management Exports](./azure-cost-management) | Azure | Collect cost data from Azure using Cost Management Exports |
+| [AWS Cost and Usage Reports](./aws-cost-and-usage-reports) | AWS | Collect detailed billing data from AWS using Cost and Usage Reports |
+| [Azure Cost Management Exports](./azure-cost-management-exports) | Azure | Collect cost data from Azure using Cost Management Exports |
 
 ## How Integrations Work
 
