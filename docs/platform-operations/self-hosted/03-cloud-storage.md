@@ -105,6 +105,29 @@ massdriver:
       region: <bucket region>
 ```
 
+Be sure that the AWS IAM Role has a trust policy that grants access to the S3Proxy service account to assume the role, as well as permissions to read and write to both the state and massdriver bucket.
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "IRSAAssumeRole",
+            "Effect": "Allow",
+            "Principal": {
+                "Federated": "<EKS OIDC provider ARN>"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+                "StringEquals": {
+                    "<EKS OIDC provider>:sub": "system:serviceaccount:massdriver:massdriver-s3proxy"
+                }
+            }
+        }
+    ]
+}
+```
+
 :::tip Bucket Names
 
 The `massdriverBucket` and `stateBucket` values **must match the actual S3 bucket names** you created in your AWS account. These buckets must exist before configuring Massdriver to use them.
