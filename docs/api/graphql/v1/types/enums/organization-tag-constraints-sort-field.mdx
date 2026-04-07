@@ -1,0 +1,79 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: organization-tag-constraints-sort-field
+title: OrganizationTagConstraintsSortField
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Available fields for sorting tag constraints.
+
+
+```graphql
+enum OrganizationTagConstraintsSortField {
+  KEY
+  SCOPE
+  CREATED_AT
+}
+```
+
+
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationTagConstraintsSortField.<b>KEY</b></code>](#key) \{#key\} 
+Sort alphabetically by tag key
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationTagConstraintsSortField.<b>SCOPE</b></code>](#scope) \{#scope\} 
+Sort by resource scope level
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationTagConstraintsSortField.<b>CREATED&#x005F;AT</b></code>](#created-at) \{#created-at\} 
+Sort by when the constraint was created
+
+
+
+
+
+
+### Member Of
+
+[`OrganizationTagConstraintsSort`](/api/graphql/v1/types/inputs/organization-tag-constraints-sort.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

@@ -50,6 +50,7 @@ type ProjectLeaf {
   id: ID!
   name: String!
   description: String
+  tags: Map!
   createdAt: DateTime!
   updatedAt: DateTime!
   cost: CostSummary!
@@ -71,6 +72,10 @@ Display name
 
 #### [<code style={{ fontWeight: 'normal' }}>ProjectLeaf.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
 What this project is for
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ProjectLeaf.<b>tags</b></code>](#tags)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/v1/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tags\} 
+Tags assigned directly to this project
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ProjectLeaf.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 

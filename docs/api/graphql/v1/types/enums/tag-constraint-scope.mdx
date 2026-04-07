@@ -1,0 +1,89 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: tag-constraint-scope
+title: TagConstraintScope
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+The resource level where a tag constraint applies.
+
+
+```graphql
+enum TagConstraintScope {
+  ORGANIZATION
+  PROJECT
+  ENVIRONMENT
+  COMPONENT
+  INSTANCE
+}
+```
+
+
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>TagConstraintScope.<b>ORGANIZATION</b></code>](#organization) \{#organization\} 
+Tag is set on the organization
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TagConstraintScope.<b>PROJECT</b></code>](#project) \{#project\} 
+Tag is set on projects
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TagConstraintScope.<b>ENVIRONMENT</b></code>](#environment) \{#environment\} 
+Tag is set on environments
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TagConstraintScope.<b>COMPONENT</b></code>](#component) \{#component\} 
+Tag is set on components
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TagConstraintScope.<b>INSTANCE</b></code>](#instance) \{#instance\} 
+Tag is set on instances
+
+
+
+
+
+
+### Member Of
+
+[`CreateOrganizationTagConstraintInput`](/api/graphql/v1/types/inputs/create-organization-tag-constraint-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`OrganizationTagConstraint`](/api/graphql/v1/types/objects/organization-tag-constraint.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`OrganizationTagConstraintLeaf`](/api/graphql/v1/types/objects/organization-tag-constraint-leaf.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

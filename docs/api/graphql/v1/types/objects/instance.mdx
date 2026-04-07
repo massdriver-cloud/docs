@@ -50,12 +50,23 @@ type Instance {
   id: ID!
   name: String!
   status: InstanceStatus!
+  tags: Map!
   version: String!
   releaseStrategy: ReleaseStrategy!
   createdAt: DateTime!
   updatedAt: DateTime!
+  resolvedVersion: String!
+  deployedVersion: String
+  availableUpgrade: String
+  cost: CostSummary!
   environment: Environment
   bundle: Bundle
+  resources(
+    cursor: Cursor
+  ): InstanceResourcesPage
+  dependencies(
+    cursor: Cursor
+  ): InstanceDependenciesPage
 }
 ```
 
@@ -69,11 +80,15 @@ type Instance {
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Instance.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
-Instance display name
+Display name
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Instance.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InstanceStatus!</b></code>](/api/graphql/v1/types/enums/instance-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
 Current state of the instance
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Instance.<b>tags</b></code>](#tags)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/v1/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tags\} 
+Tags assigned directly to this instance
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Instance.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version\} 
@@ -92,12 +107,40 @@ When this instance was created (UTC)
 When this instance was last modified (UTC)
 
 
+#### [<code style={{ fontWeight: 'normal' }}>Instance.<b>resolvedVersion</b></code>](#resolved-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#resolved-version\} 
+The actual version resolved from the version constraint, used for the next deployment.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Instance.<b>deployedVersion</b></code>](#deployed-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#deployed-version\} 
+The version last deployed to infrastructure. May differ from resolvedVersion if not yet deployed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Instance.<b>availableUpgrade</b></code>](#available-upgrade)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#available-upgrade\} 
+Newest version available for upgrade, or null if already on the latest matching version.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Instance.<b>cost</b></code>](#cost)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CostSummary!</b></code>](/api/graphql/v1/types/objects/cost-summary.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#cost\} 
+Cloud provider costs for this instance.
+
+
 #### [<code style={{ fontWeight: 'normal' }}>Instance.<b>environment</b></code>](#environment)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Environment</b></code>](/api/graphql/v1/types/objects/environment.mdx) <Badge class="badge badge--secondary " text="object"/> \{#environment\} 
 The environment this instance is deployed in.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Instance.<b>bundle</b></code>](#bundle)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Bundle</b></code>](/api/graphql/v1/types/objects/bundle.mdx) <Badge class="badge badge--secondary " text="object"/> \{#bundle\} 
 The bundle version currently deployed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Instance.<b>resources</b></code>](#resources)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InstanceResourcesPage</b></code>](/api/graphql/v1/types/objects/instance-resources-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#resources\} 
+Resources produced by this instance (its output artifacts).
+##### [<code style={{ fontWeight: 'normal' }}>Instance.resources.<b>cursor</b></code>](#instance-resources-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#instance-resources-cursor\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Instance.<b>dependencies</b></code>](#dependencies)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InstanceDependenciesPage</b></code>](/api/graphql/v1/types/objects/instance-dependencies-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#dependencies\} 
+Dependencies consumed by this instance (artifacts from other instances wired via connections).
+##### [<code style={{ fontWeight: 'normal' }}>Instance.dependencies.<b>cursor</b></code>](#instance-dependencies-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#instance-dependencies-cursor\} 
+
 
 
 

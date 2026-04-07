@@ -50,6 +50,7 @@ input CreateEnvironmentInput {
   description: String
   id: String!
   name: String!
+  tags: Map
 }
 ```
 
@@ -68,6 +69,10 @@ A short, memorable identifier for looking up this environment in the API and CLI
 
 #### [<code style={{ fontWeight: 'normal' }}>CreateEnvironmentInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
 A human-readable name for the environment
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateEnvironmentInput.<b>tags</b></code>](#tags)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/v1/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#tags\} 
+Key-value tags for this environment. Keys and values must be strings. Must conform to the organization's tag constraints for the environment scope.
 
 
 

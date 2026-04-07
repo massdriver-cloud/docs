@@ -49,6 +49,7 @@ Update an existing project's name and description. The ID cannot be changed afte
 input UpdateProjectInput {
   description: String
   name: String
+  tags: Map
 }
 ```
 
@@ -63,6 +64,10 @@ An optional description of the project's purpose or contents
 
 #### [<code style={{ fontWeight: 'normal' }}>UpdateProjectInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
 A human-readable name for the project
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateProjectInput.<b>tags</b></code>](#tags)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/v1/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#tags\} 
+Key-value tags for this project. Keys and values must be strings. Must conform to the organization's tag constraints for the project scope.
 
 
 

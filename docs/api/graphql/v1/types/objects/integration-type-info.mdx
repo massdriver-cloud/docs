@@ -1,0 +1,94 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: integration-type-info
+title: IntegrationTypeInfo
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A supported integration type that can be configured for your organization.
+
+
+```graphql
+type IntegrationTypeInfo {
+  id: String!
+  name: String!
+  description: String
+  docs: String!
+  configSchema: Map!
+  authSchema: Map!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationTypeInfo.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+Unique identifier for this integration type
+
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationTypeInfo.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Display name
+
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationTypeInfo.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+What this integration does
+
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationTypeInfo.<b>docs</b></code>](#docs)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#docs\} 
+URL to the documentation
+
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationTypeInfo.<b>configSchema</b></code>](#config-schema)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/v1/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#config-schema\} 
+JSON Schema for the `config` field when creating this integration
+
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationTypeInfo.<b>authSchema</b></code>](#auth-schema)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/v1/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#auth-schema\} 
+JSON Schema for the `auth` field when creating this integration
+
+
+
+
+
+
+### Member Of
+
+[`IntegrationTypesPage`](/api/graphql/v1/types/objects/integration-types-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

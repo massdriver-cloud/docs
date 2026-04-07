@@ -54,6 +54,26 @@
       "source": "/guides/self-hosted-install",
       "destination": "/self-hosted/install",
       "permanent": true
+    },
+    {
+      "source": "/integrations/overview",
+      "destination": "/reference/integrations/overview",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/aws-cost-and-usage-reports",
+      "destination": "/reference/integrations/aws-cost-reports",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/azure-cost-management-exports",
+      "destination": "/reference/integrations/azure-cost-management",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/scim",
+      "destination": "/reference/integrations/scim",
+      "permanent": true
     }
   ]
 }

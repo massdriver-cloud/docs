@@ -1,0 +1,104 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: access-token
+title: AccessToken
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+An access token's metadata. Does not include the raw token value.
+
+
+```graphql
+type AccessToken {
+  id: ID!
+  name: String!
+  prefix: String!
+  scopes: [String!]!
+  expiresAt: DateTime!
+  revokedAt: DateTime
+  lastUsedAt: DateTime
+  createdAt: DateTime!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AccessToken.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+Access token identifier
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccessToken.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Label for this token
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccessToken.<b>prefix</b></code>](#prefix)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#prefix\} 
+Short prefix for identifying this token (e.g., md&#x005F;a1b2c3d4)
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccessToken.<b>scopes</b></code>](#scopes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#scopes\} 
+Permission scopes granted to this token
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccessToken.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#expires-at\} 
+When this token expires (UTC)
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccessToken.<b>revokedAt</b></code>](#revoked-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#revoked-at\} 
+When this token was revoked, if applicable (UTC)
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccessToken.<b>lastUsedAt</b></code>](#last-used-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#last-used-at\} 
+When this token was last used for authentication (UTC)
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccessToken.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When this token was created (UTC)
+
+
+
+
+
+
+### Member Of
+
+[`AccessTokenPayload`](/api/graphql/v1/types/objects/access-token-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

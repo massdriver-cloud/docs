@@ -49,6 +49,7 @@ Update an existing environment's name and description. The ID cannot be changed 
 input UpdateEnvironmentInput {
   description: String
   name: String
+  tags: Map
 }
 ```
 
@@ -63,6 +64,10 @@ An optional description of the environment's purpose
 
 #### [<code style={{ fontWeight: 'normal' }}>UpdateEnvironmentInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
 A human-readable name for the environment
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateEnvironmentInput.<b>tags</b></code>](#tags)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/v1/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#tags\} 
+Key-value tags for this environment. Keys and values must be strings. Must conform to the organization's tag constraints for the environment scope.
 
 
 

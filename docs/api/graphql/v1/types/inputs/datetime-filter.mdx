@@ -1,0 +1,90 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: datetime-filter
+title: DatetimeFilter
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Filter for datetime fields. All provided operators are combined with AND.
+Useful for date range queries.
+
+
+```graphql
+input DatetimeFilter {
+  eq: DateTime
+  gt: DateTime
+  gte: DateTime
+  lt: DateTime
+  lte: DateTime
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>DatetimeFilter.<b>eq</b></code>](#eq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#eq\} 
+Exact match
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DatetimeFilter.<b>gt</b></code>](#gt)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#gt\} 
+After this date/time
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DatetimeFilter.<b>gte</b></code>](#gte)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#gte\} 
+On or after this date/time
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DatetimeFilter.<b>lt</b></code>](#lt)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#lt\} 
+Before this date/time
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DatetimeFilter.<b>lte</b></code>](#lte)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#lte\} 
+On or before this date/time
+
+
+
+
+
+
+### Member Of
+
+[`AuditLogsFilter`](/api/graphql/v1/types/inputs/audit-logs-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

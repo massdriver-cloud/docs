@@ -1,0 +1,99 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: audit-log-leaf
+title: AuditLogLeaf
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+An audit log event returned in list results.
+
+
+```graphql
+type AuditLogLeaf {
+  id: ID!
+  occurredAt: DateTime!
+  type: String!
+  source: String!
+  subject: String
+  data: Map
+  actor: V1AuditLogActor!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AuditLogLeaf.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+Unique event identifier
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AuditLogLeaf.<b>occurredAt</b></code>](#occurred-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#occurred-at\} 
+When the event occurred (UTC)
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AuditLogLeaf.<b>type</b></code>](#type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#type\} 
+Event type (e.g., 'project.created')
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AuditLogLeaf.<b>source</b></code>](#source)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#source\} 
+Where the event originated
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AuditLogLeaf.<b>subject</b></code>](#subject)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#subject\} 
+Resource the event applies to (MRI format)
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AuditLogLeaf.<b>data</b></code>](#data)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/v1/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#data\} 
+Event payload with context and resource details
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AuditLogLeaf.<b>actor</b></code>](#actor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>V1AuditLogActor!</b></code>](/api/graphql/v1/types/objects/v1-audit-log-actor.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#actor\} 
+Who performed this action
+
+
+
+
+
+
+### Member Of
+
+[`AuditLogsPage`](/api/graphql/v1/types/objects/audit-logs-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
