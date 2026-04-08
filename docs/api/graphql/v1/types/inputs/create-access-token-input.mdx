@@ -1,0 +1,84 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: create-access-token-input
+title: CreateAccessTokenInput
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Create a scoped, time-limited access token for API authentication.
+
+
+```graphql
+input CreateAccessTokenInput {
+  expiresInMinutes: Int
+  name: String!
+  scopes: [String!]!
+  serviceAccountId: String
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateAccessTokenInput.<b>expiresInMinutes</b></code>](#expires-in-minutes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/api/graphql/v1/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#expires-in-minutes\} 
+How many minutes until this token expires. Defaults to 60 (1 hour). Maximum ~5,256,000 (10 years).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateAccessTokenInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+A label to identify this token (e.g., 'CI deploy key')
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateAccessTokenInput.<b>scopes</b></code>](#scopes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#scopes\} 
+Permission scopes. At least one required. Currently only ["&#x002A;"] (full access) is supported.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateAccessTokenInput.<b>serviceAccountId</b></code>](#service-account-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#service-account-id\} 
+Create the token on behalf of this service account. Omit to create for the authenticated identity.
+
+
+
+
+
+
+### Member Of
+
+[`createAccessToken`](/api/graphql/v1/operations/mutations/create-access-token.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

@@ -1,0 +1,74 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: integrations-filter
+title: IntegrationsFilter
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Filter options for the integrations list.
+
+
+```graphql
+input IntegrationsFilter {
+  id: StringFilter
+  status: IntegrationStatusFilter
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationsFilter.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>StringFilter</b></code>](/api/graphql/v1/types/inputs/string-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#id\} 
+Filter by integration type ID
+
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationsFilter.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IntegrationStatusFilter</b></code>](/api/graphql/v1/types/inputs/integration-status-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#status\} 
+Filter by status
+
+
+
+
+
+
+### Member Of
+
+[`integrations`](/api/graphql/v1/operations/queries/integrations.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

@@ -1,0 +1,84 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: audit-logs-filter
+title: AuditLogsFilter
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Filter which audit logs to return.
+
+
+```graphql
+input AuditLogsFilter {
+  occurredAt: DatetimeFilter
+  type: StringFilter
+  actorType: AuditLogActorTypeFilter
+  actorId: IdFilter
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AuditLogsFilter.<b>occurredAt</b></code>](#occurred-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DatetimeFilter</b></code>](/api/graphql/v1/types/inputs/datetime-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#occurred-at\} 
+Filter by when the event occurred
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AuditLogsFilter.<b>type</b></code>](#type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>StringFilter</b></code>](/api/graphql/v1/types/inputs/string-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#type\} 
+Filter by event type (e.g., 'project.created')
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AuditLogsFilter.<b>actorType</b></code>](#actor-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AuditLogActorTypeFilter</b></code>](/api/graphql/v1/types/inputs/audit-log-actor-type-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#actor-type\} 
+Filter by who performed the action
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AuditLogsFilter.<b>actorId</b></code>](#actor-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IdFilter</b></code>](/api/graphql/v1/types/inputs/id-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#actor-id\} 
+Filter by the actor's ID
+
+
+
+
+
+
+### Member Of
+
+[`auditLogs`](/api/graphql/v1/operations/queries/audit-logs.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

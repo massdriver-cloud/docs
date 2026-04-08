@@ -1,0 +1,89 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: resource
+title: Resource
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+An artifact produced or consumed by an instance.
+
+
+```graphql
+type Resource {
+  id: ID!
+  name: String!
+  type: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>Resource.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+Resource identifier (`package.field` for provisioned resources, UUID for imports)
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Resource.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Resource name
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Resource.<b>type</b></code>](#type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#type\} 
+Resource type (e.g., the artifact definition type)
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Resource.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When this resource was created (UTC)
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Resource.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+When this resource was last modified (UTC)
+
+
+
+
+
+
+### Member Of
+
+[`InstanceDependency`](/api/graphql/v1/types/objects/instance-dependency.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`InstanceResource`](/api/graphql/v1/types/objects/instance-resource.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`RemoteReference`](/api/graphql/v1/types/objects/remote-reference.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

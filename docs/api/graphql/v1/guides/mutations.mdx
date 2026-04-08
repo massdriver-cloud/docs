@@ -46,37 +46,6 @@ All mutations return a payload object with:
 | `result` | Resource type | The created/updated resource (null on failure) |
 | `messages` | `[ValidationMessage]` | Validation errors (empty on success) |
 
-## Identifier Pattern
-
-When creating resources, you provide a short `id` in the input:
-
-```graphql
-input: {
-  id: "staging"        # Short identifier you choose
-  name: "Staging"
-}
-```
-
-The API returns a full identifier that includes parent context:
-
-```json
-{
-  "result": {
-    "id": "myproj-staging"  # Full identifier
-  }
-}
-```
-
-Use the full identifier for subsequent queries and mutations:
-
-```graphql
-query {
-  environment(organizationId: "acme", id: "myproj-staging") {
-    name
-  }
-}
-```
-
 ## Common Mutations
 
 ### Create Project

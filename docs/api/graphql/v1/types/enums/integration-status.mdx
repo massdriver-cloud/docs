@@ -1,0 +1,84 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: integration-status
+title: IntegrationStatus
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+The current status of an integration.
+
+
+```graphql
+enum IntegrationStatus {
+  DISABLED
+  DISABLING
+  ENABLING
+  ENABLED
+}
+```
+
+
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationStatus.<b>DISABLED</b></code>](#disabled) \{#disabled\} 
+Integration is inactive
+
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationStatus.<b>DISABLING</b></code>](#disabling) \{#disabling\} 
+Integration is being deactivated
+
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationStatus.<b>ENABLING</b></code>](#enabling) \{#enabling\} 
+Integration is being activated
+
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationStatus.<b>ENABLED</b></code>](#enabled) \{#enabled\} 
+Integration is active and running
+
+
+
+
+
+
+### Member Of
+
+[`Integration`](/api/graphql/v1/types/objects/integration.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`IntegrationActivation`](/api/graphql/v1/types/objects/integration-activation.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`IntegrationLeaf`](/api/graphql/v1/types/objects/integration-leaf.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`IntegrationStatusFilter`](/api/graphql/v1/types/inputs/integration-status-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

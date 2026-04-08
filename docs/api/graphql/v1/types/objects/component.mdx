@@ -50,6 +50,8 @@ type Component {
   id: ID!
   name: String!
   description: String
+  tags: Map!
+  position: ComponentPosition
   createdAt: DateTime!
   updatedAt: DateTime!
   ociRepo: OciRepo
@@ -71,7 +73,15 @@ Display name
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Component.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
-Component description
+What this component is for
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Component.<b>tags</b></code>](#tags)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/v1/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tags\} 
+Tags assigned directly to this component
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Component.<b>position</b></code>](#position)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ComponentPosition</b></code>](/api/graphql/v1/types/objects/component-position.mdx) <Badge class="badge badge--secondary " text="object"/> \{#position\} 
+Position on the canvas
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Component.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 

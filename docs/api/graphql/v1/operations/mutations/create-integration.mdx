@@ -1,0 +1,91 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: create-integration
+title: createIntegration
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+<Badge class="badge badge--secondary badge--primary" text="form schema"/>
+
+
+
+Create and activate an integration for your organization.
+
+
+
+
+```graphql
+createIntegration(
+  organizationId: ID!
+  id: ID!
+  input: CreateIntegrationInput!
+): IntegrationActivationPayload
+```
+
+
+
+
+
+### Form Schema
+
+This mutation supports dynamic form generation using JSON Schema.
+
+- [JSON Schema](https://api.massdriver.cloud/graphql/v1/inputs/createIntegration.json)
+- [UI Schema](https://api.massdriver.cloud/graphql/v1/inputs/createIntegration.ui.json)
+
+<SchemaForm
+  schemaUrl="https://api.massdriver.cloud/graphql/v1/inputs/createIntegration.json"
+  uiSchemaUrl="https://api.massdriver.cloud/graphql/v1/inputs/createIntegration.ui.json"
+  name="createIntegration"
+/>
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>createIntegration.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization ID
+
+
+#### [<code style={{ fontWeight: 'normal' }}>createIntegration.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+The integration type to configure (e.g., 'aws-cost-and-usage-reports')
+
+
+#### [<code style={{ fontWeight: 'normal' }}>createIntegration.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CreateIntegrationInput!</b></code>](/api/graphql/v1/types/inputs/create-integration-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Create and activate an integration for your organization. The config and auth payloads must conform to the integration type's configSchema and authSchema respectively.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>IntegrationActivationPayload</b></code>](/api/graphql/v1/types/objects/integration-activation-payload.mdx) <Badge class="badge badge--secondary " text="object"/>

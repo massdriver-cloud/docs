@@ -1,0 +1,104 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: integration-activation
+title: IntegrationActivation
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A newly created integration with setup instructions.
+
+
+```graphql
+type IntegrationActivation {
+  id: ID!
+  integrationTypeId: String!
+  config: Map!
+  status: IntegrationStatus!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  nextRunAt: DateTime
+  instructions: String!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationActivation.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+Integration type identifier
+
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationActivation.<b>integrationTypeId</b></code>](#integration-type-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#integration-type-id\} 
+The type of integration
+
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationActivation.<b>config</b></code>](#config)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/v1/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#config\} 
+Integration-specific configuration
+
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationActivation.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IntegrationStatus!</b></code>](/api/graphql/v1/types/enums/integration-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
+Current status
+
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationActivation.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When this integration was created (UTC)
+
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationActivation.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+When this integration was last modified (UTC)
+
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationActivation.<b>nextRunAt</b></code>](#next-run-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#next-run-at\} 
+When this integration will next execute
+
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationActivation.<b>instructions</b></code>](#instructions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#instructions\} 
+Setup instructions for this integration. May contain sensitive credentials — store securely.
+
+
+
+
+
+
+### Member Of
+
+[`IntegrationActivationPayload`](/api/graphql/v1/types/objects/integration-activation-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

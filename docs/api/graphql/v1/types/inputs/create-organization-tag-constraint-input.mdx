@@ -1,0 +1,79 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: create-organization-tag-constraint-input
+title: CreateOrganizationTagConstraintInput
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Define a structural tag constraint for your organization. Tag constraints control which tags can be set on resources at each level of the hierarchy.
+
+
+```graphql
+input CreateOrganizationTagConstraintInput {
+  key: String!
+  required: Boolean
+  scope: TagConstraintScope!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateOrganizationTagConstraintInput.<b>key</b></code>](#key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#key\} 
+The tag key name. Must start with a letter. Keys starting with MD&#x005F; are reserved.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateOrganizationTagConstraintInput.<b>required</b></code>](#required)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/api/graphql/v1/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#required\} 
+Whether this tag must be set when creating a resource at the specified scope.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateOrganizationTagConstraintInput.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>TagConstraintScope!</b></code>](/api/graphql/v1/types/enums/tag-constraint-scope.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#scope\} 
+The resource level where this tag is set. Values cascade to child resources.
+
+
+
+
+
+
+### Member Of
+
+[`createOrganizationTagConstraint`](/api/graphql/v1/operations/mutations/create-organization-tag-constraint.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
