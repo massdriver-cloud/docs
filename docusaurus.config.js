@@ -49,11 +49,6 @@ module.exports = {
       },
       items: [
         {
-          href: 'https://roadmap.massdriver.cloud/',
-          label: 'Roadmap',
-          position: 'right'
-        },
-        {
           href: 'https://join.slack.com/t/massdrivercommunity/shared_invite/zt-1smvckvdj-jVFpBG2jF5XiYzX2njDCWA',
           label: 'Slack',
           position: 'right'
