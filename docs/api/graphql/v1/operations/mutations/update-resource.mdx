@@ -1,0 +1,91 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: update-resource
+title: updateResource
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+<Badge class="badge badge--secondary badge--primary" text="form schema"/>
+
+
+
+Update an imported resource's name or payload. Provisioned resources cannot be updated through the API.
+
+
+
+
+```graphql
+updateResource(
+  organizationId: ID!
+  id: ID!
+  input: UpdateResourceInput!
+): ResourcePayload
+```
+
+
+
+
+
+### Form Schema
+
+This mutation supports dynamic form generation using JSON Schema.
+
+- [JSON Schema](https://api.massdriver.cloud/graphql/v1/inputs/updateResource.json)
+- [UI Schema](https://api.massdriver.cloud/graphql/v1/inputs/updateResource.ui.json)
+
+<SchemaForm
+  schemaUrl="https://api.massdriver.cloud/graphql/v1/inputs/updateResource.json"
+  uiSchemaUrl="https://api.massdriver.cloud/graphql/v1/inputs/updateResource.ui.json"
+  name="updateResource"
+/>
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>updateResource.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization ID
+
+
+#### [<code style={{ fontWeight: 'normal' }}>updateResource.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+The resource ID
+
+
+#### [<code style={{ fontWeight: 'normal' }}>updateResource.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UpdateResourceInput!</b></code>](/api/graphql/v1/types/inputs/update-resource-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Update a resource's name or payload. Provisioned resources can only have their name updated. Imported resources can also update their payload.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ResourcePayload</b></code>](/api/graphql/v1/types/objects/resource-payload.mdx) <Badge class="badge badge--secondary " text="object"/>

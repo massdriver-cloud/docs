@@ -1,0 +1,74 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: oci-repo-tag
+title: OciRepoTag
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A published version tag in an OCI repository.
+
+
+```graphql
+type OciRepoTag {
+  tag: Semver!
+  createdAt: DateTime!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>OciRepoTag.<b>tag</b></code>](#tag)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Semver!</b></code>](/api/graphql/v1/types/scalars/semver.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tag\} 
+Semantic version (e.g., '1.2.3')
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciRepoTag.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When this version was published (UTC)
+
+
+
+
+
+
+### Member Of
+
+[`OciRepoTagsPage`](/api/graphql/v1/types/objects/oci-repo-tags-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

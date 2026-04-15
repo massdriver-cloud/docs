@@ -1,0 +1,84 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: bundles-filter
+title: BundlesFilter
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Filter which bundles to return.
+
+
+```graphql
+input BundlesFilter {
+  ociRepo: OciRepoNameFilter
+  resourceType: StringFilter
+  dependencyType: StringFilter
+  search: String
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>BundlesFilter.<b>ociRepo</b></code>](#oci-repo)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoNameFilter</b></code>](/api/graphql/v1/types/inputs/oci-repo-name-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#oci-repo\} 
+Filter by OCI repository name
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundlesFilter.<b>resourceType</b></code>](#resource-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>StringFilter</b></code>](/api/graphql/v1/types/inputs/string-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#resource-type\} 
+Filter by resource type produced (e.g., 'dynamodb-table')
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundlesFilter.<b>dependencyType</b></code>](#dependency-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>StringFilter</b></code>](/api/graphql/v1/types/inputs/string-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#dependency-type\} 
+Filter by dependency type consumed (e.g., 'iam-role')
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundlesFilter.<b>search</b></code>](#search)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#search\} 
+Unified search across bundle name, description, operator guide, and readme. Results are ranked by relevance by default. Pass sort to override with a specific field order. For terms longer than 3 characters, also matches bundle names by prefix. Pagination cursors from search results are not interchangeable with non-search cursors.
+
+
+
+
+
+
+### Member Of
+
+[`bundles`](/api/graphql/v1/operations/queries/bundles.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

@@ -1,0 +1,91 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: clone-project
+title: cloneProject
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+<Badge class="badge badge--secondary badge--primary" text="form schema"/>
+
+
+
+Create a new project by cloning another project's blueprint. All components and links are copied into the new project.
+
+
+
+
+```graphql
+cloneProject(
+  organizationId: ID!
+  sourceProjectId: ID!
+  input: CloneProjectInput!
+): ProjectPayload
+```
+
+
+
+
+
+### Form Schema
+
+This mutation supports dynamic form generation using JSON Schema.
+
+- [JSON Schema](https://api.massdriver.cloud/graphql/v1/inputs/cloneProject.json)
+- [UI Schema](https://api.massdriver.cloud/graphql/v1/inputs/cloneProject.ui.json)
+
+<SchemaForm
+  schemaUrl="https://api.massdriver.cloud/graphql/v1/inputs/cloneProject.json"
+  uiSchemaUrl="https://api.massdriver.cloud/graphql/v1/inputs/cloneProject.ui.json"
+  name="cloneProject"
+/>
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>cloneProject.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization ID
+
+
+#### [<code style={{ fontWeight: 'normal' }}>cloneProject.<b>sourceProjectId</b></code>](#source-project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#source-project-id\} 
+The project to clone the blueprint from
+
+
+#### [<code style={{ fontWeight: 'normal' }}>cloneProject.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CloneProjectInput!</b></code>](/api/graphql/v1/types/inputs/clone-project-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Attributes for the new project.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ProjectPayload</b></code>](/api/graphql/v1/types/objects/project-payload.mdx) <Badge class="badge badge--secondary " text="object"/>

@@ -42,7 +42,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-A deployment with its full details and related resources.
+A record of an infrastructure provisioning operation, tracking its progress, action, and outcome.
 
 
 ```graphql
@@ -117,3 +117,7 @@ The instance being deployed.
 ### Returned By
 
 [`deployment`](/api/graphql/v1/operations/queries/deployment.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+
+### Member Of
+
+[`DeploymentPayload`](/api/graphql/v1/types/objects/deployment-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`DeploymentsPage`](/api/graphql/v1/types/objects/deployments-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
