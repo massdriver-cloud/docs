@@ -25,7 +25,7 @@ The following configuration options are available:
 
 | Configuration Option | Type | Default | Description |
 |-|-|-|-|
-| `azure_service_principal` | object | `.connections.azure_service_principal` | `jq` path to a `massdriver/azure-service-principal` connection for authentication to Azure |
+| `azure_service_principal` | object | `.connections.azure_service_principal` | `jq` path to a `azure-service-principal` connection for authentication to Azure |
 | `location` | string | `"eastus"` | Azure region to deploy template resources into. Defaults to `"eastus"`. |
 | `scope` | string | `"group"` | Sets the [Azure Resource Manager deployment scope](https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/deploy-cli#deployment-scope). Currently supports `group` and `sub`. For more information, refer to the [Deployment Scope](#deployment-scope) section. |
 | `complete` | boolean | `true` | Sets the [Azure Resource Manager deployment mode](https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/deployment-modes) to "Complete" (sets the `--mode Complete` flag). If this is set to `false`, deployment mode will be "Incremental". Only applies to steps with scope `group`. For more information, refer to the [Deployment Mode](#deployment-mode) section. |
@@ -124,14 +124,14 @@ connections:
     - azure_service_principal
   properties:
     azure_service_principal:
-      $ref: massdriver/azure-service-principal
+      $ref: azure-service-principal
 
 artifacts:
   required:
     - storage_account
   properties:
     storage_account:
-      $ref: massdriver/azure-storage-account-blob
+      $ref: azure-storage-account-blob
 ```
 
 Since the artifact is named `storage_account` a file named `artifact_storage_account.jq` would need to be in the template directory and the provisioner would use this file as a JQ template, passing the params, connections and outputs to it. There are two approaches to building the proper artifact structure:

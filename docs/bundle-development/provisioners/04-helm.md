@@ -25,7 +25,7 @@ The following configuration options are available:
 
 | Configuration Option | Type | Default | Description |
 |-|-|-|-|
-| `kubernetes_cluster` | object | `.connections.kubernetes_cluster` | `jq` path to a `massdriver/kubernetes-cluster` connection for authentication to Kubernetes |
+| `kubernetes_cluster` | object | `.connections.kubernetes_cluster` | `jq` path to a `kubernetes-cluster` connection for authentication to Kubernetes |
 | `namespace` | string | `"default"` | Kubernetes namespace to install the chart into. Defaults to the `default` namespace |
 | `release_name` | string | (package name) | Specifies the release name for the helm chart. Defaults to the Massdriver package name if not specified. |
 | `.chart.repo` | string | `null` | Specifies the URL of the chart repo (required if using [remote chart](#local-vs-remote-chart-vs-oci-chart)) |
@@ -108,7 +108,7 @@ deployment:
     envs: {}
 ```
 
-To properly set these values in a Massdriver bundle, we likely would want the `commonLabels` value to come from [`md_metadata.default_tags`](https://docs.massdriver.cloud/bundles/development#massdriver-metadata), the `foo` value to come from params, and the `postgres` block to come from a connection. That means this bundle would require a `massdriver/postgres-authentication` connection named `database`. Since this is a Helm chart, it will also need a `massdriver/kubernetes-cluster` connection to provide authentication to the kubernetes cluster the chart is being installed into. The `massdriver.yaml` file would look something like:
+To properly set these values in a Massdriver bundle, we likely would want the `commonLabels` value to come from [`md_metadata.default_tags`](https://docs.massdriver.cloud/bundles/development#massdriver-metadata), the `foo` value to come from params, and the `postgres` block to come from a connection. That means this bundle would require a `postgres-authentication` connection named `database`. Since this is a Helm chart, it will also need a `kubernetes-cluster` connection to provide authentication to the kubernetes cluster the chart is being installed into. The `massdriver.yaml` file would look something like:
 
 ```yaml massdriver.yaml
 app:
@@ -135,9 +135,9 @@ connections:
     - database
   properties:
     kubernetes_cluster:
-      $ref: massdriver/kubernetes-cluster
+      $ref: kubernetes-cluster
     database:
-      $ref: massdriver/postgresql-authentication
+      $ref: postgresql-authentication
 ```
 ### params.jq
 
@@ -325,14 +325,14 @@ connections:
     - kubernetes_cluster
   properties:
     kubernetes_cluster:
-      $ref: massdriver/kubernetes-cluster
+      $ref: kubernetes-cluster
 
 artifacts:
   required:
     - api_endpoint
   properties:
     api_endpoint:
-      $ref: massdriver/api
+      $ref: api
 ```
 
 Since the artifact is named `api_endpoint` a file named `artifact_api_endpoint.jq` would need to be in the template directory and the provisioner would use this file as a JQ template, passing the params, connections and outputs to it. For this example, let's say the helm chart will produce two manifests: a `deployment`, and a `service`. The output of `helm get manifest` would be something like:

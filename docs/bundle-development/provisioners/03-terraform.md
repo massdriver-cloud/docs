@@ -111,14 +111,14 @@ connections:
   - aws_authentication
   properties:
     aws_authentication:
-      $ref: massdriver/aws-iam-role
+      $ref: aws-iam-role
 
 artifacts:
   required:
     - bucket
   properties:
     bucket:
-      $ref: massdriver/aws-s3-bucket
+      $ref: aws-s3-bucket
 ```
 
 Since the artifact is named `bucket` a file named `artifact_bucket.jq` would need to be in the module directory and the provisioner would use this file as a JQ template, passing the params, connections and outputs to it. There are two approaches to building the proper artifact structure:

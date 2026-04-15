@@ -232,7 +232,7 @@ mass bundle new \
   --name my-new-bundle \
   --template-name opentofu-module \
   --output-directory ./my-new-bundle \
-  --connections aws_authentication=massdriver/aws-iam-role
+  --connections aws_authentication=aws-iam-role
 ```
 
 ## Template Best Practices
@@ -243,9 +243,9 @@ Always include the appropriate cloud credential connection for your target cloud
 
 | Cloud | Artifact Definition | Suggested Name |
 |-------|---------------------|----------------|
-| AWS | `massdriver/aws-iam-role` | `aws_authentication` |
-| GCP | `massdriver/gcp-service-account` | `gcp_authentication` |
-| Azure | `massdriver/azure-service-principal` | `azure_service_principal` |
+| AWS | `aws-iam-role` | `aws_authentication` |
+| GCP | `gcp-service-account` | `gcp_authentication` |
+| Azure | `azure-service-principal` | `azure_service_principal` |
 
 ### 2. Use Configuration Presets
 
@@ -336,14 +336,14 @@ connections:
     - aws_authentication
   properties:
     aws_authentication:
-      $ref: massdriver/aws-iam-role
+      $ref: aws-iam-role
 
 artifacts:
   required:
     - bucket
   properties:
     bucket:
-      $ref: massdriver/aws-s3-bucket
+      $ref: aws-s3-bucket
 
 ui:
   ui:order:

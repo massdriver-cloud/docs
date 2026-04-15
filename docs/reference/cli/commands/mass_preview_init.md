@@ -33,7 +33,7 @@ The `preview.json` file serves two purposes in your preview environment:
 {
   "credentials": {
     // Using an AWS IAM Role
-    "massdriver/aws-iam-role": "00000000-0000-0000-0000-000000000000"
+    "aws-iam-role": "00000000-0000-0000-0000-000000000000"
   },
   "packageParams": {
     "database": {

@@ -92,7 +92,7 @@ connections:
     - vpc
   properties:
     vpc:
-      $ref: massdriver/aws-vpc
+      $ref: aws-vpc
 
 # Bundle produces a database artifact
 artifacts:
@@ -100,7 +100,7 @@ artifacts:
     - database
   properties:
     database:
-      $ref: massdriver/postgresql-authentication
+      $ref: postgresql-authentication
 ```
 
 ## Best Practices
