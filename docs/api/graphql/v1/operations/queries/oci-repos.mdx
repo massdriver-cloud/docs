@@ -1,0 +1,80 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: oci-repos
+title: ociRepos
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+List OCI repositories in your organization. Returns a paginated list sorted by name.
+
+
+```graphql
+ociRepos(
+  organizationId: ID!
+  filter: OciReposFilter
+  sort: OciReposSort
+  cursor: Cursor
+): OciReposPage
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>ociRepos.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization ID
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ociRepos.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciReposFilter</b></code>](/api/graphql/v1/types/inputs/oci-repos-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#filter\} 
+Filter results
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ociRepos.<b>sort</b></code>](#sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciReposSort</b></code>](/api/graphql/v1/types/inputs/oci-repos-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#sort\} 
+How to sort results. Defaults to name ascending, or relevance when search is active.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ociRepos.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#cursor\} 
+Pagination cursor from a previous response
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>OciReposPage</b></code>](/api/graphql/v1/types/objects/oci-repos-page.mdx) <Badge class="badge badge--secondary " text="object"/>

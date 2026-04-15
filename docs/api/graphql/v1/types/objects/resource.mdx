@@ -42,7 +42,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-An artifact produced or consumed by an instance.
+An infrastructure resource such as a cloud credential, database, or network.
 
 
 ```graphql
@@ -50,6 +50,8 @@ type Resource {
   id: ID!
   name: String!
   type: String
+  origin: ResourceOrigin!
+  resourceType: ResourceType
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -61,15 +63,23 @@ type Resource {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>Resource.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-Resource identifier (`package.field` for provisioned resources, UUID for imports)
+Unique resource identifier
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Resource.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
-Resource name
+Human-readable name
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Resource.<b>type</b></code>](#type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#type\} 
-Resource type (e.g., the artifact definition type)
+Resource type identifier (e.g., `aws-iam-role`). Prefer `resourceType { id }`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Resource.<b>origin</b></code>](#origin)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ResourceOrigin!</b></code>](/api/graphql/v1/types/enums/resource-origin.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#origin\} 
+How this resource was created
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Resource.<b>resourceType</b></code>](#resource-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ResourceType</b></code>](/api/graphql/v1/types/objects/resource-type.mdx) <Badge class="badge badge--secondary " text="object"/> \{#resource-type\} 
+The resource type this resource conforms to.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Resource.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
@@ -84,6 +94,10 @@ When this resource was last modified (UTC)
 
 
 
+### Returned By
+
+[`resource`](/api/graphql/v1/operations/queries/resource.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+
 ### Member Of
 
-[`InstanceDependency`](/api/graphql/v1/types/objects/instance-dependency.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`InstanceResource`](/api/graphql/v1/types/objects/instance-resource.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`RemoteReference`](/api/graphql/v1/types/objects/remote-reference.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`InstanceDependency`](/api/graphql/v1/types/objects/instance-dependency.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`InstanceResource`](/api/graphql/v1/types/objects/instance-resource.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`RemoteReference`](/api/graphql/v1/types/objects/remote-reference.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ResourcePayload`](/api/graphql/v1/types/objects/resource-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ResourcesPage`](/api/graphql/v1/types/objects/resources-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

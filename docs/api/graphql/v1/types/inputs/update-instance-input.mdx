@@ -1,0 +1,74 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: update-instance-input
+title: UpdateInstanceInput
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Update an instance's version constraint or release strategy. Changes take effect on the next deployment.
+
+
+```graphql
+input UpdateInstanceInput {
+  releaseStrategy: ReleaseStrategy
+  version: String
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateInstanceInput.<b>releaseStrategy</b></code>](#release-strategy)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ReleaseStrategy</b></code>](/api/graphql/v1/types/enums/release-strategy.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#release-strategy\} 
+Whether to use stable or development releases
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateInstanceInput.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#version\} 
+Version constraint for the bundle (e.g., '~1.0', '1.2.3', 'latest'). Resolved against available releases.
+
+
+
+
+
+
+### Member Of
+
+[`updateInstance`](/api/graphql/v1/operations/mutations/update-instance.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

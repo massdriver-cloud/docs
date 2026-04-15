@@ -2,8 +2,8 @@
 pagination_next: null
 pagination_prev: null
 hide_table_of_contents: true
-id: oci-repo-leaf
-title: OciRepoLeaf
+id: oci-repo-tags-sort-field
+title: OciRepoTagsSortField
 ---
 
 
@@ -42,22 +42,27 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-An OCI repository returned in list results.
+Available fields for sorting tags.
 
 
 ```graphql
-type OciRepoLeaf {
-  name: OciRepoName!
+enum OciRepoTagsSortField {
+  VERSION
+  CREATED_AT
 }
 ```
 
 
 
 
-### Fields
+### Values
 
-#### [<code style={{ fontWeight: 'normal' }}>OciRepoLeaf.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoName!</b></code>](/api/graphql/v1/types/scalars/oci-repo-name.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
-OCI repository name
+#### [<code style={{ fontWeight: 'normal' }}>OciRepoTagsSortField.<b>VERSION</b></code>](#version) \{#version\} 
+Sort by semantic version order
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciRepoTagsSortField.<b>CREATED&#x005F;AT</b></code>](#created-at) \{#created-at\} 
+Sort by when the tag was published
 
 
 
@@ -66,4 +71,4 @@ OCI repository name
 
 ### Member Of
 
-[`ComponentLeaf`](/api/graphql/v1/types/objects/component-leaf.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`OciRepoTagsSort`](/api/graphql/v1/types/inputs/oci-repo-tags-sort.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

@@ -1,0 +1,107 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: environment-blueprint
+title: EnvironmentBlueprint
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+An environment's realized infrastructure blueprint.
+
+The environment blueprint contains all instances (deployed packages) and
+connections (runtime wiring between them) showing how your infrastructure
+is actually deployed. This mirrors the project-level blueprint at the
+environment level.
+
+
+```graphql
+type EnvironmentBlueprint {
+  instances(
+    filter: InstancesFilter
+    sort: InstancesSort
+    cursor: Cursor
+  ): InstancesPage
+  connections(
+    filter: ConnectionsFilter
+    sort: ConnectionsSort
+    cursor: Cursor
+  ): ConnectionsPage
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentBlueprint.<b>instances</b></code>](#instances)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InstancesPage</b></code>](/api/graphql/v1/types/objects/instances-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#instances\} 
+Instances deployed in this environment.
+##### [<code style={{ fontWeight: 'normal' }}>EnvironmentBlueprint.instances.<b>filter</b></code>](#environment-blueprint-instances-filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InstancesFilter</b></code>](/api/graphql/v1/types/inputs/instances-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#environment-blueprint-instances-filter\} 
+Filter results
+
+
+##### [<code style={{ fontWeight: 'normal' }}>EnvironmentBlueprint.instances.<b>sort</b></code>](#environment-blueprint-instances-sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InstancesSort</b></code>](/api/graphql/v1/types/inputs/instances-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#environment-blueprint-instances-sort\} 
+How to sort results
+
+
+##### [<code style={{ fontWeight: 'normal' }}>EnvironmentBlueprint.instances.<b>cursor</b></code>](#environment-blueprint-instances-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#environment-blueprint-instances-cursor\} 
+Pagination cursor from a previous response
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentBlueprint.<b>connections</b></code>](#connections)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ConnectionsPage</b></code>](/api/graphql/v1/types/objects/connections-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#connections\} 
+Connections between instances in this environment.
+##### [<code style={{ fontWeight: 'normal' }}>EnvironmentBlueprint.connections.<b>filter</b></code>](#environment-blueprint-connections-filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ConnectionsFilter</b></code>](/api/graphql/v1/types/inputs/connections-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#environment-blueprint-connections-filter\} 
+Filter results
+
+
+##### [<code style={{ fontWeight: 'normal' }}>EnvironmentBlueprint.connections.<b>sort</b></code>](#environment-blueprint-connections-sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ConnectionsSort</b></code>](/api/graphql/v1/types/inputs/connections-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#environment-blueprint-connections-sort\} 
+How to sort results
+
+
+##### [<code style={{ fontWeight: 'normal' }}>EnvironmentBlueprint.connections.<b>cursor</b></code>](#environment-blueprint-connections-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#environment-blueprint-connections-cursor\} 
+Pagination cursor from a previous response
+
+
+
+
+
+
+### Member Of
+
+[`Environment`](/api/graphql/v1/types/objects/environment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

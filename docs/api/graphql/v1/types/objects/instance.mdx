@@ -42,7 +42,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-An instance with its full details and related resources.
+A deployed piece of infrastructure in an environment, created from a bundle.
 
 
 ```graphql
@@ -50,6 +50,7 @@ type Instance {
   id: ID!
   name: String!
   status: InstanceStatus!
+  params: Map
   tags: Map!
   version: String!
   releaseStrategy: ReleaseStrategy!
@@ -61,6 +62,7 @@ type Instance {
   cost: CostSummary!
   environment: Environment
   bundle: Bundle
+  statePaths: [InstanceStatePath!]!
   resources(
     cursor: Cursor
   ): InstanceResourcesPage
@@ -85,6 +87,10 @@ Display name
 
 #### [<code style={{ fontWeight: 'normal' }}>Instance.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InstanceStatus!</b></code>](/api/graphql/v1/types/enums/instance-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
 Current state of the instance
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Instance.<b>params</b></code>](#params)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/v1/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#params\} 
+Cached configuration parameters, set during the last deployment
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Instance.<b>tags</b></code>](#tags)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/v1/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tags\} 
@@ -131,6 +137,10 @@ The environment this instance is deployed in.
 The bundle version currently deployed.
 
 
+#### [<code style={{ fontWeight: 'normal' }}>Instance.<b>statePaths</b></code>](#state-paths)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[InstanceStatePath!]!</b></code>](/api/graphql/v1/types/objects/instance-state-path.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#state-paths\} 
+Terraform/OpenTofu state paths for each deployment step, in bundle step order.
+
+
 #### [<code style={{ fontWeight: 'normal' }}>Instance.<b>resources</b></code>](#resources)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InstanceResourcesPage</b></code>](/api/graphql/v1/types/objects/instance-resources-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#resources\} 
 Resources produced by this instance (its output artifacts).
 ##### [<code style={{ fontWeight: 'normal' }}>Instance.resources.<b>cursor</b></code>](#instance-resources-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#instance-resources-cursor\} 
@@ -153,4 +163,4 @@ Dependencies consumed by this instance (artifacts from other instances wired via
 
 ### Member Of
 
-[`Deployment`](/api/graphql/v1/types/objects/deployment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`Connection`](/api/graphql/v1/types/objects/connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Deployment`](/api/graphql/v1/types/objects/deployment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`InstanceEvent`](/api/graphql/v1/types/objects/instance-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`InstancePayload`](/api/graphql/v1/types/objects/instance-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`InstancesPage`](/api/graphql/v1/types/objects/instances-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

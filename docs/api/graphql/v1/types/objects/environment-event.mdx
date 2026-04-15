@@ -1,0 +1,76 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: environment-event
+title: EnvironmentEvent
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+An environment lifecycle event.
+
+
+```graphql
+type EnvironmentEvent implements Event {
+  action: EventAction!
+  timestamp: DateTime!
+  environment: Environment!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentEvent.<b>action</b></code>](#action)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventAction!</b></code>](/api/graphql/v1/types/enums/event-action.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#action\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentEvent.<b>timestamp</b></code>](#timestamp)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#timestamp\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentEvent.<b>environment</b></code>](#environment)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Environment!</b></code>](/api/graphql/v1/types/objects/environment.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#environment\} 
+The affected environment
+
+
+### Interfaces
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Event</b></code>](/api/graphql/v1/types/interfaces/event.mdx) <Badge class="badge badge--secondary " text="interface"/> 
+A lifecycle event for a resource in your organization.

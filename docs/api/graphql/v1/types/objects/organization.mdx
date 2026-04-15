@@ -42,7 +42,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-An organization with its full details and related resources.
+Your top-level account containing projects, environments, members, and infrastructure.
 
 
 ```graphql
@@ -98,7 +98,7 @@ Pagination cursor from a previous response
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Organization.<b>tagSchema</b></code>](#tag-schema)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/v1/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tag-schema\} 
-JSON Schema describing the tag fields for a given resource scope.
+Returns a JSON Schema you can use to validate tags for the specified resource scope.
 ##### [<code style={{ fontWeight: 'normal' }}>Organization.tagSchema.<b>scope</b></code>](#organization-tag-schema-scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>TagConstraintScope!</b></code>](/api/graphql/v1/types/enums/tag-constraint-scope.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#organization-tag-schema-scope\} 
 Resource level (e.g. PROJECT, ENVIRONMENT)
 

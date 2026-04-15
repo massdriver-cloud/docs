@@ -1,0 +1,65 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: connections-filter
+title: ConnectionsFilter
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Filter which connections to return.
+
+
+```graphql
+input ConnectionsFilter {
+  fromInstanceId: IdFilter
+  toInstanceId: IdFilter
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ConnectionsFilter.<b>fromInstanceId</b></code>](#from-instance-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IdFilter</b></code>](/api/graphql/v1/types/inputs/id-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#from-instance-id\} 
+Filter by source (from) instance ID
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ConnectionsFilter.<b>toInstanceId</b></code>](#to-instance-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IdFilter</b></code>](/api/graphql/v1/types/inputs/id-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#to-instance-id\} 
+Filter by destination (to) instance ID

@@ -42,12 +42,25 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-An OCI repository with its full details.
+An OCI repository in your organization's catalog.
 
 
 ```graphql
 type OciRepo {
+  id: ID!
   name: OciRepoName!
+  artifactType: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  releaseChannels(
+    filter: OciRepoReleaseChannelsFilter
+    sort: OciRepoReleaseChannelsSort
+    cursor: Cursor
+  ): OciRepoReleaseChannelsPage
+  tags(
+    sort: OciRepoTagsSort
+    cursor: Cursor
+  ): OciRepoTagsPage
 }
 ```
 
@@ -56,14 +69,58 @@ type OciRepo {
 
 ### Fields
 
+#### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+
+
+
 #### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoName!</b></code>](/api/graphql/v1/types/scalars/oci-repo-name.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
-OCI repository name
+Repository name (e.g., 'aws-aurora-postgres')
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>artifactType</b></code>](#artifact-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#artifact-type\} 
+The OCI artifact type stored in this repository.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When this repository was created (UTC)
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+When this repository was last modified (UTC)
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>releaseChannels</b></code>](#release-channels)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoReleaseChannelsPage</b></code>](/api/graphql/v1/types/objects/oci-repo-release-channels-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#release-channels\} 
+Release channels for automatic version tracking. Each channel resolves to the latest matching tag.
+##### [<code style={{ fontWeight: 'normal' }}>OciRepo.releaseChannels.<b>filter</b></code>](#oci-repo-release-channels-filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoReleaseChannelsFilter</b></code>](/api/graphql/v1/types/inputs/oci-repo-release-channels-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#oci-repo-release-channels-filter\} 
+Filter channels
+
+
+##### [<code style={{ fontWeight: 'normal' }}>OciRepo.releaseChannels.<b>sort</b></code>](#oci-repo-release-channels-sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoReleaseChannelsSort</b></code>](/api/graphql/v1/types/inputs/oci-repo-release-channels-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#oci-repo-release-channels-sort\} 
+How to sort channels
+
+
+##### [<code style={{ fontWeight: 'normal' }}>OciRepo.releaseChannels.<b>cursor</b></code>](#oci-repo-release-channels-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#oci-repo-release-channels-cursor\} 
+Pagination cursor from a previous response
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>tags</b></code>](#tags)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoTagsPage</b></code>](/api/graphql/v1/types/objects/oci-repo-tags-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#tags\} 
+Published version tags in this repository.
+##### [<code style={{ fontWeight: 'normal' }}>OciRepo.tags.<b>sort</b></code>](#oci-repo-tags-sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoTagsSort</b></code>](/api/graphql/v1/types/inputs/oci-repo-tags-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#oci-repo-tags-sort\} 
+How to sort tags
+
+
+##### [<code style={{ fontWeight: 'normal' }}>OciRepo.tags.<b>cursor</b></code>](#oci-repo-tags-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#oci-repo-tags-cursor\} 
+Pagination cursor from a previous response
 
 
 
 
 
+
+### Returned By
+
+[`ociRepo`](/api/graphql/v1/operations/queries/oci-repo.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
 
 ### Member Of
 
-[`Component`](/api/graphql/v1/types/objects/component.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`Component`](/api/graphql/v1/types/objects/component.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`OciReposPage`](/api/graphql/v1/types/objects/oci-repos-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

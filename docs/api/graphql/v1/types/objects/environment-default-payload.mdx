@@ -1,0 +1,79 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: environment-default-payload
+title: EnvironmentDefaultPayload
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+No description
+
+
+```graphql
+type EnvironmentDefaultPayload {
+  successful: Boolean!
+  messages: [ValidationMessage]
+  result: EnvironmentDefault
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentDefaultPayload.<b>successful</b></code>](#successful)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/api/graphql/v1/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#successful\} 
+Indicates if the mutation completed successfully or not.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentDefaultPayload.<b>messages</b></code>](#messages)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ValidationMessage]</b></code>](/api/graphql/v1/types/objects/validation-message.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> \{#messages\} 
+A list of failed validations. May be blank or null if mutation succeeded.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentDefaultPayload.<b>result</b></code>](#result)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EnvironmentDefault</b></code>](/api/graphql/v1/types/objects/environment-default.mdx) <Badge class="badge badge--secondary " text="object"/> \{#result\} 
+The object created/updated/deleted by the mutation. May be null if mutation failed.
+
+
+
+
+
+
+### Returned By
+
+[`removeEnvironmentDefault`](/api/graphql/v1/operations/mutations/remove-environment-default.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`setEnvironmentDefault`](/api/graphql/v1/operations/mutations/set-environment-default.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

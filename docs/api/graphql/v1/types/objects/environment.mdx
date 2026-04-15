@@ -42,7 +42,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-An environment with its full details and related resources.
+A deployment target within a project (e.g., staging, production) that contains your deployed infrastructure.
 
 
 ```graphql
@@ -56,11 +56,10 @@ type Environment {
   project: Project
   cost: CostSummary!
   deletable: Deletable!
-  instances(
-    filter: InstancesFilter
-    sort: InstancesSort
+  blueprint: EnvironmentBlueprint
+  defaults(
     cursor: Cursor
-  ): InstancesPage
+  ): EnvironmentDefaultsPage
 }
 ```
 
@@ -105,17 +104,13 @@ Cloud provider costs for this environment.
 Whether this environment can be deleted and any constraints preventing deletion.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>instances</b></code>](#instances)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InstancesPage</b></code>](/api/graphql/v1/types/objects/instances-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#instances\} 
-The instances deployed in this environment.
-##### [<code style={{ fontWeight: 'normal' }}>Environment.instances.<b>filter</b></code>](#environment-instances-filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InstancesFilter</b></code>](/api/graphql/v1/types/inputs/instances-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#environment-instances-filter\} 
-Filter results (projectId and environmentId are ignored — already scoped by parent)
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>blueprint</b></code>](#blueprint)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EnvironmentBlueprint</b></code>](/api/graphql/v1/types/objects/environment-blueprint.mdx) <Badge class="badge badge--secondary " text="object"/> \{#blueprint\} 
+The realized infrastructure blueprint for this environment (instances and connections).
 
 
-##### [<code style={{ fontWeight: 'normal' }}>Environment.instances.<b>sort</b></code>](#environment-instances-sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InstancesSort</b></code>](/api/graphql/v1/types/inputs/instances-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#environment-instances-sort\} 
-
-
-
-##### [<code style={{ fontWeight: 'normal' }}>Environment.instances.<b>cursor</b></code>](#environment-instances-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#environment-instances-cursor\} 
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>defaults</b></code>](#defaults)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EnvironmentDefaultsPage</b></code>](/api/graphql/v1/types/objects/environment-defaults-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#defaults\} 
+Default resources for this environment. Instances inherit these automatically.
+##### [<code style={{ fontWeight: 'normal' }}>Environment.defaults.<b>cursor</b></code>](#environment-defaults-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#environment-defaults-cursor\} 
 
 
 
@@ -129,4 +124,4 @@ Filter results (projectId and environmentId are ignored — already scoped by pa
 
 ### Member Of
 
-[`EnvironmentPayload`](/api/graphql/v1/types/objects/environment-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Instance`](/api/graphql/v1/types/objects/instance.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`EnvironmentEvent`](/api/graphql/v1/types/objects/environment-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentPayload`](/api/graphql/v1/types/objects/environment-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentsPage`](/api/graphql/v1/types/objects/environments-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Instance`](/api/graphql/v1/types/objects/instance.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
