@@ -24,13 +24,13 @@ To get started in interactive mode run `mass bundle new` then follow the prompts
 Create a new bundle using an existing OpenTofu module to populate params:
 
 ```shell
-mass bundle new -n foo -o massdriver -t opentofu-module -c network=massdriver/vpc -p /path/to/opentofu/dir
+mass bundle new -n foo -o massdriver -t opentofu-module -c network=vpc -p /path/to/opentofu/dir
 ```
 
 Create a new bundle using an existing Helm chart's values.yaml to populate params:
 
 ```shell
-mass bundle new -n foo -o massdriver -t helm-chart -c network=massdriver/vpc -p /path/to/helm/values.yaml
+mass bundle new -n foo -o massdriver -t helm-chart -c network=vpc -p /path/to/helm/values.yaml
 ```
 
 
@@ -41,7 +41,7 @@ mass bundle new [flags]
 ### Options
 
 ```
-  -c, --connections strings       Connections and names to add to the bundle - example: network=massdriver/vpc
+  -c, --connections strings       Connections and names to add to the bundle - example: network=vpc
   -d, --description string        Description of the new bundle
   -h, --help                      help for new
   -n, --name string               Name of the new bundle. Setting this along with --template-name will disable the interactive prompt.

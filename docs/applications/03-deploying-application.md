@@ -43,9 +43,9 @@ Add and connect the following resources from the bundle sidebar. To expand the s
 
 You'll need to add:
 
-* massdriver/aws-vpc
-* massdriver/aws-eks-cluster
-* massdriver/aws-rds-postgres or massdriver/aws-aurora-serverless-postgres
+* aws-vpc
+* aws-eks-cluster
+* aws-rds-postgres or aws-aurora-serverless-postgres
 
 After adding each to the canvas, click on the package. Feel free to fine tune the configuration, but if you are new to cloud infrastructure the `Configuration Presets` are a great way to get started quickly. Select a preset like **Development** and then click **Deploy**.
 
@@ -53,7 +53,7 @@ After adding each to the canvas, click on the package. Feel free to fine tune th
 
 The artifact system in Massdriver (the boxes you connect lines to) shares common types between bundles to make it possible to swap between different infrastructure bundles that provide the same functionality.
 
-In this example you could use `massdriver/aws-rds-postgres`, `massdriver/aws-aurora-serverless-postgres`, or a version of PostgreSQL running on Kubernetes.
+In this example you could use `aws-rds-postgres`, `aws-aurora-serverless-postgres`, or a version of PostgreSQL running on Kubernetes.
 
 :::
 

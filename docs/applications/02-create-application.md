@@ -58,19 +58,19 @@ Application templates are cached locally the first time `mass bundle new` is run
 
 Then, [`connections`](/concepts/connections) (your application dependencies) will need to be selected.
 
-For this example we'll choose [`massdriver/postgresql-authentication`](https://github.com/massdriver-cloud/artifact-definitions/blob/main/definitions/artifacts/postgresql-authentication.json).
+For this example we'll choose [`postgresql-authentication`](https://github.com/massdriver-cloud/artifact-definitions/blob/main/definitions/artifacts/postgresql-authentication.json).
 
 ```shell title="Prompt"
 ? What connections do you need?
   If you don't need any, just hit enter or select (None)
   [Use arrows to move, space to select, <right> to all, <left> to none, type to filter]
   [ ]  (None)
-  [ ]  massdriver/aws-dynamodb-table
+  [ ]  aws-dynamodb-table
   ...
-  [ ]  massdriver/mongo-authentication
-  [ ]  massdriver/mysql-authentication
-> [ ]  massdriver/postgresql-authentication
-  [ ]  massdriver/redis-authentication
+  [ ]  mongo-authentication
+  [ ]  mysql-authentication
+> [ ]  postgresql-authentication
+  [ ]  redis-authentication
 ```
 
 You'll be prompted to name the variable for each connection that you added. We suggest simple names like `postgres`, but if you have more complex dependencies it may make sense to use names like `inventory_database` for an inventory database or `website_cache` for a Redis website cache.
@@ -200,15 +200,15 @@ connections:
     - postgres
   properties:
     kubernetes_cluster:
-      $ref: massdriver/kubernetes-cluster
+      $ref: kubernetes-cluster
     aws_authentication:
-      $ref: massdriver/aws-iam-role
+      $ref: aws-iam-role
     gcp_authentication:
-      $ref: massdriver/gcp-service-account
+      $ref: gcp-service-account
     azure_authentication:
-      $ref: massdriver/azure-service-principal
+      $ref: azure-service-principal
     postgres:
-      $ref: massdriver/postgresql-authentication
+      $ref: postgresql-authentication
 ```
 
 If you followed the prompts in this guide, you should end up with an application bundle that looks like [this](https://github.com/massdriver-cloud/application-examples/tree/main/k8s/phoenix-chat-example).

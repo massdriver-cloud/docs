@@ -50,14 +50,14 @@ Be sure to complete the [prerequisites](https://docs.massdriver.cloud/getting-st
 
     | Cloud | Connection                           | Name                      |
     |-------|--------------------------------------|---------------------------|
-    | AWS   | `massdriver/aws-iam-role`            | `aws_authentication`      |
-    | GCP   | `massdriver/gcp-service-account`     | `gcp_authentication`      |
-    | Azure | `massdriver/azure-service-principal` | `azure_service_principal` |
+    | AWS   | `aws-iam-role`            | `aws_authentication`      |
+    | GCP   | `gcp-service-account`     | `gcp_authentication`      |
+    | Azure | `azure-service-principal` | `azure_service_principal` |
 
 5. Next you'll be prompted to name your connections. If you selected a cloud credential as a connection, use the appropriate name in the above table to simplify your bundle.
 
     ```bash
-    Please enter a name for the connection: "massdriver/aws-iam-role"
+    Please enter a name for the connection: "aws-iam-role"
     This will be the variable name used to reference it in your app|bundle IaC
     ✔ Name: aws_authentication
     ```

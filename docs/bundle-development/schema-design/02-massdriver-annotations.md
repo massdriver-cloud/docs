@@ -109,7 +109,7 @@ connections:
     - postgres_cluster
   properties:
     postgres_cluster:
-      $ref: massdriver/postgresql-authentication
+      $ref: postgresql-authentication
 properties:
   database_instance:
     title: Database Instance
@@ -139,7 +139,7 @@ connections:
     - vpc
   properties:
     vpc:
-      $ref: massdriver/aws-vpc
+      $ref: aws-vpc
 properties:
   subnet_id:
     title: Subnet
@@ -172,7 +172,7 @@ connections:
     - security
   properties:
     security:
-      $ref: massdriver/aws-iam-role
+      $ref: aws-iam-role
 properties:
   iam_policy:
     title: IAM Policy
@@ -414,7 +414,7 @@ When an artifact is queried via GraphQL or REST API:
 
 ```yaml
 $md:
-  name: massdriver/postgresql-authentication
+  name: postgresql-authentication
 properties:
   username:
     type: string
@@ -501,7 +501,7 @@ connections:
     - vpc
   properties:
     vpc:
-      $ref: massdriver/aws-vpc
+      $ref: aws-vpc
 properties:
   identifier:
     title: Database Identifier
