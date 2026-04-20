@@ -42,8 +42,11 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Remove an environment default. Instances will no longer inherit this resource
-automatically. This can cause deployments to fail if instances depend on it.
+Remove an environment default.
+
+Instances will no longer automatically inherit this resource. &#x002A;&#x002A;Warning:&#x002A;&#x002A; removing
+a default can cause future deployments to fail if instances depend on the resource
+type that was provided by this default.
 
 
 ```graphql
@@ -59,11 +62,11 @@ removeEnvironmentDefault(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>removeEnvironmentDefault.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>removeEnvironmentDefault.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-The environment default ID to remove
+The identifier of the environment default to remove.
 
 
 ### Type

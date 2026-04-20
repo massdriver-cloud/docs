@@ -42,7 +42,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Your profile avatar image.
+A profile avatar image.
+
+Avatars are uploaded via the `setAccountAvatar` mutation and served at a stable URL.
+Supported formats: PNG, JPG, GIF, and WebP (max 1 MB).
 
 
 ```graphql
@@ -64,35 +67,35 @@ type AvatarViewer {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>AvatarViewer.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-
+Unique identifier for this avatar.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AvatarViewer.<b>url</b></code>](#url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#url\} 
-URL to the avatar image.
+Publicly accessible URL where the avatar image is served.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AvatarViewer.<b>contentType</b></code>](#content-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#content-type\} 
-MIME type (e.g., image/png)
+MIME type of the image (e.g., `image/png`, `image/jpeg`).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AvatarViewer.<b>fileSize</b></code>](#file-size)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/api/graphql/v1/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#file-size\} 
-File size in bytes
+File size in bytes.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AvatarViewer.<b>width</b></code>](#width)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/api/graphql/v1/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#width\} 
-Image width in pixels
+Image width in pixels, if available.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AvatarViewer.<b>height</b></code>](#height)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/api/graphql/v1/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#height\} 
-Image height in pixels
+Image height in pixels, if available.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AvatarViewer.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
-When the avatar was uploaded (UTC)
+When the avatar was first uploaded (UTC).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AvatarViewer.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
-When the avatar was last changed (UTC)
+When the avatar was last replaced (UTC).
 
 
 

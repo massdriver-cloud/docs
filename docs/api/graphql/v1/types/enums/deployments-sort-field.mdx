@@ -42,7 +42,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Available fields for sorting deployments.
+Available fields for sorting the deployments list.
 
 
 ```graphql
@@ -58,11 +58,11 @@ enum DeploymentsSortField {
 ### Values
 
 #### [<code style={{ fontWeight: 'normal' }}>DeploymentsSortField.<b>CREATED&#x005F;AT</b></code>](#created-at) \{#created-at\} 
-Sort by when the deployment started
+Sort by creation timestamp (oldest first when ascending, newest first when descending).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>DeploymentsSortField.<b>STATUS</b></code>](#status) \{#status\} 
-Sort by deployment status
+Sort alphabetically by status name. Deployments with the same status are sub-sorted by newest first.
 
 
 

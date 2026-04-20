@@ -42,7 +42,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Get a single group by its ID.
+Retrieve a single group by its identifier.
+
+Returns `null` with a `NOT_FOUND` error if the group does not exist or you do not have
+permission to view it.
 
 
 ```graphql
@@ -58,14 +61,39 @@ group(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>group.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>group.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-The group ID
+The group's unique identifier.
 
 
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>Group</b></code>](/api/graphql/v1/types/objects/group.mdx) <Badge class="badge badge--secondary " text="object"/> 
-A set of users and service accounts that share the same access level within your organization.
+A collection of users and service accounts that share the same access level within your organization.
+
+Groups are the primary mechanism for managing access control in Massdriver. Rather than
+assigning permissions to individual users, you add them to groups that define what they
+can see and do.
+
+```mermaid
+graph TD
+  O[Organization] --> G1[Group: Admins]
+  O --> G2[Group: Developers]
+  O --> G3[Group: Custom]
+  G1 --> U1[User: alice@co.com]
+  G2 --> U2[User: bob@co.com]
+  G2 --> SA1[Service Account: ci-bot]
+  G3 -->|project_admin| P1[Project: backend]
+  G3 -->|project_viewer| P2[Project: frontend]
+```
+
+&#x002A;&#x002A;Built-in groups&#x002A;&#x002A; — Every organization starts with an `Admins` group (`organization_admin` role)
+and a `Viewers` group (`organization_viewer` role). These cannot be deleted.
+
+&#x002A;&#x002A;Custom groups&#x002A;&#x002A; — Create custom groups with the `CUSTOM` role to grant project-level access.
+Each custom group can be assigned `project_admin` or `project_viewer` on specific projects.
+
+&#x002A;&#x002A;Members&#x002A;&#x002A; — Both human users and service accounts can be group members. Users are added via
+email invitation; service accounts are added directly.

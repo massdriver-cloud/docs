@@ -42,7 +42,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Available fields for sorting OCI repositories.
+Fields available for ordering the OCI repositories list.
+
+When a `search` filter is active and no explicit sort is provided, results are
+ranked by relevance instead of these fields.
 
 
 ```graphql
@@ -58,11 +61,11 @@ enum OciReposSortField {
 ### Values
 
 #### [<code style={{ fontWeight: 'normal' }}>OciReposSortField.<b>NAME</b></code>](#name) \{#name\} 
-Sort alphabetically by repository name
+Alphabetical order by repository name (e.g., `aws-aurora-postgres`).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OciReposSortField.<b>CREATED&#x005F;AT</b></code>](#created-at) \{#created-at\} 
-Sort by when the repository was created
+Chronological order by the date the repository was created.
 
 
 

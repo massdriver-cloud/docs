@@ -42,7 +42,9 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Filter which OCI repositories to return.
+Filters for narrowing the OCI repositories list.
+
+All filters are combined with AND logic.
 
 
 ```graphql
@@ -59,15 +61,15 @@ input OciReposFilter {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>OciReposFilter.<b>artifactType</b></code>](#artifact-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#artifact-type\} 
-Filter by OCI artifact type (e.g., 'application/vnd.massdriver.bundle.v1+json')
+Filter by OCI artifact media type. Currently the only supported type is `application/vnd.massdriver.bundle.v1+json`. Passing an unsupported type returns an empty list.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OciReposFilter.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoNameFilter</b></code>](/api/graphql/v1/types/inputs/oci-repo-name-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#name\} 
-Filter by repository name
+Filter repositories by name using exact match, prefix, or set membership.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OciReposFilter.<b>search</b></code>](#search)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#search\} 
-Unified search across repository name, readme, and changelog. Results are ranked by relevance by default. Pass sort to override with a specific field order. For terms longer than 3 characters, also matches names by prefix. Pagination cursors from search results are not interchangeable with non-search cursors.
+Full-text search across the repository name, readme, and changelog. Results are ranked by relevance unless you provide an explicit `sort`. For terms longer than 3 characters, name-prefix matches are also included. &#x002A;&#x002A;Note:&#x002A;&#x002A; pagination cursors returned by search results use offset-based pagination and are not interchangeable with cursors from non-search queries.
 
 
 

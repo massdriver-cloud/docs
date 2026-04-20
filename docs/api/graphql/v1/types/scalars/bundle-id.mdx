@@ -42,17 +42,26 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Bundle identifier in `name@version` format.
+A composite bundle identifier in &#x002A;&#x002A;`name@version`*&#x002A; format.
 
-Returns the fully resolved version of a bundle (e.g., `aws-aurora-postgres@1.2.3`
-or `aws-aurora-postgres@1.2.3-dev.20060102T150405Z`).
+This scalar uniquely identifies a bundle by combining its OCI repository name
+with a version specifier. As an &#x002A;&#x002A;output&#x002A;&#x002A; the version portion is always a
+fully resolved semver string:
 
-As an input, accepts:
-- `aws-aurora-postgres` — bare name, resolves to latest
-- `aws-aurora-postgres@1.2.3` — exact version
-- `aws-aurora-postgres@~1.2` — release channel (resolved server-side)
-- `aws-aurora-postgres@latest` — latest stable release
-- `aws-aurora-postgres@latest+dev` — latest including dev builds
+    aws-aurora-postgres@1.2.3
+    aws-aurora-postgres@1.2.3-dev.20060102T150405Z
+
+As an &#x002A;&#x002A;input&#x002A;&#x002A; (e.g., in the `bundle` query), you can use any of the following
+formats and the server will resolve to the best matching published version:
+
+| Format | Example | Resolves to |
+|--------|---------|-------------|
+| Bare name | `aws-aurora-postgres` | Latest stable (or latest dev if no stable exists) |
+| Exact version | `aws-aurora-postgres@1.2.3` | That exact version |
+| Major channel | `aws-aurora-postgres@~1` | Latest `1.x.x` stable |
+| Minor channel | `aws-aurora-postgres@~1.2` | Latest `1.2.x` stable |
+| Latest stable | `aws-aurora-postgres@latest` | Newest stable release |
+| Latest + dev | `aws-aurora-postgres@latest+dev` | Newest release including dev builds |
 
 
 ```graphql

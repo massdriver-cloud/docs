@@ -42,7 +42,32 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-A set of users and service accounts that share the same access level within your organization.
+A collection of users and service accounts that share the same access level within your organization.
+
+Groups are the primary mechanism for managing access control in Massdriver. Rather than
+assigning permissions to individual users, you add them to groups that define what they
+can see and do.
+
+```mermaid
+graph TD
+  O[Organization] --> G1[Group: Admins]
+  O --> G2[Group: Developers]
+  O --> G3[Group: Custom]
+  G1 --> U1[User: alice@co.com]
+  G2 --> U2[User: bob@co.com]
+  G2 --> SA1[Service Account: ci-bot]
+  G3 -->|project_admin| P1[Project: backend]
+  G3 -->|project_viewer| P2[Project: frontend]
+```
+
+&#x002A;&#x002A;Built-in groups&#x002A;&#x002A; — Every organization starts with an `Admins` group (`organization_admin` role)
+and a `Viewers` group (`organization_viewer` role). These cannot be deleted.
+
+&#x002A;&#x002A;Custom groups&#x002A;&#x002A; — Create custom groups with the `CUSTOM` role to grant project-level access.
+Each custom group can be assigned `project_admin` or `project_viewer` on specific projects.
+
+&#x002A;&#x002A;Members&#x002A;&#x002A; — Both human users and service accounts can be group members. Users are added via
+email invitation; service accounts are added directly.
 
 
 ```graphql
@@ -62,27 +87,27 @@ type Group {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>Group.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-Group identifier
+Unique identifier for this group.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Group.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
-Group name
+Human-readable name displayed in the UI and API responses.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Group.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
-What this group is for
+Optional text explaining the purpose of this group.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Group.<b>role</b></code>](#role)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GroupRole!</b></code>](/api/graphql/v1/types/enums/group-role.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#role\} 
-Access level within the organization
+The access level this group grants to its members.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Group.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
-When this group was created (UTC)
+When this group was created (UTC).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Group.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
-When this group was last modified (UTC)
+When this group was last modified (UTC).
 
 
 

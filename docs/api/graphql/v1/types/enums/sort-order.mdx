@@ -42,7 +42,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Sort direction for paginated results.
+Sort direction for ordering paginated results.
+
+Applied via the `sort` argument on any list query. When combined with a sort field,
+controls the ordering of returned items.
 
 
 ```graphql
@@ -58,11 +61,11 @@ enum SortOrder {
 ### Values
 
 #### [<code style={{ fontWeight: 'normal' }}>SortOrder.<b>ASC</b></code>](#asc) \{#asc\} 
-Ascending order (A→Z, oldest→newest)
+Ascending order (A-Z, oldest first, lowest first)
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SortOrder.<b>DESC</b></code>](#desc) \{#desc\} 
-Descending order (Z→A, newest→oldest)
+Descending order (Z-A, newest first, highest first)
 
 
 

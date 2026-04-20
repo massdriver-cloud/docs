@@ -42,7 +42,18 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Filter for instance status. All provided operators are combined with AND.
+Filter by instance status.
+
+All operators within a single filter are combined with &#x002A;&#x002A;AND&#x002A;&#x002A;. Use `in` to match
+instances in any of several statuses.
+
+```graphql
+# All provisioned instances
+{ "status": { "eq": "PROVISIONED" } }
+
+# Instances that are provisioning or provisioned
+{ "status": { "in": ["PROVISIONING", "PROVISIONED"] } }
+```
 
 
 ```graphql
@@ -58,11 +69,11 @@ input InstanceStatusFilter {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>InstanceStatusFilter.<b>eq</b></code>](#eq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InstanceStatus</b></code>](/api/graphql/v1/types/enums/instance-status.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#eq\} 
-Exact match
+Return only instances whose status exactly equals this value.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>InstanceStatusFilter.<b>in</b></code>](#in)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[InstanceStatus!]</b></code>](/api/graphql/v1/types/enums/instance-status.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="enum"/> \{#in\} 
-Match any of these statuses
+Return instances whose status matches any value in this list.
 
 
 

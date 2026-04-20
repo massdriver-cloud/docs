@@ -44,6 +44,9 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 Create a new tag constraint in your organization.
 
+Once created, the constraint immediately applies to new resources at the specified scope.
+Existing resources are not retroactively validated.
+
 
 
 
@@ -74,7 +77,7 @@ This mutation supports dynamic form generation using JSON Schema.
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>createOrganizationTagConstraint.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>createOrganizationTagConstraint.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CreateOrganizationTagConstraintInput!</b></code>](/api/graphql/v1/types/inputs/create-organization-tag-constraint-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 

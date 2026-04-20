@@ -44,6 +44,23 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 List all resources in your organization.
 
+Returns a cursor-paginated list of both imported and provisioned resources.
+Use the `filter` argument to view only imported or only provisioned resources.
+
+```graphql
+query {
+  resources(organizationId: "my-org", filter: { origin: { eq: imported } }) {
+    items {
+      id
+      name
+      origin
+      resourceType { id }
+    }
+    cursor { next }
+  }
+}
+```
+
 
 ```graphql
 resources(
@@ -60,19 +77,19 @@ resources(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>resources.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>resources.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ResourcesFilter</b></code>](/api/graphql/v1/types/inputs/resources-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#filter\} 
-Filter results
+Optional filters to narrow the results.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>resources.<b>sort</b></code>](#sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ResourcesSort</b></code>](/api/graphql/v1/types/inputs/resources-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#sort\} 
-How to sort results
+Sort order for results. Defaults to alphabetical by name. When a `search` filter is active and no sort is provided, results are ranked by relevance.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>resources.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#cursor\} 
-Pagination cursor from a previous response
+Cursor from a previous page to fetch the next set of results.
 
 
 ### Type

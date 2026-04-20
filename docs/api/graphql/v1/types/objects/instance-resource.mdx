@@ -42,7 +42,11 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-A resource keyed by the output handle that produced it.
+An output resource produced by an instance, keyed by the field handle that produced it.
+
+Resources are the outputs an instance publishes after a successful deployment
+(e.g., a database connection string, a Kubernetes cluster endpoint). Other
+instances can consume these resources via connections.
 
 
 ```graphql
@@ -58,11 +62,11 @@ type InstanceResource {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>InstanceResource.<b>field</b></code>](#field)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#field\} 
-The output handle that produced this resource
+The output handle name that produced this resource (e.g., `authentication`).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>InstanceResource.<b>resource</b></code>](#resource)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Resource!</b></code>](/api/graphql/v1/types/objects/resource.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#resource\} 
-The resource artifact
+The resource containing the actual data.
 
 
 

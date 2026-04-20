@@ -42,7 +42,12 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-How a resource was created.
+How a resource was created, which determines how it can be managed.
+
+- &#x002A;&#x002A;IMPORTED&#x002A;&#x002A; resources are created and managed directly through the API.
+  You can update their name, payload, and delete them at any time.
+- &#x002A;&#x002A;PROVISIONED&#x002A;&#x002A; resources are created automatically when an instance is deployed.
+  They are managed by their owning instance and cannot be modified or deleted through the API.
 
 
 ```graphql
@@ -58,11 +63,11 @@ enum ResourceOrigin {
 ### Values
 
 #### [<code style={{ fontWeight: 'normal' }}>ResourceOrigin.<b>IMPORTED</b></code>](#imported) \{#imported\} 
-Manually imported by a user
+Created manually via the API. Can be updated and deleted directly.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ResourceOrigin.<b>PROVISIONED</b></code>](#provisioned) \{#provisioned\} 
-Created by deploying an instance
+Created automatically by deploying an instance. Managed by the owning instance's lifecycle.
 
 
 

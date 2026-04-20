@@ -42,7 +42,11 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-A dependency keyed by the input handle that consumes it.
+An input dependency consumed by an instance, keyed by the field handle that receives it.
+
+Dependencies are resources from other instances wired in via connections. For
+example, an application instance might have a `database` dependency that
+receives the connection string from a database instance.
 
 
 ```graphql
@@ -58,11 +62,11 @@ type InstanceDependency {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>InstanceDependency.<b>field</b></code>](#field)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#field\} 
-The input handle that consumes this resource
+The input handle name that consumes this resource (e.g., `database`).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>InstanceDependency.<b>resource</b></code>](#resource)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Resource!</b></code>](/api/graphql/v1/types/objects/resource.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#resource\} 
-The resource artifact
+The resource containing the actual data.
 
 
 

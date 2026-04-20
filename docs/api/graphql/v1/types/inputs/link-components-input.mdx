@@ -47,10 +47,10 @@ Create a link between two components in a project's blueprint. Links connect an 
 
 ```graphql
 input LinkComponentsInput {
-  from: ID!
+  fromComponentId: ID!
   fromField: String!
   fromVersion: VersionConstraint!
-  to: ID!
+  toComponentId: ID!
   toField: String!
   toVersion: VersionConstraint!
 }
@@ -61,8 +61,8 @@ input LinkComponentsInput {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>LinkComponentsInput.<b>from</b></code>](#from)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#from\} 
-Component that produces the artifact (e.g., 'database')
+#### [<code style={{ fontWeight: 'normal' }}>LinkComponentsInput.<b>fromComponentId</b></code>](#from-component-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#from-component-id\} 
+ID of the component that produces the resource (e.g., 'myproj-database').
 
 
 #### [<code style={{ fontWeight: 'normal' }}>LinkComponentsInput.<b>fromField</b></code>](#from-field)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#from-field\} 
@@ -73,8 +73,8 @@ Output field name on the source component
 Version constraint for the source component (e.g., '~1.0', '1.2.3', 'latest')
 
 
-#### [<code style={{ fontWeight: 'normal' }}>LinkComponentsInput.<b>to</b></code>](#to)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#to\} 
-Component that consumes the artifact (e.g., 'app')
+#### [<code style={{ fontWeight: 'normal' }}>LinkComponentsInput.<b>toComponentId</b></code>](#to-component-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#to-component-id\} 
+ID of the component that consumes the resource (e.g., 'myproj-app').
 
 
 #### [<code style={{ fontWeight: 'normal' }}>LinkComponentsInput.<b>toField</b></code>](#to-field)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#to-field\} 

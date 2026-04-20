@@ -42,11 +42,32 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Deploy an instance with configuration parameters.
+Create a new deployment for an instance.
 
-Caches the provided params on the instance, then creates a deployment.
-Use action PROVISION to apply changes, PLAN to preview them, or
-DECOMMISSION to tear down infrastructure.
+Saves the provided `params` as the instance's configuration, then initiates the
+specified action:
+
+- &#x002A;&#x002A;PROVISION&#x002A;&#x002A; — apply the configuration to create or update infrastructure.
+- &#x002A;&#x002A;PLAN&#x002A;&#x002A; — generate a dry-run preview without making changes.
+- &#x002A;&#x002A;DECOMMISSION&#x002A;&#x002A; — destroy all infrastructure managed by the instance.
+
+The returned deployment starts in `PENDING` status and transitions to `RUNNING`
+once execution begins. Poll the `deployment` query or use the `status` field
+to monitor progress.
+
+```graphql
+mutation {
+  createDeployment(
+    organizationId: "my-org"
+    id: "my-database"
+    input: { action: PROVISION, params: { size: "large" }, message: "Scale up" }
+  ) {
+    result { id status action }
+    successful
+    messages { field message }
+  }
+}
+```
 
 
 
@@ -79,11 +100,11 @@ This mutation supports dynamic form generation using JSON Schema.
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>createDeployment.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>createDeployment.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-The instance to deploy
+The instance to deploy.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>createDeployment.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CreateDeploymentInput!</b></code>](/api/graphql/v1/types/inputs/create-deployment-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 

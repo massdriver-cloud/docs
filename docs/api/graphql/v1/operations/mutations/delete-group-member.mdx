@@ -44,6 +44,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 Remove a member from a group.
 
+The member immediately loses any access granted by this group. If this was their only
+group in the organization, they lose all access to the organization.
+Requires `organization_admin` permissions.
+
 
 ```graphql
 deleteGroupMember(
@@ -59,15 +63,15 @@ deleteGroupMember(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>deleteGroupMember.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>deleteGroupMember.<b>groupId</b></code>](#group-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#group-id\} 
-The group ID
+The group to remove the member from.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>deleteGroupMember.<b>email</b></code>](#email)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#email\} 
-Email address of the member to remove
+Email address of the member to remove.
 
 
 ### Type

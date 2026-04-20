@@ -42,7 +42,16 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-A connection between two instances in an environment, representing the runtime wiring of a blueprint link.
+A runtime wiring between two instances in an environment.
+
+A connection is the &#x002A;&#x002A;runtime realization&#x002A;&#x002A; of a blueprint link. Where a link
+says "the database component's `authentication` output goes to the app
+component's `database` input," the connection in each environment carries the
+&#x002A;actual&#x002A; resource data (e.g., a connection string) from the source instance
+to the destination instance.
+
+Connections are created automatically when instances are deployed and a
+matching blueprint link exists.
 
 
 ```graphql
@@ -68,31 +77,31 @@ type Connection {
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Connection.<b>fromField</b></code>](#from-field)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#from-field\} 
-Output field name on the source instance
+The output field name on the source instance that produces the resource.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Connection.<b>toField</b></code>](#to-field)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#to-field\} 
-Input field name on the destination instance
+The input field name on the destination instance that consumes the resource.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Connection.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
-When this connection was created (UTC)
+When this connection was created (UTC).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Connection.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
-When this connection was last modified (UTC)
+When this connection was last modified (UTC).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Connection.<b>fromInstance</b></code>](#from-instance)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Instance</b></code>](/api/graphql/v1/types/objects/instance.mdx) <Badge class="badge badge--secondary " text="object"/> \{#from-instance\} 
-The source (from) instance that produces the resource.
+The source instance that produces the resource wired through this connection.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Connection.<b>toInstance</b></code>](#to-instance)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Instance</b></code>](/api/graphql/v1/types/objects/instance.mdx) <Badge class="badge badge--secondary " text="object"/> \{#to-instance\} 
-The destination (to) instance that consumes the resource.
+The destination instance that consumes the resource wired through this connection.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Connection.<b>link</b></code>](#link)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Link</b></code>](/api/graphql/v1/types/objects/link.mdx) <Badge class="badge badge--secondary " text="object"/> \{#link\} 
-The blueprint link this connection instantiates.
+The blueprint link that this connection realizes. Null if the link has since been removed.
 
 
 
@@ -101,4 +110,4 @@ The blueprint link this connection instantiates.
 
 ### Member Of
 
-[`ConnectionsPage`](/api/graphql/v1/types/objects/connections-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`ConnectionEvent`](/api/graphql/v1/types/objects/connection-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ConnectionsPage`](/api/graphql/v1/types/objects/connections-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

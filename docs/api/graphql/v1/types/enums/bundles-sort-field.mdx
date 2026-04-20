@@ -42,7 +42,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Available fields for sorting bundles.
+Fields available for ordering the bundles list.
+
+When a `search` filter is active and no explicit sort is provided, results are
+ranked by relevance instead of these fields.
 
 
 ```graphql
@@ -58,11 +61,11 @@ enum BundlesSortField {
 ### Values
 
 #### [<code style={{ fontWeight: 'normal' }}>BundlesSortField.<b>NAME</b></code>](#name) \{#name\} 
-Sort alphabetically by bundle name
+Alphabetical order by the bundle's OCI repository name (e.g., `aws-aurora-postgres`).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>BundlesSortField.<b>CREATED&#x005F;AT</b></code>](#created-at) \{#created-at\} 
-Sort by when the bundle version was published
+Chronological order by the date this bundle version was published.
 
 
 

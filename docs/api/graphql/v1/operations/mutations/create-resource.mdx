@@ -42,7 +42,25 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Import a new resource such as cloud credentials or a network configuration.
+Import a new resource into your organization.
+
+Creates a manually-managed resource (origin: `IMPORTED`) such as cloud credentials,
+a network configuration, or any other infrastructure output. The resource must
+conform to the schema defined by the specified resource type.
+
+```graphql
+mutation {
+  createResource(
+    organizationId: "my-org"
+    resourceTypeId: "aws-iam-role"
+    input: { name: "CI/CD Role", payload: { arn: "arn:aws:iam::123:role/ci" } }
+  ) {
+    result { id name origin }
+    successful
+    messages { field message }
+  }
+}
+```
 
 
 
@@ -75,11 +93,11 @@ This mutation supports dynamic form generation using JSON Schema.
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>createResource.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>createResource.<b>resourceTypeId</b></code>](#resource-type-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#resource-type-id\} 
-The resource type ID (e.g., `aws-iam-role`)
+The resource type this resource conforms to (e.g., `aws-iam-role`).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>createResource.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CreateResourceInput!</b></code>](/api/graphql/v1/types/inputs/create-resource-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 

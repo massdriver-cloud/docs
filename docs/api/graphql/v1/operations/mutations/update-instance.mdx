@@ -42,7 +42,24 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Update an instance's version constraint or release strategy. Changes take effect on the next deployment.
+Update an instance's version constraint or release strategy.
+
+Changes are staged and take effect on the &#x002A;&#x002A;next&#x002A;&#x002A; deployment. The
+`resolvedVersion` field will reflect the new constraint immediately,
+while `deployedVersion` remains unchanged until a deploy runs.
+
+```graphql
+mutation {
+  updateInstance(
+    organizationId: "my-org"
+    id: "my-database"
+    input: { version: "~2.0", releaseStrategy: stable }
+  ) {
+    result { id resolvedVersion }
+    successful
+  }
+}
+```
 
 
 
@@ -75,11 +92,11 @@ This mutation supports dynamic form generation using JSON Schema.
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>updateInstance.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>updateInstance.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-The instance ID to update
+The instance ID to update.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>updateInstance.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UpdateInstanceInput!</b></code>](/api/graphql/v1/types/inputs/update-instance-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 

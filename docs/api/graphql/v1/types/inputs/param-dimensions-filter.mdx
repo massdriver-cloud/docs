@@ -42,7 +42,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Filter which param dimensions to return. Scopes which instances' schemas are introspected.
+Scope which instances' bundle schemas are introspected for param dimensions.
+
+Use these filters to narrow the universe of instances before extracting
+their configuration fields. Without filters, all accessible instances are considered.
 
 
 ```graphql
@@ -59,15 +62,15 @@ input ParamDimensionsFilter {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>ParamDimensionsFilter.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IdFilter</b></code>](/api/graphql/v1/types/inputs/id-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#project-id\} 
-Only include dimensions from instances in these projects
+Only include dimensions from instances in the specified projects.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ParamDimensionsFilter.<b>environmentId</b></code>](#environment-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IdFilter</b></code>](/api/graphql/v1/types/inputs/id-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#environment-id\} 
-Only include dimensions from instances in these environments
+Only include dimensions from instances in the specified environments.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ParamDimensionsFilter.<b>ociRepoName</b></code>](#oci-repo-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoNameFilter</b></code>](/api/graphql/v1/types/inputs/oci-repo-name-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#oci-repo-name\} 
-Only include dimensions from instances using these bundles
+Only include dimensions from instances using the specified bundles.
 
 
 

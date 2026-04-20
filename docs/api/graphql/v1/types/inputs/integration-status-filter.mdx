@@ -42,7 +42,14 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Filter for integration status.
+Filter by integration status.
+
+All operators within a single filter are combined with &#x002A;&#x002A;AND&#x002A;&#x002A;. Use `in` to match
+integrations in any of several statuses.
+
+```graphql
+{ "status": { "in": ["enabled", "enabling"] } }
+```
 
 
 ```graphql
@@ -58,11 +65,11 @@ input IntegrationStatusFilter {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>IntegrationStatusFilter.<b>eq</b></code>](#eq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IntegrationStatus</b></code>](/api/graphql/v1/types/enums/integration-status.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#eq\} 
-Exact match
+Return only integrations whose status exactly equals this value.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>IntegrationStatusFilter.<b>in</b></code>](#in)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[IntegrationStatus!]</b></code>](/api/graphql/v1/types/enums/integration-status.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="enum"/> \{#in\} 
-Match any of these statuses
+Return integrations whose status matches any value in this list.
 
 
 

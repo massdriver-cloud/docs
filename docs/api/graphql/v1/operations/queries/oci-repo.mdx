@@ -42,7 +42,28 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Get an OCI repository by name.
+Fetch a single OCI repository by name.
+
+Returns the repository along with its nested `tags` and `releaseChannels`
+collections. Returns `null` with a `NOT_FOUND` error if the repository
+does not exist in your organization.
+
+```graphql
+query {
+  ociRepo(organizationId: "your-org-id", id: "aws-aurora-postgres") {
+    id
+    name
+    artifactType
+    tags(sort: { field: VERSION, order: DESC }) {
+      items { tag createdAt }
+      cursor { next }
+    }
+    releaseChannels(filter: { stable: true }) {
+      items { name tag }
+    }
+  }
+}
+```
 
 
 ```graphql
@@ -58,14 +79,27 @@ ociRepo(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>ociRepo.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ociRepo.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-The repository name (e.g., 'aws-aurora-postgres')
+The repository name (e.g., `aws-aurora-postgres`).
 
 
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>OciRepo</b></code>](/api/graphql/v1/types/objects/oci-repo.mdx) <Badge class="badge badge--secondary " text="object"/> 
-An OCI repository in your organization's catalog.
+An OCI repository in your organization's bundle catalog.
+
+An OCI repository is the container for all published versions of a single
+infrastructure-as-code package. It is analogous to a Docker image repository
+but for Massdriver bundles.
+
+Each repository has a unique `name` (e.g., `aws-aurora-postgres`) and contains:
+
+- &#x002A;&#x002A;Tags&#x002A;&#x002A; -- the individual published versions (`1.0.0`, `1.1.0`, `1.2.3`, etc.)
+- &#x002A;&#x002A;Release channels&#x002A;&#x002A; -- auto-resolving version constraints (`latest`, `~1`, `~1.2`)
+  that always point to the newest matching tag
+
+To fetch a specific bundle version from a repository, use the `bundle` query
+with a `BundleId` like `aws-aurora-postgres@1.2.3` or `aws-aurora-postgres@~1`.

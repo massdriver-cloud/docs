@@ -42,7 +42,14 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Filter for deployment status. All provided operators are combined with AND.
+Filter by deployment status.
+
+All operators within a single filter are combined with &#x002A;&#x002A;AND&#x002A;&#x002A;. Use `in` to match
+deployments in any of several statuses.
+
+```graphql
+{ "status": { "in": ["COMPLETED", "FAILED"] } }
+```
 
 
 ```graphql
@@ -58,11 +65,11 @@ input DeploymentStatusFilter {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>DeploymentStatusFilter.<b>eq</b></code>](#eq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DeploymentStatus</b></code>](/api/graphql/v1/types/enums/deployment-status.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#eq\} 
-Exact match
+Return only deployments whose status exactly equals this value.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>DeploymentStatusFilter.<b>in</b></code>](#in)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[DeploymentStatus!]</b></code>](/api/graphql/v1/types/enums/deployment-status.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="enum"/> \{#in\} 
-Match any of these statuses
+Return deployments whose status matches any value in this list.
 
 
 

@@ -42,7 +42,12 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-The type of infrastructure operation.
+The type of infrastructure operation to perform.
+
+Each action maps to a distinct phase of the infrastructure lifecycle:
+- &#x002A;&#x002A;PROVISION&#x002A;&#x002A; creates new infrastructure or updates existing infrastructure to match the desired configuration.
+- &#x002A;&#x002A;DECOMMISSION&#x002A;&#x002A; tears down all infrastructure managed by the instance.
+- &#x002A;&#x002A;PLAN&#x002A;&#x002A; generates a dry-run preview showing what changes &#x005F;would&#x005F; be made, without actually applying them.
 
 
 ```graphql
@@ -59,15 +64,15 @@ enum DeploymentAction {
 ### Values
 
 #### [<code style={{ fontWeight: 'normal' }}>DeploymentAction.<b>PROVISION</b></code>](#provision) \{#provision\} 
-Create or update infrastructure
+Create new infrastructure or update existing infrastructure to match the instance's current configuration.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>DeploymentAction.<b>DECOMMISSION</b></code>](#decommission) \{#decommission\} 
-Tear down infrastructure
+Destroy all infrastructure managed by this instance. This action cannot be undone.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>DeploymentAction.<b>PLAN</b></code>](#plan) \{#plan\} 
-Preview changes without applying them
+Generate a dry-run preview of what changes would be made, without applying them. Useful for reviewing infrastructure changes before committing.
 
 
 

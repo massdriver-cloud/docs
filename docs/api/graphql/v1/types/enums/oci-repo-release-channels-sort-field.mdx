@@ -42,7 +42,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Available fields for sorting release channels.
+Fields available for ordering release channels.
 
 
 ```graphql
@@ -57,7 +57,7 @@ enum OciRepoReleaseChannelsSortField {
 ### Values
 
 #### [<code style={{ fontWeight: 'normal' }}>OciRepoReleaseChannelsSortField.<b>NAME</b></code>](#name) \{#name\} 
-Sort alphabetically by channel name
+Sort by channel name. Channels are ordered: `latest` first, then `~major` channels numerically, then `~major.minor` channels numerically. Dev (`+dev`) variants sort after their stable counterpart.
 
 
 

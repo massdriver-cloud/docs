@@ -1,0 +1,93 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: alarm-metric
+title: AlarmMetric
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+The cloud metric an alarm is evaluating.
+
+Shape and populated fields vary by provider. AWS and Azure populate
+`statistic` (e.g., `Average`, `Sum`, `Maximum`); GCP does not. `dimensions`
+are populated when the provider exposes them as structured key-value pairs.
+
+
+```graphql
+type AlarmMetric {
+  namespace: String
+  name: String
+  statistic: String
+  region: String
+  dimensions: [AlarmMetricDimension!]!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AlarmMetric.<b>namespace</b></code>](#namespace)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#namespace\} 
+Cloud service namespace that categorizes the metric. Examples: `AWS/RDS`, `Microsoft.Cache/Redis`, `cloudsql_database`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlarmMetric.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Metric name within the namespace. Examples: `CPUUtilization` (AWS), `allpercentprocessortime` (Azure).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlarmMetric.<b>statistic</b></code>](#statistic)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#statistic\} 
+Aggregation function applied to metric samples. Examples: `Average`, `Sum`, `Maximum`. May be `null` for providers that don't use this concept (e.g., GCP).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlarmMetric.<b>region</b></code>](#region)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#region\} 
+Cloud region this metric is scoped to, when provider-reported.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlarmMetric.<b>dimensions</b></code>](#dimensions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[AlarmMetricDimension!]!</b></code>](/api/graphql/v1/types/objects/alarm-metric-dimension.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#dimensions\} 
+Dimensions identifying the specific cloud resource being monitored. Empty list when the provider doesn't report structured dimensions.
+
+
+
+
+
+
+### Member Of
+
+[`Alarm`](/api/graphql/v1/types/objects/alarm.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

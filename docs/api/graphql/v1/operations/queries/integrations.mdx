@@ -44,6 +44,22 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 List your organization's configured integrations.
 
+Returns all integrations that have been created for your organization, with support
+for filtering by type and status, sorting, and cursor-based pagination.
+
+```graphql
+query {
+  integrations(organizationId: "my-org", filter: { status: { eq: enabled } }) {
+    cursor { next }
+    items {
+      id
+      status
+      nextRunAt
+    }
+  }
+}
+```
+
 
 ```graphql
 integrations(
@@ -60,19 +76,19 @@ integrations(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>integrations.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>integrations.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IntegrationsFilter</b></code>](/api/graphql/v1/types/inputs/integrations-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#filter\} 
-Filter results
+Filter criteria. All filters are combined with AND.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>integrations.<b>sort</b></code>](#sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IntegrationsSort</b></code>](/api/graphql/v1/types/inputs/integrations-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#sort\} 
-How to sort results
+Sort order. Defaults to `createdAt` ascending.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>integrations.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#cursor\} 
-Pagination cursor from a previous response
+Pagination cursor from a previous response.
 
 
 ### Type

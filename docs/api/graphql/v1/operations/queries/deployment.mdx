@@ -42,7 +42,9 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Get a single deployment by its ID.
+Fetch a single deployment by its unique identifier.
+
+Returns the full deployment record including status, timing, and the associated instance.
 
 
 ```graphql
@@ -58,14 +60,21 @@ deployment(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>deployment.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>deployment.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-The deployment ID
+The deployment's unique identifier.
 
 
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>Deployment</b></code>](/api/graphql/v1/types/objects/deployment.mdx) <Badge class="badge badge--secondary " text="object"/> 
-A record of an infrastructure provisioning operation, tracking its progress, action, and outcome.
+A record of an infrastructure provisioning operation.
+
+Each deployment tracks a single action (`PROVISION`, `DECOMMISSION`, or `PLAN`) against
+an instance. Deployments are immutable once created — you cannot modify a deployment,
+only create new ones.
+
+Use the `status` field to monitor progress and `elapsed_time` to track duration.
+The `deployed_by` field identifies the user or service account that initiated the operation.

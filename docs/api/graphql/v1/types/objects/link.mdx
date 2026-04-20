@@ -42,7 +42,15 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-A dependency between two components in a blueprint, wiring an output of one to an input of another.
+A design-time dependency between two components in a blueprint.
+
+A link declares that one component's output should be wired into another
+component's input. For example, a link from a database component's
+`authentication` output to an application component's `database` input
+ensures the app receives the database connection string.
+
+At deploy time, each link is realized as a &#x002A;&#x002A;connection&#x002A;&#x002A; in the environment,
+wiring the actual instance outputs to instance inputs.
 
 
 ```graphql
@@ -67,27 +75,27 @@ type Link {
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Link.<b>fromField</b></code>](#from-field)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#from-field\} 
-Output field name on the source component
+The output field name on the source component (e.g., `authentication`).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Link.<b>toField</b></code>](#to-field)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#to-field\} 
-Input field name on the destination component
+The input field name on the destination component (e.g., `database`).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Link.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
-When this link was created (UTC)
+When this link was created (UTC).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Link.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
-When this link was last modified (UTC)
+When this link was last modified (UTC).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Link.<b>fromComponent</b></code>](#from-component)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Component</b></code>](/api/graphql/v1/types/objects/component.mdx) <Badge class="badge badge--secondary " text="object"/> \{#from-component\} 
-The source (from) component.
+The source component that produces the output.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Link.<b>toComponent</b></code>](#to-component)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Component</b></code>](/api/graphql/v1/types/objects/component.mdx) <Badge class="badge badge--secondary " text="object"/> \{#to-component\} 
-The destination (to) component.
+The destination component that consumes the input.
 
 
 
@@ -96,4 +104,4 @@ The destination (to) component.
 
 ### Member Of
 
-[`Connection`](/api/graphql/v1/types/objects/connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`LinkPayload`](/api/graphql/v1/types/objects/link-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`LinksPage`](/api/graphql/v1/types/objects/links-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`Connection`](/api/graphql/v1/types/objects/connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`LinkEvent`](/api/graphql/v1/types/objects/link-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`LinkPayload`](/api/graphql/v1/types/objects/link-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`LinksPage`](/api/graphql/v1/types/objects/links-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

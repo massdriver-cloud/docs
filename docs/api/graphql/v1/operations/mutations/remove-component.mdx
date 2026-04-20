@@ -44,11 +44,13 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 Remove a component from a project's blueprint.
 
+Deletes the component and all of its links. Any instances deployed from
+this component must be decommissioned first.
+
 
 ```graphql
 removeComponent(
   organizationId: ID!
-  projectId: ID!
   id: ID!
 ): ComponentPayload
 ```
@@ -59,15 +61,11 @@ removeComponent(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>removeComponent.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
-
-
-#### [<code style={{ fontWeight: 'normal' }}>removeComponent.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#project-id\} 
-The project ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>removeComponent.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-The component ID to remove
+The component ID to remove (e.g., `myproj-database`).
 
 
 ### Type

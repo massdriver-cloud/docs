@@ -42,7 +42,14 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-A record of an infrastructure provisioning operation, tracking its progress, action, and outcome.
+A record of an infrastructure provisioning operation.
+
+Each deployment tracks a single action (`PROVISION`, `DECOMMISSION`, or `PLAN`) against
+an instance. Deployments are immutable once created — you cannot modify a deployment,
+only create new ones.
+
+Use the `status` field to monitor progress and `elapsed_time` to track duration.
+The `deployed_by` field identifies the user or service account that initiated the operation.
 
 
 ```graphql
@@ -71,43 +78,47 @@ type Deployment {
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Deployment.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DeploymentStatus!</b></code>](/api/graphql/v1/types/enums/deployment-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
-Current state of the deployment
+Current lifecycle state of this deployment.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Deployment.<b>action</b></code>](#action)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DeploymentAction!</b></code>](/api/graphql/v1/types/enums/deployment-action.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#action\} 
-Type of operation
+The infrastructure operation this deployment performs.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Deployment.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version\} 
-Bundle version being deployed
+The bundle version used for this deployment (e.g., `1.2.0`).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Deployment.<b>message</b></code>](#message)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#message\} 
-Deployment message or commit info
+An optional message describing the purpose of this deployment, similar to a commit message.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Deployment.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
-When this deployment started (UTC)
+When this deployment was created (UTC).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Deployment.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
-When this deployment was last updated (UTC)
+When this deployment record was last updated (UTC).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Deployment.<b>lastTransitionedAt</b></code>](#last-transitioned-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#last-transitioned-at\} 
-When the status last changed (UTC)
+When the deployment last changed status (UTC). Null if the deployment is still `PENDING`.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Deployment.<b>elapsedTime</b></code>](#elapsed-time)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/api/graphql/v1/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#elapsed-time\} 
-How long the deployment has been running, in seconds.
+Wall-clock duration of the deployment in seconds.
+
+For `RUNNING` deployments, this is a live timer counting from creation.
+For terminal states, this is the total time from creation to the final status transition.
+Returns `0` for `PENDING` deployments.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Deployment.<b>deployedBy</b></code>](#deployed-by)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#deployed-by\} 
-Who started this deployment.
+The name of the user or service account that initiated this deployment. Null if the initiator has been removed.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Deployment.<b>instance</b></code>](#instance)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Instance</b></code>](/api/graphql/v1/types/objects/instance.mdx) <Badge class="badge badge--secondary " text="object"/> \{#instance\} 
-The instance being deployed.
+The instance that this deployment operates on.
 
 
 

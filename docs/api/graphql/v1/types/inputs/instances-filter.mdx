@@ -44,6 +44,9 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 Filter which instances to return.
 
+All filters are combined with AND. For example, setting both `status` and
+`ociRepoName` returns only instances that match both criteria.
+
 
 ```graphql
 input InstancesFilter {
@@ -61,23 +64,23 @@ input InstancesFilter {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>InstancesFilter.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IdFilter</b></code>](/api/graphql/v1/types/inputs/id-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#project-id\} 
-Filter by project ID
+Match by the owning project's ID.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>InstancesFilter.<b>environmentId</b></code>](#environment-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IdFilter</b></code>](/api/graphql/v1/types/inputs/id-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#environment-id\} 
-Filter by environment ID
+Match by the environment's ID.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>InstancesFilter.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InstanceStatusFilter</b></code>](/api/graphql/v1/types/inputs/instance-status-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#status\} 
-Filter by instance status
+Match by lifecycle status (e.g., `PROVISIONED`, `FAILED`).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>InstancesFilter.<b>ociRepoName</b></code>](#oci-repo-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoNameFilter</b></code>](/api/graphql/v1/types/inputs/oci-repo-name-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#oci-repo-name\} 
-Filter by OCI repository name
+Match by the OCI repository name of the underlying bundle.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>InstancesFilter.<b>paramDimension</b></code>](#param-dimension)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ParamDimensionFilter!]</b></code>](/api/graphql/v1/types/inputs/param-dimension-filter.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#param-dimension\} 
-Filter by param dimension values. Multiple filters are combined with AND.
+Filter by configuration parameter values. Each entry targets a specific param field; multiple entries are combined with AND.
 
 
 

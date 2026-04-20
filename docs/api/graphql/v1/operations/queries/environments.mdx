@@ -42,7 +42,19 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-List all environments you have access to. Returns a paginated list sorted by name.
+List all environments you have access to across all projects.
+
+Returns a cursor-paginated list. Use `filter` to narrow by project or environment ID,
+and `sort` to control ordering (defaults to name ascending).
+
+```graphql
+query {
+  environments(organizationId: "my-org", filter: { projectId: { eq: "my-project" } }) {
+    items { id name project { id } }
+    cursor { next }
+  }
+}
+```
 
 
 ```graphql
@@ -60,19 +72,19 @@ environments(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>environments.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>environments.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EnvironmentsFilter</b></code>](/api/graphql/v1/types/inputs/environments-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#filter\} 
-Filter results
+Optional filters to narrow results.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>environments.<b>sort</b></code>](#sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EnvironmentsSort</b></code>](/api/graphql/v1/types/inputs/environments-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#sort\} 
-How to sort results
+How to sort results. Defaults to name ascending.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>environments.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#cursor\} 
-Pagination cursor from a previous response
+Cursor from a previous page to fetch the next set of results.
 
 
 ### Type

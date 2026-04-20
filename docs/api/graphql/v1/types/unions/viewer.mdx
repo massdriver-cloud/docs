@@ -42,7 +42,32 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-The authenticated entity making this request. Returns AccountViewer for users, ServiceAccountViewer for API clients.
+The authenticated entity making this API request.
+
+This is a union type — check `__typename` to determine whether the viewer is a human
+user (`AccountViewer`) or an API client (`ServiceAccountViewer`), then query the
+appropriate fields.
+
+&#x002A;&#x002A;Example:&#x002A;&#x002A;
+
+```graphql
+query {
+  viewer {
+    __typename
+    ... on AccountViewer {
+      id
+      email
+      firstName
+      organizations { data { id name } }
+    }
+    ... on ServiceAccountViewer {
+      id
+      name
+      organization { id name }
+    }
+  }
+}
+```
 
 
 ```graphql
@@ -55,11 +80,22 @@ union Viewer = AccountViewer | ServiceAccountViewer
 ### Possible types
 
 #### [<code style={{ fontWeight: 'normal' }}>Viewer.<b>AccountViewer</b></code>](/api/graphql/v1/types/objects/account-viewer.mdx) <Badge class="badge badge--secondary " text="object"/> 
-Information about the authenticated user.
+The authenticated human user (account).
+
+Returned by the `viewer` query when the request is authenticated with a user session or
+on behalf of a human account. Contains profile information, organization memberships,
+linked OAuth identities, and pending group invitations.
+
+Use `organizations` to build an org switcher, `defaultOrganization` to set an initial
+context, and `invites` to show pending invitations the user can accept.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Viewer.<b>ServiceAccountViewer</b></code>](/api/graphql/v1/types/objects/service-account-viewer.mdx) <Badge class="badge badge--secondary " text="object"/> 
-Information about the authenticated service account (API client).
+The authenticated service account (API client).
+
+Returned by the `viewer` query when the request is authenticated with a service account
+credential (Basic auth or access token). Contains the service account's identity and the
+organization it belongs to.
 
 
 

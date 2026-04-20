@@ -44,6 +44,9 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 Remove a link between two components.
 
+Deletes the design-time dependency. Existing connections in deployed
+environments are not affected until the next deployment.
+
 
 ```graphql
 unlinkComponents(
@@ -58,11 +61,11 @@ unlinkComponents(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>unlinkComponents.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>unlinkComponents.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-The link ID to remove
+The link ID to remove.
 
 
 ### Type

@@ -42,7 +42,9 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Filter for resource origin.
+Filter resources by their origin.
+
+Provide either `eq` for an exact match or `in` for matching any of several origins.
 
 
 ```graphql
@@ -58,11 +60,11 @@ input ResourceOriginFilter {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>ResourceOriginFilter.<b>eq</b></code>](#eq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ResourceOrigin</b></code>](/api/graphql/v1/types/enums/resource-origin.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#eq\} 
-Exact match
+Return resources with exactly this origin.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ResourceOriginFilter.<b>in</b></code>](#in)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ResourceOrigin!]</b></code>](/api/graphql/v1/types/enums/resource-origin.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="enum"/> \{#in\} 
-Match any of these origins
+Return resources matching any of the listed origins.
 
 
 

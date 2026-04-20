@@ -42,7 +42,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Available fields for sorting tags.
+Fields available for ordering tags within an OCI repository.
 
 
 ```graphql
@@ -58,11 +58,11 @@ enum OciRepoTagsSortField {
 ### Values
 
 #### [<code style={{ fontWeight: 'normal' }}>OciRepoTagsSortField.<b>VERSION</b></code>](#version) \{#version\} 
-Sort by semantic version order
+Semantic version order (major, then minor, then patch). Stable versions sort above dev pre-releases at the same version number.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OciRepoTagsSortField.<b>CREATED&#x005F;AT</b></code>](#created-at) \{#created-at\} 
-Sort by when the tag was published
+Chronological order by the date the tag was published.
 
 
 

@@ -42,7 +42,11 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-How this Massdriver instance is deployed.
+The deployment mode of this Massdriver server.
+
+Determines whether you are connecting to a self-managed installation or to
+Massdriver's managed cloud service. This affects available features, authentication
+options, and upgrade procedures.
 
 
 ```graphql
@@ -58,11 +62,11 @@ enum ServerMode {
 ### Values
 
 #### [<code style={{ fontWeight: 'normal' }}>ServerMode.<b>SELF&#x005F;HOSTED</b></code>](#self-hosted) \{#self-hosted\} 
-Self-hosted in your own infrastructure
+A self-hosted Massdriver installation running in your own infrastructure.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ServerMode.<b>MANAGED</b></code>](#managed) \{#managed\} 
-Massdriver's managed cloud service
+Massdriver Cloud, the fully managed SaaS service operated by Massdriver.
 
 
 

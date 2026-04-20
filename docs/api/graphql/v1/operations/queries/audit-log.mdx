@@ -42,7 +42,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Get a single audit log event by its ID.
+Retrieve a single audit log event by its identifier.
+
+Returns `null` with a `NOT_FOUND` error if the event does not exist or belongs to a
+different organization.
 
 
 ```graphql
@@ -58,14 +61,24 @@ auditLog(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>auditLog.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>auditLog.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-The audit log event ID
+The audit log event's unique identifier.
 
 
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>AuditLog</b></code>](/api/graphql/v1/types/objects/audit-log.mdx) <Badge class="badge badge--secondary " text="object"/> 
-An audit log event.
+An audit log event recording a significant action in your organization.
+
+Every state-changing operation in Massdriver is captured as an audit log event, following
+the [CloudEvents](https://cloudevents.io/) specification. Use audit logs to track who
+made changes, investigate incidents, and satisfy compliance requirements.
+
+&#x002A;&#x002A;Event types&#x002A;&#x002A; use dot notation to categorize actions (e.g., `project.created`,
+`deployment.completed`, `group.member_added`).
+
+&#x002A;&#x002A;Subjects&#x002A;&#x002A; use MRI (Massdriver Resource Identifier) format to identify the affected
+resource (e.g., `mri://organization/my-org/project/backend`).

@@ -42,7 +42,11 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Create a new project by cloning another project's blueprint. All components and links are copied into the new project.
+Create a new project by cloning another project's blueprint.
+
+All components and links from the source project are copied into the new project.
+The new project gets its own independent blueprint -- subsequent changes do not
+affect the source. Environments are &#x002A;&#x002A;not&#x002A;&#x002A; cloned; you must create them separately.
 
 
 
@@ -75,11 +79,11 @@ This mutation supports dynamic form generation using JSON Schema.
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>cloneProject.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>cloneProject.<b>sourceProjectId</b></code>](#source-project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#source-project-id\} 
-The project to clone the blueprint from
+The identifier of the project whose blueprint you want to clone.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>cloneProject.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CloneProjectInput!</b></code>](/api/graphql/v1/types/inputs/clone-project-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 

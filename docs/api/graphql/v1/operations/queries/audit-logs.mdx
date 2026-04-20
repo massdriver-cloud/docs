@@ -42,7 +42,37 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-List audit log events for your organization. Returns newest first by default.
+List audit log events for your organization.
+
+Returns a paginated, filterable, sortable list of audit log events. By default, events are
+sorted newest first (`occurredAt` descending).
+
+&#x002A;&#x002A;Filtering&#x002A;&#x002A; — Use the `filter` argument to narrow results by time range, event type,
+actor type, or specific actor. All filters are combined with AND logic.
+
+&#x002A;&#x002A;Example:&#x002A;&#x002A;
+
+```graphql
+query {
+  auditLogs(
+    organizationId: "my-org"
+    filter: {
+      occurredAt: { after: "2025-01-01T00:00:00Z" }
+      type: { startsWith: "project." }
+      actorType: { in: [ACCOUNT, SERVICE_ACCOUNT] }
+    }
+  ) {
+    data {
+      id
+      occurredAt
+      type
+      subject
+      actor { type name }
+    }
+    cursor { next }
+  }
+}
+```
 
 
 ```graphql
@@ -60,19 +90,19 @@ auditLogs(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>auditLogs.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>auditLogs.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AuditLogsFilter</b></code>](/api/graphql/v1/types/inputs/audit-logs-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#filter\} 
-Filter results
+Optional filter criteria to narrow results.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>auditLogs.<b>sort</b></code>](#sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AuditLogsSort</b></code>](/api/graphql/v1/types/inputs/audit-logs-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#sort\} 
-How to sort results
+Sort field and direction. Defaults to newest first.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>auditLogs.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#cursor\} 
-Pagination cursor from a previous response
+Pagination cursor from a previous response to fetch the next page.
 
 
 ### Type

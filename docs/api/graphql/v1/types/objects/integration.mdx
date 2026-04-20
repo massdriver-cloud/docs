@@ -42,7 +42,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-A configured integration.
+A configured integration connecting your organization to an external service.
+
+Each organization can have at most one integration per type. The integration's `id`
+corresponds to the integration type (e.g., `"aws-cost-and-usage-reports"`).
 
 
 ```graphql
@@ -63,31 +66,31 @@ type Integration {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>Integration.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-Integration type identifier (unique per organization)
+The integration type identifier, unique within your organization.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Integration.<b>integrationTypeId</b></code>](#integration-type-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#integration-type-id\} 
-The type of integration
+The type of this integration (same as `id`).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Integration.<b>config</b></code>](#config)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/v1/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#config\} 
-Integration-specific configuration
+Integration-specific configuration values. Structure varies by integration type.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Integration.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IntegrationStatus!</b></code>](/api/graphql/v1/types/enums/integration-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
-Current status
+Current lifecycle status of this integration.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Integration.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
-When this integration was created (UTC)
+When this integration was first created (UTC).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Integration.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
-When this integration was last modified (UTC)
+When this integration was last modified (UTC).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Integration.<b>nextRunAt</b></code>](#next-run-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#next-run-at\} 
-When this integration will next execute
+When this integration is next scheduled to execute (UTC). Only present for integrations that run on a periodic schedule. `null` if the integration is disabled or does not have scheduled runs.
 
 
 

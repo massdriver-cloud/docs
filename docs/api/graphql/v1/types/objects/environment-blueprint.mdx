@@ -42,12 +42,17 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-An environment's realized infrastructure blueprint.
+An environment's realized infrastructure graph.
 
-The environment blueprint contains all instances (deployed packages) and
-connections (runtime wiring between them) showing how your infrastructure
-is actually deployed. This mirrors the project-level blueprint at the
-environment level.
+The environment blueprint is the &#x002A;&#x002A;runtime counterpart&#x002A;&#x002A; of the project's
+design-time blueprint. It contains the &#x002A;&#x002A;instances&#x002A;&#x002A; (deployed infrastructure)
+and &#x002A;&#x002A;connections&#x002A;&#x002A; (runtime wiring) that show exactly how your infrastructure
+is running in this environment.
+
+While the project blueprint defines the architecture once, each environment
+has its own environment blueprint with independent instances and connections.
+This means `staging` and `production` can run different versions, different
+configurations, or even different subsets of the full blueprint.
 
 
 ```graphql
@@ -71,31 +76,37 @@ type EnvironmentBlueprint {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>EnvironmentBlueprint.<b>instances</b></code>](#instances)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InstancesPage</b></code>](/api/graphql/v1/types/objects/instances-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#instances\} 
-Instances deployed in this environment.
+Paginated list of instances deployed in this environment.
+
+Returns all deployed infrastructure for the environment. Filter by status,
+bundle name, or configuration parameters. Defaults to alphabetical order by name.
 ##### [<code style={{ fontWeight: 'normal' }}>EnvironmentBlueprint.instances.<b>filter</b></code>](#environment-blueprint-instances-filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InstancesFilter</b></code>](/api/graphql/v1/types/inputs/instances-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#environment-blueprint-instances-filter\} 
-Filter results
+Narrow results by status, bundle, or configuration values.
 
 
 ##### [<code style={{ fontWeight: 'normal' }}>EnvironmentBlueprint.instances.<b>sort</b></code>](#environment-blueprint-instances-sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InstancesSort</b></code>](/api/graphql/v1/types/inputs/instances-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#environment-blueprint-instances-sort\} 
-How to sort results
+Sort field and direction. Defaults to `name` ascending.
 
 
 ##### [<code style={{ fontWeight: 'normal' }}>EnvironmentBlueprint.instances.<b>cursor</b></code>](#environment-blueprint-instances-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#environment-blueprint-instances-cursor\} 
-Pagination cursor from a previous response
+Pagination cursor returned by a previous page.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EnvironmentBlueprint.<b>connections</b></code>](#connections)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ConnectionsPage</b></code>](/api/graphql/v1/types/objects/connections-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#connections\} 
-Connections between instances in this environment.
+Paginated list of connections between instances in this environment.
+
+Each connection represents a runtime data flow from one instance's output
+to another instance's input. Defaults to chronological order by creation time.
 ##### [<code style={{ fontWeight: 'normal' }}>EnvironmentBlueprint.connections.<b>filter</b></code>](#environment-blueprint-connections-filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ConnectionsFilter</b></code>](/api/graphql/v1/types/inputs/connections-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#environment-blueprint-connections-filter\} 
-Filter results
+Narrow results by source or destination instance.
 
 
 ##### [<code style={{ fontWeight: 'normal' }}>EnvironmentBlueprint.connections.<b>sort</b></code>](#environment-blueprint-connections-sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ConnectionsSort</b></code>](/api/graphql/v1/types/inputs/connections-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#environment-blueprint-connections-sort\} 
-How to sort results
+Sort field and direction. Defaults to `created_at` ascending.
 
 
 ##### [<code style={{ fontWeight: 'normal' }}>EnvironmentBlueprint.connections.<b>cursor</b></code>](#environment-blueprint-connections-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#environment-blueprint-connections-cursor\} 
-Pagination cursor from a previous response
+Pagination cursor returned by a previous page.
 
 
 

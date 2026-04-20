@@ -42,7 +42,12 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-An environment lifecycle event.
+A lifecycle event for an environment.
+
+Emitted when an environment is created, updated (renamed, settings changed), or deleted
+within a project. Subscribe via `projectEvents` for any environment in the project, or
+via `environmentEvents` for a specific environment (updates and deletes only — the
+environment must exist to subscribe to it).
 
 
 ```graphql
@@ -67,10 +72,30 @@ type EnvironmentEvent implements Event {
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EnvironmentEvent.<b>environment</b></code>](#environment)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Environment!</b></code>](/api/graphql/v1/types/objects/environment.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#environment\} 
-The affected environment
+The environment that was created, updated, or deleted.
 
 
 ### Interfaces
 
 #### [<code style={{ fontWeight: 'normal' }}><b>Event</b></code>](/api/graphql/v1/types/interfaces/event.mdx) <Badge class="badge badge--secondary " text="interface"/> 
-A lifecycle event for a resource in your organization.
+Base interface implemented by all lifecycle events.
+
+Every event carries an `action` describing what happened and a `timestamp` recording
+when it occurred. Concrete event types add a field for the affected resource.
+
+Use inline fragments to access the resource-specific fields:
+
+```graphql
+subscription {
+  projectEvents(organizationId: "my-org", projectId: "my-project") {
+    action
+    timestamp
+    ... on ComponentEvent {
+      component { id name }
+    }
+    ... on LinkEvent {
+      link { id fromField toField }
+    }
+  }
+}
+```

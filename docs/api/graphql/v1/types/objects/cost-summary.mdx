@@ -42,7 +42,17 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Cost summary with monthly and daily metrics.
+Aggregated cloud-provider cost metrics for a project or environment.
+
+Cost data is sourced from your cloud provider's billing APIs and refreshed periodically.
+Each metric is a `CostSample` containing an amount and currency. All four metrics are
+always present, but their inner `amount` and `currency` may be null if billing data has
+not yet been ingested.
+
+- &#x002A;&#x002A;last&#x005F;month&#x002A;&#x002A; -- Total spend for the most recent complete billing cycle.
+- &#x002A;&#x002A;monthly&#x005F;average&#x002A;&#x002A; -- Average monthly spend across all available billing cycles.
+- &#x002A;&#x002A;last&#x005F;day&#x002A;&#x002A; -- Total spend for the most recent 24-hour period.
+- &#x002A;&#x002A;daily&#x005F;average&#x002A;&#x002A; -- Average daily spend over the last 7 days.
 
 
 ```graphql
@@ -60,19 +70,19 @@ type CostSummary {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>CostSummary.<b>lastMonth</b></code>](#last-month)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CostSample!</b></code>](/api/graphql/v1/types/objects/cost-sample.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#last-month\} 
-Previous month's total cost
+Total cost for the most recent complete billing cycle.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CostSummary.<b>monthlyAverage</b></code>](#monthly-average)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CostSample!</b></code>](/api/graphql/v1/types/objects/cost-sample.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#monthly-average\} 
-Average monthly cost
+Average monthly cost across all available billing cycles.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CostSummary.<b>lastDay</b></code>](#last-day)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CostSample!</b></code>](/api/graphql/v1/types/objects/cost-sample.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#last-day\} 
-Previous day's cost
+Total cost for the most recent 24-hour period.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CostSummary.<b>dailyAverage</b></code>](#daily-average)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CostSample!</b></code>](/api/graphql/v1/types/objects/cost-sample.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#daily-average\} 
-Average daily cost
+Average daily cost over the last 7 days.
 
 
 

@@ -42,7 +42,16 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-A bundle placed in a project's blueprint, defining what infrastructure can be deployed to environments.
+A bundle placed in a project's blueprint, representing a slot for deployable infrastructure.
+
+A component is the &#x002A;&#x002A;design-time&#x002A;&#x002A; building block of your architecture. It says
+"I want a database here" or "I need a Kubernetes cluster there." The component
+defines &#x002A;what&#x002A; to deploy; the actual running infrastructure lives in &#x002A;&#x002A;instances&#x002A;&#x002A;
+-- one per environment the component is deployed to.
+
+Components are connected to each other via &#x002A;&#x002A;links&#x002A;&#x002A;, which declare that one
+component's output (e.g., a connection string) should be wired into another
+component's input.
 
 
 ```graphql
@@ -69,35 +78,35 @@ type Component {
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Component.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
-Display name
+Human-readable display name shown in the UI.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Component.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
-What this component is for
+Optional free-text description of this component's purpose.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Component.<b>tags</b></code>](#tags)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/v1/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tags\} 
-Tags assigned directly to this component
+Key-value tags assigned directly to this component.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Component.<b>position</b></code>](#position)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ComponentPosition</b></code>](/api/graphql/v1/types/objects/component-position.mdx) <Badge class="badge badge--secondary " text="object"/> \{#position\} 
-Position on the canvas
+Position on the visual canvas. Null if never placed.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Component.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
-When this component was created (UTC)
+When this component was created (UTC).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Component.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
-When this component was last modified (UTC)
+When this component was last modified (UTC).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Component.<b>ociRepo</b></code>](#oci-repo)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepo</b></code>](/api/graphql/v1/types/objects/oci-repo.mdx) <Badge class="badge badge--secondary " text="object"/> \{#oci-repo\} 
-The OCI repository this component uses.
+The OCI repository (bundle) this component is based on.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Component.<b>project</b></code>](#project)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Project</b></code>](/api/graphql/v1/types/objects/project.mdx) <Badge class="badge badge--secondary " text="object"/> \{#project\} 
-The project containing this component.
+The project that owns this component.
 
 
 
@@ -106,4 +115,4 @@ The project containing this component.
 
 ### Member Of
 
-[`ComponentPayload`](/api/graphql/v1/types/objects/component-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ComponentsPage`](/api/graphql/v1/types/objects/components-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Link`](/api/graphql/v1/types/objects/link.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`ComponentEvent`](/api/graphql/v1/types/objects/component-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ComponentPayload`](/api/graphql/v1/types/objects/component-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ComponentsPage`](/api/graphql/v1/types/objects/components-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Instance`](/api/graphql/v1/types/objects/instance.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Link`](/api/graphql/v1/types/objects/link.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

@@ -42,7 +42,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-The type of actor that performed an action.
+The type of actor that performed an audit-logged action.
+
+Every audit log event records who (or what) triggered it. The actor type tells you
+whether the action was performed by a human, an automated system, or a deployment process.
 
 
 ```graphql
@@ -60,19 +63,19 @@ enum AuditLogActorType {
 ### Values
 
 #### [<code style={{ fontWeight: 'normal' }}>AuditLogActorType.<b>ACCOUNT</b></code>](#account) \{#account\} 
-Human user account
+A human user authenticated with their personal account.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AuditLogActorType.<b>SERVICE&#x005F;ACCOUNT</b></code>](#service-account) \{#service-account\} 
-Service account (API key)
+A service account authenticated via API key or access token.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AuditLogActorType.<b>DEPLOYMENT</b></code>](#deployment) \{#deployment\} 
-Automated deployment
+An automated deployment process (e.g., Terraform apply).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AuditLogActorType.<b>SYSTEM</b></code>](#system) \{#system\} 
-System action or legacy event
+An internal system action with no specific user or service account. Also used for legacy events recorded before actor tracking was introduced.
 
 
 

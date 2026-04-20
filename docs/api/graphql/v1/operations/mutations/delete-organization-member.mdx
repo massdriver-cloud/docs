@@ -42,7 +42,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Remove a member from the organization. Deletes all group memberships and pending invitations.
+Remove a member from the organization.
+
+This revokes all group memberships and cancels any pending invitations for the
+specified email address. The member immediately loses access to all organization resources.
 
 
 ```graphql
@@ -58,11 +61,11 @@ deleteOrganizationMember(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>deleteOrganizationMember.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>deleteOrganizationMember.<b>email</b></code>](#email)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#email\} 
-Email address of the member to remove
+Email address of the member to remove.
 
 
 ### Type

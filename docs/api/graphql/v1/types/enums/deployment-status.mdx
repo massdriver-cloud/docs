@@ -44,6 +44,20 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 The current state of a deployment operation.
 
+Every deployment moves through a linear lifecycle:
+
+```mermaid
+stateDiagram-v2
+  [*] --> PENDING: Deployment created
+  PENDING --> RUNNING: Execution starts
+  RUNNING --> COMPLETED: Success
+  RUNNING --> FAILED: Error
+  RUNNING --> ABORTED: Manually stopped
+```
+
+Once a deployment reaches a terminal state (`COMPLETED`, `FAILED`, or `ABORTED`),
+it cannot transition again.
+
 
 ```graphql
 enum DeploymentStatus {
@@ -61,23 +75,23 @@ enum DeploymentStatus {
 ### Values
 
 #### [<code style={{ fontWeight: 'normal' }}>DeploymentStatus.<b>PENDING</b></code>](#pending) \{#pending\} 
-Waiting to start
+The deployment is queued and waiting for execution to begin.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>DeploymentStatus.<b>RUNNING</b></code>](#running) \{#running\} 
-Currently executing
+Infrastructure changes are actively being applied.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>DeploymentStatus.<b>COMPLETED</b></code>](#completed) \{#completed\} 
-Finished successfully
+All infrastructure changes were applied successfully.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>DeploymentStatus.<b>FAILED</b></code>](#failed) \{#failed\} 
-Failed - check logs for details
+The deployment encountered an error. Check deployment logs for details.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>DeploymentStatus.<b>ABORTED</b></code>](#aborted) \{#aborted\} 
-Manually stopped before completion
+The deployment was manually stopped before it could finish.
 
 
 

@@ -42,7 +42,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Sorting options for the projects list.
+Sorting options for the projects list. Specify a field and direction.
 
 
 ```graphql
@@ -58,11 +58,11 @@ input ProjectsSort {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>ProjectsSort.<b>field</b></code>](#field)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ProjectsSortField!</b></code>](/api/graphql/v1/types/enums/projects-sort-field.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#field\} 
-Which field to sort by
+The field to sort by.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ProjectsSort.<b>order</b></code>](#order)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SortOrder!</b></code>](/api/graphql/v1/types/enums/sort-order.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#order\} 
-Sort direction
+Sort direction (`ASC` or `DESC`).
 
 
 

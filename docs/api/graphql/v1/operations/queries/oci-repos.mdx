@@ -42,7 +42,26 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-List OCI repositories in your organization. Returns a paginated list sorted by name.
+List OCI repositories in your organization's bundle catalog.
+
+Returns a paginated list of repositories. Each repository is the container
+for all published versions of a bundle. Use `filter` to narrow by name,
+artifact type, or full-text search.
+
+```graphql
+query {
+  ociRepos(organizationId: "your-org-id", filter: { name: { startsWith: "aws-" } }) {
+    items {
+      id
+      name
+      tags(sort: { field: VERSION, order: DESC }) {
+        items { tag }
+      }
+    }
+    cursor { next }
+  }
+}
+```
 
 
 ```graphql
@@ -60,19 +79,19 @@ ociRepos(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>ociRepos.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ociRepos.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciReposFilter</b></code>](/api/graphql/v1/types/inputs/oci-repos-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#filter\} 
-Filter results
+Narrow results by name, artifact type, or search term.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ociRepos.<b>sort</b></code>](#sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciReposSort</b></code>](/api/graphql/v1/types/inputs/oci-repos-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#sort\} 
-How to sort results. Defaults to name ascending, or relevance when search is active.
+Explicit sort order. Defaults to `name` ascending. When a `search` filter is active and no sort is provided, results are ranked by relevance.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ociRepos.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#cursor\} 
-Pagination cursor from a previous response
+Cursor from a previous page's `cursor.next` or `cursor.previous`.
 
 
 ### Type

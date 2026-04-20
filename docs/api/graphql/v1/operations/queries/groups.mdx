@@ -42,7 +42,26 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-List all groups in your organization. Returns a paginated list.
+List all groups in your organization.
+
+Returns a paginated, sortable list of groups. By default, groups are sorted
+alphabetically by name.
+
+&#x002A;&#x002A;Example:&#x002A;&#x002A;
+
+```graphql
+query {
+  groups(organizationId: "my-org") {
+    data {
+      id
+      name
+      role
+      description
+    }
+    cursor { next }
+  }
+}
+```
 
 
 ```graphql
@@ -59,15 +78,15 @@ groups(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>groups.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>groups.<b>sort</b></code>](#sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GroupsSort</b></code>](/api/graphql/v1/types/inputs/groups-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#sort\} 
-How to sort results
+Sort field and direction. Defaults to name ascending.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>groups.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#cursor\} 
-Pagination cursor from a previous response
+Pagination cursor returned from a previous response to fetch the next page.
 
 
 ### Type

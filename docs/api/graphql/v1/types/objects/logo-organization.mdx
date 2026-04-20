@@ -42,7 +42,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-An organization's logo image.
+An organization's logo image with metadata.
+
+Upload a logo via the `setOrganizationLogo` mutation. Supported formats are
+PNG, JPG, GIF, and WebP with a maximum file size of 1 MB.
 
 
 ```graphql
@@ -68,31 +71,31 @@ type LogoOrganization {
 
 
 #### [<code style={{ fontWeight: 'normal' }}>LogoOrganization.<b>url</b></code>](#url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#url\} 
-URL to the logo image. Uses the organization's internal ID for privacy.
+Fully-qualified URL to the logo image. This URL is stable and safe to cache.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>LogoOrganization.<b>contentType</b></code>](#content-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#content-type\} 
-MIME type (e.g., image/png)
+MIME type of the image (e.g., `image/png`, `image/webp`).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>LogoOrganization.<b>fileSize</b></code>](#file-size)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/api/graphql/v1/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#file-size\} 
-File size in bytes
+File size in bytes. Maximum allowed is 1,048,576 (1 MB).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>LogoOrganization.<b>width</b></code>](#width)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/api/graphql/v1/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#width\} 
-Image width in pixels
+Image width in pixels, or `null` if dimensions could not be determined.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>LogoOrganization.<b>height</b></code>](#height)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/api/graphql/v1/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#height\} 
-Image height in pixels
+Image height in pixels, or `null` if dimensions could not be determined.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>LogoOrganization.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
-When the logo was uploaded (UTC)
+When the logo was first uploaded (UTC).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>LogoOrganization.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
-When the logo was last changed (UTC)
+When the logo was last replaced (UTC).
 
 
 

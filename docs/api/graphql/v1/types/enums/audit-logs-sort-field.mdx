@@ -42,7 +42,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Available fields for sorting audit logs.
+Available fields for sorting audit log events.
 
 
 ```graphql
@@ -58,11 +58,11 @@ enum AuditLogsSortField {
 ### Values
 
 #### [<code style={{ fontWeight: 'normal' }}>AuditLogsSortField.<b>OCCURRED&#x005F;AT</b></code>](#occurred-at) \{#occurred-at\} 
-Sort by when the event occurred
+Sort by when the event occurred (oldest or newest first).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AuditLogsSortField.<b>TYPE</b></code>](#type) \{#type\} 
-Sort by event type
+Sort alphabetically by event type (e.g., `deployment.completed`, `project.created`).
 
 
 

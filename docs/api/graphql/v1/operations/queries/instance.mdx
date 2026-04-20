@@ -42,7 +42,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Get a single instance by its ID.
+Fetch a single instance by its ID. Returns null with a `NOT_FOUND` error if the instance does not exist.
 
 
 ```graphql
@@ -58,14 +58,40 @@ instance(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>instance.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>instance.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-The instance ID
+The instance ID to look up.
 
 
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>Instance</b></code>](/api/graphql/v1/types/objects/instance.mdx) <Badge class="badge badge--secondary " text="object"/> 
-A deployed piece of infrastructure in an environment, created from a bundle.
+A deployed piece of infrastructure in an environment.
+
+An instance is the &#x002A;&#x002A;runtime representation&#x002A;&#x002A; of a component. When you add a
+"database" component to your blueprint and deploy it to the `staging`
+environment, Massdriver creates an instance that tracks the database's
+configuration, deployment state, costs, and produced resources.
+
+&#x002A;&#x002A;Lifecycle:&#x002A;&#x002A; Instances progress through a well-defined set of states:
+
+```mermaid
+stateDiagram-v2
+  [*] --> INITIALIZED: Component added to environment
+  INITIALIZED --> PROVISIONED: Deployment succeeds
+  INITIALIZED --> FAILED: Deployment fails
+  PROVISIONED --> PROVISIONED: Redeploy / update
+  PROVISIONED --> DECOMMISSIONED: Decommission succeeds
+  PROVISIONED --> FAILED: Deployment fails
+  FAILED --> PROVISIONED: Retry succeeds
+  FAILED --> DECOMMISSIONED: Decommission
+  [*] --> EXTERNAL: Remote reference set
+```
+
+&#x002A;&#x002A;Version resolution:&#x002A;&#x002A; Each instance has a `version` constraint (e.g., `~1.0`)
+and a `releaseStrategy` (stable or development). Together these determine
+the `resolvedVersion` that will be used on the next deployment. Compare
+`resolvedVersion` with `deployedVersion` to see if a redeployment is needed,
+or check `availableUpgrade` for newer matching releases.

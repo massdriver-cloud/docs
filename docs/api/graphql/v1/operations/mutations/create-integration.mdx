@@ -44,6 +44,34 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 Create and activate an integration for your organization.
 
+Configures a new integration of the specified type. The `config` and `auth` fields
+must conform to the JSON schemas returned by `integrationTypes`. Returns an
+`IntegrationActivation` with one-time setup instructions that may include sensitive
+credentials.
+
+Each organization can have at most one integration per type.
+
+```graphql
+mutation {
+  createIntegration(
+    organizationId: "my-org"
+    id: "aws-cost-and-usage-reports"
+    input: {
+      config: "{\"bucket\": \"my-cur-bucket\", \"region\": \"us-east-1\"}"
+      auth: "{\"roleArn\": \"arn:aws:iam::123456789012:role/MassdriverCUR\"}"
+    }
+  ) {
+    result {
+      id
+      status
+      instructions
+    }
+    successful
+    messages { field message }
+  }
+}
+```
+
 
 
 
@@ -75,11 +103,11 @@ This mutation supports dynamic form generation using JSON Schema.
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>createIntegration.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>createIntegration.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-The integration type to configure (e.g., 'aws-cost-and-usage-reports')
+The integration type to configure (e.g., `"aws-cost-and-usage-reports"`).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>createIntegration.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CreateIntegrationInput!</b></code>](/api/graphql/v1/types/inputs/create-integration-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 

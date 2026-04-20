@@ -42,7 +42,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-A key-value map. Does not accept arrays, strings, or other JSON primitives.
+A JSON object (key-value map) encoded as a string. Accepts only `{}` objects — arrays, strings, numbers, booleans, and `null` are rejected. Pass values as a JSON-encoded string, e.g. `{"key": "value"}`. Used for dynamic configuration data like integration configs, parameter overrides, and schemas.
 
 
 ```graphql

@@ -42,7 +42,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Sorting options for the environments list.
+Sorting options for the environments list. Specify a field and direction.
 
 
 ```graphql
@@ -58,11 +58,11 @@ input EnvironmentsSort {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>EnvironmentsSort.<b>field</b></code>](#field)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EnvironmentsSortField!</b></code>](/api/graphql/v1/types/enums/environments-sort-field.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#field\} 
-Which field to sort by
+The field to sort by.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EnvironmentsSort.<b>order</b></code>](#order)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SortOrder!</b></code>](/api/graphql/v1/types/enums/sort-order.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#order\} 
-Sort direction
+Sort direction (`ASC` or `DESC`).
 
 
 

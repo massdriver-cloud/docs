@@ -1,0 +1,100 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: link-event
+title: LinkEvent
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A lifecycle event for a blueprint link between two components.
+
+Emitted when components are linked or unlinked in a project's blueprint. Links have
+no mutable body, so only `CREATED` and `DELETED` actions are emitted. Subscribe via
+`projectEvents`.
+
+
+```graphql
+type LinkEvent implements Event {
+  action: EventAction!
+  timestamp: DateTime!
+  link: Link!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>LinkEvent.<b>action</b></code>](#action)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventAction!</b></code>](/api/graphql/v1/types/enums/event-action.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#action\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>LinkEvent.<b>timestamp</b></code>](#timestamp)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#timestamp\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>LinkEvent.<b>link</b></code>](#link)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Link!</b></code>](/api/graphql/v1/types/objects/link.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#link\} 
+The link that was created or deleted.
+
+
+### Interfaces
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Event</b></code>](/api/graphql/v1/types/interfaces/event.mdx) <Badge class="badge badge--secondary " text="interface"/> 
+Base interface implemented by all lifecycle events.
+
+Every event carries an `action` describing what happened and a `timestamp` recording
+when it occurred. Concrete event types add a field for the affected resource.
+
+Use inline fragments to access the resource-specific fields:
+
+```graphql
+subscription {
+  projectEvents(organizationId: "my-org", projectId: "my-project") {
+    action
+    timestamp
+    ... on ComponentEvent {
+      component { id name }
+    }
+    ... on LinkEvent {
+      link { id fromField toField }
+    }
+  }
+}
+```

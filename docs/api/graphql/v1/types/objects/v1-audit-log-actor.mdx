@@ -44,6 +44,16 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 The actor that performed an audit-logged action.
 
+Identifies who or what triggered the event. The `type` field tells you the category
+of actor, and `name` provides a human-readable label:
+
+- &#x002A;&#x002A;`ACCOUNT`*&#x002A; — `name` is the user's email address.
+- &#x002A;&#x002A;`SERVICE_ACCOUNT`*&#x002A; — `name` is the service account's name.
+- &#x002A;&#x002A;`DEPLOYMENT`*&#x002A; — `name` is a reference like `deployment:<id>`.
+- &#x002A;&#x002A;`SYSTEM`*&#x002A; — `name` is `system` for internal actions.
+
+If the original actor has been deleted, the `name` will indicate this (e.g., "deleted account").
+
 
 ```graphql
 type V1AuditLogActor {
@@ -59,15 +69,15 @@ type V1AuditLogActor {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>V1AuditLogActor.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-Actor's unique identifier
+Unique identifier of the actor that performed the action.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>V1AuditLogActor.<b>type</b></code>](#type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AuditLogActorType!</b></code>](/api/graphql/v1/types/enums/audit-log-actor-type.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#type\} 
-What kind of actor this is
+What kind of entity performed the action (human, service account, deployment, or system).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>V1AuditLogActor.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
-Display name (email for users, name for service accounts)
+Human-readable label for the actor. Email address for users, name for service accounts, or a reference identifier for deployments and system actions.
 
 
 

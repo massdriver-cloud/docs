@@ -42,11 +42,25 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Get the configuration fields available across your instances.
+Discover the configuration fields available across your instances.
 
-Returns all the unique fields from your instance configurations that you can
-use to build search filters or dashboards. For example, if your instances have
-'database.instance&#x005F;type' or 'cluster.node&#x005F;count' fields, they'll appear here.
+Introspects the bundle schemas of all accessible instances and returns the
+unique, filterable parameter fields. Use the results to build dynamic search
+filters or infrastructure dashboards.
+
+For example, if your database instances expose `database.instance_type` and
+your Kubernetes instances expose `cluster.node_count`, both will appear here.
+You can then pass those fields to the `paramDimension` filter on the
+`instances` query.
+
+```graphql
+query {
+  paramDimensions(organizationId: "my-org") {
+    items { field label type }
+    cursor { after }
+  }
+}
+```
 
 
 ```graphql
@@ -64,19 +78,19 @@ paramDimensions(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>paramDimensions.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>paramDimensions.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ParamDimensionsFilter</b></code>](/api/graphql/v1/types/inputs/param-dimensions-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#filter\} 
-Scope which instances' schemas to introspect
+Scope which instances' schemas to introspect.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>paramDimensions.<b>sort</b></code>](#sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ParamDimensionsSort</b></code>](/api/graphql/v1/types/inputs/param-dimensions-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#sort\} 
-How to sort results
+Sort field and direction. Defaults to `field` ascending.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>paramDimensions.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#cursor\} 
-Pagination cursor from a previous response
+Pagination cursor returned by a previous page.
 
 
 ### Type

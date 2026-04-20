@@ -42,7 +42,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Filter which environments to return.
+Filters for narrowing the environments list. All filters are optional and combine with AND logic.
 
 
 ```graphql
@@ -58,11 +58,11 @@ input EnvironmentsFilter {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>EnvironmentsFilter.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IdFilter</b></code>](/api/graphql/v1/types/inputs/id-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#project-id\} 
-Filter by project ID
+Filter to environments belonging to a specific project.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EnvironmentsFilter.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>StringFilter</b></code>](/api/graphql/v1/types/inputs/string-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#id\} 
-Filter by environment ID
+Filter by environment identifier (supports exact match and `in` list).
 
 
 

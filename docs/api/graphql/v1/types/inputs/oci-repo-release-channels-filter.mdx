@@ -42,7 +42,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Filter which release channels to return.
+Filters for narrowing the release channels list.
 
 
 ```graphql
@@ -57,4 +57,4 @@ input OciRepoReleaseChannelsFilter {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>OciRepoReleaseChannelsFilter.<b>stable</b></code>](#stable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/api/graphql/v1/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#stable\} 
-When true, return only stable channels. When false, return only development channels. When omitted, return all channels.
+Controls whether stable or development channels are returned. `true` returns only stable channels (`latest`, `~1`, `~1.2`). `false` returns only development channels (`latest+dev`, `~1+dev`, `~1.2+dev`). Omit to return all channels. When returning all channels, dev variants that resolve to the same version as their stable counterpart are automatically deduplicated.

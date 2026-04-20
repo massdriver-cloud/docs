@@ -44,6 +44,9 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 Delete a tag constraint from your organization.
 
+Removing a constraint stops enforcing the rule for future resources. Existing tags
+on resources are not removed.
+
 
 ```graphql
 deleteOrganizationTagConstraint(
@@ -58,11 +61,11 @@ deleteOrganizationTagConstraint(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>deleteOrganizationTagConstraint.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>deleteOrganizationTagConstraint.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-The tag constraint ID to delete
+The identifier of the tag constraint to delete.
 
 
 ### Type

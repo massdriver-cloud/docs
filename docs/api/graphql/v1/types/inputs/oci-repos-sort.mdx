@@ -42,7 +42,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Sorting options for the OCI repositories list.
+Controls the sort order of the OCI repositories list.
+
+When a `search` filter is active and no sort is provided, results are ranked by
+relevance. Providing an explicit sort overrides relevance ranking.
 
 
 ```graphql
@@ -58,11 +61,11 @@ input OciReposSort {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>OciReposSort.<b>field</b></code>](#field)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciReposSortField!</b></code>](/api/graphql/v1/types/enums/oci-repos-sort-field.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#field\} 
-Which field to sort by
+The field to order results by.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OciReposSort.<b>order</b></code>](#order)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SortOrder!</b></code>](/api/graphql/v1/types/enums/sort-order.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#order\} 
-Sort direction
+Ascending (`ASC`) or descending (`DESC`).
 
 
 

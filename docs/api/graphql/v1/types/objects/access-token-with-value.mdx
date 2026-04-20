@@ -42,7 +42,11 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-An access token with the raw token value. Only returned on creation.
+An access token with the raw token value included.
+
+This type is only returned by the `createAccessToken` mutation. The `token` field contains
+the full credential needed for API authentication and &#x002A;&#x002A;cannot be retrieved again&#x002A;&#x002A; after
+this response. Store it securely before navigating away.
 
 
 ```graphql
@@ -63,31 +67,31 @@ type AccessTokenWithValue {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>AccessTokenWithValue.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-Access token identifier
+Unique identifier for this access token.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AccessTokenWithValue.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
-Label for this token
+Human-readable label for identifying this token.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AccessTokenWithValue.<b>token</b></code>](#token)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#token\} 
-The full token value. Store securely — this is the only time it is shown.
+The full bearer token value for API authentication. Only returned once at creation time — store it immediately in a secure location.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AccessTokenWithValue.<b>prefix</b></code>](#prefix)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#prefix\} 
-Short prefix for identifying this token in lists (e.g., md&#x005F;a1b2c3d4)
+A short, non-secret prefix (e.g., `md_a1b2c3d4`) used to identify this token in lists and logs without exposing the full value.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AccessTokenWithValue.<b>scopes</b></code>](#scopes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#scopes\} 
-Permission scopes granted to this token
+Permission scopes that limit what this token can do.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AccessTokenWithValue.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#expires-at\} 
-When this token expires (UTC)
+When this token expires and stops working (UTC).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AccessTokenWithValue.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
-When this token was created (UTC)
+When this token was created (UTC).
 
 
 

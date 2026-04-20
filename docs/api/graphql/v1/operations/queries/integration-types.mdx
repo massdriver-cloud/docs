@@ -42,7 +42,25 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-List all supported integration types. Use these to discover what integrations are available and their configuration schemas.
+List all supported integration types in the Massdriver catalog.
+
+Returns the full catalog of integrations that can be configured, along with their
+JSON schemas for `config` and `auth` fields. Use this to discover available integrations
+and build configuration forms.
+
+```graphql
+query {
+  integrationTypes(organizationId: "my-org") {
+    items {
+      id
+      name
+      description
+      configSchema
+      authSchema
+    }
+  }
+}
+```
 
 
 ```graphql
@@ -57,7 +75,7 @@ integrationTypes(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>integrationTypes.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 ### Type

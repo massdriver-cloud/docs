@@ -42,7 +42,11 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-An SSO provider available for authentication.
+An SSO (Single Sign-On) provider configured for this Massdriver server.
+
+Each provider represents an OAuth 2.0 or OpenID Connect identity provider that
+users can authenticate with. Use the `loginUrl` to redirect users to the
+provider's login page.
 
 
 ```graphql
@@ -60,19 +64,19 @@ type SsoProvider {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>SsoProvider.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
-Provider name (e.g., 'google', 'okta')
+The provider's identifier (e.g., `"google"`, `"okta"`, `"azure-ad"`).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SsoProvider.<b>loginUrl</b></code>](#login-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#login-url\} 
-URL to start the SSO login flow
+The URL to redirect the user to in order to start the SSO login flow.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SsoProvider.<b>uiIconUrl</b></code>](#ui-icon-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#ui-icon-url\} 
-Icon to display on the login button
+URL of the provider's icon, for rendering on login buttons.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SsoProvider.<b>uiLabel</b></code>](#ui-label)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#ui-label\} 
-Label to display on the login button
+Display label for the provider (e.g., `"Sign in with Google"`).
 
 
 

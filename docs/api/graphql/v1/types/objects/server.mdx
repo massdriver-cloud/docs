@@ -42,7 +42,11 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Information about this Massdriver server.
+Information about the Massdriver server you are connected to.
+
+Use this to discover the server's version, deployment mode, and available
+authentication methods. This is typically the first query a client makes
+to determine how to render the login screen and check API compatibility.
 
 
 ```graphql
@@ -61,23 +65,23 @@ type Server {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>Server.<b>appUrl</b></code>](#app-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-url\} 
-Base URL of the application
+The base URL of the Massdriver web application (e.g., `"https://app.massdriver.cloud"`).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Server.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version\} 
-Server version (e.g., '1.2.3')
+The server's semantic version (e.g., `"1.2.3"`).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Server.<b>mode</b></code>](#mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ServerMode!</b></code>](/api/graphql/v1/types/enums/server-mode.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#mode\} 
-Whether this is self-hosted or managed
+Whether this is a self-hosted installation or Massdriver Cloud.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Server.<b>ssoProviders</b></code>](#sso-providers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[SsoProvider]</b></code>](/api/graphql/v1/types/objects/sso-provider.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> \{#sso-providers\} 
-SSO providers available for login
+SSO identity providers available for authentication. Empty if no SSO is configured.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Server.<b>emailAuthMethods</b></code>](#email-auth-methods)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[EmailAuthMethod]</b></code>](/api/graphql/v1/types/objects/email-auth-method.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> \{#email-auth-methods\} 
-Email auth methods available
+Email-based authentication methods available (e.g., passkeys). Empty if only SSO is available.
 
 
 

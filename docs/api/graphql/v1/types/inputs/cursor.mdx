@@ -42,7 +42,22 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-No description
+Cursor-based pagination input for list queries.
+
+Use `limit` to control page size and `next`/`previous` cursors to navigate between
+pages. Cursors are opaque strings returned in the response's `cursor` field — pass
+them back exactly as received to fetch the adjacent page.
+
+```graphql
+# First page (20 items by default)
+query { instances(organizationId: "my-org") { cursor { next } items { id } } }
+
+# Next page
+query { instances(organizationId: "my-org", cursor: { next: "eyJpZCI6..." }) { cursor { next } items { id } } }
+
+# Custom page size
+query { instances(organizationId: "my-org", cursor: { limit: 50 }) { cursor { next } items { id } } }
+```
 
 
 ```graphql
@@ -59,15 +74,15 @@ input Cursor {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>Cursor.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/api/graphql/v1/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
-Maximum number of items per page. Default: 20. Minimum: 1. Maximum: 100.
+Maximum number of items to return per page. Default: &#x002A;&#x002A;20&#x002A;&#x002A;. Minimum: &#x002A;&#x002A;1&#x002A;&#x002A;. Maximum: &#x002A;&#x002A;100&#x002A;&#x002A;.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Cursor.<b>next</b></code>](#next)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#next\} 
-Cursor after which to return items
+Forward pagination cursor. Pass the `next` value from a previous response to fetch the next page. Mutually exclusive with `previous`.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Cursor.<b>previous</b></code>](#previous)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#previous\} 
-Cursor before which to return items
+Backward pagination cursor. Pass the `previous` value from a previous response to fetch the preceding page. Mutually exclusive with `next`.
 
 
 

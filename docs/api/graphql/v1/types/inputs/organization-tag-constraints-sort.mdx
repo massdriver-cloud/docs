@@ -42,7 +42,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Sorting options for the tag constraints list.
+Sorting options for the tag constraints list. Specify a field and direction.
 
 
 ```graphql
@@ -58,8 +58,8 @@ input OrganizationTagConstraintsSort {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>OrganizationTagConstraintsSort.<b>field</b></code>](#field)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OrganizationTagConstraintsSortField!</b></code>](/api/graphql/v1/types/enums/organization-tag-constraints-sort-field.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#field\} 
-Which field to sort by
+The field to sort by.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OrganizationTagConstraintsSort.<b>order</b></code>](#order)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SortOrder!</b></code>](/api/graphql/v1/types/enums/sort-order.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#order\} 
-Sort direction
+Sort direction (`ASC` or `DESC`).

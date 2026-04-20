@@ -1,0 +1,121 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: alarm
+title: Alarm
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A cloud metric alarm attached to an instance.
+
+Alarms are provisioned via the Massdriver Terraform/OpenTofu provider and
+receive state updates via webhooks from AWS CloudWatch, Azure Monitor, GCP
+Cloud Monitoring, or Prometheus Alertmanager.
+
+Check `currentState` to see whether the alarm is firing. A `null` `currentState`
+means no state has been reported yet for this alarm.
+
+
+```graphql
+type Alarm {
+  id: ID!
+  displayName: String!
+  cloudResourceId: String!
+  comparisonOperator: String
+  threshold: Float
+  period: Int
+  metric: AlarmMetric
+  currentState: AlarmState
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>Alarm.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+Unique identifier for this alarm.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Alarm.<b>displayName</b></code>](#display-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#display-name\} 
+Human-readable name for the alarm, set by the cloud provider when the alarm was registered.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Alarm.<b>cloudResourceId</b></code>](#cloud-resource-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#cloud-resource-id\} 
+The cloud provider's unique identifier for the alarm (e.g., CloudWatch AlarmArn, GCP alert policy name, Azure alert id).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Alarm.<b>comparisonOperator</b></code>](#comparison-operator)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#comparison-operator\} 
+How the metric is compared against `threshold` (e.g., `GREATER_THAN`, `LESS_THAN`, `GREATER_THAN_OR_EQUAL_TO`, `LESS_THAN_OR_EQUAL_TO`). May be null for Alertmanager and GCP alarms.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Alarm.<b>threshold</b></code>](#threshold)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/api/graphql/v1/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#threshold\} 
+The value crossed to trigger the alarm, compared using `comparisonOperator`. May be null for Alertmanager alarms and some GCP conditions.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Alarm.<b>period</b></code>](#period)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/api/graphql/v1/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#period\} 
+Evaluation window in seconds over which the metric is aggregated before the comparison is applied. May be null for alarms ingested from providers that don't expose a period.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Alarm.<b>metric</b></code>](#metric)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AlarmMetric</b></code>](/api/graphql/v1/types/objects/alarm-metric.mdx) <Badge class="badge badge--secondary " text="object"/> \{#metric\} 
+The cloud metric this alarm evaluates. May be null for alarms from providers that don't supply structured metric data (e.g., Alertmanager).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Alarm.<b>currentState</b></code>](#current-state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AlarmState</b></code>](/api/graphql/v1/types/objects/alarm-state.mdx) <Badge class="badge badge--secondary " text="object"/> \{#current-state\} 
+The most recent state reported for this alarm. `null` indicates no state has been recorded yet.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Alarm.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When this alarm was registered with Massdriver (UTC).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Alarm.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+When this alarm's configuration last changed (UTC).
+
+
+
+
+
+
+### Member Of
+
+[`AlarmsPage`](/api/graphql/v1/types/objects/alarms-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

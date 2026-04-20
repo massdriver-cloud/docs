@@ -42,7 +42,15 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-A constraint preventing a resource from being deleted.
+A specific condition that prevents a resource from being deleted.
+
+Each constraint identifies the &#x002A;&#x002A;blocking resource&#x002A;&#x002A; (by type and id) and provides a
+human-readable message explaining what must be resolved before deletion can proceed.
+For example, an environment cannot be deleted while it contains provisioned instances,
+and a project cannot be deleted while it has environments.
+
+To resolve a constraint, address the blocking condition described in `message` -- typically
+by decommissioning or removing the resource identified by `type` and `id`.
 
 
 ```graphql
@@ -59,15 +67,15 @@ type DeletionConstraint {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>DeletionConstraint.<b>message</b></code>](#message)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#message\} 
-Human-readable explanation of why deletion is blocked
+Human-readable explanation of why deletion is blocked.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>DeletionConstraint.<b>type</b></code>](#type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#type\} 
-The type of resource that cannot be deleted (e.g., 'project', 'environment')
+The kind of resource causing the block (e.g., `package`, `environment`).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>DeletionConstraint.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-The identifier of the resource that cannot be deleted
+The identifier of the blocking resource.
 
 
 

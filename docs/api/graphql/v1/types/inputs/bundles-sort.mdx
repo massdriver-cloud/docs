@@ -42,7 +42,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Sorting options for the bundles list.
+Controls the sort order of the bundles list.
+
+When a `search` filter is active and no sort is provided, results are ranked by
+relevance. Providing an explicit sort overrides relevance ranking.
 
 
 ```graphql
@@ -58,11 +61,11 @@ input BundlesSort {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>BundlesSort.<b>field</b></code>](#field)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BundlesSortField!</b></code>](/api/graphql/v1/types/enums/bundles-sort-field.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#field\} 
-Which field to sort by
+The field to order results by.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>BundlesSort.<b>order</b></code>](#order)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SortOrder!</b></code>](/api/graphql/v1/types/enums/sort-order.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#order\} 
-Sort direction
+Ascending (`ASC`) or descending (`DESC`).
 
 
 

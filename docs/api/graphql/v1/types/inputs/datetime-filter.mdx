@@ -42,8 +42,20 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Filter for datetime fields. All provided operators are combined with AND.
-Useful for date range queries.
+Filter by a datetime field.
+
+All operators within a single filter are combined with &#x002A;&#x002A;AND&#x002A;&#x002A;, which makes it
+easy to build date range queries by combining `gte` and `lte`.
+
+All datetime values must be in ISO 8601 format (e.g., `"2025-01-15T00:00:00Z"`).
+
+```graphql
+# Everything created in January 2025
+{ "createdAt": { "gte": "2025-01-01T00:00:00Z", "lte": "2025-01-31T23:59:59Z" } }
+
+# Everything after a specific date
+{ "createdAt": { "gt": "2025-06-01T00:00:00Z" } }
+```
 
 
 ```graphql
@@ -62,23 +74,23 @@ input DatetimeFilter {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>DatetimeFilter.<b>eq</b></code>](#eq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#eq\} 
-Exact match
+Return only results with a datetime exactly equal to this value.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>DatetimeFilter.<b>gt</b></code>](#gt)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#gt\} 
-After this date/time
+Return only results with a datetime strictly after this value.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>DatetimeFilter.<b>gte</b></code>](#gte)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#gte\} 
-On or after this date/time
+Return only results with a datetime on or after this value. Combine with `lte` for date ranges.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>DatetimeFilter.<b>lt</b></code>](#lt)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#lt\} 
-Before this date/time
+Return only results with a datetime strictly before this value.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>DatetimeFilter.<b>lte</b></code>](#lte)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#lte\} 
-On or before this date/time
+Return only results with a datetime on or before this value. Combine with `gte` for date ranges.
 
 
 

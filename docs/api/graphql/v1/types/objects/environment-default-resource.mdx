@@ -44,6 +44,9 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 A resource referenced by an environment default.
 
+This represents the actual cloud resource (e.g., a VPC or DNS zone) that has been
+designated as the default for its resource type within an environment.
+
 
 ```graphql
 type EnvironmentDefaultResource {
@@ -59,15 +62,15 @@ type EnvironmentDefaultResource {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>EnvironmentDefaultResource.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-Unique resource identifier
+The resource's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EnvironmentDefaultResource.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
-Human-readable resource name
+Human-readable name of the resource.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EnvironmentDefaultResource.<b>resourceType</b></code>](#resource-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ResourceType</b></code>](/api/graphql/v1/types/objects/resource-type.mdx) <Badge class="badge badge--secondary " text="object"/> \{#resource-type\} 
-The resource type this resource conforms to.
+The resource type (e.g., `massdriver/aws-vpc`) that this resource conforms to.
 
 
 

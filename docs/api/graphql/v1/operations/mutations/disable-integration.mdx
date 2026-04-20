@@ -42,7 +42,11 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Disable an integration. Stops scheduling and runs the integration's deactivation process.
+Disable an active integration.
+
+Stops the integration's execution schedule and runs its deactivation process.
+The integration configuration is preserved and can be re-enabled later with
+`enableIntegration`. The integration must currently be in `enabled` status.
 
 
 ```graphql
@@ -58,11 +62,11 @@ disableIntegration(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>disableIntegration.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>disableIntegration.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-The integration type ID to disable
+The integration type identifier to disable.
 
 
 ### Type

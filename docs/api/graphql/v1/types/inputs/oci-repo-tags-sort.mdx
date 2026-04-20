@@ -42,7 +42,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Sorting options for tags.
+Controls the sort order of tags within an OCI repository.
 
 
 ```graphql
@@ -58,8 +58,8 @@ input OciRepoTagsSort {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>OciRepoTagsSort.<b>field</b></code>](#field)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoTagsSortField!</b></code>](/api/graphql/v1/types/enums/oci-repo-tags-sort-field.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#field\} 
-Which field to sort by
+The field to order results by.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OciRepoTagsSort.<b>order</b></code>](#order)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SortOrder!</b></code>](/api/graphql/v1/types/enums/sort-order.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#order\} 
-Sort direction
+Ascending (`ASC`) or descending (`DESC`).

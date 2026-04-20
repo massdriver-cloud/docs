@@ -42,7 +42,15 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-A remote reference linking an instance to an external resource.
+A link between an instance's resource field and a resource from another project or an imported resource.
+
+Remote references enable cross-project infrastructure sharing. For example, a networking
+team can provision a VPC in one project, and application teams can reference that VPC from
+their own projects using remote references.
+
+Each remote reference binds a specific `field` on the instance to the target resource.
+Setting a remote reference on an instance with no other references transitions the
+instance to `EXTERNAL` status. Removing the last reference resets it to `INITIALIZED`.
 
 
 ```graphql
@@ -61,23 +69,23 @@ type RemoteReference {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>RemoteReference.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-Unique identifier
+Unique identifier for this remote reference.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>RemoteReference.<b>field</b></code>](#field)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#field\} 
-The resource field this reference is assigned to
+The name of the resource field on the instance that this reference satisfies (e.g., `aws_authentication` or `vpc`).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>RemoteReference.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
-When this remote reference was created (UTC)
+When this remote reference was created (UTC).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>RemoteReference.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
-When this remote reference was last modified (UTC)
+When this remote reference was last modified (UTC).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>RemoteReference.<b>resource</b></code>](#resource)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Resource!</b></code>](/api/graphql/v1/types/objects/resource.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#resource\} 
-The external resource this reference points to.
+The resource from another project (or an imported resource) that this reference points to.
 
 
 

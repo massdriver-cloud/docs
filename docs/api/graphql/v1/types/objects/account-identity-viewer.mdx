@@ -42,7 +42,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-An OAuth/OIDC provider identity linked to your account.
+An OAuth or OIDC provider identity linked to your account.
+
+Identities represent external authentication providers (e.g., Google, GitHub) that you have
+connected to your Massdriver account. You can use any linked identity to sign in.
 
 
 ```graphql
@@ -59,15 +62,15 @@ type AccountIdentityViewer {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>AccountIdentityViewer.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-
+Unique identifier for this linked identity.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AccountIdentityViewer.<b>provider</b></code>](#provider)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#provider\} 
-OAuth provider (e.g., 'google', 'github')
+The OAuth/OIDC provider name (e.g., `google`, `github`).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AccountIdentityViewer.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
-When this identity was linked (UTC)
+When this identity was linked to your account (UTC).
 
 
 

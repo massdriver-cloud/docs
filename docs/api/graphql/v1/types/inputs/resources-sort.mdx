@@ -42,7 +42,9 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Sorting options for the resources list.
+Controls the sort order of the resources list.
+
+Defaults to alphabetical by name (ascending) when not specified.
 
 
 ```graphql
@@ -58,11 +60,11 @@ input ResourcesSort {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>ResourcesSort.<b>field</b></code>](#field)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ResourcesSortField!</b></code>](/api/graphql/v1/types/enums/resources-sort-field.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#field\} 
-Which field to sort by
+The field to sort by.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ResourcesSort.<b>order</b></code>](#order)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SortOrder!</b></code>](/api/graphql/v1/types/enums/sort-order.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#order\} 
-Sort direction
+Ascending or descending order.
 
 
 

@@ -42,7 +42,18 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Filter for ID fields. All provided operators are combined with AND.
+Filter by an identifier field.
+
+All operators within a single filter are combined with &#x002A;&#x002A;AND&#x002A;&#x002A;. To match any of
+several values, use the `in` operator rather than multiple `eq` filters.
+
+```graphql
+# Exact match
+{ "id": { "eq": "my-resource" } }
+
+# Match several IDs (logical OR between values)
+{ "id": { "in": ["resource-a", "resource-b"] } }
+```
 
 
 ```graphql
@@ -58,11 +69,11 @@ input IdFilter {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>IdFilter.<b>eq</b></code>](#eq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#eq\} 
-Exact match
+Return only results whose ID exactly equals this value.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>IdFilter.<b>in</b></code>](#in)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ID!]</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#in\} 
-Match any of these values
+Return results whose ID matches any value in this list.
 
 
 

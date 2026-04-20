@@ -42,7 +42,20 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-The current state of an instance.
+The current lifecycle state of an instance.
+
+```mermaid
+stateDiagram-v2
+  [*] --> INITIALIZED: Component added to environment
+  INITIALIZED --> PROVISIONED: Deployment succeeds
+  INITIALIZED --> FAILED: Deployment fails
+  PROVISIONED --> PROVISIONED: Redeploy / update
+  PROVISIONED --> DECOMMISSIONED: Decommission succeeds
+  PROVISIONED --> FAILED: Deployment fails
+  FAILED --> PROVISIONED: Retry succeeds
+  FAILED --> DECOMMISSIONED: Decommission
+  [*] --> EXTERNAL: Remote reference set
+```
 
 
 ```graphql
@@ -61,23 +74,23 @@ enum InstanceStatus {
 ### Values
 
 #### [<code style={{ fontWeight: 'normal' }}>InstanceStatus.<b>INITIALIZED</b></code>](#initialized) \{#initialized\} 
-Created but not yet deployed
+The instance has been created but no deployment has started yet.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>InstanceStatus.<b>PROVISIONED</b></code>](#provisioned) \{#provisioned\} 
-Successfully deployed and running
+Infrastructure is successfully deployed and running.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>InstanceStatus.<b>DECOMMISSIONED</b></code>](#decommissioned) \{#decommissioned\} 
-Infrastructure has been torn down
+Infrastructure has been torn down. The instance record is retained for audit purposes.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>InstanceStatus.<b>FAILED</b></code>](#failed) \{#failed\} 
-Deployment failed - check the deployment logs
+The most recent deployment failed. Check deployment logs for details. Can be retried.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>InstanceStatus.<b>EXTERNAL</b></code>](#external) \{#external\} 
-Imported infrastructure managed outside Massdriver
+Imported infrastructure managed outside Massdriver. Not deployed by Massdriver but tracked for wiring.
 
 
 

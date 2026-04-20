@@ -42,7 +42,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Remove your organization's logo.
+Remove your organization's logo. Returns the deleted logo's metadata, or `null` if none existed.
 
 
 ```graphql
@@ -57,7 +57,7 @@ removeOrganizationLogo(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>removeOrganizationLogo.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 ### Type
