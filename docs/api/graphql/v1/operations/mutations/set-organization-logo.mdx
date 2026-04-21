@@ -42,7 +42,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Upload or replace your organization's logo. Accepts PNG, JPG, GIF, or WebP (max 1 MB).
+Upload or replace your organization's logo.
+
+Accepts PNG, JPG, GIF, or WebP images up to 1 MB. If a logo already exists,
+it is replaced. Use `removeOrganizationLogo` to delete without replacement.
 
 
 ```graphql
@@ -58,11 +61,11 @@ setOrganizationLogo(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>setOrganizationLogo.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>setOrganizationLogo.<b>logo</b></code>](#logo)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Upload!</b></code>](/api/graphql/v1/types/scalars/upload.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#logo\} 
-The image file to upload
+The image file to upload (PNG, JPG, GIF, or WebP, max 1 MB).
 
 
 ### Type

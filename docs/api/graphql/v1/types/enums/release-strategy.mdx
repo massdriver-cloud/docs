@@ -42,7 +42,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Which bundle releases an instance will use.
+Controls which bundle releases are eligible for deployment.
+
+The release strategy works in conjunction with the version constraint to
+determine which bundle version is resolved for deployment.
 
 
 ```graphql
@@ -58,11 +61,11 @@ enum ReleaseStrategy {
 ### Values
 
 #### [<code style={{ fontWeight: 'normal' }}>ReleaseStrategy.<b>STABLE</b></code>](#stable) \{#stable\} 
-Only use stable, published releases
+Only use stable, published releases. Recommended for production environments.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ReleaseStrategy.<b>DEVELOPMENT</b></code>](#development) \{#development\} 
-Use development releases for testing
+Include pre-release/development builds. Useful for testing unreleased bundle changes.
 
 
 

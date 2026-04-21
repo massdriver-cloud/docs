@@ -44,9 +44,24 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 Remove a remote reference from an instance.
 
-The reference can only be removed if no provisioned instances are connected
-through it. Removing the last remote reference resets the instance status
-from EXTERNAL back to INITIALIZED.
+The reference can only be removed if no other provisioned instances depend on the
+connection it provides. Disconnect any downstream consumers first.
+
+If this is the last remote reference on the instance, the instance status transitions
+back from `EXTERNAL` to `INITIALIZED`.
+
+```graphql
+mutation {
+  removeRemoteReference(
+    organizationId: "my-org"
+    input: { instanceId: "my-app", field: "aws_authentication" }
+  ) {
+    result { id field }
+    successful
+    messages { field message }
+  }
+}
+```
 
 
 
@@ -78,7 +93,7 @@ This mutation supports dynamic form generation using JSON Schema.
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>removeRemoteReference.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>removeRemoteReference.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>RemoveRemoteReferenceInput!</b></code>](/api/graphql/v1/types/inputs/remove-remote-reference-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 

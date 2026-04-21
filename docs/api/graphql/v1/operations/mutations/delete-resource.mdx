@@ -42,7 +42,13 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Delete an imported resource. Provisioned resources are removed when their instance is decommissioned.
+Delete an imported resource.
+
+Only resources with origin `IMPORTED` can be deleted directly. Provisioned resources
+are automatically removed when their owning instance is decommissioned.
+
+The resource cannot be deleted if it is currently referenced by any active connections.
+Disconnect all consumers before deleting.
 
 
 ```graphql
@@ -58,11 +64,11 @@ deleteResource(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>deleteResource.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>deleteResource.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-The resource ID to delete
+The resource to delete.
 
 
 ### Type

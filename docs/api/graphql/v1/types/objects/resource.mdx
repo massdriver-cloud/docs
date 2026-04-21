@@ -42,7 +42,18 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-An infrastructure resource such as a cloud credential, database, or network.
+A cloud credential, database connection string, network configuration, or other
+infrastructure output produced by (or imported into) Massdriver.
+
+Resources are the connective tissue between instances. When an instance is deployed, it
+produces resources as outputs. Other instances can consume those resources as inputs,
+creating a dependency graph of your infrastructure.
+
+Resources have two origins:
+- **Imported** — created directly through the API (e.g., uploading existing AWS credentials).
+  You have full CRUD control over these resources.
+- **Provisioned** — created automatically when an instance is deployed. These are read-only
+  and managed entirely by the owning instance's lifecycle.
 
 
 ```graphql
@@ -63,31 +74,34 @@ type Resource {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>Resource.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-Unique resource identifier
+Unique identifier for this resource.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Resource.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
-Human-readable name
+Human-readable display name for this resource.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Resource.<b>type</b></code>](#type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#type\} 
-Resource type identifier (e.g., `aws-iam-role`). Prefer `resourceType { id }`.
+The resource type identifier (e.g., `aws-iam-role`).
+
+**Deprecated:** Use `resourceType { id }` instead for a richer representation
+that includes the resource type's name and schema.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Resource.<b>origin</b></code>](#origin)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ResourceOrigin!</b></code>](/api/graphql/v1/types/enums/resource-origin.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#origin\} 
-How this resource was created
+How this resource was created. Determines whether it can be modified through the API.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Resource.<b>resourceType</b></code>](#resource-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ResourceType</b></code>](/api/graphql/v1/types/objects/resource-type.mdx) <Badge class="badge badge--secondary " text="object"/> \{#resource-type\} 
-The resource type this resource conforms to.
+The resource type that this resource conforms to, defining its schema and validation rules.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Resource.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
-When this resource was created (UTC)
+When this resource was created (UTC).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Resource.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
-When this resource was last modified (UTC)
+When this resource was last modified (UTC).
 
 
 

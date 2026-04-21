@@ -42,7 +42,9 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Filter options for the integrations list.
+Filter options for the `integrations` query.
+
+All filters are combined with **AND**. Omit a filter to skip that constraint.
 
 
 ```graphql
@@ -58,11 +60,11 @@ input IntegrationsFilter {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>IntegrationsFilter.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>StringFilter</b></code>](/api/graphql/v1/types/inputs/string-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#id\} 
-Filter by integration type ID
+Filter by integration type identifier (e.g., `"aws-cost-and-usage-reports"`).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>IntegrationsFilter.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IntegrationStatusFilter</b></code>](/api/graphql/v1/types/inputs/integration-status-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#status\} 
-Filter by status
+Filter by the integration's current lifecycle status.
 
 
 

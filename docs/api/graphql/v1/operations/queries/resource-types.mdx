@@ -42,7 +42,25 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-List resource types available to your organization. Includes public types and your organization's private types.
+List resource types available to your organization.
+
+Returns both public resource types provided by Massdriver and any private
+resource types defined by your organization. Use this to discover what
+dependency and resource types are available when building bundles.
+
+```graphql
+query {
+  resourceTypes(organizationId: "your-org-id", filter: { id: { startsWith: "aws-" } }) {
+    items {
+      id
+      name
+      connectionOrientation
+      icon
+    }
+    cursor { next }
+  }
+}
+```
 
 
 ```graphql
@@ -60,19 +78,19 @@ resourceTypes(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>resourceTypes.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>resourceTypes.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ResourceTypesFilter</b></code>](/api/graphql/v1/types/inputs/resource-types-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#filter\} 
-Filter results
+Narrow results by resource type identifier or search term.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>resourceTypes.<b>sort</b></code>](#sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ResourceTypesSort</b></code>](/api/graphql/v1/types/inputs/resource-types-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#sort\} 
-How to sort results
+Sort order. Defaults to `name` ascending. When a `search` filter is active and no sort is provided, results are ranked by relevance.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>resourceTypes.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#cursor\} 
-Pagination cursor from a previous response
+Cursor from a previous page's `cursor.next` or `cursor.previous`.
 
 
 ### Type

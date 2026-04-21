@@ -42,7 +42,11 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Filter which bundles to return.
+Filters for narrowing the bundles list.
+
+All filters are combined with AND logic. For example, setting both `ociRepo`
+and `resourceType` returns only bundles in the specified repository that also
+produce the given resource type.
 
 
 ```graphql
@@ -60,19 +64,19 @@ input BundlesFilter {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>BundlesFilter.<b>ociRepo</b></code>](#oci-repo)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoNameFilter</b></code>](/api/graphql/v1/types/inputs/oci-repo-name-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#oci-repo\} 
-Filter by OCI repository name
+Restrict results to bundles published under a specific OCI repository name.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>BundlesFilter.<b>resourceType</b></code>](#resource-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>StringFilter</b></code>](/api/graphql/v1/types/inputs/string-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#resource-type\} 
-Filter by resource type produced (e.g., 'dynamodb-table')
+Return only bundles that **produce** a resource of the given type (e.g., `dynamodb-table`, `aws-iam-role`).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>BundlesFilter.<b>dependencyType</b></code>](#dependency-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>StringFilter</b></code>](/api/graphql/v1/types/inputs/string-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#dependency-type\} 
-Filter by dependency type consumed (e.g., 'iam-role')
+Return only bundles that **require** a dependency of the given type (e.g., `aws-iam-role`, `kubernetes-cluster`).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>BundlesFilter.<b>search</b></code>](#search)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#search\} 
-Unified search across bundle name, description, operator guide, and readme. Results are ranked by relevance by default. Pass sort to override with a specific field order. For terms longer than 3 characters, also matches bundle names by prefix. Pagination cursors from search results are not interchangeable with non-search cursors.
+Full-text search across the bundle's name, description, operator guide, and readme. Results are ranked by relevance unless you provide an explicit `sort`. For terms longer than 3 characters, name-prefix matches are also included. **Note:** pagination cursors returned by search results use offset-based pagination and are not interchangeable with cursors from non-search queries.
 
 
 

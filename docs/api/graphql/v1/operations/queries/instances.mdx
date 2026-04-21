@@ -42,7 +42,30 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-List all instances you have access to. Returns a paginated list sorted by name.
+List all instances you have access to.
+
+Returns a paginated list of deployed infrastructure across all projects
+and environments visible to the current user. Use filters to narrow by
+project, environment, status, bundle, or configuration parameters.
+
+```graphql
+query {
+  instances(
+    organizationId: "my-org"
+    filter: { status: { eq: PROVISIONED } }
+    sort: { field: name, order: ASC }
+  ) {
+    items {
+      id
+      name
+      status
+      resolvedVersion
+      environment { id }
+    }
+    cursor { after }
+  }
+}
+```
 
 
 ```graphql
@@ -60,19 +83,19 @@ instances(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>instances.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>instances.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InstancesFilter</b></code>](/api/graphql/v1/types/inputs/instances-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#filter\} 
-Filter results
+Narrow results by project, environment, status, bundle, or params.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>instances.<b>sort</b></code>](#sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InstancesSort</b></code>](/api/graphql/v1/types/inputs/instances-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#sort\} 
-How to sort results
+Sort field and direction. Defaults to `name` ascending.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>instances.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#cursor\} 
-Pagination cursor from a previous response
+Pagination cursor returned by a previous page.
 
 
 ### Type

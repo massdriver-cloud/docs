@@ -1,0 +1,77 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: connection-orientation
+title: ConnectionOrientation
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Determines how instances receive a dependency of this resource type.
+
+When a bundle declares a dependency, the connection orientation of the
+dependency's resource type controls how it gets satisfied at deploy time.
+
+
+```graphql
+enum ConnectionOrientation {
+  LINK
+  ENVIRONMENT_DEFAULT
+}
+```
+
+
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>ConnectionOrientation.<b>LINK</b></code>](#link) \{#link\} 
+The dependency is wired explicitly by drawing a connection between two instances on the canvas. The user chooses which specific instance provides the resource.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ConnectionOrientation.<b>ENVIRONMENT&#x005F;DEFAULT</b></code>](#environment-default) \{#environment-default\} 
+The dependency is satisfied automatically by an environment-level default. The resource is shared across all instances in the environment without explicit wiring.
+
+
+
+
+
+
+### Member Of
+
+[`ResourceType`](/api/graphql/v1/types/objects/resource-type.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

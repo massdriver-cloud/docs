@@ -42,7 +42,26 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Subscribe to events for a specific instance (configuration changes, deployment creation). Requires read access to the instance's project.
+Subscribe to events for a specific instance via WebSocket.
+
+Receives events when the instance's configuration changes, a deployment is created,
+or an incoming connection is added or removed. Requires read access to the
+instance's project.
+
+```graphql
+subscription {
+  instanceEvents(organizationId: "my-org", instanceId: "my-database") {
+    action
+    timestamp
+    ... on InstanceEvent {
+      instance { id name status }
+    }
+    ... on ConnectionEvent {
+      connection { id fromField toField }
+    }
+  }
+}
+```
 
 
 ```graphql
@@ -58,14 +77,34 @@ instanceEvents(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>instanceEvents.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization's unique identifier
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>instanceEvents.<b>instanceId</b></code>](#instance-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#instance-id\} 
-The instance to watch
+The identifier of the instance to subscribe to.
 
 
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>Event</b></code>](/api/graphql/v1/types/interfaces/event.mdx) <Badge class="badge badge--secondary " text="interface"/> 
-A lifecycle event for a resource in your organization.
+Base interface implemented by all lifecycle events.
+
+Every event carries an `action` describing what happened and a `timestamp` recording
+when it occurred. Concrete event types add a field for the affected resource.
+
+Use inline fragments to access the resource-specific fields:
+
+```graphql
+subscription {
+  projectEvents(organizationId: "my-org", projectId: "my-project") {
+    action
+    timestamp
+    ... on ComponentEvent {
+      component { id name }
+    }
+    ... on LinkEvent {
+      link { id fromField toField }
+    }
+  }
+}
+```

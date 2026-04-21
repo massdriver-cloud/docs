@@ -42,7 +42,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-An instance lifecycle event.
+A lifecycle event for an instance.
+
+Emitted when an instance is created, updated (configuration changed, deployment triggered),
+or deleted. Subscribe via `instanceEvents` or `projectEvents`.
 
 
 ```graphql
@@ -67,10 +70,30 @@ type InstanceEvent implements Event {
 
 
 #### [<code style={{ fontWeight: 'normal' }}>InstanceEvent.<b>instance</b></code>](#instance)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Instance!</b></code>](/api/graphql/v1/types/objects/instance.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#instance\} 
-The affected instance
+The instance that was created, updated, or deleted.
 
 
 ### Interfaces
 
 #### [<code style={{ fontWeight: 'normal' }}><b>Event</b></code>](/api/graphql/v1/types/interfaces/event.mdx) <Badge class="badge badge--secondary " text="interface"/> 
-A lifecycle event for a resource in your organization.
+Base interface implemented by all lifecycle events.
+
+Every event carries an `action` describing what happened and a `timestamp` recording
+when it occurred. Concrete event types add a field for the affected resource.
+
+Use inline fragments to access the resource-specific fields:
+
+```graphql
+subscription {
+  projectEvents(organizationId: "my-org", projectId: "my-project") {
+    action
+    timestamp
+    ... on ComponentEvent {
+      component { id name }
+    }
+    ... on LinkEvent {
+      link { id fromField toField }
+    }
+  }
+}
+```

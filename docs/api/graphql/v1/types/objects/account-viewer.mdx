@@ -42,7 +42,14 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Information about the authenticated user.
+The authenticated human user (account).
+
+Returned by the `viewer` query when the request is authenticated with a user session or
+on behalf of a human account. Contains profile information, organization memberships,
+linked OAuth identities, and pending group invitations.
+
+Use `organizations` to build an org switcher, `defaultOrganization` to set an initial
+context, and `invites` to show pending invitations the user can accept.
 
 
 ```graphql
@@ -76,65 +83,78 @@ type AccountViewer {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-
+Unique identifier for this account.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>email</b></code>](#email)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#email\} 
-Email address
+Primary email address associated with the account.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>firstName</b></code>](#first-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#first-name\} 
-First name
+First name, if set in the user's profile.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>lastName</b></code>](#last-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#last-name\} 
-Last name
+Last name, if set in the user's profile.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
-When you signed up (UTC)
+When this account was created (UTC).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
-When your profile was last updated (UTC)
+When this account's profile was last modified (UTC).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>avatar</b></code>](#avatar)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AvatarViewer</b></code>](/api/graphql/v1/types/objects/avatar-viewer.mdx) <Badge class="badge badge--secondary " text="object"/> \{#avatar\} 
-Your profile avatar.
+The user's profile avatar image, or `null` if none has been uploaded.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>organizations</b></code>](#organizations)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ViewerOrganizationsPage</b></code>](/api/graphql/v1/types/objects/viewer-organizations-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#organizations\} 
-Organizations you belong to.
+Organizations you are a member of.
+
+Returns a paginated list of all organizations where you have at least one group
+membership. Defaults to alphabetical order by name.
 ##### [<code style={{ fontWeight: 'normal' }}>AccountViewer.organizations.<b>sort</b></code>](#account-viewer-organizations-sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ViewerOrganizationsSort</b></code>](/api/graphql/v1/types/inputs/viewer-organizations-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#account-viewer-organizations-sort\} 
-How to sort results
+Sort field and direction. Defaults to name ascending.
 
 
 ##### [<code style={{ fontWeight: 'normal' }}>AccountViewer.organizations.<b>cursor</b></code>](#account-viewer-organizations-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#account-viewer-organizations-cursor\} 
-Pagination cursor from a previous response
+Pagination cursor from a previous response to fetch the next page.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>defaultOrganization</b></code>](#default-organization)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ViewerOrganization</b></code>](/api/graphql/v1/types/objects/viewer-organization.mdx) <Badge class="badge badge--secondary " text="object"/> \{#default-organization\} 
-Your most recently joined organization. Useful for setting a default context.
+Your most recently joined organization.
+
+Useful for setting a default context when the user first opens the application.
+Returns `null` if the user does not belong to any organization.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>identities</b></code>](#identities)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IdentitiesViewerPage</b></code>](/api/graphql/v1/types/objects/identities-viewer-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#identities\} 
-OAuth/OIDC identities linked to your account.
+OAuth and OIDC provider identities linked to your account.
+
+Lists all external authentication providers (e.g., Google, GitHub) that you have connected.
+You can sign in with any linked identity.
 ##### [<code style={{ fontWeight: 'normal' }}>AccountViewer.identities.<b>sort</b></code>](#account-viewer-identities-sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IdentitiesSort</b></code>](/api/graphql/v1/types/inputs/identities-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#account-viewer-identities-sort\} 
-How to sort
+Sort field and direction. Defaults to provider name ascending.
 
 
 ##### [<code style={{ fontWeight: 'normal' }}>AccountViewer.identities.<b>cursor</b></code>](#account-viewer-identities-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#account-viewer-identities-cursor\} 
-Pagination cursor
+Pagination cursor from a previous response to fetch the next page.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>invites</b></code>](#invites)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InvitesViewerPage</b></code>](/api/graphql/v1/types/objects/invites-viewer-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#invites\} 
 Pending group membership invitations.
+
+Lists invitations from organizations you have not yet accepted. Use the
+`acceptGroupInvite` mutation to accept an invitation and join the group.
+Defaults to newest first.
 ##### [<code style={{ fontWeight: 'normal' }}>AccountViewer.invites.<b>sort</b></code>](#account-viewer-invites-sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InvitesSort</b></code>](/api/graphql/v1/types/inputs/invites-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#account-viewer-invites-sort\} 
-How to sort
+Sort field and direction. Defaults to newest first.
 
 
 ##### [<code style={{ fontWeight: 'normal' }}>AccountViewer.invites.<b>cursor</b></code>](#account-viewer-invites-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#account-viewer-invites-cursor\} 
-Pagination cursor
+Pagination cursor from a previous response to fetch the next page.
 
 
 

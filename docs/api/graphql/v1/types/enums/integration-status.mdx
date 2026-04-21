@@ -42,7 +42,11 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-The current status of an integration.
+The lifecycle status of an integration.
+
+Integrations transition through these states as they are activated or deactivated.
+The `enabling` and `disabling` states are transient — the integration is performing
+setup or teardown work and will settle into `enabled` or `disabled`.
 
 
 ```graphql
@@ -60,19 +64,19 @@ enum IntegrationStatus {
 ### Values
 
 #### [<code style={{ fontWeight: 'normal' }}>IntegrationStatus.<b>DISABLED</b></code>](#disabled) \{#disabled\} 
-Integration is inactive
+Integration is inactive. No data is being collected or synced.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>IntegrationStatus.<b>DISABLING</b></code>](#disabling) \{#disabling\} 
-Integration is being deactivated
+Integration is being deactivated. Teardown is in progress.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>IntegrationStatus.<b>ENABLING</b></code>](#enabling) \{#enabling\} 
-Integration is being activated
+Integration is being activated. Setup is in progress.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>IntegrationStatus.<b>ENABLED</b></code>](#enabled) \{#enabled\} 
-Integration is active and running
+Integration is active and running on its configured schedule.
 
 
 

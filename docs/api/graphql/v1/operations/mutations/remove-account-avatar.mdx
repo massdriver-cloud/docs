@@ -44,6 +44,9 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 Remove your profile avatar.
 
+Deletes the current avatar image. After removal, the `avatar` field on your viewer profile
+returns `null`.
+
 
 ```graphql
 removeAccountAvatar: AvatarViewerPayload

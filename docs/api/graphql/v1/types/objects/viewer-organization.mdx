@@ -42,7 +42,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-An organization you belong to.
+An organization the viewer belongs to.
+
+Each viewer can be a member of multiple organizations. Use the `billing` field to check
+whether the organization's subscription is in good standing.
 
 
 ```graphql
@@ -63,11 +66,11 @@ type ViewerOrganization {
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ViewerOrganization.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
-Organization name
+Human-readable name of the organization.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ViewerOrganization.<b>billing</b></code>](#billing)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ViewerOrganizationBilling</b></code>](/api/graphql/v1/types/objects/viewer-organization-billing.mdx) <Badge class="badge badge--secondary " text="object"/> \{#billing\} 
-Billing status for this organization.
+Billing information for this organization.
 
 
 

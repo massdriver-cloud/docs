@@ -42,7 +42,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-The type of change that occurred.
+The type of lifecycle change that triggered an event.
+
+Every event carries an action indicating whether the resource was created,
+modified, or removed.
 
 
 ```graphql
@@ -59,15 +62,15 @@ enum EventAction {
 ### Values
 
 #### [<code style={{ fontWeight: 'normal' }}>EventAction.<b>CREATED</b></code>](#created) \{#created\} 
-A new resource was created
+A new resource was created.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EventAction.<b>UPDATED</b></code>](#updated) \{#updated\} 
-An existing resource was modified
+An existing resource was modified (configuration, status, or metadata changed).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EventAction.<b>DELETED</b></code>](#deleted) \{#deleted\} 
-A resource was removed
+A resource was permanently removed.
 
 
 
@@ -76,4 +79,4 @@ A resource was removed
 
 ### Member Of
 
-[`EnvironmentEvent`](/api/graphql/v1/types/objects/environment-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Event`](/api/graphql/v1/types/interfaces/event.mdx)  <Badge class="badge badge--secondary badge--relation" text="interface"/><Bullet />[`InstanceEvent`](/api/graphql/v1/types/objects/instance-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ProjectEvent`](/api/graphql/v1/types/objects/project-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`ComponentEvent`](/api/graphql/v1/types/objects/component-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ConnectionEvent`](/api/graphql/v1/types/objects/connection-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentEvent`](/api/graphql/v1/types/objects/environment-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Event`](/api/graphql/v1/types/interfaces/event.mdx)  <Badge class="badge badge--secondary badge--relation" text="interface"/><Bullet />[`InstanceEvent`](/api/graphql/v1/types/objects/instance-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`LinkEvent`](/api/graphql/v1/types/objects/link-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ProjectEvent`](/api/graphql/v1/types/objects/project-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

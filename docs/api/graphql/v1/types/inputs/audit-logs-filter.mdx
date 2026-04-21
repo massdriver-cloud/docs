@@ -42,7 +42,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Filter which audit logs to return.
+Filter criteria for narrowing which audit log events are returned.
+
+All filters are combined with AND logic — an event must match every specified filter
+to be included in the results. Omit a filter to not restrict on that field.
 
 
 ```graphql
@@ -60,19 +63,19 @@ input AuditLogsFilter {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>AuditLogsFilter.<b>occurredAt</b></code>](#occurred-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DatetimeFilter</b></code>](/api/graphql/v1/types/inputs/datetime-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#occurred-at\} 
-Filter by when the event occurred
+Filter by when the event occurred. Supports `before`, `after`, and range comparisons.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AuditLogsFilter.<b>type</b></code>](#type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>StringFilter</b></code>](/api/graphql/v1/types/inputs/string-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#type\} 
-Filter by event type (e.g., 'project.created')
+Filter by event type using dot notation (e.g., `project.created`, `deployment.completed`). Supports `eq`, `in`, `startsWith`, and `contains`.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AuditLogsFilter.<b>actorType</b></code>](#actor-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AuditLogActorTypeFilter</b></code>](/api/graphql/v1/types/inputs/audit-log-actor-type-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#actor-type\} 
-Filter by who performed the action
+Filter by the type of actor that performed the action (e.g., only human users or only deployments).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AuditLogsFilter.<b>actorId</b></code>](#actor-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IdFilter</b></code>](/api/graphql/v1/types/inputs/id-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#actor-id\} 
-Filter by the actor's ID
+Filter by the specific actor's identifier. Matches across all actor types (account, service account, deployment).
 
 
 

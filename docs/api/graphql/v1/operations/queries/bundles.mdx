@@ -42,7 +42,31 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-List bundle releases. Returns all published versions, filterable by repository, type, or search.
+List published bundle versions in your organization's catalog.
+
+Returns a paginated list of all bundle releases across all OCI repositories.
+Each item is a specific version (e.g., `aws-aurora-postgres@1.2.3`), not just
+the repository.
+
+Use `filter` to narrow results by repository name, resource type produced,
+dependency type consumed, or full-text search. When `search` is active, results
+are ranked by relevance unless an explicit `sort` is provided.
+
+```graphql
+query {
+  bundles(organizationId: "your-org-id", filter: { resourceType: { eq: "aws-iam-role" } }) {
+    items {
+      id
+      name
+      version
+      description
+      dependencies { name resourceType { id } }
+      resources { name resourceType { id } }
+    }
+    cursor { next }
+  }
+}
+```
 
 
 ```graphql
@@ -60,19 +84,19 @@ bundles(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>bundles.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>bundles.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BundlesFilter</b></code>](/api/graphql/v1/types/inputs/bundles-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#filter\} 
-Filter results
+Narrow results by repository, type, or search term.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>bundles.<b>sort</b></code>](#sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BundlesSort</b></code>](/api/graphql/v1/types/inputs/bundles-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#sort\} 
-How to sort results. Defaults to name ascending, or relevance when search is active.
+Explicit sort order. Defaults to `name` ascending. When a `search` filter is active and no sort is provided, results are ranked by relevance.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>bundles.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#cursor\} 
-Pagination cursor from a previous response
+Cursor from a previous page's `cursor.next` or `cursor.previous`.
 
 
 ### Type

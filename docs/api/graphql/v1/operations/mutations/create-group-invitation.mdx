@@ -44,6 +44,12 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 Invite a user to a group by email address.
 
+Sends an email invitation to the specified address. If the user already has a Massdriver
+account, the invitation appears in their pending invites (see the `viewer` query). If they
+don't have an account yet, they'll be prompted to sign up when they accept.
+
+Requires `organization_admin` permissions.
+
 
 ```graphql
 createGroupInvitation(
@@ -59,15 +65,15 @@ createGroupInvitation(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>createGroupInvitation.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>createGroupInvitation.<b>groupId</b></code>](#group-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#group-id\} 
-The group ID to invite the user to
+The group to invite the user to.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>createGroupInvitation.<b>email</b></code>](#email)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#email\} 
-Email address of the user to invite
+Email address of the user to invite.
 
 
 ### Type

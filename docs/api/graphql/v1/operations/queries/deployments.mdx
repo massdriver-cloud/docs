@@ -42,7 +42,27 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-List all deployments you have access to. Returns a paginated list, newest first.
+List deployments across all projects and environments you have access to.
+
+Returns a cursor-paginated list, sorted by newest first by default. Use `filter`
+to narrow results by instance, status, or action type.
+
+```graphql
+query {
+  deployments(organizationId: "my-org", filter: { status: { eq: RUNNING } }) {
+    items {
+      id
+      status
+      action
+      version
+      elapsedTime
+      deployedBy
+      instance { id }
+    }
+    cursor { next }
+  }
+}
+```
 
 
 ```graphql
@@ -60,19 +80,19 @@ deployments(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>deployments.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>deployments.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DeploymentsFilter</b></code>](/api/graphql/v1/types/inputs/deployments-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#filter\} 
-Filter results
+Optional filters to narrow the results.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>deployments.<b>sort</b></code>](#sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DeploymentsSort</b></code>](/api/graphql/v1/types/inputs/deployments-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#sort\} 
-How to sort results
+Sort order for results. Defaults to newest first.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>deployments.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#cursor\} 
-Pagination cursor from a previous response
+Cursor from a previous page to fetch the next set of results.
 
 
 ### Type

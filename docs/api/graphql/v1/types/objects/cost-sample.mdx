@@ -42,7 +42,12 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-A single cost measurement with amount and currency.
+A single cost data point containing an amount and its currency.
+
+Both `amount` and `currency` are nullable. A `null` amount means Massdriver has no cost
+data for the requested period -- this is normal for newly provisioned resources or when
+cloud provider billing data has not yet been ingested. When data is present, `amount` is
+always a positive float and `currency` is an ISO 4217 code (e.g., `USD`, `EUR`).
 
 
 ```graphql
@@ -58,11 +63,11 @@ type CostSample {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>CostSample.<b>amount</b></code>](#amount)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/api/graphql/v1/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#amount\} 
-The cost amount (null if no data available)
+The cost in the given currency. Null when no billing data is available for this period.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CostSample.<b>currency</b></code>](#currency)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#currency\} 
-The currency code, e.g. USD (null if no data available)
+ISO 4217 currency code (e.g., `USD`). Null when no billing data is available.
 
 
 

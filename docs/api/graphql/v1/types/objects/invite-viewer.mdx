@@ -42,7 +42,11 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-A pending group membership invitation.
+A pending invitation to join a group.
+
+When someone invites you to a group, the invitation appears here. Use the
+`acceptGroupInvite` mutation to accept it and become a member of the group,
+gaining whatever access the group provides.
 
 
 ```graphql
@@ -60,19 +64,19 @@ type InviteViewer {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>InviteViewer.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-
+Unique identifier for this invitation.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>InviteViewer.<b>email</b></code>](#email)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#email\} 
-Email the invitation was sent to
+The email address this invitation was sent to.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>InviteViewer.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
-When the invitation was sent (UTC)
+When the invitation was sent (UTC).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>InviteViewer.<b>group</b></code>](#group)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InviteGroupViewer!</b></code>](/api/graphql/v1/types/objects/invite-group-viewer.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#group\} 
-The group you've been invited to join.
+The group you have been invited to join, including its organization.
 
 
 

@@ -42,7 +42,16 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Indicates whether a resource can be deleted and any constraints preventing deletion.
+Lifecycle check indicating whether a resource can safely be deleted.
+
+Before deleting a project or environment, query this field to determine if deletion is
+allowed. When `result` is `false`, the `constraints` list explains exactly what is
+blocking deletion and which resources need to be resolved first.
+
+A resource is deletable only when **all** of the following are true:
+- No child instances are provisioned or in a failed state
+- No deployments are currently pending or running
+- No dependent child resources exist (e.g., environments in a project, forks of an environment)
 
 
 ```graphql
@@ -58,11 +67,11 @@ type Deletable {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>Deletable.<b>result</b></code>](#result)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/api/graphql/v1/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#result\} 
-Whether the resource can be deleted
+Whether the resource can be safely deleted right now.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Deletable.<b>constraints</b></code>](#constraints)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[DeletionConstraint]</b></code>](/api/graphql/v1/types/objects/deletion-constraint.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> \{#constraints\} 
-Constraints preventing deletion, if any
+The list of conditions preventing deletion. Empty when `result` is `true`.
 
 
 

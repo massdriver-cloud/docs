@@ -42,7 +42,27 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-A lifecycle event for a resource in your organization.
+Base interface implemented by all lifecycle events.
+
+Every event carries an `action` describing what happened and a `timestamp` recording
+when it occurred. Concrete event types add a field for the affected resource.
+
+Use inline fragments to access the resource-specific fields:
+
+```graphql
+subscription {
+  projectEvents(organizationId: "my-org", projectId: "my-project") {
+    action
+    timestamp
+    ... on ComponentEvent {
+      component { id name }
+    }
+    ... on LinkEvent {
+      link { id fromField toField }
+    }
+  }
+}
+```
 
 
 ```graphql
@@ -58,11 +78,11 @@ interface Event {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>Event.<b>action</b></code>](#action)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventAction!</b></code>](/api/graphql/v1/types/enums/event-action.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#action\} 
-What happened
+The type of change that occurred.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Event.<b>timestamp</b></code>](#timestamp)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#timestamp\} 
-When it happened (UTC)
+When the event occurred, in UTC.
 
 
 
@@ -71,8 +91,8 @@ When it happened (UTC)
 
 ### Returned By
 
-[`instanceEvents`](/api/graphql/v1/operations/subscriptions/instance-events.mdx)  <Badge class="badge badge--secondary badge--relation" text="subscription"/><Bullet />[`organizationEvents`](/api/graphql/v1/operations/subscriptions/organization-events.mdx)  <Badge class="badge badge--secondary badge--relation" text="subscription"/><Bullet />[`projectEvents`](/api/graphql/v1/operations/subscriptions/project-events.mdx)  <Badge class="badge badge--secondary badge--relation" text="subscription"/>
+[`environmentEvents`](/api/graphql/v1/operations/subscriptions/environment-events.mdx)  <Badge class="badge badge--secondary badge--relation" text="subscription"/><Bullet />[`instanceEvents`](/api/graphql/v1/operations/subscriptions/instance-events.mdx)  <Badge class="badge badge--secondary badge--relation" text="subscription"/><Bullet />[`organizationEvents`](/api/graphql/v1/operations/subscriptions/organization-events.mdx)  <Badge class="badge badge--secondary badge--relation" text="subscription"/><Bullet />[`projectEvents`](/api/graphql/v1/operations/subscriptions/project-events.mdx)  <Badge class="badge badge--secondary badge--relation" text="subscription"/>
 
 ### Implemented By
 
-[`EnvironmentEvent`](/api/graphql/v1/types/objects/environment-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`InstanceEvent`](/api/graphql/v1/types/objects/instance-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ProjectEvent`](/api/graphql/v1/types/objects/project-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`ComponentEvent`](/api/graphql/v1/types/objects/component-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ConnectionEvent`](/api/graphql/v1/types/objects/connection-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentEvent`](/api/graphql/v1/types/objects/environment-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`InstanceEvent`](/api/graphql/v1/types/objects/instance-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`LinkEvent`](/api/graphql/v1/types/objects/link-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ProjectEvent`](/api/graphql/v1/types/objects/project-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

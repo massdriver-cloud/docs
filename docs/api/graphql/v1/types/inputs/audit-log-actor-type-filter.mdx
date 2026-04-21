@@ -42,7 +42,9 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Filter by the type of actor that performed the action.
+Filter audit log events by the type of actor that performed the action.
+
+Provide either `eq` for an exact match or `in` for matching any of several actor types.
 
 
 ```graphql
@@ -58,11 +60,11 @@ input AuditLogActorTypeFilter {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>AuditLogActorTypeFilter.<b>eq</b></code>](#eq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AuditLogActorType</b></code>](/api/graphql/v1/types/enums/audit-log-actor-type.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#eq\} 
-Exact match
+Match events where the actor type is exactly this value.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AuditLogActorTypeFilter.<b>in</b></code>](#in)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[AuditLogActorType!]</b></code>](/api/graphql/v1/types/enums/audit-log-actor-type.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="enum"/> \{#in\} 
-Match any of these actor types
+Match events where the actor type is any of these values.
 
 
 

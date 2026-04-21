@@ -42,7 +42,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Available fields for sorting identities.
+Available fields for sorting linked identities.
 
 
 ```graphql
@@ -58,11 +58,11 @@ enum IdentitiesSortField {
 ### Values
 
 #### [<code style={{ fontWeight: 'normal' }}>IdentitiesSortField.<b>PROVIDER</b></code>](#provider) \{#provider\} 
-Sort by provider name
+Sort alphabetically by provider name (e.g., github, google).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>IdentitiesSortField.<b>CREATED&#x005F;AT</b></code>](#created-at) \{#created-at\} 
-Sort by when the identity was linked
+Sort by when the identity was linked (oldest or newest first).
 
 
 

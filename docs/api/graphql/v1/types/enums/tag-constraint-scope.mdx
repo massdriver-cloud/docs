@@ -42,7 +42,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-The resource level where a tag constraint applies.
+The resource level in the hierarchy where a tag constraint applies.
+
+Tags are set at the specified scope and cascade downward. For example, a tag set at
+the `PROJECT` scope is inherited by all environments and instances in that project.
 
 
 ```graphql
@@ -61,23 +64,23 @@ enum TagConstraintScope {
 ### Values
 
 #### [<code style={{ fontWeight: 'normal' }}>TagConstraintScope.<b>ORGANIZATION</b></code>](#organization) \{#organization\} 
-Tag is set on the organization
+Tag is set on the organization itself.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>TagConstraintScope.<b>PROJECT</b></code>](#project) \{#project\} 
-Tag is set on projects
+Tag is set on individual projects.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>TagConstraintScope.<b>ENVIRONMENT</b></code>](#environment) \{#environment\} 
-Tag is set on environments
+Tag is set on individual environments.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>TagConstraintScope.<b>COMPONENT</b></code>](#component) \{#component\} 
-Tag is set on components
+Tag is set on blueprint components (design-time).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>TagConstraintScope.<b>INSTANCE</b></code>](#instance) \{#instance\} 
-Tag is set on instances
+Tag is set on deployed instances (run-time).
 
 
 

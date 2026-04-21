@@ -42,7 +42,13 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Get information about yourself (the authenticated user or service account).
+Get information about the currently authenticated entity.
+
+Returns an `AccountViewer` for human users or a `ServiceAccountViewer` for API clients.
+This is the "who am I?" query — use it to bootstrap user profiles, display org switchers,
+check billing status, or verify which service account is making requests.
+
+Returns an authentication error if the request has no valid credentials.
 
 
 ```graphql
@@ -55,4 +61,29 @@ viewer: Viewer
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>Viewer</b></code>](/api/graphql/v1/types/unions/viewer.mdx) <Badge class="badge badge--secondary " text="union"/> 
-The authenticated entity making this request. Returns AccountViewer for users, ServiceAccountViewer for API clients.
+The authenticated entity making this API request.
+
+This is a union type — check `__typename` to determine whether the viewer is a human
+user (`AccountViewer`) or an API client (`ServiceAccountViewer`), then query the
+appropriate fields.
+
+**Example:**
+
+```graphql
+query {
+  viewer {
+    __typename
+    ... on AccountViewer {
+      id
+      email
+      firstName
+      organizations { data { id name } }
+    }
+    ... on ServiceAccountViewer {
+      id
+      name
+      organization { id name }
+    }
+  }
+}
+```

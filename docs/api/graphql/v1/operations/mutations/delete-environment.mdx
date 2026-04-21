@@ -42,7 +42,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Delete an environment. You must decommission all packages first.
+Delete an environment permanently.
+
+All instances must be decommissioned first. Query the environment's `deletable`
+field to check for blocking constraints before calling this mutation.
 
 
 ```graphql
@@ -58,11 +61,11 @@ deleteEnvironment(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>deleteEnvironment.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>deleteEnvironment.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-The environment ID to delete
+The identifier of the environment to delete.
 
 
 ### Type

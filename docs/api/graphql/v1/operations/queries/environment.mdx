@@ -42,7 +42,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Get a single environment by its ID.
+Fetch a single environment by its identifier.
 
 
 ```graphql
@@ -58,14 +58,25 @@ environment(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>environment.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>environment.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-The environment ID
+The environment's unique identifier.
 
 
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>Environment</b></code>](/api/graphql/v1/types/objects/environment.mdx) <Badge class="badge badge--secondary " text="object"/> 
-A deployment target within a project (e.g., staging, production) that contains your deployed infrastructure.
+A deployment target within a project where blueprint components become live infrastructure.
+
+Each project can have multiple environments (e.g., `staging`, `production`). When you deploy
+to an environment, every component in the project's blueprint is realized as an **Instance** --
+a running piece of cloud infrastructure with its own configuration, state, and cost data.
+
+Environments inherit tags from their parent project. You can also set environment-scoped tags
+that cascade down to all instances within the environment. **Defaults** let you pre-assign
+resources (like a shared VPC or DNS zone) so that new instances automatically receive them.
+
+Before deleting an environment, all instances must be decommissioned. Use the `deletable`
+field to check for blocking constraints.

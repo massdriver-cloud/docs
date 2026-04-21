@@ -42,7 +42,11 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-An invitation to join a group.
+A pending invitation for a user to join a group.
+
+Invitations are sent by email. The invited user must accept the invitation to become
+a group member. Pending invitations can be revoked by an organization admin before
+they are accepted.
 
 
 ```graphql
@@ -59,15 +63,15 @@ type GroupInvitation {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>GroupInvitation.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-Invitation identifier
+Unique identifier for this invitation.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GroupInvitation.<b>email</b></code>](#email)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#email\} 
-Email address of the invited user
+Email address the invitation was sent to.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GroupInvitation.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
-When the invitation was sent (UTC)
+When the invitation was sent (UTC).
 
 
 

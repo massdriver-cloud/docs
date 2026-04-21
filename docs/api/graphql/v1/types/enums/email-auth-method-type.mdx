@@ -42,7 +42,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Type of email-based authentication.
+The type of email-based (non-SSO) authentication available on this server.
 
 
 ```graphql
@@ -57,7 +57,7 @@ enum EmailAuthMethodType {
 ### Values
 
 #### [<code style={{ fontWeight: 'normal' }}>EmailAuthMethodType.<b>PASSKEY</b></code>](#passkey) \{#passkey\} 
-Sign in with a passkey (WebAuthn)
+Passwordless authentication using passkeys (WebAuthn/FIDO2). The browser prompts for a biometric or security key.
 
 
 

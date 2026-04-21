@@ -42,7 +42,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Set the position of a component on the canvas.
+Set the pixel position of a component on the visual canvas.
 
 
 
@@ -50,7 +50,6 @@ Set the position of a component on the canvas.
 ```graphql
 setComponentPosition(
   organizationId: ID!
-  projectId: ID!
   id: ID!
   input: SetComponentPositionInput!
 ): ComponentPayload
@@ -76,15 +75,11 @@ This mutation supports dynamic form generation using JSON Schema.
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>setComponentPosition.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
-
-
-#### [<code style={{ fontWeight: 'normal' }}>setComponentPosition.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#project-id\} 
-The project ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>setComponentPosition.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-The component ID
+The component ID to reposition (e.g., `myproj-database`).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>setComponentPosition.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetComponentPositionInput!</b></code>](/api/graphql/v1/types/inputs/set-component-position-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 

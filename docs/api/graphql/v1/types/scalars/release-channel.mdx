@@ -42,14 +42,27 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Release channel for automatic bundle upgrades.
+A release channel identifier for automatic version tracking.
 
-- `~1` — latest minor in 1.x.x series
-- `~1.2` — latest patch in 1.2.x series
-- `~1+dev` — latest in 1.x.x including dev builds
-- `~1.2+dev` — latest in 1.2.x including dev builds
-- `latest` — newest stable release
-- `latest+dev` — newest release including dev builds
+Release channels are version constraints that always resolve to the latest
+matching published version. When you pin a component to a release channel,
+it automatically picks up new compatible versions as they are published.
+
+**Stable channels** (exclude development builds):
+
+| Channel | Matches |
+|---------|---------|
+| `latest` | Newest stable release across all major versions |
+| `~1` | Latest minor + patch in the `1.x.x` series |
+| `~1.2` | Latest patch in the `1.2.x` series |
+
+**Development channels** (include `-dev.*` pre-release builds):
+
+| Channel | Matches |
+|---------|---------|
+| `latest+dev` | Newest release of any kind |
+| `~1+dev` | Latest in `1.x.x` including dev builds |
+| `~1.2+dev` | Latest in `1.2.x` including dev builds |
 
 
 ```graphql

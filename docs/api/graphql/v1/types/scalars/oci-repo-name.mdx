@@ -42,9 +42,14 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-OCI repository name (e.g., 'aws-aurora-postgres').
+The short name of an OCI repository (e.g., `aws-aurora-postgres`).
 
-The short name of an OCI repository in your organization's catalog.
+This scalar represents the human-readable repository name within your
+organization's bundle catalog. It is used as the `id` for OCI repositories
+and as the name portion of a `BundleId`.
+
+Repository names are unique within an organization and follow a lowercase
+kebab-case convention (e.g., `aws-aurora-postgres`, `kubernetes-cluster`).
 
 
 ```graphql

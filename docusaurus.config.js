@@ -122,6 +122,7 @@ module.exports = {
         rootPath: "./docs",
         baseURL: "api/graphql/v0",
         homepage: "./docs/api/graphql/v0.md",
+        printer: require.resolve("./src/graphql-markdown-printer"),
         docOptions: {
           frontMatter: {
             pagination_next: null,
@@ -147,6 +148,7 @@ module.exports = {
         rootPath: "./docs",
         baseURL: "api/graphql/v1",
         homepage: "./docs/api/graphql/v1.md",
+        printer: require.resolve("./src/graphql-markdown-printer"),
         docOptions: {
           frontMatter: {
             pagination_next: null,

@@ -44,11 +44,18 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 A published version tag in an OCI repository.
 
+Each tag corresponds to a single bundle release. Tags are immutable -- once
+a version is published, its contents cannot change. Development tags use
+a `-dev.TIMESTAMP` suffix (e.g., `1.2.3-dev.20060102T150405Z`).
+
 
 ```graphql
 type OciRepoTag {
   tag: Semver!
   createdAt: DateTime!
+  mediaType: String!
+  digest: String!
+  size: Int!
 }
 ```
 
@@ -58,11 +65,28 @@ type OciRepoTag {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>OciRepoTag.<b>tag</b></code>](#tag)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Semver!</b></code>](/api/graphql/v1/types/scalars/semver.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tag\} 
-Semantic version (e.g., '1.2.3')
+The semantic version string (e.g., `1.2.3` or `1.2.3-dev.20060102T150405Z`).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OciRepoTag.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
-When this version was published (UTC)
+Timestamp when this version was published (UTC).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciRepoTag.<b>mediaType</b></code>](#media-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#media-type\} 
+The [OCI manifest media type](https://github.com/opencontainers/image-spec/blob/main/manifest.md)
+wrapping this tag. Currently always
+`application/vnd.oci.image.manifest.v1+json`. The artifact type the
+manifest describes is available on `OciRepo.artifactType`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciRepoTag.<b>digest</b></code>](#digest)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#digest\} 
+Content-addressable digest of this tag's manifest, in the form
+`sha256:<hex>` (for example, `sha256:e3b0c4...`). Combine with
+`OciRepo.reference` as `@<digest>` to pin a pull to this exact manifest.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciRepoTag.<b>size</b></code>](#size)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/api/graphql/v1/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#size\} 
+Size of the manifest blob in bytes.
 
 
 

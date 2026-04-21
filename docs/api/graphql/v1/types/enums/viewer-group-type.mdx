@@ -42,7 +42,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Type of group.
+The type of group, based on its role within the organization.
 
 
 ```graphql
@@ -59,15 +59,15 @@ enum ViewerGroupType {
 ### Values
 
 #### [<code style={{ fontWeight: 'normal' }}>ViewerGroupType.<b>ORGANIZATION&#x005F;ADMIN</b></code>](#organization-admin) \{#organization-admin\} 
-Organization administrators
+Organization administrators with full access to all projects and settings.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ViewerGroupType.<b>ORGANIZATION&#x005F;VIEWER</b></code>](#organization-viewer) \{#organization-viewer\} 
-Organization viewers
+Organization viewers with read-only access to all projects.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ViewerGroupType.<b>CUSTOM</b></code>](#custom) \{#custom\} 
-Custom group with specific permissions
+Custom group with project-level permission grants.
 
 
 

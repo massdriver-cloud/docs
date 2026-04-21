@@ -42,7 +42,18 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Filter for string fields. All provided operators are combined with AND.
+Filter by a string field.
+
+All operators within a single filter are combined with **AND**. To match any of
+several values, use the `in` operator rather than multiple `eq` filters.
+
+```graphql
+# Exact match
+{ "name": { "eq": "production" } }
+
+# Match several values (logical OR between values)
+{ "name": { "in": ["production", "staging"] } }
+```
 
 
 ```graphql
@@ -58,11 +69,11 @@ input StringFilter {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>StringFilter.<b>eq</b></code>](#eq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#eq\} 
-Exact match
+Return only results whose value exactly equals this string.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>StringFilter.<b>in</b></code>](#in)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#in\} 
-Match any of these values
+Return results whose value matches any string in this list.
 
 
 
@@ -71,4 +82,4 @@ Match any of these values
 
 ### Member Of
 
-[`AuditLogsFilter`](/api/graphql/v1/types/inputs/audit-logs-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`BundlesFilter`](/api/graphql/v1/types/inputs/bundles-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`EnvironmentsFilter`](/api/graphql/v1/types/inputs/environments-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`IntegrationsFilter`](/api/graphql/v1/types/inputs/integrations-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`ResourceTypesFilter`](/api/graphql/v1/types/inputs/resource-types-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>
+[`AuditLogsFilter`](/api/graphql/v1/types/inputs/audit-logs-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`BundlesFilter`](/api/graphql/v1/types/inputs/bundles-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`EnvironmentsFilter`](/api/graphql/v1/types/inputs/environments-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`IntegrationsFilter`](/api/graphql/v1/types/inputs/integrations-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`ResourcesFilter`](/api/graphql/v1/types/inputs/resources-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`ResourceTypesFilter`](/api/graphql/v1/types/inputs/resource-types-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

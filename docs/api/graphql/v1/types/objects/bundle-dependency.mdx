@@ -1,0 +1,87 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: bundle-dependency
+title: BundleDependency
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+An input that a bundle requires from another bundle's output.
+
+Each dependency declares a named slot that must (or may) be satisfied by
+connecting it to a resource of the matching type. For example, a database
+bundle might declare an `aws_authentication` dependency of type `aws-iam-role`.
+
+Dependencies are satisfied at deploy time by linking an instance that produces
+the required resource type, or by an environment-level default if the resource
+type's connection orientation is `ENVIRONMENT_DEFAULT`.
+
+
+```graphql
+type BundleDependency {
+  name: String!
+  required: Boolean!
+  resourceType: ResourceType
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>BundleDependency.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Handle name for this dependency slot (e.g., `aws_authentication`, `vpc`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundleDependency.<b>required</b></code>](#required)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/api/graphql/v1/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#required\} 
+When `true`, this dependency must be connected before the bundle can be deployed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundleDependency.<b>resourceType</b></code>](#resource-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ResourceType</b></code>](/api/graphql/v1/types/objects/resource-type.mdx) <Badge class="badge badge--secondary " text="object"/> \{#resource-type\} 
+The resource type this dependency accepts. `null` if the resource type has been removed from the catalog.
+
+
+
+
+
+
+### Member Of
+
+[`Bundle`](/api/graphql/v1/types/objects/bundle.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

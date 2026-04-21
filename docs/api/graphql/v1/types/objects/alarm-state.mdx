@@ -1,0 +1,88 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: alarm-state
+title: AlarmState
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A single state transition reported for an alarm.
+
+Alarm states are append-only and recorded each time the alarm's status changes
+(duplicate `OK -> OK` or `ALARM -> ALARM` updates are deduplicated at ingest).
+The most recent state is exposed as `alarm.currentState`.
+
+
+```graphql
+type AlarmState {
+  id: ID!
+  status: AlarmStatus!
+  message: String
+  occurredAt: DateTime!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AlarmState.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+Unique identifier for this state record.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlarmState.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AlarmStatus!</b></code>](/api/graphql/v1/types/enums/alarm-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
+Whether the alarm is firing (`ALARM`) or clear (`OK`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlarmState.<b>message</b></code>](#message)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#message\} 
+Provider-supplied human-readable message describing the state change.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlarmState.<b>occurredAt</b></code>](#occurred-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#occurred-at\} 
+When the state change occurred in the cloud provider (UTC).
+
+
+
+
+
+
+### Member Of
+
+[`Alarm`](/api/graphql/v1/types/objects/alarm.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

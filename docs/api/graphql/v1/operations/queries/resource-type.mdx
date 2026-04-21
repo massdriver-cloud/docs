@@ -42,7 +42,21 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Get a single resource type by its ID.
+Fetch a single resource type by its identifier.
+
+Returns `null` with a `NOT_FOUND` error if the resource type does not exist
+or is not accessible to your organization.
+
+```graphql
+query {
+  resourceType(organizationId: "your-org-id", id: "aws-iam-role") {
+    id
+    name
+    connectionOrientation
+    icon
+  }
+}
+```
 
 
 ```graphql
@@ -58,14 +72,24 @@ resourceType(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>resourceType.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>resourceType.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-The resource type ID (e.g., `aws-iam-role`)
+The resource type identifier (e.g., `aws-iam-role`).
 
 
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>ResourceType</b></code>](/api/graphql/v1/types/objects/resource-type.mdx) <Badge class="badge badge--secondary " text="object"/> 
-A resource type defines what kind of infrastructure a resource represents, such as an AWS IAM role or a VPC.
+A resource type that defines what kind of infrastructure a resource represents.
+
+Resource types are the schema layer for Massdriver's connection system. Every
+dependency a bundle declares and every resource a bundle produces references a
+resource type. This is what makes bundles composable -- a database bundle that
+produces an `aws-rds-instance` resource can be connected to any application
+bundle that declares an `aws-rds-instance` dependency.
+
+Resource types include both public types provided by Massdriver (e.g.,
+`aws-iam-role`, `kubernetes-cluster`) and private types defined by your
+organization for custom infrastructure.

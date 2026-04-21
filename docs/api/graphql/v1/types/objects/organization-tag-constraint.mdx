@@ -42,7 +42,18 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-A rule defining an allowed tag key, which resource level it applies to, and whether it's required.
+A governance rule that defines an allowed tag key, the resource scope where it applies,
+and whether it is required.
+
+Tag constraints enforce consistent metadata across your organization. When a constraint
+is marked as **required**, any resource created at the specified scope must include the
+tag key. Optional constraints define allowed keys without mandating them.
+
+Use the `tagSchema` field on the Organization type to generate a JSON Schema document
+from these constraints for client-side validation.
+
+**Example:** A constraint with `key: "TEAM"`, `scope: PROJECT`, `required: true` means
+every project must have a `TEAM` tag set at creation time.
 
 
 ```graphql
@@ -62,27 +73,27 @@ type OrganizationTagConstraint {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>OrganizationTagConstraint.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-Unique identifier
+Unique identifier for this constraint.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OrganizationTagConstraint.<b>key</b></code>](#key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#key\} 
-The tag key name (e.g. TEAM, DOMAIN)
+The tag key name (e.g., `TEAM`, `COST_CENTER`, `DOMAIN`). Case-sensitive.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OrganizationTagConstraint.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>TagConstraintScope!</b></code>](/api/graphql/v1/types/enums/tag-constraint-scope.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#scope\} 
-Resource level where this tag is set
+The resource level where this tag must or may be set.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OrganizationTagConstraint.<b>required</b></code>](#required)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/api/graphql/v1/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#required\} 
-Whether this tag must be set when creating a resource at the specified scope
+When `true`, resources created at the specified scope must include this tag. When `false`, the tag is allowed but optional.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OrganizationTagConstraint.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
-When this constraint was created (UTC)
+When this constraint was created (UTC).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OrganizationTagConstraint.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
-When this constraint was last modified (UTC)
+When this constraint was last modified (UTC).
 
 
 

@@ -42,16 +42,27 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Version constraint for bundle releases.
+A union of exact versions and release channels.
 
-Accepts exact versions or release channels:
-- `1.2.3` — exact version
-- `1.2.3-dev.20060102T150405Z` — exact dev release
-- `~1.2` — latest patch in 1.2.x series
-- `~1` — latest minor in 1.x.x series
-- `~1.2+dev` — latest in 1.2.x including dev builds
-- `latest` — newest stable release
-- `latest+dev` — newest release including dev builds
+Use this scalar anywhere you need to specify either a pinned version or an
+auto-resolving channel. It accepts every format that `Semver` and
+`ReleaseChannel` accept:
+
+**Exact versions:**
+
+- `1.2.3` -- a specific stable release
+- `1.2.3-dev.20060102T150405Z` -- a specific development build
+
+**Release channels:**
+
+- `latest` -- newest stable release
+- `latest+dev` -- newest release including dev builds
+- `~1` -- latest minor + patch in the `1.x.x` series
+- `~1.2` -- latest patch in the `1.2.x` series
+- `~1+dev` / `~1.2+dev` -- same ranges including dev builds
+
+This is the most permissive version scalar. Use `Semver` when only exact
+versions are valid, or `ReleaseChannel` when only channels are valid.
 
 
 ```graphql

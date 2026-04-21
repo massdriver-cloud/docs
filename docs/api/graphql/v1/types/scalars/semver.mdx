@@ -42,9 +42,21 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Semantic version (e.g., `1.2.3` or `1.2.3-dev.20060102T150405Z`).
+A fully resolved [semantic version](https://semver.org/) string.
 
-Always a fully resolved version, never a constraint or channel.
+This scalar always represents a concrete, published version -- never a constraint
+or channel. It appears wherever the API returns or accepts an exact version.
+
+**Stable versions** follow the `MAJOR.MINOR.PATCH` pattern:
+
+    1.2.3
+
+**Development versions** append a `-dev.TIMESTAMP` pre-release suffix:
+
+    1.2.3-dev.20060102T150405Z
+
+If you need to specify a version range or auto-resolving channel instead of an
+exact version, use the `ReleaseChannel` or `VersionConstraint` scalars.
 
 
 ```graphql

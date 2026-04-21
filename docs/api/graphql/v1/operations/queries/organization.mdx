@@ -42,7 +42,17 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Get your organization and its settings.
+Fetch your organization's details, including tag constraints and logo.
+
+```graphql
+query {
+  organization(organizationId: "my-org") {
+    id
+    name
+    tagConstraints { items { key scope required } }
+  }
+}
+```
 
 
 ```graphql
@@ -57,10 +67,28 @@ organization(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>organization.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>Organization</b></code>](/api/graphql/v1/types/objects/organization.mdx) <Badge class="badge badge--secondary " text="object"/> 
-Your top-level account containing projects, environments, members, and infrastructure.
+The top-level account that owns all your infrastructure, projects, and team members.
+
+An organization is the root of the Massdriver resource hierarchy. Everything you build
+and deploy lives under an organization: **Projects** contain your infrastructure designs,
+**Environments** (like staging and production) are where those designs come to life, and
+**Instances** are the actual running cloud resources.
+
+```mermaid
+graph TD
+  O[Organization] --> P1[Project]
+  O --> P2[Project]
+  P1 --> E1[Environment: staging]
+  P1 --> E2[Environment: production]
+  E1 --> I1[Instance]
+  E1 --> I2[Instance]
+```
+
+Members access resources through **group memberships** with role-based permissions.
+Tag constraints defined at the organization level govern tagging across all child resources.

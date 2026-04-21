@@ -42,7 +42,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Available fields for sorting resources.
+Available fields for sorting the resources list.
 
 
 ```graphql
@@ -58,11 +58,11 @@ enum ResourcesSortField {
 ### Values
 
 #### [<code style={{ fontWeight: 'normal' }}>ResourcesSortField.<b>NAME</b></code>](#name) \{#name\} 
-Sort alphabetically by name
+Sort alphabetically by resource name (A-Z when ascending).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ResourcesSortField.<b>CREATED&#x005F;AT</b></code>](#created-at) \{#created-at\} 
-Sort by when the resource was created
+Sort by creation timestamp (oldest first when ascending, newest first when descending).
 
 
 

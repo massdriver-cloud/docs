@@ -42,16 +42,35 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-An OCI repository in your organization's catalog.
+An OCI repository in your organization's bundle catalog.
+
+An OCI repository is the container for all published versions of a single
+infrastructure-as-code package. It is analogous to a Docker image repository
+but for Massdriver bundles.
+
+Each repository has a unique `name` (e.g., `aws-aurora-postgres`) and contains:
+
+- **Tags** -- the individual published versions (`1.0.0`, `1.1.0`, `1.2.3`, etc.)
+- **Release channels** -- auto-resolving version constraints (`latest`, `~1`, `~1.2`)
+  that always point to the newest matching tag
+
+To fetch a specific bundle version from a repository, use the `bundle` query
+with a `BundleId` like `aws-aurora-postgres@1.2.3` or `aws-aurora-postgres@~1`.
 
 
 ```graphql
 type OciRepo {
   id: ID!
   name: OciRepoName!
+  reference: String!
   artifactType: String!
   createdAt: DateTime!
   updatedAt: DateTime!
+  description: String
+  icon: String
+  sourceUrl: String
+  readme: String
+  changelog: String
   releaseChannels(
     filter: OciRepoReleaseChannelsFilter
     sort: OciRepoReleaseChannelsSort
@@ -74,43 +93,101 @@ type OciRepo {
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoName!</b></code>](/api/graphql/v1/types/scalars/oci-repo-name.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
-Repository name (e.g., 'aws-aurora-postgres')
+Repository name, unique within your organization (e.g., `aws-aurora-postgres`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>reference</b></code>](#reference)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reference\} 
+The bare [OCI reference](https://github.com/opencontainers/distribution-spec/blob/main/spec.md#pulling-manifests)
+for this repository: `<registry>/<org>/<repo>` (for example,
+`api.massdriver.cloud/acme/aws-aurora-postgres`).
+
+Append `:<tag>` or `@<digest>` to address a specific manifest and use the
+result directly with `oras`, `docker`, or any OCI-compliant client:
+
+```bash
+oras pull api.massdriver.cloud/acme/aws-aurora-postgres:1.2.3
+```
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>artifactType</b></code>](#artifact-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#artifact-type\} 
-The OCI artifact type stored in this repository.
+The [OCI artifact type](https://github.com/opencontainers/image-spec/blob/main/manifest.md#guidelines-for-artifact-usage)
+stored in this repository. Currently always
+`application/vnd.massdriver.bundle.v1+json`.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
-When this repository was created (UTC)
+Timestamp when this repository was created (UTC).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
-When this repository was last modified (UTC)
+Timestamp when this repository was last modified (UTC).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+Short summary of what this repository provisions, taken from the latest
+published release. `null` when the repository has no releases yet or the
+author omitted the description.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>icon</b></code>](#icon)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#icon\} 
+URL to this repository's display icon (SVG), taken from the latest
+published release. `null` when the repository has no releases yet or the
+latest release has no icon.
+
+The URL is **authenticated** — callers must have an active browser session
+or valid API credentials for the owning organization. Embedding it in an
+`<img>` tag from the web UI works because the browser sends the session
+cookie automatically; programmatic clients must include an `Authorization`
+header.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>sourceUrl</b></code>](#source-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#source-url\} 
+URL of the source code this repository is published from (for example, a
+GitHub link), when the author provides one. Taken from the latest release.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>readme</b></code>](#readme)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#readme\} 
+Markdown README for this repository. Cached on publish from the latest
+stable release; falls back to the latest release when the cache is empty.
+`null` when the repository has no releases or the latest release has no
+README.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>changelog</b></code>](#changelog)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#changelog\} 
+Markdown changelog for this repository. Cached on publish from the latest
+stable release; falls back to the latest release when the cache is empty.
+`null` when the repository has no releases or the latest release has no
+changelog.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>releaseChannels</b></code>](#release-channels)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoReleaseChannelsPage</b></code>](/api/graphql/v1/types/objects/oci-repo-release-channels-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#release-channels\} 
-Release channels for automatic version tracking. Each channel resolves to the latest matching tag.
+Paginated list of release channels for this repository.
+
+Each channel is a version constraint that auto-resolves to the latest matching
+tag. Use the `stable` filter to show only stable or only development channels.
 ##### [<code style={{ fontWeight: 'normal' }}>OciRepo.releaseChannels.<b>filter</b></code>](#oci-repo-release-channels-filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoReleaseChannelsFilter</b></code>](/api/graphql/v1/types/inputs/oci-repo-release-channels-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#oci-repo-release-channels-filter\} 
-Filter channels
+Filter by stable or development channels.
 
 
 ##### [<code style={{ fontWeight: 'normal' }}>OciRepo.releaseChannels.<b>sort</b></code>](#oci-repo-release-channels-sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoReleaseChannelsSort</b></code>](/api/graphql/v1/types/inputs/oci-repo-release-channels-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#oci-repo-release-channels-sort\} 
-How to sort channels
+Sort order for channels. Defaults to `name` ascending.
 
 
 ##### [<code style={{ fontWeight: 'normal' }}>OciRepo.releaseChannels.<b>cursor</b></code>](#oci-repo-release-channels-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#oci-repo-release-channels-cursor\} 
-Pagination cursor from a previous response
+Cursor from a previous page's `cursor.next` or `cursor.previous`.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>tags</b></code>](#tags)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoTagsPage</b></code>](/api/graphql/v1/types/objects/oci-repo-tags-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#tags\} 
-Published version tags in this repository.
+Paginated list of published version tags in this repository.
+
+Each tag represents a single immutable bundle release. Defaults to newest
+version first (`version` descending).
 ##### [<code style={{ fontWeight: 'normal' }}>OciRepo.tags.<b>sort</b></code>](#oci-repo-tags-sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoTagsSort</b></code>](/api/graphql/v1/types/inputs/oci-repo-tags-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#oci-repo-tags-sort\} 
-How to sort tags
+Sort order for tags. Defaults to `version` descending (newest first).
 
 
 ##### [<code style={{ fontWeight: 'normal' }}>OciRepo.tags.<b>cursor</b></code>](#oci-repo-tags-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#oci-repo-tags-cursor\} 
-Pagination cursor from a previous response
+Cursor from a previous page's `cursor.next` or `cursor.previous`.
 
 
 

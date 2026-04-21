@@ -42,7 +42,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Upload or replace your profile avatar. Accepts PNG, JPG, GIF, or WebP (max 1 MB).
+Upload or replace your profile avatar.
+
+Accepts PNG, JPG, GIF, or WebP images up to 1 MB. If you already have an avatar, it is
+replaced. The avatar is served at a stable URL that does not change when the image is updated.
 
 
 ```graphql
@@ -57,7 +60,7 @@ setAccountAvatar(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>setAccountAvatar.<b>avatar</b></code>](#avatar)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Upload!</b></code>](/api/graphql/v1/types/scalars/upload.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#avatar\} 
-The image file to upload
+The image file to upload (PNG, JPG, GIF, or WebP, max 1 MB).
 
 
 ### Type

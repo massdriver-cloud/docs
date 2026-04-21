@@ -42,7 +42,30 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Get server info and available authentication methods. No authentication required.
+Get server metadata and available authentication methods.
+
+This query does **not** require authentication and is intended to be the first
+call a client makes. Use the response to determine which login methods to present
+and to verify API compatibility via the server version.
+
+```graphql
+query {
+  server {
+    version
+    mode
+    appUrl
+    ssoProviders {
+      name
+      loginUrl
+      uiLabel
+      uiIconUrl
+    }
+    emailAuthMethods {
+      name
+    }
+  }
+}
+```
 
 
 ```graphql
@@ -55,4 +78,8 @@ server: Server!
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>Server</b></code>](/api/graphql/v1/types/objects/server.mdx) <Badge class="badge badge--secondary " text="object"/> 
-Information about this Massdriver server.
+Information about the Massdriver server you are connected to.
+
+Use this to discover the server's version, deployment mode, and available
+authentication methods. This is typically the first query a client makes
+to determine how to render the login screen and check API compatibility.

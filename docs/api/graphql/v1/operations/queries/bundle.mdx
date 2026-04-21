@@ -42,17 +42,32 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Get a bundle by its identifier.
+Fetch a single bundle by its composite identifier.
 
-The ID format is `name@version` where version can be an exact version,
-a constraint, or a channel:
+The `id` accepts a `name@version` string where the version portion can be an
+exact semver, a release channel, or omitted entirely:
 
-- `aws-aurora-postgres@1.2.3` — exact version
-- `aws-aurora-postgres@~1.2` — latest patch in 1.2.x
-- `aws-aurora-postgres@~1` — latest minor in 1.x.x
-- `aws-aurora-postgres@latest` — newest stable release
-- `aws-aurora-postgres@latest+dev` — newest release including dev builds
-- `aws-aurora-postgres` — shorthand for `name@latest`
+| Input | Resolves to |
+|-------|-------------|
+| `aws-aurora-postgres@1.2.3` | Exact version `1.2.3` |
+| `aws-aurora-postgres@~1.2` | Latest patch in `1.2.x` |
+| `aws-aurora-postgres@~1` | Latest minor in `1.x.x` |
+| `aws-aurora-postgres@latest` | Newest stable release |
+| `aws-aurora-postgres@latest+dev` | Newest release including dev builds |
+| `aws-aurora-postgres` | Shorthand for `latest` (falls back to `latest+dev` if no stable exists) |
+
+Returns `null` with a `NOT_FOUND` error if no matching version exists.
+
+```graphql
+query {
+  bundle(organizationId: "your-org-id", id: "aws-aurora-postgres@~1") {
+    id
+    version
+    dependencies { name required resourceType { id name } }
+    resources { name required resourceType { id name } }
+  }
+}
+```
 
 
 ```graphql
@@ -68,14 +83,36 @@ bundle(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>bundle.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>bundle.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BundleId!</b></code>](/api/graphql/v1/types/scalars/bundle-id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-Bundle identifier (e.g., 'aws-aurora-postgres@1.2.3' or 'aws-aurora-postgres@latest')
+Bundle identifier in `name@version` format. The version can be an exact semver, a release channel, or omitted to resolve `latest`.
 
 
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>Bundle</b></code>](/api/graphql/v1/types/objects/bundle.mdx) <Badge class="badge badge--secondary " text="object"/> 
-A versioned infrastructure-as-code bundle (e.g., `aws-aurora-postgres@1.2.3`).
+A versioned infrastructure-as-code package.
+
+A bundle is a single published version of an IaC package in your organization's
+catalog. Each bundle belongs to an OCI repository and is identified by a composite
+`name@version` string (e.g., `aws-aurora-postgres@1.2.3`).
+
+Bundles declare **dependencies** (inputs they require from other bundles) and
+**resources** (outputs they produce). These declarations drive the connection
+system on the Massdriver canvas -- when you add a component to a blueprint,
+the platform knows which other components can satisfy its dependencies.
+
+```mermaid
+graph TD
+  R[OCI Repository: aws-aurora-postgres] --> T1[Tag: 1.0.0]
+  R --> T2[Tag: 1.1.0]
+  R --> T3[Tag: 1.2.3]
+  R --> RC1["Channel: ~1 → 1.2.3"]
+  R --> RC2["Channel: latest → 1.2.3"]
+  T3 --> B["Bundle: aws-aurora-postgres@1.2.3"]
+  B --> D1[Dependency: aws-iam-role]
+  B --> D2[Dependency: aws-vpc]
+  B --> RES[Resource: aurora-cluster]
+```

@@ -42,7 +42,11 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Enable a disabled integration. Re-runs the integration's activation process and resumes scheduling.
+Re-enable a disabled integration.
+
+Runs the integration's activation process again and resumes its execution schedule.
+Returns an `IntegrationActivation` with updated setup instructions. The integration
+must currently be in `disabled` status.
 
 
 ```graphql
@@ -58,11 +62,11 @@ enableIntegration(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>enableIntegration.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>enableIntegration.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-The integration type ID to enable
+The integration type identifier to enable.
 
 
 ### Type

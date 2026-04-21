@@ -42,7 +42,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-A Terraform/OpenTofu state path for a deployment step.
+A Terraform/OpenTofu state path for a single deployment step.
+
+Bundles can define multiple provisioning steps (e.g., `core`, `iam`, `monitoring`).
+Each step has its own state file managed by the Massdriver HTTP state backend.
 
 
 ```graphql
@@ -58,11 +61,11 @@ type InstanceStatePath {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>InstanceStatePath.<b>stateUrl</b></code>](#state-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#state-url\} 
-URL for this step's state on the Massdriver HTTP state backend.
+Full URL for this step's state file on the Massdriver HTTP state backend.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>InstanceStatePath.<b>stepName</b></code>](#step-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#step-name\} 
-The step's path identifier from the bundle definition
+The step's path identifier as defined in the bundle's `massdriver.yaml`.
 
 
 

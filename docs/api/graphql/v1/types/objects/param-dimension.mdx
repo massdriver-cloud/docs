@@ -42,7 +42,12 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-A configuration field available in instance params. Use these to build search filters.
+A configuration parameter field extracted from instance bundle schemas.
+
+Param dimensions describe the filterable fields available across your instances.
+Use the `paramDimensions` query to discover them, then pass matching values to
+the `paramDimension` filter on the `instances` query to build infrastructure
+search dashboards.
 
 
 ```graphql
@@ -60,19 +65,19 @@ type ParamDimension {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>ParamDimension.<b>field</b></code>](#field)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#field\} 
-Path to the field (e.g., 'database.instance&#x005F;type')
+Dot-separated path to the field (e.g., `database.instance_type`).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ParamDimension.<b>label</b></code>](#label)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#label\} 
-Human-readable field name
+Human-readable field name, sourced from the bundle schema's `title`.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ParamDimension.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
-What this field configures
+Explanation of what this field configures, sourced from the bundle schema.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ParamDimension.<b>type</b></code>](#type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#type\} 
-Data type (string, number, boolean, etc.)
+JSON Schema data type (`string`, `number`, `boolean`, `integer`, `object`).
 
 
 

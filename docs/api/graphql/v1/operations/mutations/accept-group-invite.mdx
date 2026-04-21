@@ -44,6 +44,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 Accept a pending group invitation.
 
+Accepting an invitation makes you a member of the group and grants you whatever access
+the group provides. The invitation is consumed and removed from your pending invitations
+list. You must be the recipient of the invitation (matched by email) to accept it.
+
 
 ```graphql
 acceptGroupInvite(
@@ -57,7 +61,7 @@ acceptGroupInvite(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>acceptGroupInvite.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-The invitation ID to accept
+The invitation's unique identifier.
 
 
 ### Type

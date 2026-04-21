@@ -42,7 +42,12 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-A default resource for an environment. Instances in the environment automatically inherit defaults for their required resource types.
+An environment default that automatically provides a resource to instances.
+
+When an instance in the environment requires a resource type that matches this default,
+the resource is automatically connected without manual configuration. Only one default
+per resource type is allowed per environment -- remove the existing default before
+setting a new one.
 
 
 ```graphql
@@ -60,19 +65,19 @@ type EnvironmentDefault {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>EnvironmentDefault.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-Unique identifier for this environment default
+Unique identifier for this environment default.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EnvironmentDefault.<b>resource</b></code>](#resource)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EnvironmentDefaultResource!</b></code>](/api/graphql/v1/types/objects/environment-default-resource.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#resource\} 
-The resource set as the default.
+The resource that is set as the default for its type.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EnvironmentDefault.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
-When this default was set (UTC)
+When this default was first set (UTC).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EnvironmentDefault.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
-When this default was last modified (UTC)
+When this default was last modified (UTC).
 
 
 

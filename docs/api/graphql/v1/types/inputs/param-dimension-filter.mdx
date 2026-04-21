@@ -42,8 +42,30 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Filter instances by a configuration parameter value at a specific path.
-Use `paramDimensions` query to discover available dimensions.
+Filter instances by the value of a configuration parameter at a specific JSON path.
+
+Parameter dimensions let you slice your infrastructure by any value in an instance's
+configuration — for example, filtering by database engine, instance size, or region.
+Use the `paramDimensions` query to discover which dimensions are available for your
+instances.
+
+```graphql
+# All instances using "db.r5.xlarge"
+{
+  "params": {
+    "dimension": "database.instance_type",
+    "eq": "db.r5.xlarge"
+  }
+}
+
+# All instances whose region contains "us-east"
+{
+  "params": {
+    "dimension": "region",
+    "contains": "us-east"
+  }
+}
+```
 
 
 ```graphql
@@ -61,19 +83,19 @@ input ParamDimensionFilter {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>ParamDimensionFilter.<b>dimension</b></code>](#dimension)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#dimension\} 
-Dot-path to the param field (e.g., 'database.instance&#x005F;type')
+Dot-delimited path to the configuration parameter (e.g., `"database.instance_type"`). Use the `paramDimensions` query to discover available paths.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ParamDimensionFilter.<b>eq</b></code>](#eq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#eq\} 
-Exact match
+Return only instances whose parameter value exactly equals this string.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ParamDimensionFilter.<b>in</b></code>](#in)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#in\} 
-Match any of these values
+Return instances whose parameter value matches any string in this list.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ParamDimensionFilter.<b>contains</b></code>](#contains)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#contains\} 
-Case-insensitive substring match
+Return instances whose parameter value contains this substring (case-insensitive).
 
 
 

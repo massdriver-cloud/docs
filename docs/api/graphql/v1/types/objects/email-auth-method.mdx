@@ -42,7 +42,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-An email-based authentication method.
+An email-based authentication method available on this server.
+
+Email auth methods do not require an external identity provider. They are
+configured at the server level and available to all users.
 
 
 ```graphql
@@ -57,7 +60,7 @@ type EmailAuthMethod {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>EmailAuthMethod.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EmailAuthMethodType!</b></code>](/api/graphql/v1/types/enums/email-auth-method-type.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#name\} 
-Authentication type
+The authentication mechanism type (e.g., `PASSKEY`).
 
 
 

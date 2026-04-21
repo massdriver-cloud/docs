@@ -42,7 +42,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Group info from an invitation.
+Group details included in a group invitation.
+
+Shows which group you are being invited to join, its role type, and which organization
+it belongs to, so you can make an informed decision before accepting.
 
 
 ```graphql
@@ -60,15 +63,15 @@ type InviteGroupViewer {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>InviteGroupViewer.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-
+Unique identifier for the group.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>InviteGroupViewer.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
-Group name
+Name of the group you are being invited to.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>InviteGroupViewer.<b>type</b></code>](#type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ViewerGroupType!</b></code>](/api/graphql/v1/types/enums/viewer-group-type.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#type\} 
-Type of group.
+The role type of this group (admin, viewer, or custom).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>InviteGroupViewer.<b>organization</b></code>](#organization)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InviteOrganizationViewer!</b></code>](/api/graphql/v1/types/objects/invite-organization-viewer.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#organization\} 

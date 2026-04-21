@@ -42,12 +42,13 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Filter which resource types to return.
+Filters for narrowing the resource types list.
 
 
 ```graphql
 input ResourceTypesFilter {
   id: StringFilter
+  search: String
 }
 ```
 
@@ -57,7 +58,11 @@ input ResourceTypesFilter {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>ResourceTypesFilter.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>StringFilter</b></code>](/api/graphql/v1/types/inputs/string-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#id\} 
-Filter by resource type ID
+Filter by resource type identifier (e.g., `aws-iam-role`, `kubernetes-cluster`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ResourceTypesFilter.<b>search</b></code>](#search)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#search\} 
+Full-text search across the resource type's display name and identifier (e.g., `"iam"` matches `AWS IAM Role` / `aws-iam-role`). Results are ranked by relevance unless you provide an explicit `sort`. For terms longer than 3 characters, identifier-prefix matches are also included. **Note:** pagination cursors returned by search results use offset-based pagination and are not interchangeable with cursors from non-search queries.
 
 
 

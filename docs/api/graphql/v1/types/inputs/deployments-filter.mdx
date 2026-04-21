@@ -42,7 +42,9 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Filter which deployments to return.
+Narrows the deployments list to only matching records.
+
+All filters are combined with AND logic. Omit a filter to skip that criterion.
 
 
 ```graphql
@@ -59,15 +61,15 @@ input DeploymentsFilter {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>DeploymentsFilter.<b>instanceId</b></code>](#instance-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IdFilter</b></code>](/api/graphql/v1/types/inputs/id-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#instance-id\} 
-Filter by instance ID
+Return only deployments for the specified instance(s).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>DeploymentsFilter.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DeploymentStatusFilter</b></code>](/api/graphql/v1/types/inputs/deployment-status-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#status\} 
-Filter by deployment status
+Return only deployments in the specified status(es).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>DeploymentsFilter.<b>action</b></code>](#action)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DeploymentActionFilter</b></code>](/api/graphql/v1/types/inputs/deployment-action-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#action\} 
-Filter by deployment action
+Return only deployments with the specified action type(s).
 
 
 

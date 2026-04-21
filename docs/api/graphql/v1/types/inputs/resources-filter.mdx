@@ -42,12 +42,16 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Filter which resources to return.
+Narrows the resources list to only matching records.
+
+All filters are combined with AND logic. Omit a filter to skip that criterion.
 
 
 ```graphql
 input ResourcesFilter {
   origin: ResourceOriginFilter
+  resourceType: StringFilter
+  search: String
 }
 ```
 
@@ -57,7 +61,15 @@ input ResourcesFilter {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>ResourcesFilter.<b>origin</b></code>](#origin)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ResourceOriginFilter</b></code>](/api/graphql/v1/types/inputs/resource-origin-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#origin\} 
-Filter by origin (IMPORTED or PROVISIONED)
+Return only resources with the specified origin (IMPORTED or PROVISIONED).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ResourcesFilter.<b>resourceType</b></code>](#resource-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>StringFilter</b></code>](/api/graphql/v1/types/inputs/string-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#resource-type\} 
+Return only resources of the given resource type, matched by the type's identifier (e.g., `aws-iam-role`, `kubernetes-cluster`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ResourcesFilter.<b>search</b></code>](#search)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#search\} 
+Full-text search across the resource name. Results are ranked by relevance unless you provide an explicit `sort`. For terms longer than 3 characters, name-prefix matches are also included. **Note:** pagination cursors returned by search results use offset-based pagination and are not interchangeable with cursors from non-search queries.
 
 
 

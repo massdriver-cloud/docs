@@ -42,7 +42,26 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Subscribe to organization-level events such as project creation. Requires organization membership.
+Subscribe to organization-level events via WebSocket.
+
+Receives events for all projects and environments within the organization, including
+project creation/deletion and environment lifecycle changes. Requires organization
+membership.
+
+```graphql
+subscription {
+  organizationEvents(organizationId: "my-org") {
+    action
+    timestamp
+    ... on ProjectEvent {
+      project { id name }
+    }
+    ... on EnvironmentEvent {
+      environment { id name }
+    }
+  }
+}
+```
 
 
 ```graphql
@@ -57,10 +76,30 @@ organizationEvents(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>organizationEvents.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization's unique identifier
+Your organization's unique identifier.
 
 
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>Event</b></code>](/api/graphql/v1/types/interfaces/event.mdx) <Badge class="badge badge--secondary " text="interface"/> 
-A lifecycle event for a resource in your organization.
+Base interface implemented by all lifecycle events.
+
+Every event carries an `action` describing what happened and a `timestamp` recording
+when it occurred. Concrete event types add a field for the affected resource.
+
+Use inline fragments to access the resource-specific fields:
+
+```graphql
+subscription {
+  projectEvents(organizationId: "my-org", projectId: "my-project") {
+    action
+    timestamp
+    ... on ComponentEvent {
+      component { id name }
+    }
+    ... on LinkEvent {
+      link { id fromField toField }
+    }
+  }
+}
+```

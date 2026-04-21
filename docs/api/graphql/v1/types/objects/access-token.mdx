@@ -42,7 +42,16 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-An access token's metadata. Does not include the raw token value.
+An access token's metadata, without the raw token value.
+
+Use this type to list, inspect, and manage existing tokens. The full token value is only
+available at creation time — if you need to identify a specific token, use its `prefix`
+(e.g., `md_a1b2c3d4`).
+
+**Token states:**
+- **Active** — `revokedAt` is `null` and `expiresAt` is in the future.
+- **Expired** — `expiresAt` is in the past. The token no longer works.
+- **Revoked** — `revokedAt` is set. The token was manually disabled and no longer works.
 
 
 ```graphql
@@ -64,35 +73,35 @@ type AccessToken {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>AccessToken.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-Access token identifier
+Unique identifier for this access token.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AccessToken.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
-Label for this token
+Human-readable label for identifying this token.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AccessToken.<b>prefix</b></code>](#prefix)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#prefix\} 
-Short prefix for identifying this token (e.g., md&#x005F;a1b2c3d4)
+A short, non-secret prefix (e.g., `md_a1b2c3d4`) used to identify this token in lists and logs without exposing the full value.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AccessToken.<b>scopes</b></code>](#scopes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#scopes\} 
-Permission scopes granted to this token
+Permission scopes that limit what this token can do.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AccessToken.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#expires-at\} 
-When this token expires (UTC)
+When this token expires and stops working (UTC).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AccessToken.<b>revokedAt</b></code>](#revoked-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#revoked-at\} 
-When this token was revoked, if applicable (UTC)
+When this token was manually revoked, or `null` if still active.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AccessToken.<b>lastUsedAt</b></code>](#last-used-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#last-used-at\} 
-When this token was last used for authentication (UTC)
+When this token was last used to authenticate an API request, or `null` if never used.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AccessToken.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
-When this token was created (UTC)
+When this token was created (UTC).
 
 
 

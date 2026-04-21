@@ -42,7 +42,18 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-List all projects you have access to. Returns a paginated list sorted by name.
+List all projects you have access to in the organization.
+
+Returns a cursor-paginated list. Use `sort` to control ordering (defaults to name ascending).
+
+```graphql
+query {
+  projects(organizationId: "my-org") {
+    items { id name description tags }
+    cursor { next }
+  }
+}
+```
 
 
 ```graphql
@@ -59,15 +70,15 @@ projects(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>projects.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>projects.<b>sort</b></code>](#sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ProjectsSort</b></code>](/api/graphql/v1/types/inputs/projects-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#sort\} 
-How to sort results
+How to sort results. Defaults to name ascending.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>projects.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#cursor\} 
-Pagination cursor from a previous response
+Cursor from a previous page to fetch the next set of results.
 
 
 ### Type

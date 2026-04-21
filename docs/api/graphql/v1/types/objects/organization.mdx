@@ -42,7 +42,25 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Your top-level account containing projects, environments, members, and infrastructure.
+The top-level account that owns all your infrastructure, projects, and team members.
+
+An organization is the root of the Massdriver resource hierarchy. Everything you build
+and deploy lives under an organization: **Projects** contain your infrastructure designs,
+**Environments** (like staging and production) are where those designs come to life, and
+**Instances** are the actual running cloud resources.
+
+```mermaid
+graph TD
+  O[Organization] --> P1[Project]
+  O --> P2[Project]
+  P1 --> E1[Environment: staging]
+  P1 --> E2[Environment: production]
+  E1 --> I1[Instance]
+  E1 --> I2[Instance]
+```
+
+Members access resources through **group memberships** with role-based permissions.
+Tag constraints defined at the organization level govern tagging across all child resources.
 
 
 ```graphql
@@ -72,35 +90,39 @@ type Organization {
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Organization.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
-Organization name
+Display name shown in the UI and CLI.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Organization.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
-When this organization was created (UTC)
+When this organization was created (UTC).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Organization.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/v1/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
-When this organization was last modified (UTC)
+When this organization was last modified (UTC).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Organization.<b>logo</b></code>](#logo)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>LogoOrganization</b></code>](/api/graphql/v1/types/objects/logo-organization.mdx) <Badge class="badge badge--secondary " text="object"/> \{#logo\} 
-The organization's logo image.
+The organization's logo image, or `null` if no logo has been uploaded.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Organization.<b>tagConstraints</b></code>](#tag-constraints)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OrganizationTagConstraintsPage</b></code>](/api/graphql/v1/types/objects/organization-tag-constraints-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#tag-constraints\} 
-Tag constraints that define the structural tags for this organization.
+Paginated list of tag constraints that govern tagging rules across this organization.
 ##### [<code style={{ fontWeight: 'normal' }}>Organization.tagConstraints.<b>sort</b></code>](#organization-tag-constraints-sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OrganizationTagConstraintsSort</b></code>](/api/graphql/v1/types/inputs/organization-tag-constraints-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#organization-tag-constraints-sort\} 
-How to sort results
+How to sort results. Defaults to alphabetical by key.
 
 
 ##### [<code style={{ fontWeight: 'normal' }}>Organization.tagConstraints.<b>cursor</b></code>](#organization-tag-constraints-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/v1/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#organization-tag-constraints-cursor\} 
-Pagination cursor from a previous response
+Cursor from a previous page to fetch the next set of results.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Organization.<b>tagSchema</b></code>](#tag-schema)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/v1/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tag-schema\} 
-Returns a JSON Schema you can use to validate tags for the specified resource scope.
+Returns a JSON Schema document you can use to validate tags for a given resource scope.
+
+The schema is derived from this organization's tag constraints. It includes
+`properties` for each allowed tag key and a `required` array for mandatory tags.
+If no constraints exist for the scope, returns `{"type": "object"}`.
 ##### [<code style={{ fontWeight: 'normal' }}>Organization.tagSchema.<b>scope</b></code>](#organization-tag-schema-scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>TagConstraintScope!</b></code>](/api/graphql/v1/types/enums/tag-constraint-scope.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#organization-tag-schema-scope\} 
-Resource level (e.g. PROJECT, ENVIRONMENT)
+The resource scope to generate the schema for (e.g., `PROJECT`, `ENVIRONMENT`).
 
 
 

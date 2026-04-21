@@ -44,13 +44,36 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 Create a link between two components.
 
+Declares that the `fromField` output of one component should be wired to the
+`toField` input of another. Massdriver validates that the resource types are
+compatible before creating the link. When environments are deployed, each link
+becomes a **connection** that carries the actual resource data between instances.
+
+```graphql
+mutation {
+  linkComponents(
+    organizationId: "my-org"
+    input: {
+      fromComponentId: "my-project-database"
+      fromField: "authentication"
+      fromVersion: "~1.0"
+      toComponentId: "my-project-app"
+      toField: "database"
+      toVersion: "~2.0"
+    }
+  ) {
+    result { id fromField toField }
+    successful
+  }
+}
+```
+
 
 
 
 ```graphql
 linkComponents(
   organizationId: ID!
-  projectId: ID!
   input: LinkComponentsInput!
 ): LinkPayload
 ```
@@ -75,11 +98,7 @@ This mutation supports dynamic form generation using JSON Schema.
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>linkComponents.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
-
-
-#### [<code style={{ fontWeight: 'normal' }}>linkComponents.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#project-id\} 
-The project ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>linkComponents.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>LinkComponentsInput!</b></code>](/api/graphql/v1/types/inputs/link-components-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 

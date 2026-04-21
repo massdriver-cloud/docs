@@ -42,7 +42,11 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Delete a custom group. Predefined organization groups cannot be deleted.
+Delete a group.
+
+Only groups with the `CUSTOM` role can be deleted. The built-in `organization_admin` and
+`organization_viewer` groups are permanent and cannot be removed. All members lose the
+access granted by this group immediately upon deletion. Requires `organization_admin` permissions.
 
 
 ```graphql
@@ -58,11 +62,11 @@ deleteGroup(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>deleteGroup.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>deleteGroup.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-The group ID to delete
+The group's unique identifier.
 
 
 ### Type

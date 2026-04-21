@@ -42,7 +42,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Get a single integration by its type ID.
+Get a single integration by its type identifier.
+
+Returns the integration configuration for a specific type within your organization,
+or a `NOT_FOUND` error if no integration of that type has been configured.
 
 
 ```graphql
@@ -58,14 +61,17 @@ integration(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>integration.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>integration.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-The integration type ID (e.g., 'aws-cost-and-usage-reports')
+The integration type identifier (e.g., `"aws-cost-and-usage-reports"`).
 
 
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>Integration</b></code>](/api/graphql/v1/types/objects/integration.mdx) <Badge class="badge badge--secondary " text="object"/> 
-A configured integration.
+A configured integration connecting your organization to an external service.
+
+Each organization can have at most one integration per type. The integration's `id`
+corresponds to the integration type (e.g., `"aws-cost-and-usage-reports"`).

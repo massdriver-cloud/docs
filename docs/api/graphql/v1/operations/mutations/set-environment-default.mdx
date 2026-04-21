@@ -42,9 +42,11 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Set a resource as the default of its type for an environment. All instances
-in the environment will automatically inherit this resource. Only one resource
-per type can be the default — remove the existing default first to change it.
+Set a resource as the default of its type for an environment.
+
+All instances in the environment that require this resource type will automatically
+inherit it. Only one resource per type can be the default -- remove the existing
+default first with `removeEnvironmentDefault` to change it.
 
 
 ```graphql
@@ -61,15 +63,15 @@ setEnvironmentDefault(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>setEnvironmentDefault.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>setEnvironmentDefault.<b>environmentId</b></code>](#environment-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#environment-id\} 
-The environment to set the default on
+The identifier of the environment to set the default on.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>setEnvironmentDefault.<b>resourceId</b></code>](#resource-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#resource-id\} 
-The resource to set as the default for its type
+The identifier of the resource to set as the default for its type.
 
 
 ### Type

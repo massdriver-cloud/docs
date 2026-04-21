@@ -42,7 +42,9 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Get a single resource by its ID.
+Fetch a single resource by its unique identifier.
+
+Returns the full resource record including its origin, resource type, and timestamps.
 
 
 ```graphql
@@ -58,14 +60,25 @@ resource(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>resource.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>resource.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-The resource ID
+The resource's unique identifier.
 
 
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>Resource</b></code>](/api/graphql/v1/types/objects/resource.mdx) <Badge class="badge badge--secondary " text="object"/> 
-An infrastructure resource such as a cloud credential, database, or network.
+A cloud credential, database connection string, network configuration, or other
+infrastructure output produced by (or imported into) Massdriver.
+
+Resources are the connective tissue between instances. When an instance is deployed, it
+produces resources as outputs. Other instances can consume those resources as inputs,
+creating a dependency graph of your infrastructure.
+
+Resources have two origins:
+- **Imported** — created directly through the API (e.g., uploading existing AWS credentials).
+  You have full CRUD control over these resources.
+- **Provisioned** — created automatically when an instance is deployed. These are read-only
+  and managed entirely by the owning instance's lifecycle.

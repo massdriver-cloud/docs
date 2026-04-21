@@ -42,7 +42,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Billing status of an organization.
+The billing status of an organization's subscription.
+
+Use this to display billing warnings, restrict actions for unpaid accounts, or guide
+users toward resolving payment issues.
 
 
 ```graphql
@@ -64,35 +67,35 @@ enum ViewerBillingStatus {
 ### Values
 
 #### [<code style={{ fontWeight: 'normal' }}>ViewerBillingStatus.<b>TRIAL</b></code>](#trial) \{#trial\} 
-Free trial period
+Free trial period. The organization has full access until the trial expires.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ViewerBillingStatus.<b>ACTIVE</b></code>](#active) \{#active\} 
-Subscription is active and paid
+Subscription is active and in good standing.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ViewerBillingStatus.<b>PAST&#x005F;DUE</b></code>](#past-due) \{#past-due\} 
-Payment is overdue
+A payment is overdue. Access continues but action is needed to avoid suspension.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ViewerBillingStatus.<b>EXPIRED</b></code>](#expired) \{#expired\} 
-Trial has expired
+The free trial has ended without a subscription. Functionality is limited.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ViewerBillingStatus.<b>CANCELED</b></code>](#canceled) \{#canceled\} 
-Subscription was canceled
+The subscription was canceled. The organization is in a grace period.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ViewerBillingStatus.<b>SUSPENDED</b></code>](#suspended) \{#suspended\} 
-Account is temporarily suspended
+The account is suspended due to billing issues. Most operations are blocked.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ViewerBillingStatus.<b>PAYMENT&#x005F;PENDING</b></code>](#payment-pending) \{#payment-pending\} 
-Waiting for payment to process
+A payment is being processed. This is typically a brief transitional state.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ViewerBillingStatus.<b>PAYMENT&#x005F;FAILED</b></code>](#payment-failed) \{#payment-failed\} 
-Payment failed
+The most recent payment attempt failed. Update payment details to restore access.
 
 
 

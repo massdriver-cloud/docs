@@ -42,7 +42,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-A deleted organization member.
+Confirmation payload returned after removing a member from the organization.
 
 
 ```graphql
@@ -57,7 +57,7 @@ type DeletedOrganizationMember {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>DeletedOrganizationMember.<b>email</b></code>](#email)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#email\} 
-Email address of the removed member
+Email address of the member who was removed.
 
 
 

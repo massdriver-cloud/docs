@@ -42,7 +42,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Get a single project by its ID.
+Fetch a single project by its identifier.
 
 
 ```graphql
@@ -58,14 +58,30 @@ project(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>project.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>project.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-The project ID
+The project's unique identifier.
 
 
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>Project</b></code>](/api/graphql/v1/types/objects/project.mdx) <Badge class="badge badge--secondary " text="object"/> 
-A container for organizing related infrastructure. Each project has a blueprint and one or more environments.
+A project organizes related infrastructure under a single blueprint.
+
+Each project contains a **Blueprint** that defines your infrastructure architecture -- which
+bundles to use and how they connect -- and one or more **Environments** (like staging or
+production) where that architecture is actually deployed.
+
+```mermaid
+graph LR
+  P[Project] --> B[Blueprint]
+  P --> E1[Environment: staging]
+  P --> E2[Environment: production]
+  B --> C1[Component: database]
+  B --> C2[Component: cache]
+  C1 -.->|Link| C2
+```
+
+Tags set on a project are inherited by all environments and instances within it.

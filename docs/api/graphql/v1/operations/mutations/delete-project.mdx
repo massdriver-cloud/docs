@@ -42,7 +42,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Delete a project. You must delete all environments first.
+Delete a project permanently.
+
+All environments must be deleted first. Query the project's `deletable` field
+to check for blocking constraints before calling this mutation.
 
 
 ```graphql
@@ -58,11 +61,11 @@ deleteProject(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>deleteProject.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>deleteProject.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-The project ID to delete
+The identifier of the project to delete.
 
 
 ### Type

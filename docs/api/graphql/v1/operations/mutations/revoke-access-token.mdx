@@ -42,7 +42,11 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Revoke an access token. The token immediately stops working but the record is preserved for audit.
+Revoke an access token.
+
+The token immediately stops working for all API requests. The token record is preserved
+with a `revokedAt` timestamp for audit purposes. Revoking an already-revoked or expired
+token is a no-op that returns the existing record.
 
 
 ```graphql
@@ -58,11 +62,11 @@ revokeAccessToken(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>revokeAccessToken.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization ID
+Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>revokeAccessToken.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/v1/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-The access token ID to revoke
+The access token's unique identifier.
 
 
 ### Type
