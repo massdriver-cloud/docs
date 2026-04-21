@@ -45,9 +45,9 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 The top-level account that owns all your infrastructure, projects, and team members.
 
 An organization is the root of the Massdriver resource hierarchy. Everything you build
-and deploy lives under an organization: &#x002A;&#x002A;Projects&#x002A;&#x002A; contain your infrastructure designs,
-&#x002A;&#x002A;Environments&#x002A;&#x002A; (like staging and production) are where those designs come to life, and
-&#x002A;&#x002A;Instances&#x002A;&#x002A; are the actual running cloud resources.
+and deploy lives under an organization: **Projects** contain your infrastructure designs,
+**Environments** (like staging and production) are where those designs come to life, and
+**Instances** are the actual running cloud resources.
 
 ```mermaid
 graph TD
@@ -59,7 +59,7 @@ graph TD
   E1 --> I2[Instance]
 ```
 
-Members access resources through &#x002A;&#x002A;group memberships&#x002A;&#x002A; with role-based permissions.
+Members access resources through **group memberships** with role-based permissions.
 Tag constraints defined at the organization level govern tagging across all child resources.
 
 

@@ -46,13 +46,13 @@ A governance rule that defines an allowed tag key, the resource scope where it a
 and whether it is required.
 
 Tag constraints enforce consistent metadata across your organization. When a constraint
-is marked as &#x002A;&#x002A;required&#x002A;&#x002A;, any resource created at the specified scope must include the
+is marked as **required**, any resource created at the specified scope must include the
 tag key. Optional constraints define allowed keys without mandating them.
 
 Use the `tagSchema` field on the Organization type to generate a JSON Schema document
 from these constraints for client-side validation.
 
-&#x002A;&#x002A;Example:&#x002A;&#x002A; A constraint with `key: "TEAM"`, `scope: PROJECT`, `required: true` means
+**Example:** A constraint with `key: "TEAM"`, `scope: PROJECT`, `required: true` means
 every project must have a `TEAM` tag set at creation time.
 
 

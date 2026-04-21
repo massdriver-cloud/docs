@@ -45,9 +45,9 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 The type of infrastructure operation to perform.
 
 Each action maps to a distinct phase of the infrastructure lifecycle:
-- &#x002A;&#x002A;PROVISION&#x002A;&#x002A; creates new infrastructure or updates existing infrastructure to match the desired configuration.
-- &#x002A;&#x002A;DECOMMISSION&#x002A;&#x002A; tears down all infrastructure managed by the instance.
-- &#x002A;&#x002A;PLAN&#x002A;&#x002A; generates a dry-run preview showing what changes &#x005F;would&#x005F; be made, without actually applying them.
+- **PROVISION** creates new infrastructure or updates existing infrastructure to match the desired configuration.
+- **DECOMMISSION** tears down all infrastructure managed by the instance.
+- **PLAN** generates a dry-run preview showing what changes _would_ be made, without actually applying them.
 
 
 ```graphql

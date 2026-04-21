@@ -50,9 +50,9 @@ produces resources as outputs. Other instances can consume those resources as in
 creating a dependency graph of your infrastructure.
 
 Resources have two origins:
-- &#x002A;&#x002A;Imported&#x002A;&#x002A; — created directly through the API (e.g., uploading existing AWS credentials).
+- **Imported** — created directly through the API (e.g., uploading existing AWS credentials).
   You have full CRUD control over these resources.
-- &#x002A;&#x002A;Provisioned&#x002A;&#x002A; — created automatically when an instance is deployed. These are read-only
+- **Provisioned** — created automatically when an instance is deployed. These are read-only
   and managed entirely by the owning instance's lifecycle.
 
 
@@ -84,7 +84,7 @@ Human-readable display name for this resource.
 #### [<code style={{ fontWeight: 'normal' }}>Resource.<b>type</b></code>](#type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#type\} 
 The resource type identifier (e.g., `aws-iam-role`).
 
-&#x002A;&#x002A;Deprecated:&#x002A;&#x002A; Use `resourceType { id }` instead for a richer representation
+**Deprecated:** Use `resourceType { id }` instead for a richer representation
 that includes the resource type's name and schema.
 
 

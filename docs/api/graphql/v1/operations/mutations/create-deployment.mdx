@@ -47,9 +47,9 @@ Create a new deployment for an instance.
 Saves the provided `params` as the instance's configuration, then initiates the
 specified action:
 
-- &#x002A;&#x002A;PROVISION&#x002A;&#x002A; — apply the configuration to create or update infrastructure.
-- &#x002A;&#x002A;PLAN&#x002A;&#x002A; — generate a dry-run preview without making changes.
-- &#x002A;&#x002A;DECOMMISSION&#x002A;&#x002A; — destroy all infrastructure managed by the instance.
+- **PROVISION** — apply the configuration to create or update infrastructure.
+- **PLAN** — generate a dry-run preview without making changes.
+- **DECOMMISSION** — destroy all infrastructure managed by the instance.
 
 The returned deployment starts in `PENDING` status and transitions to `RUNNING`
 once execution begins. Poll the `deployment` query or use the `status` field

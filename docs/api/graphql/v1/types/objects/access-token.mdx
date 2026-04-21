@@ -48,10 +48,10 @@ Use this type to list, inspect, and manage existing tokens. The full token value
 available at creation time — if you need to identify a specific token, use its `prefix`
 (e.g., `md_a1b2c3d4`).
 
-&#x002A;&#x002A;Token states:&#x002A;&#x002A;
-- &#x002A;&#x002A;Active&#x002A;&#x002A; — `revokedAt` is `null` and `expiresAt` is in the future.
-- &#x002A;&#x002A;Expired&#x002A;&#x002A; — `expiresAt` is in the past. The token no longer works.
-- &#x002A;&#x002A;Revoked&#x002A;&#x002A; — `revokedAt` is set. The token was manually disabled and no longer works.
+**Token states:**
+- **Active** — `revokedAt` is `null` and `expiresAt` is in the future.
+- **Expired** — `expiresAt` is in the past. The token no longer works.
+- **Revoked** — `revokedAt` is set. The token was manually disabled and no longer works.
 
 
 ```graphql

@@ -47,10 +47,10 @@ The actor that performed an audit-logged action.
 Identifies who or what triggered the event. The `type` field tells you the category
 of actor, and `name` provides a human-readable label:
 
-- &#x002A;&#x002A;`ACCOUNT`*&#x002A; — `name` is the user's email address.
-- &#x002A;&#x002A;`SERVICE_ACCOUNT`*&#x002A; — `name` is the service account's name.
-- &#x002A;&#x002A;`DEPLOYMENT`*&#x002A; — `name` is a reference like `deployment:<id>`.
-- &#x002A;&#x002A;`SYSTEM`*&#x002A; — `name` is `system` for internal actions.
+- **`ACCOUNT`** — `name` is the user's email address.
+- **`SERVICE_ACCOUNT`** — `name` is the service account's name.
+- **`DEPLOYMENT`** — `name` is a reference like `deployment:<id>`.
+- **`SYSTEM`** — `name` is `system` for internal actions.
 
 If the original actor has been deleted, the `name` will indicate this (e.g., "deleted account").
 
