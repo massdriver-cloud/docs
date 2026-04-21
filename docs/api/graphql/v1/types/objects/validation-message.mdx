@@ -48,9 +48,9 @@ Validation messages are returned when mutation input does not meet the requireme
 
   Some examples of validations are:
 
-  &#x002A; Username must be at least 10 characters
-  &#x002A; Email field does not contain an email address
-  &#x002A; Birth Date is required
+  * Username must be at least 10 characters
+  * Email field does not contain an email address
+  * Birth Date is required
 
   While GraphQL has support for required values, mutation data fields are always
   set to optional in our API. This allows 'required field' messages
@@ -92,7 +92,7 @@ The message is interpolated to include the appropriate variables.
 Example: `Username must be at least 10 characters`
 
 This message may change without notice, so we do not recommend you match against the text.
-Instead, use the &#x002A;code&#x002A; field for matching.
+Instead, use the *code* field for matching.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ValidationMessage.<b>code</b></code>](#code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/v1/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#code\} 
@@ -105,7 +105,7 @@ A template used to generate the error message, with placeholders for option subs
 Example: `Username must be at least {count} characters`
 
 This message may change without notice, so we do not recommend you match against the text.
-Instead, use the &#x002A;code&#x002A; field for matching.
+Instead, use the *code* field for matching.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ValidationMessage.<b>options</b></code>](#options)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ValidationOption]</b></code>](/api/graphql/v1/types/objects/validation-option.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> \{#options\} 

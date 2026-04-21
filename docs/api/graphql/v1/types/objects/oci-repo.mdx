@@ -50,8 +50,8 @@ but for Massdriver bundles.
 
 Each repository has a unique `name` (e.g., `aws-aurora-postgres`) and contains:
 
-- &#x002A;&#x002A;Tags&#x002A;&#x002A; -- the individual published versions (`1.0.0`, `1.1.0`, `1.2.3`, etc.)
-- &#x002A;&#x002A;Release channels&#x002A;&#x002A; -- auto-resolving version constraints (`latest`, `~1`, `~1.2`)
+- **Tags** -- the individual published versions (`1.0.0`, `1.1.0`, `1.2.3`, etc.)
+- **Release channels** -- auto-resolving version constraints (`latest`, `~1`, `~1.2`)
   that always point to the newest matching tag
 
 To fetch a specific bundle version from a repository, use the `bundle` query
@@ -134,7 +134,7 @@ URL to this repository's display icon (SVG), taken from the latest
 published release. `null` when the repository has no releases yet or the
 latest release has no icon.
 
-The URL is &#x002A;&#x002A;authenticated&#x002A;&#x002A; — callers must have an active browser session
+The URL is **authenticated** — callers must have an active browser session
 or valid API credentials for the owning organization. Embedding it in an
 `<img>` tag from the web UI works because the browser sends the session
 cookie automatically; programmatic clients must include an `Authorization`

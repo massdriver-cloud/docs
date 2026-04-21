@@ -48,15 +48,15 @@ Access tokens provide finer-grained, short-lived credentials compared to the ser
 account's permanent secret. Use them for CI/CD jobs, temporary automation, or any
 scenario where you want to limit the blast radius of a leaked credential.
 
-The `token` field in the response contains the full bearer token value — &#x002A;&#x002A;it is only
-shown once&#x002A;&#x002A;. Store it securely before navigating away. If you lose it, revoke the
+The `token` field in the response contains the full bearer token value — **it is only
+shown once**. Store it securely before navigating away. If you lose it, revoke the
 token and create a new one.
 
 Defaults to a 60-minute expiration if `expiresInMinutes` is not specified.
 
 Currently, only service accounts can create access tokens.
 
-&#x002A;&#x002A;Example:&#x002A;&#x002A;
+**Example:**
 
 ```graphql
 mutation {

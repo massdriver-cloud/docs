@@ -49,10 +49,10 @@ Each metric is a `CostSample` containing an amount and currency. All four metric
 always present, but their inner `amount` and `currency` may be null if billing data has
 not yet been ingested.
 
-- &#x002A;&#x002A;last&#x005F;month&#x002A;&#x002A; -- Total spend for the most recent complete billing cycle.
-- &#x002A;&#x002A;monthly&#x005F;average&#x002A;&#x002A; -- Average monthly spend across all available billing cycles.
-- &#x002A;&#x002A;last&#x005F;day&#x002A;&#x002A; -- Total spend for the most recent 24-hour period.
-- &#x002A;&#x002A;daily&#x005F;average&#x002A;&#x002A; -- Average daily spend over the last 7 days.
+- **last_month** -- Total spend for the most recent complete billing cycle.
+- **monthly_average** -- Average monthly spend across all available billing cycles.
+- **last_day** -- Total spend for the most recent 24-hour period.
+- **daily_average** -- Average daily spend over the last 7 days.
 
 
 ```graphql

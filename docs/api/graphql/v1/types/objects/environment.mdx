@@ -45,11 +45,11 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 A deployment target within a project where blueprint components become live infrastructure.
 
 Each project can have multiple environments (e.g., `staging`, `production`). When you deploy
-to an environment, every component in the project's blueprint is realized as an &#x002A;&#x002A;Instance&#x002A;&#x002A; --
+to an environment, every component in the project's blueprint is realized as an **Instance** --
 a running piece of cloud infrastructure with its own configuration, state, and cost data.
 
 Environments inherit tags from their parent project. You can also set environment-scoped tags
-that cascade down to all instances within the environment. &#x002A;&#x002A;Defaults&#x002A;&#x002A; let you pre-assign
+that cascade down to all instances within the environment. **Defaults** let you pre-assign
 resources (like a shared VPC or DNS zone) so that new instances automatically receive them.
 
 Before deleting an environment, all instances must be decommissioned. Use the `deletable`
