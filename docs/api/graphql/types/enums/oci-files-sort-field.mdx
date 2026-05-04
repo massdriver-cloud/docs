@@ -2,8 +2,8 @@
 pagination_next: null
 pagination_prev: null
 hide_table_of_contents: true
-id: deployments-sort-field
-title: DeploymentsSortField
+id: oci-files-sort-field
+title: OciFilesSortField
 ---
 
 
@@ -42,14 +42,12 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Available fields for sorting the deployments list.
+Fields available for ordering files within a tagged version of an OCI artifact.
 
 
 ```graphql
-enum DeploymentsSortField {
-  UPDATED_AT
-  CREATED_AT
-  STATUS
+enum OciFilesSortField {
+  NAME
 }
 ```
 
@@ -58,16 +56,8 @@ enum DeploymentsSortField {
 
 ### Values
 
-#### [<code style={{ fontWeight: 'normal' }}>DeploymentsSortField.<b>UPDATED&#x005F;AT</b></code>](#updated-at) \{#updated-at\} 
-Sort by the timestamp of the most recent change to the deployment record (status transitions, log compaction). This is what surfaces "recently active" work first.
-
-
-#### [<code style={{ fontWeight: 'normal' }}>DeploymentsSortField.<b>CREATED&#x005F;AT</b></code>](#created-at) \{#created-at\} 
-Sort by creation timestamp (oldest first when ascending, newest first when descending).
-
-
-#### [<code style={{ fontWeight: 'normal' }}>DeploymentsSortField.<b>STATUS</b></code>](#status) \{#status\} 
-Sort alphabetically by status name. Deployments with the same status are sub-sorted by newest first.
+#### [<code style={{ fontWeight: 'normal' }}>OciFilesSortField.<b>NAME</b></code>](#name) \{#name\} 
+Alphabetical order by filename (e.g., `CHANGELOG.md`, `README.md`, `src/main.tf`).
 
 
 
@@ -76,4 +66,4 @@ Sort alphabetically by status name. Deployments with the same status are sub-sor
 
 ### Member Of
 
-[`DeploymentsSort`](/api/graphql/types/inputs/deployments-sort.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>
+[`OciFilesSort`](/api/graphql/types/inputs/oci-files-sort.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

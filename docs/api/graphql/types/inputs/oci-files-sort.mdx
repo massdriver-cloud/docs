@@ -2,8 +2,8 @@
 pagination_next: null
 pagination_prev: null
 hide_table_of_contents: true
-id: deployments-sort
-title: DeploymentsSort
+id: oci-files-sort
+title: OciFilesSort
 ---
 
 
@@ -42,14 +42,12 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Controls the sort order of the deployments list.
-
-Defaults to most recently active first (`updated_at` descending) when not specified.
+Controls the sort order of files in a tagged version of an OCI artifact.
 
 
 ```graphql
-input DeploymentsSort {
-  field: DeploymentsSortField!
+input OciFilesSort {
+  field: OciFilesSortField!
   order: SortOrder!
 }
 ```
@@ -59,18 +57,9 @@ input DeploymentsSort {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>DeploymentsSort.<b>field</b></code>](#field)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DeploymentsSortField!</b></code>](/api/graphql/types/enums/deployments-sort-field.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#field\} 
-The field to sort by.
+#### [<code style={{ fontWeight: 'normal' }}>OciFilesSort.<b>field</b></code>](#field)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciFilesSortField!</b></code>](/api/graphql/types/enums/oci-files-sort-field.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#field\} 
+The field to order results by.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>DeploymentsSort.<b>order</b></code>](#order)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SortOrder!</b></code>](/api/graphql/types/enums/sort-order.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#order\} 
-`ASC` for A-Z / oldest first, `DESC` for Z-A / newest first.
-
-
-
-
-
-
-### Member Of
-
-[`deployments`](/api/graphql/operations/queries/deployments.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+#### [<code style={{ fontWeight: 'normal' }}>OciFilesSort.<b>order</b></code>](#order)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SortOrder!</b></code>](/api/graphql/types/enums/sort-order.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#order\} 
+Ascending (`ASC`) or descending (`DESC`).

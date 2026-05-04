@@ -151,7 +151,7 @@ Cursor from a previous page to fetch the next set of results.
 #### [<code style={{ fontWeight: 'normal' }}>Organization.<b>customAttributes</b></code>](#custom-attributes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CustomAttributesPage</b></code>](/api/graphql/types/objects/custom-attributes-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#custom-attributes\} 
 Paginated list of custom attributes that govern attribute metadata across this organization.
 
-Requires the `organization:manageAttributes` action. Callers without it receive
+Requires the `organization:manage` action. Callers without it receive
 `null` along with a top-level `FORBIDDEN` error.
 ##### [<code style={{ fontWeight: 'normal' }}>Organization.customAttributes.<b>sort</b></code>](#organization-custom-attributes-sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CustomAttributesSort</b></code>](/api/graphql/types/inputs/custom-attributes-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#organization-custom-attributes-sort\} 
 How to sort results. Defaults to alphabetical by key.
@@ -164,7 +164,7 @@ Cursor from a previous page to fetch the next set of results.
 #### [<code style={{ fontWeight: 'normal' }}>Organization.<b>billing</b></code>](#billing)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OrganizationBilling</b></code>](/api/graphql/types/objects/organization-billing.mdx) <Badge class="badge badge--secondary " text="object"/> \{#billing\} 
 Subscription, trial, and upgrade information for this organization.
 
-Requires the `organization:manageBilling` action. Callers without it receive
+Requires the `organization:manage` action. Callers without it receive
 `null` along with a top-level `FORBIDDEN` error. The non-sensitive
 `subscriptionStatus` field at the top of the type stays visible to every member.
 

@@ -2,8 +2,8 @@
 pagination_next: null
 pagination_prev: null
 hide_table_of_contents: true
-id: deployments-sort-field
-title: DeploymentsSortField
+id: oci-repo-tags-filter
+title: OciRepoTagsFilter
 ---
 
 
@@ -42,38 +42,21 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Available fields for sorting the deployments list.
+Filters for narrowing the tags list within an OCI repository.
+
+All filters are combined with AND logic.
 
 
 ```graphql
-enum DeploymentsSortField {
-  UPDATED_AT
-  CREATED_AT
-  STATUS
+input OciRepoTagsFilter {
+  version: Semver
 }
 ```
 
 
 
 
-### Values
+### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>DeploymentsSortField.<b>UPDATED&#x005F;AT</b></code>](#updated-at) \{#updated-at\} 
-Sort by the timestamp of the most recent change to the deployment record (status transitions, log compaction). This is what surfaces "recently active" work first.
-
-
-#### [<code style={{ fontWeight: 'normal' }}>DeploymentsSortField.<b>CREATED&#x005F;AT</b></code>](#created-at) \{#created-at\} 
-Sort by creation timestamp (oldest first when ascending, newest first when descending).
-
-
-#### [<code style={{ fontWeight: 'normal' }}>DeploymentsSortField.<b>STATUS</b></code>](#status) \{#status\} 
-Sort alphabetically by status name. Deployments with the same status are sub-sorted by newest first.
-
-
-
-
-
-
-### Member Of
-
-[`DeploymentsSort`](/api/graphql/types/inputs/deployments-sort.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>
+#### [<code style={{ fontWeight: 'normal' }}>OciRepoTagsFilter.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Semver</b></code>](/api/graphql/types/scalars/semver.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#version\} 
+Return only the tag with this exact version (e.g., `1.3.3`). When set, the result is at most one item.

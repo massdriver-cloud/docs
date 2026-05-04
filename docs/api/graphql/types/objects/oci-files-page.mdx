@@ -2,8 +2,8 @@
 pagination_next: null
 pagination_prev: null
 hide_table_of_contents: true
-id: deployments-sort
-title: DeploymentsSort
+id: oci-files-page
+title: OciFilesPage
 ---
 
 
@@ -42,15 +42,13 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Controls the sort order of the deployments list.
-
-Defaults to most recently active first (`updated_at` descending) when not specified.
+No description
 
 
 ```graphql
-input DeploymentsSort {
-  field: DeploymentsSortField!
-  order: SortOrder!
+type OciFilesPage {
+  cursor: PaginationCursor!
+  items: [OciFile]
 }
 ```
 
@@ -59,12 +57,12 @@ input DeploymentsSort {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>DeploymentsSort.<b>field</b></code>](#field)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DeploymentsSortField!</b></code>](/api/graphql/types/enums/deployments-sort-field.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#field\} 
-The field to sort by.
+#### [<code style={{ fontWeight: 'normal' }}>OciFilesPage.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PaginationCursor!</b></code>](/api/graphql/types/objects/pagination-cursor.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#cursor\} 
+Pagination cursors for navigating between pages.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>DeploymentsSort.<b>order</b></code>](#order)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SortOrder!</b></code>](/api/graphql/types/enums/sort-order.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#order\} 
-`ASC` for A-Z / oldest first, `DESC` for Z-A / newest first.
+#### [<code style={{ fontWeight: 'normal' }}>OciFilesPage.<b>items</b></code>](#items)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[OciFile]</b></code>](/api/graphql/types/objects/oci-file.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> \{#items\} 
+A list of type oci_file.
 
 
 
@@ -73,4 +71,4 @@ The field to sort by.
 
 ### Member Of
 
-[`deployments`](/api/graphql/operations/queries/deployments.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+[`OciRepoTag`](/api/graphql/types/objects/oci-repo-tag.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

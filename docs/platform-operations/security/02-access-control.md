@@ -264,12 +264,6 @@ Massdriver defines its permissions using an `entity:verb` format. See the [Graph
 | `environment:delete` | Delete an environment |
 | `environment:configure` | Set or remove environment-level resource defaults |
 
-### Component
-
-| Permission | Description |
-|---|---|
-| `component:create` | Add a component to a project's blueprint. Conditions can match the prospective component's `md-repo` (the bundle being attached), `md-component`, and project-cascade attributes. |
-
 ### Instance
 
 | Permission | Description |
@@ -374,50 +368,6 @@ policies:
     actions: [project:view, group:view, repo:view, resource:view]
     conditions: "*"
 ```
-
-### Compliance Auditor with Audit-Bundle Authority
-
-Auditors can attach the `audit-tooling` component to any project flagged
-`pci: true`, with no permission to add other components or touch non-PCI
-projects.
-
-```yaml
-custom_attribute:
-  key: pci
-  scope: project
-  required: false
-  values: ["true", "false"]
-
-group: compliance-auditors
-policies:
-  - effect: allow
-    actions: [project:view]
-    conditions: { pci: ["true"] }
-
-  - effect: allow
-    actions: [component:create]
-    conditions:
-      pci: ["true"]
-      md-repo: [audit-tooling]
-```
-
-The auditor also needs **visibility into the bundle**. Either a
-`repo:view` policy on the auditor group covering `audit-tooling`, or
-a publisher-side grant on the bundle that targets PCI projects:
-
-```yaml
-# On the audit-tooling repo
-grant:
-  source: { repo: audit-tooling }
-  action: repo:pull
-  recipient_conditions: { pci: ["true"] }
-```
-
-With both in place: `md-repo` matches the bundle attached to the
-prospective component, `pci` cascades from the parent project, the
-grant makes the bundle visible to the auditor on PCI projects, and
-the conditions AND-within-policy so the auditor can only attach
-`audit-tooling` to a project tagged `pci: true`.
 
 ---
 

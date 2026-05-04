@@ -79,6 +79,7 @@ type OciRepo {
     cursor: Cursor
   ): OciRepoReleaseChannelsPage
   tags(
+    filter: OciRepoTagsFilter
     sort: OciRepoTagsSort
     cursor: Cursor
   ): OciRepoTagsPage
@@ -164,17 +165,17 @@ GitHub link), when the author provides one. Taken from the latest release.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>readme</b></code>](#readme)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#readme\} 
-Markdown README for this repository. Cached on publish from the latest
-stable release; falls back to the latest release when the cache is empty.
-`null` when the repository has no releases or the latest release has no
-README.
+The README for this repository, in markdown — taken from the latest
+stable release. `null` if no release has shipped a README. To get a
+specific version's README, query that tag's `readme` field, or the
+`bundle(id: "name@version") { readme }` field.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>changelog</b></code>](#changelog)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#changelog\} 
-Markdown changelog for this repository. Cached on publish from the latest
-stable release; falls back to the latest release when the cache is empty.
-`null` when the repository has no releases or the latest release has no
-changelog.
+The changelog for this repository, in markdown — taken from the latest
+stable release. `null` if no release has shipped a changelog. To get a
+specific version's changelog, query that tag's `changelog` field, or
+the `bundle(id: "name@version") { changelog }` field.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>releaseChannels</b></code>](#release-channels)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoReleaseChannelsPage</b></code>](/api/graphql/types/objects/oci-repo-release-channels-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#release-channels\} 
@@ -199,6 +200,10 @@ Paginated list of published version tags in this repository.
 
 Each tag represents a single immutable bundle release. Defaults to newest
 version first (`version` descending).
+##### [<code style={{ fontWeight: 'normal' }}>OciRepo.tags.<b>filter</b></code>](#oci-repo-tags-filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoTagsFilter</b></code>](/api/graphql/types/inputs/oci-repo-tags-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#oci-repo-tags-filter\} 
+Narrow results to a specific version.
+
+
 ##### [<code style={{ fontWeight: 'normal' }}>OciRepo.tags.<b>sort</b></code>](#oci-repo-tags-sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoTagsSort</b></code>](/api/graphql/types/inputs/oci-repo-tags-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#oci-repo-tags-sort\} 
 Sort order for tags. Defaults to `version` descending (newest first).
 

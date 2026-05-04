@@ -30,13 +30,15 @@ If you're building a least-privilege policy, scan the table for the operations t
 | `cloneProject` | Mutation | `project:view`, `project:create` | View on source, then create on the proposed clone. |
 | `updateProject` | Mutation | `project:update` | |
 | `deleteProject` | Mutation | `project:delete` | Project must have no environments, components, or instances. |
-| `addComponent` | Mutation | `component:create` | Checked against the proposed component (cascaded project attrs + `md-component`, `md-repo`). |
+| `addComponent` | Mutation | `project:design` | Blueprint mutation. Checked on the proposed component's effective attributes (cascaded project attrs + `md-component`, `md-repo`). |
 | `updateComponent` | Mutation | `project:design` | |
 | `removeComponent` | Mutation | `project:design` | Component must have no provisioned instances. |
 | `linkComponents` | Mutation | `project:design` | |
 | `unlinkComponents` | Mutation | `project:design` | |
 | `setComponentPosition` | Mutation | `project:design` | |
 | `component` | Query | `project:view` | Loaded via parent project. |
+
+> All blueprint mutations (`addComponent`, `updateComponent`, `removeComponent`, `linkComponents`, `unlinkComponents`, `setComponentPosition`) are gated by `project:design`. There is no `component:create` permission.
 
 ## Environment
 
@@ -54,6 +56,8 @@ If you're building a least-privilege policy, scan the table for the operations t
 
 ## Instance
 
+Deployments are an action *on* an instance — `createDeployment`, `proposeDeployment`, `approveDeployment`, and `rejectDeployment` are listed here. The two listing queries (`deployments`, `deployment`) are in the [Deployment](#deployment) section below.
+
 | Operation | Type | Required permission(s) | Notes |
 |---|---|---|---|
 | `instances` | Query | *visibility-filtered* | |
@@ -65,6 +69,10 @@ If you're building a least-privilege policy, scan the table for the operations t
 | `setRemoteReference` | Mutation | `instance:configure`, `resource:view` | Configure the destination instance, view the resource being wired in. |
 | `removeRemoteReference` | Mutation | `instance:configure` | |
 | `copyInstance` | Mutation | `project:view`, `instance:configure` | View on source instance, configure on destination. |
+| `createDeployment` | Mutation | `instance:deploy`, `instance:plan`, or `instance:decommission` | Permission depends on `input.action`: `PROVISION` → `instance:deploy`, `PLAN` → `instance:plan`, `DECOMMISSION` → `instance:decommission`. |
+| `proposeDeployment` | Mutation | `instance:propose` | Only `PROVISION` and `DECOMMISSION` are proposable. |
+| `approveDeployment` | Mutation | `instance:approve` | |
+| `rejectDeployment` | Mutation | `instance:approve` | Same permission as approve — both close out a proposal. |
 
 ## Deployment
 
@@ -73,10 +81,6 @@ If you're building a least-privilege policy, scan the table for the operations t
 | `deployments` | Query | *visibility-filtered* | |
 | `deployment` | Query | `project:view` | |
 | `compareDeployments` | Query | `project:view` (both deployments' projects) | Source and target need not be on the same instance. |
-| `createDeployment` | Mutation | `instance:deploy`, `instance:plan`, or `instance:decommission` | Permission depends on `input.action`: `PROVISION` → `instance:deploy`, `PLAN` → `instance:plan`, `DECOMMISSION` → `instance:decommission`. |
-| `proposeDeployment` | Mutation | `instance:propose` | Only `PROVISION` and `DECOMMISSION` are proposable. |
-| `approveDeployment` | Mutation | `instance:approve` | |
-| `rejectDeployment` | Mutation | `instance:approve` | Same permission as approve — both close out a proposal. |
 
 ## Instance Alarm
 

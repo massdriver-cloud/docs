@@ -267,7 +267,7 @@ type RootQueryType {
     "Optional filters to narrow the results."
     filter: DeploymentsFilter
 
-    "Sort order for results. Defaults to newest first."
+    "Sort order for results. Defaults to most recently active first."
     sort: DeploymentsSort
 
     "Cursor from a previous page to fetch the next set of results."
@@ -1772,7 +1772,7 @@ type RootMutationType {
   Declare a new custom attribute in your organization.
 
   Once declared, the attribute immediately applies to new resources at the specified scope.
-  Existing resources are not retroactively validated. Requires the `organization:manageAttributes` action.
+  Existing resources are not retroactively validated. Requires the `organization:manage` action.
   """
   createCustomAttribute(
     "Your organization's unique identifier."
@@ -1788,7 +1788,7 @@ type RootMutationType {
   Changing `values` does not retroactively validate or rewrite resources
   that were tagged before this update. Subsequent writes (and policy conditions
   referencing this key) must use a value from the new set. Requires the
-  `organization:manageAttributes` action.
+  `organization:manage` action.
   """
   updateCustomAttribute(
     "Your organization's unique identifier."
@@ -1805,7 +1805,7 @@ type RootMutationType {
   Delete a custom attribute from your organization.
 
   Removing a custom attribute stops enforcing the rule for future resources.
-  Existing attributes on resources are not removed. Requires the `organization:manageAttributes` action.
+  Existing attributes on resources are not removed. Requires the `organization:manage` action.
   """
   deleteCustomAttribute(
     "Your organization's unique identifier."
@@ -5215,7 +5215,7 @@ type Organization {
   """
   Paginated list of custom attributes that govern attribute metadata across this organization.
 
-  Requires the `organization:manageAttributes` action. Callers without it receive
+  Requires the `organization:manage` action. Callers without it receive
   `null` along with a top-level `FORBIDDEN` error.
   """
   customAttributes(
@@ -5229,7 +5229,7 @@ type Organization {
   """
   Subscription, trial, and upgrade information for this organization.
 
-  Requires the `organization:manageBilling` action. Callers without it receive
+  Requires the `organization:manage` action. Callers without it receive
   `null` along with a top-level `FORBIDDEN` error. The non-sensitive
   `subscriptionStatus` field at the top of the type stays visible to every member.
   """
@@ -6130,6 +6130,9 @@ enum ProposeDeploymentAction {
 
 "Available fields for sorting the deployments list."
 enum DeploymentsSortField {
+  "Sort by the timestamp of the most recent change to the deployment record (status transitions, log compaction). This is what surfaces \"recently active\" work first."
+  UPDATED_AT
+
   "Sort by creation timestamp (oldest first when ascending, newest first when descending)."
   CREATED_AT
 
@@ -6140,7 +6143,7 @@ enum DeploymentsSortField {
 """
 Controls the sort order of the deployments list.
 
-Defaults to newest first (`created_at` descending) when not specified.
+Defaults to most recently active first (`updated_at` descending) when not specified.
 """
 input DeploymentsSort {
   "The field to sort by."
@@ -7885,6 +7888,24 @@ type Bundle {
   "URL to the bundle's source code repository, if published by the author."
   sourceUrl: String
 
+  """
+  The README for this exact bundle version, in markdown. `null` if the
+  publisher didn't include one.
+
+  Use this when rendering documentation for a specific version — for the
+  latest stable README at the repository level, use `OciRepo.readme`.
+  """
+  readme: String
+
+  """
+  The changelog for this exact bundle version, in markdown. `null` if the
+  publisher didn't include one.
+
+  Each version's changelog is preserved — for the latest stable changelog
+  at the repository level, use `OciRepo.changelog`.
+  """
+  changelog: String
+
   "Timestamp when this bundle version was first published (UTC)."
   createdAt: DateTime!
 
@@ -7942,6 +7963,12 @@ enum OciRepoReleaseChannelsSortField {
   NAME
 }
 
+"Fields available for ordering files within a tagged version of an OCI artifact."
+enum OciFilesSortField {
+  "Alphabetical order by filename (e.g., `CHANGELOG.md`, `README.md`, `src\/main.tf`)."
+  NAME
+}
+
 "Create a new OCI repository in your organization's catalog. Repositories must exist before any version can be published to them."
 input CreateOciRepoInput {
   "Key-value attributes for this repository. Used by ABAC policies for fine-grained access control. Reserved `md-*` keys are rejected. Must conform to the organization's custom attributes for the repo scope."
@@ -7991,6 +8018,25 @@ input OciReposSort {
 input OciRepoTagsSort {
   "The field to order results by."
   field: OciRepoTagsSortField!
+
+  "Ascending (`ASC`) or descending (`DESC`)."
+  order: SortOrder!
+}
+
+"""
+Filters for narrowing the tags list within an OCI repository.
+
+All filters are combined with AND logic.
+"""
+input OciRepoTagsFilter {
+  "Return only the tag with this exact version (e.g., `1.3.3`). When set, the result is at most one item."
+  version: Semver
+}
+
+"Controls the sort order of files in a tagged version of an OCI artifact."
+input OciFilesSort {
+  "The field to order results by."
+  field: OciFilesSortField!
 
   "Ascending (`ASC`) or descending (`DESC`)."
   order: SortOrder!
@@ -8061,6 +8107,61 @@ type OciRepoTag {
 
   "Size of the manifest blob in bytes."
   size: Int!
+
+  """
+  The README for this version, in markdown. `null` if the publisher didn't
+  include one. Each version's README is preserved as it was at publish time.
+  """
+  readme: String
+
+  """
+  The changelog for this version, in markdown. `null` if the publisher
+  didn't include one. Each version's changelog is preserved as it was at
+  publish time.
+  """
+  changelog: String
+
+  """
+  Files packaged into this version of the artifact (e.g., `README.md`,
+  schemas, source files, templates — whatever the publisher included).
+
+  Each item carries a downloadable `url`, a content-addressable `digest`,
+  its declared `mediaType`, and its size — enough to render or verify the
+  file. Defaults to `name` ascending.
+  """
+  files(
+    "Sort order for files. Defaults to `name` ascending."
+    sort: OciFilesSort
+
+    "Cursor from a previous page's `cursor.next` or `cursor.previous`."
+    cursor: Cursor
+  ): OciFilesPage
+}
+
+"""
+A single file inside an OCI artifact — for example, a bundle's
+`README.md`, a Terraform module's `src/main.tf`, or a Helm chart's
+`templates/deployment.yaml`. File names may include nested paths.
+
+Use `url` to download the bytes; use `mediaType` to decide how to render
+them; use `digest` and `size` to verify integrity or to pull the file
+directly with an OCI client.
+"""
+type OciFile {
+  "The file's path within the artifact, including any directory segments (e.g., `README.md`, `src\/main.tf`, `helm\/templates\/deployment.yaml`)."
+  name: String!
+
+  "Content type the publisher declared for this file (e.g., `text\/markdown`, `application\/json`, `image\/svg+xml`, `text\/x-terraform`). Use this to pick a renderer in your UI — the response from `url` is always served as plain text for safety, so the consumer is responsible for interpreting the bytes."
+  mediaType: String!
+
+  "File size in bytes."
+  size: Int!
+
+  "Content-addressable SHA-256 digest of the file (e.g., `sha256:e3b0c44298fc1c14...`). Stable across re-publishes of identical content; useful for integrity checks or pulling the file directly with an OCI client like `oras`."
+  digest: String!
+
+  "Authenticated URL to download this file. Requires an active session or API credentials, and `repo:view` on the OCI repository. The response is always served as `text\/plain` (regardless of the file's `mediaType`) so it cannot execute scripts in a browser. To render the file, fetch the URL with credentials, read the bytes, and render them client-side according to `mediaType`. Direct embedding via `<img>` or `<iframe>` will not work."
+  url: String!
 }
 
 """
@@ -8153,18 +8254,18 @@ type OciRepo {
   sourceUrl: String
 
   """
-  Markdown README for this repository. Cached on publish from the latest
-  stable release; falls back to the latest release when the cache is empty.
-  `null` when the repository has no releases or the latest release has no
-  README.
+  The README for this repository, in markdown — taken from the latest
+  stable release. `null` if no release has shipped a README. To get a
+  specific version's README, query that tag's `readme` field, or the
+  `bundle(id: "name@version") { readme }` field.
   """
   readme: String
 
   """
-  Markdown changelog for this repository. Cached on publish from the latest
-  stable release; falls back to the latest release when the cache is empty.
-  `null` when the repository has no releases or the latest release has no
-  changelog.
+  The changelog for this repository, in markdown — taken from the latest
+  stable release. `null` if no release has shipped a changelog. To get a
+  specific version's changelog, query that tag's `changelog` field, or
+  the `bundle(id: "name@version") { changelog }` field.
   """
   changelog: String
 
@@ -8192,6 +8293,9 @@ type OciRepo {
   version first (`version` descending).
   """
   tags(
+    "Narrow results to a specific version."
+    filter: OciRepoTagsFilter
+
     "Sort order for tags. Defaults to `version` descending (newest first)."
     sort: OciRepoTagsSort
 
@@ -8233,6 +8337,14 @@ type OciRepoReleaseChannelsPage {
 
   "A list of type oci_repo_release_channel."
   items: [OciRepoReleaseChannel]
+}
+
+type OciFilesPage {
+  "Pagination cursors for navigating between pages."
+  cursor: PaginationCursor!
+
+  "A list of type oci_file."
+  items: [OciFile]
 }
 
 type OciRepoPayload {

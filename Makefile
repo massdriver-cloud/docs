@@ -6,7 +6,7 @@ all: sync-cli-docs sync-gql-docs sync-authz-docs
 .PHONY: sync-gql-docs
 sync-gql-docs: # Generate GraphQL docs from remote schema
 	rm -rf ./docs/api/graphql/{operations,types,deprecated}
-	curl -s https://api.massdriver.cloud/graphql/v1/schema.graphql -o ./schema/schema.graphql
+	curl -s https://api.massdriver.cloud/graphql/v2/schema.graphql -o ./schema/schema.graphql
 	yarn gen:graphql
 
 .PHONY: yarn

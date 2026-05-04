@@ -75,6 +75,8 @@ type Bundle {
   description: String
   icon: String
   sourceUrl: String
+  readme: String
+  changelog: String
   createdAt: DateTime!
   updatedAt: DateTime!
   repo: String!
@@ -110,6 +112,22 @@ URL to the bundle's display icon.
 
 #### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>sourceUrl</b></code>](#source-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#source-url\} 
 URL to the bundle's source code repository, if published by the author.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>readme</b></code>](#readme)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#readme\} 
+The README for this exact bundle version, in markdown. `null` if the
+publisher didn't include one.
+
+Use this when rendering documentation for a specific version — for the
+latest stable README at the repository level, use `OciRepo.readme`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>changelog</b></code>](#changelog)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#changelog\} 
+The changelog for this exact bundle version, in markdown. `null` if the
+publisher didn't include one.
+
+Each version's changelog is preserved — for the latest stable changelog
+at the repository level, use `OciRepo.changelog`.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
