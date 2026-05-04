@@ -10,7 +10,7 @@ A **bundle** is a reusable, versioned definition of cloud infrastructure or appl
 Bundles solve a fundamental problem in cloud infrastructure management: how to create, share, and compose infrastructure components while maintaining type safety, security, and operational best practices. Instead of managing raw IaC code and ad-hoc configuration, bundles provide a structured contract that defines:
 
 - **What inputs are required** (parameters and connections)
-- **What outputs are produced** (artifacts)
+- **What outputs are produced** (resources)
 - **How to deploy** (provisioning steps)
 - **How to configure applications** (secrets, environment variables, IAM policies)
 - **What policies are enforced** (policy-as-code validations)
@@ -27,7 +27,7 @@ Bundles address these challenges by providing a safe self-service framework that
 
 ### Bundle-Centric Architecture
 
-Bundles encapsulate best practices, validations, policies, and artifact contracts so mistakes can't propagate downstream. When you use a bundle, you're not just deploying code—you're deploying a complete, validated configuration that has been tested and proven.
+Bundles encapsulate best practices, validations, policies, and resource contracts so mistakes can't propagate downstream. When you use a bundle, you're not just deploying code—you're deploying a complete, validated configuration that has been tested and proven.
 
 ### Proactive Guardrails
 
@@ -39,7 +39,7 @@ Ephemeral, on-demand workflows replace permanent IaC pipelines, eliminating pipe
 
 ### Type-Safe Infrastructure Composition
 
-Artifact schemas and connection contracts ensure components are compatible before they're ever deployed. You can't connect a PostgreSQL database to a component expecting a Redis connection—the system validates compatibility at design time.
+Resource type schemas and connection contracts ensure components are compatible before they're ever deployed. You can't connect a PostgreSQL database to a component expecting a Redis connection—the system validates compatibility at design time.
 
 ### The Compliant Path is the Easiest Path
 
@@ -85,5 +85,5 @@ Infrastructure runs in your cloud accounts, bundles are open specifications, and
 - [Bundle YAML Specification](/bundle-development/bundle-yaml-spec) - Complete reference for `massdriver.yaml`
 - [Schema Design](/bundle-development/schema-design/overview) - JSON Schema patterns and Massdriver annotations
 - [Provisioners](/bundle-development/provisioners/overview) - Configure OpenTofu, Terraform, Helm, Bicep
-- [Artifacts & Definitions](/concepts/resources-and-types) - How bundles connect through typed contracts
+- [Resources & Resource Types](/concepts/resources-and-types) - How bundles connect through typed contracts
 - [Getting Started: Creating Bundles](/getting-started/creating-bundles) - Step-by-step tutorial

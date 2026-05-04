@@ -23,7 +23,7 @@ module.exports = {
         },
         {
           type: "category",
-          label: "Connections & Artifacts",
+          label: "Connections & Resources",
           link: { type: "doc", id: "bundle-development/connections-artifacts/connections-artifacts-overview" },
           items: [
             "bundle-development/connections-artifacts/artifact-definition-spec",

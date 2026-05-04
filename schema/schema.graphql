@@ -915,7 +915,7 @@ type RootQueryType {
   ): [PolicyEntity!]!
 
   """
-  Return the catalog of V1 event types.
+  Return the catalog of V2 event types.
 
   Filter by `entity` to narrow the list.
 
@@ -1348,7 +1348,7 @@ type RootMutationType {
 
     "Create a new project. A project is the complete model of your application—its infrastructure, architecture, configurations, and environments."
     input: CreateProjectInput!
-  ): ProjectPayload @inputs(name: "createProject", schema: "\/graphql\/v1\/inputs\/createProject.json", ui: "\/graphql\/v1\/inputs\/createProject.ui.json")
+  ): ProjectPayload @inputs(name: "createProject", schema: "\/graphql\/v2\/inputs\/createProject.json", ui: "\/graphql\/v2\/inputs\/createProject.ui.json")
 
   "Update a project's mutable fields (name, description, attributes)."
   updateProject(
@@ -1360,7 +1360,7 @@ type RootMutationType {
 
     "Update an existing project's name and description. The ID cannot be changed after creation."
     input: UpdateProjectInput!
-  ): ProjectPayload @inputs(name: "updateProject", schema: "\/graphql\/v1\/inputs\/updateProject.json", ui: "\/graphql\/v1\/inputs\/updateProject.ui.json")
+  ): ProjectPayload @inputs(name: "updateProject", schema: "\/graphql\/v2\/inputs\/updateProject.json", ui: "\/graphql\/v2\/inputs\/updateProject.ui.json")
 
   """
   Create a new project by cloning another project's blueprint.
@@ -1378,7 +1378,7 @@ type RootMutationType {
 
     "Attributes for the new project."
     input: CloneProjectInput!
-  ): ProjectPayload @inputs(name: "cloneProject", schema: "\/graphql\/v1\/inputs\/cloneProject.json", ui: "\/graphql\/v1\/inputs\/cloneProject.ui.json")
+  ): ProjectPayload @inputs(name: "cloneProject", schema: "\/graphql\/v2\/inputs\/cloneProject.json", ui: "\/graphql\/v2\/inputs\/cloneProject.ui.json")
 
   """
   Delete a project permanently.
@@ -1409,7 +1409,7 @@ type RootMutationType {
 
     "Create a new environment. Environments are isolated deployment contexts like production, staging, or development, each with independent secrets and configurations."
     input: CreateEnvironmentInput!
-  ): EnvironmentPayload @inputs(name: "createEnvironment", schema: "\/graphql\/v1\/inputs\/createEnvironment.json", ui: "\/graphql\/v1\/inputs\/createEnvironment.ui.json")
+  ): EnvironmentPayload @inputs(name: "createEnvironment", schema: "\/graphql\/v2\/inputs\/createEnvironment.json", ui: "\/graphql\/v2\/inputs\/createEnvironment.ui.json")
 
   "Update an environment's mutable fields (name, description, attributes)."
   updateEnvironment(
@@ -1421,7 +1421,7 @@ type RootMutationType {
 
     "Update an existing environment's name and description. The ID cannot be changed after creation."
     input: UpdateEnvironmentInput!
-  ): EnvironmentPayload @inputs(name: "updateEnvironment", schema: "\/graphql\/v1\/inputs\/updateEnvironment.json", ui: "\/graphql\/v1\/inputs\/updateEnvironment.ui.json")
+  ): EnvironmentPayload @inputs(name: "updateEnvironment", schema: "\/graphql\/v2\/inputs\/updateEnvironment.json", ui: "\/graphql\/v2\/inputs\/updateEnvironment.ui.json")
 
   """
   Create a new environment by forking an existing one.
@@ -1442,7 +1442,7 @@ type RootMutationType {
 
     "Attributes for the new environment. The fork references the parent via `parentId`, starts with blank instances, and does not copy any instance-level configuration. Use `copyInstance` per-instance if you want to seed configuration from the parent."
     input: ForkEnvironmentInput!
-  ): EnvironmentPayload @inputs(name: "forkEnvironment", schema: "\/graphql\/v1\/inputs\/forkEnvironment.json", ui: "\/graphql\/v1\/inputs\/forkEnvironment.ui.json")
+  ): EnvironmentPayload @inputs(name: "forkEnvironment", schema: "\/graphql\/v2\/inputs\/forkEnvironment.json", ui: "\/graphql\/v2\/inputs\/forkEnvironment.ui.json")
 
   """
   Delete an environment permanently.
@@ -1524,7 +1524,7 @@ type RootMutationType {
 
     "Add an infrastructure component to a project's blueprint. Each component is a specific instance of a bundle (like a Redis cache or PostgreSQL database) that composes with other components to form your application."
     input: AddComponentInput!
-  ): ComponentPayload @inputs(name: "addComponent", schema: "\/graphql\/v1\/inputs\/addComponent.json", ui: "\/graphql\/v1\/inputs\/addComponent.ui.json")
+  ): ComponentPayload @inputs(name: "addComponent", schema: "\/graphql\/v2\/inputs\/addComponent.json", ui: "\/graphql\/v2\/inputs\/addComponent.ui.json")
 
   """
   Remove a component from a project's blueprint.
@@ -1569,7 +1569,7 @@ type RootMutationType {
 
     "Update an existing component's name, description, and attributes. The component ID and underlying bundle cannot be changed."
     input: UpdateComponentInput!
-  ): ComponentPayload @inputs(name: "updateComponent", schema: "\/graphql\/v1\/inputs\/updateComponent.json", ui: "\/graphql\/v1\/inputs\/updateComponent.ui.json")
+  ): ComponentPayload @inputs(name: "updateComponent", schema: "\/graphql\/v2\/inputs\/updateComponent.json", ui: "\/graphql\/v2\/inputs\/updateComponent.ui.json")
 
   """
   Create a link between two components.
@@ -1604,7 +1604,7 @@ type RootMutationType {
 
     "Create a link between two components in a project's blueprint. Links connect an output field on the source component to an input field on the destination component, establishing data flow between infrastructure resources."
     input: LinkComponentsInput!
-  ): LinkPayload @inputs(name: "linkComponents", schema: "\/graphql\/v1\/inputs\/linkComponents.json", ui: "\/graphql\/v1\/inputs\/linkComponents.ui.json")
+  ): LinkPayload @inputs(name: "linkComponents", schema: "\/graphql\/v2\/inputs\/linkComponents.json", ui: "\/graphql\/v2\/inputs\/linkComponents.ui.json")
 
   """
   Remove a link between two components.
@@ -1630,7 +1630,7 @@ type RootMutationType {
 
     "Set the position of a component on the canvas."
     input: SetComponentPositionInput!
-  ): ComponentPayload @inputs(name: "setComponentPosition", schema: "\/graphql\/v1\/inputs\/setComponentPosition.json", ui: "\/graphql\/v1\/inputs\/setComponentPosition.ui.json")
+  ): ComponentPayload @inputs(name: "setComponentPosition", schema: "\/graphql\/v2\/inputs\/setComponentPosition.json", ui: "\/graphql\/v2\/inputs\/setComponentPosition.ui.json")
 
   """
   Accept a pending group invitation.
@@ -1675,7 +1675,7 @@ type RootMutationType {
 
     "Create a new group. Groups control which projects members can access."
     input: CreateGroupInput!
-  ): GroupPayload @inputs(name: "createGroup", schema: "\/graphql\/v1\/inputs\/createGroup.json", ui: "\/graphql\/v1\/inputs\/createGroup.ui.json")
+  ): GroupPayload @inputs(name: "createGroup", schema: "\/graphql\/v2\/inputs\/createGroup.json", ui: "\/graphql\/v2\/inputs\/createGroup.ui.json")
 
   """
   Update a group's name or description.
@@ -1692,7 +1692,7 @@ type RootMutationType {
 
     "Update a group's name or description."
     input: UpdateGroupInput!
-  ): GroupPayload @inputs(name: "updateGroup", schema: "\/graphql\/v1\/inputs\/updateGroup.json", ui: "\/graphql\/v1\/inputs\/updateGroup.ui.json")
+  ): GroupPayload @inputs(name: "updateGroup", schema: "\/graphql\/v2\/inputs\/updateGroup.json", ui: "\/graphql\/v2\/inputs\/updateGroup.ui.json")
 
   """
   Delete a group.
@@ -1731,7 +1731,7 @@ type RootMutationType {
 
     "Add an account to a group by email. If the email belongs to an existing organization member they are added directly; otherwise an invitation is sent."
     input: AddAccountToGroupInput!
-  ): AddedAccountToGroupPayload @inputs(name: "addAccountToGroup", schema: "\/graphql\/v1\/inputs\/addAccountToGroup.json", ui: "\/graphql\/v1\/inputs\/addAccountToGroup.ui.json")
+  ): AddedAccountToGroupPayload @inputs(name: "addAccountToGroup", schema: "\/graphql\/v2\/inputs\/addAccountToGroup.json", ui: "\/graphql\/v2\/inputs\/addAccountToGroup.ui.json")
 
   """
   Revoke a pending invitation.
@@ -1780,7 +1780,7 @@ type RootMutationType {
 
     "Declare a custom attribute key for your organization. Custom attributes control which user-defined attribute keys can be set on resources at each level of the hierarchy. System attributes (md-*) are auto-injected by Massdriver and do not need to be declared."
     input: CreateCustomAttributeInput!
-  ): CustomAttributePayload @inputs(name: "createCustomAttribute", schema: "\/graphql\/v1\/inputs\/createCustomAttribute.json", ui: "\/graphql\/v1\/inputs\/createCustomAttribute.ui.json")
+  ): CustomAttributePayload @inputs(name: "createCustomAttribute", schema: "\/graphql\/v2\/inputs\/createCustomAttribute.json", ui: "\/graphql\/v2\/inputs\/createCustomAttribute.ui.json")
 
   """
   Replace the closed set of values for an existing custom attribute.
@@ -1799,7 +1799,7 @@ type RootMutationType {
 
     "Replace the closed set of values for an existing custom attribute. The key and scope are immutable."
     input: UpdateCustomAttributeInput!
-  ): CustomAttributePayload @inputs(name: "updateCustomAttribute", schema: "\/graphql\/v1\/inputs\/updateCustomAttribute.json", ui: "\/graphql\/v1\/inputs\/updateCustomAttribute.ui.json")
+  ): CustomAttributePayload @inputs(name: "updateCustomAttribute", schema: "\/graphql\/v2\/inputs\/updateCustomAttribute.json", ui: "\/graphql\/v2\/inputs\/updateCustomAttribute.ui.json")
 
   """
   Delete a custom attribute from your organization.
@@ -1824,7 +1824,7 @@ type RootMutationType {
   createOrganization(
     "Create a new organization. An organization is the top-level container for all your projects, environments, and infrastructure resources."
     input: CreateOrganizationInput!
-  ): OrganizationPayload @inputs(name: "createOrganization", schema: "\/graphql\/v1\/inputs\/createOrganization.json", ui: "\/graphql\/v1\/inputs\/createOrganization.ui.json")
+  ): OrganizationPayload @inputs(name: "createOrganization", schema: "\/graphql\/v2\/inputs\/createOrganization.json", ui: "\/graphql\/v2\/inputs\/createOrganization.ui.json")
 
   "Update mutable organization settings. Requires the `organization:manage` action."
   updateOrganization(
@@ -1833,7 +1833,7 @@ type RootMutationType {
 
     "Update mutable settings on an organization. The identifier is fixed at creation and cannot be changed."
     input: UpdateOrganizationInput!
-  ): OrganizationPayload @inputs(name: "updateOrganization", schema: "\/graphql\/v1\/inputs\/updateOrganization.json", ui: "\/graphql\/v1\/inputs\/updateOrganization.ui.json")
+  ): OrganizationPayload @inputs(name: "updateOrganization", schema: "\/graphql\/v2\/inputs\/updateOrganization.json", ui: "\/graphql\/v2\/inputs\/updateOrganization.ui.json")
 
   """
   Upload or replace your organization's logo.
@@ -1914,7 +1914,7 @@ type RootMutationType {
 
     "Create and activate an integration for your organization. The config and auth payloads must conform to the integration type's configSchema and authSchema respectively."
     input: CreateIntegrationInput!
-  ): IntegrationActivationPayload @inputs(name: "createIntegration", schema: "\/graphql\/v1\/inputs\/createIntegration.json", ui: "\/graphql\/v1\/inputs\/createIntegration.ui.json")
+  ): IntegrationActivationPayload @inputs(name: "createIntegration", schema: "\/graphql\/v2\/inputs\/createIntegration.json", ui: "\/graphql\/v2\/inputs\/createIntegration.ui.json")
 
   """
   Re-enable a disabled integration.
@@ -1999,7 +1999,7 @@ type RootMutationType {
 
     "Create a scoped, time-limited access token for the authenticated identity."
     input: CreateAccessTokenInput!
-  ): AccessTokenWithValuePayload @inputs(name: "createAccessToken", schema: "\/graphql\/v1\/inputs\/createAccessToken.json", ui: "\/graphql\/v1\/inputs\/createAccessToken.ui.json")
+  ): AccessTokenWithValuePayload @inputs(name: "createAccessToken", schema: "\/graphql\/v2\/inputs\/createAccessToken.json", ui: "\/graphql\/v2\/inputs\/createAccessToken.ui.json")
 
   """
   Revoke an access token.
@@ -2056,7 +2056,7 @@ type RootMutationType {
 
     "Create a new service account for programmatic API access. Issues a default access token alongside the service account; the raw token value is returned once and cannot be retrieved later."
     input: CreateServiceAccountInput!
-  ): ServiceAccountWithDefaultAccessTokenPayload @inputs(name: "createServiceAccount", schema: "\/graphql\/v1\/inputs\/createServiceAccount.json", ui: "\/graphql\/v1\/inputs\/createServiceAccount.ui.json")
+  ): ServiceAccountWithDefaultAccessTokenPayload @inputs(name: "createServiceAccount", schema: "\/graphql\/v2\/inputs\/createServiceAccount.json", ui: "\/graphql\/v2\/inputs\/createServiceAccount.ui.json")
 
   """
   Update a service account's name or description.
@@ -2072,7 +2072,7 @@ type RootMutationType {
 
     "Update a service account's name or description. Both fields are optional; send only the fields you want to change."
     input: UpdateServiceAccountInput!
-  ): ServiceAccountPayload @inputs(name: "updateServiceAccount", schema: "\/graphql\/v1\/inputs\/updateServiceAccount.json", ui: "\/graphql\/v1\/inputs\/updateServiceAccount.ui.json")
+  ): ServiceAccountPayload @inputs(name: "updateServiceAccount", schema: "\/graphql\/v2\/inputs\/updateServiceAccount.json", ui: "\/graphql\/v2\/inputs\/updateServiceAccount.ui.json")
 
   """
   Permanently delete a service account.
@@ -2162,7 +2162,7 @@ type RootMutationType {
 
     "Link an instance's resource field to a resource from another project or an imported resource. The instance must not be in a provisioned or failed state."
     input: SetRemoteReferenceInput!
-  ): RemoteReferencePayload @inputs(name: "setRemoteReference", schema: "\/graphql\/v1\/inputs\/setRemoteReference.json", ui: "\/graphql\/v1\/inputs\/setRemoteReference.ui.json")
+  ): RemoteReferencePayload @inputs(name: "setRemoteReference", schema: "\/graphql\/v2\/inputs\/setRemoteReference.json", ui: "\/graphql\/v2\/inputs\/setRemoteReference.ui.json")
 
   """
   Remove a per-instance remote-reference override. The slot reverts to its
@@ -2195,7 +2195,7 @@ type RootMutationType {
 
     "Remove a remote reference from an instance. The reference can only be removed if no provisioned instances are connected through it."
     input: RemoveRemoteReferenceInput!
-  ): RemoteReferencePayload @inputs(name: "removeRemoteReference", schema: "\/graphql\/v1\/inputs\/removeRemoteReference.json", ui: "\/graphql\/v1\/inputs\/removeRemoteReference.ui.json")
+  ): RemoteReferencePayload @inputs(name: "removeRemoteReference", schema: "\/graphql\/v2\/inputs\/removeRemoteReference.json", ui: "\/graphql\/v2\/inputs\/removeRemoteReference.ui.json")
 
   """
   Import a new resource into your organization.
@@ -2227,7 +2227,7 @@ type RootMutationType {
 
     "Import a new resource with a name and optional payload conforming to the resource type's schema."
     input: CreateResourceInput!
-  ): ResourcePayload @inputs(name: "createResource", schema: "\/graphql\/v1\/inputs\/createResource.json", ui: "\/graphql\/v1\/inputs\/createResource.ui.json")
+  ): ResourcePayload @inputs(name: "createResource", schema: "\/graphql\/v2\/inputs\/createResource.json", ui: "\/graphql\/v2\/inputs\/createResource.ui.json")
 
   """
   Update an imported resource's name or payload.
@@ -2245,7 +2245,7 @@ type RootMutationType {
 
     "Update a resource's name or payload. Provisioned resources can only have their name updated. Imported resources can also update their payload."
     input: UpdateResourceInput!
-  ): ResourcePayload @inputs(name: "updateResource", schema: "\/graphql\/v1\/inputs\/updateResource.json", ui: "\/graphql\/v1\/inputs\/updateResource.ui.json")
+  ): ResourcePayload @inputs(name: "updateResource", schema: "\/graphql\/v2\/inputs\/updateResource.json", ui: "\/graphql\/v2\/inputs\/updateResource.ui.json")
 
   """
   Export a resource, returning it along with its unmasked `payload` and a `rendered`
@@ -2288,7 +2288,7 @@ type RootMutationType {
 
   """
   **Deprecated — use at your own risk.** This mutation exists only to bridge V0's
-  `publishArtifactDefinition` into V1 while resource types are being migrated to OCI.
+  `publishArtifactDefinition` into V2 while resource types are being migrated to OCI.
   New integrations should use the OCI-native publishing flow. This mutation may be
   removed or change behavior without notice.
 
@@ -2323,13 +2323,13 @@ type RootMutationType {
     "Your organization's unique identifier."
     organizationId: ID!
 
-    "Upsert a resource type for your organization from a JSON Schema document. If an existing resource type has the same identifier, its schema is replaced. **Deprecated:** this mutation exists solely to bridge V0 `publishArtifactDefinition` into the V1 API while resource types are being migrated to OCI. New integrations should use the OCI-native publishing flow — this mutation may be removed without notice."
+    "Upsert a resource type for your organization from a JSON Schema document. If an existing resource type has the same identifier, its schema is replaced. **Deprecated:** this mutation exists solely to bridge V0 `publishArtifactDefinition` into the V2 API while resource types are being migrated to OCI. New integrations should use the OCI-native publishing flow — this mutation may be removed without notice."
     input: PublishResourceTypeInput!
-  ): ResourceTypePayload @inputs(name: "publishResourceType", schema: "\/graphql\/v1\/inputs\/publishResourceType.json", ui: "\/graphql\/v1\/inputs\/publishResourceType.ui.json") @deprecated(reason: "Transitional shim from V0 `publishArtifactDefinition` during the migration to OCI-hosted resource types. Prefer the OCI-native publishing flow; this mutation may be removed without notice.")
+  ): ResourceTypePayload @inputs(name: "publishResourceType", schema: "\/graphql\/v2\/inputs\/publishResourceType.json", ui: "\/graphql\/v2\/inputs\/publishResourceType.ui.json") @deprecated(reason: "Transitional shim from V0 `publishArtifactDefinition` during the migration to OCI-hosted resource types. Prefer the OCI-native publishing flow; this mutation may be removed without notice.")
 
   """
   **Deprecated — use at your own risk.** This mutation exists only to bridge V0's
-  `deleteArtifactDefinition` into V1 while resource types are being migrated to OCI.
+  `deleteArtifactDefinition` into V2 while resource types are being migrated to OCI.
   New integrations should use the OCI-native publishing flow. This mutation may be
   removed or change behavior without notice.
 
@@ -2374,7 +2374,7 @@ type RootMutationType {
 
     "Update an instance's version constraint or release strategy. Changes take effect on the next deployment."
     input: UpdateInstanceInput!
-  ): InstancePayload @inputs(name: "updateInstance", schema: "\/graphql\/v1\/inputs\/updateInstance.json", ui: "\/graphql\/v1\/inputs\/updateInstance.ui.json")
+  ): InstancePayload @inputs(name: "updateInstance", schema: "\/graphql\/v2\/inputs\/updateInstance.json", ui: "\/graphql\/v2\/inputs\/updateInstance.ui.json")
 
   """
   Copy configuration from one instance to another.
@@ -2411,7 +2411,7 @@ type RootMutationType {
 
     "Copy configuration from one instance to another. The source and destination must be instances of the same component. Source params (minus any fields marked non-copyable in the bundle) are written to the destination, then a plan deployment is created on the destination so the changes can be reviewed before applying."
     input: CopyInstanceInput!
-  ): InstancePayload @inputs(name: "copyInstance", schema: "\/graphql\/v1\/inputs\/copyInstance.json", ui: "\/graphql\/v1\/inputs\/copyInstance.ui.json")
+  ): InstancePayload @inputs(name: "copyInstance", schema: "\/graphql\/v2\/inputs\/copyInstance.json", ui: "\/graphql\/v2\/inputs\/copyInstance.ui.json")
 
   """
   Create or update a secret on an instance.
@@ -2429,7 +2429,7 @@ type RootMutationType {
 
     "Create or update a secret on an instance. The secret value is encrypted at rest and never returned in API responses."
     input: SetInstanceSecretInput!
-  ): InstanceSecretPayload @inputs(name: "setInstanceSecret", schema: "\/graphql\/v1\/inputs\/setInstanceSecret.json", ui: "\/graphql\/v1\/inputs\/setInstanceSecret.ui.json")
+  ): InstanceSecretPayload @inputs(name: "setInstanceSecret", schema: "\/graphql\/v2\/inputs\/setInstanceSecret.json", ui: "\/graphql\/v2\/inputs\/setInstanceSecret.ui.json")
 
   """
   Remove a secret from an instance.
@@ -2485,7 +2485,7 @@ type RootMutationType {
 
     "Deploy an instance with configuration parameters. Params are validated against the bundle's params schema, cached on the instance, and snapshotted into the deployment."
     input: CreateDeploymentInput!
-  ): DeploymentPayload @inputs(name: "createDeployment", schema: "\/graphql\/v1\/inputs\/createDeployment.json", ui: "\/graphql\/v1\/inputs\/createDeployment.ui.json")
+  ): DeploymentPayload @inputs(name: "createDeployment", schema: "\/graphql\/v2\/inputs\/createDeployment.json", ui: "\/graphql\/v2\/inputs\/createDeployment.ui.json")
 
   """
   Propose a deployment for human review.
@@ -2523,7 +2523,7 @@ type RootMutationType {
 
     "Propose a deployment for human review. The deployment is created in PROPOSED status and will not execute until it is approved via approveDeployment. Params are validated against the bundle's params schema and snapshotted into the proposal."
     input: ProposeDeploymentInput!
-  ): DeploymentPayload @inputs(name: "proposeDeployment", schema: "\/graphql\/v1\/inputs\/proposeDeployment.json", ui: "\/graphql\/v1\/inputs\/proposeDeployment.ui.json")
+  ): DeploymentPayload @inputs(name: "proposeDeployment", schema: "\/graphql\/v2\/inputs\/proposeDeployment.json", ui: "\/graphql\/v2\/inputs\/proposeDeployment.ui.json")
 
   """
   Approve a proposed deployment, releasing it into the run queue.
@@ -2572,7 +2572,7 @@ type RootMutationType {
 
     "Attach an ABAC policy to a group. Each policy grants or denies one or more actions on entities whose attributes satisfy the conditions."
     input: CreateGroupPolicyInput!
-  ): PolicyPayload @inputs(name: "createGroupPolicy", schema: "\/graphql\/v1\/inputs\/createGroupPolicy.json", ui: "\/graphql\/v1\/inputs\/createGroupPolicy.ui.json")
+  ): PolicyPayload @inputs(name: "createGroupPolicy", schema: "\/graphql\/v2\/inputs\/createGroupPolicy.json", ui: "\/graphql\/v2\/inputs\/createGroupPolicy.ui.json")
 
   """
   Edit a group policy's `effect`, `actions`, or `conditions` in place.
@@ -2592,7 +2592,7 @@ type RootMutationType {
 
     "Edit an existing policy in place. The principal cannot be changed."
     input: UpdatePolicyInput!
-  ): PolicyPayload @inputs(name: "updatePolicy", schema: "\/graphql\/v1\/inputs\/updatePolicy.json", ui: "\/graphql\/v1\/inputs\/updatePolicy.ui.json")
+  ): PolicyPayload @inputs(name: "updatePolicy", schema: "\/graphql\/v2\/inputs\/updatePolicy.json", ui: "\/graphql\/v2\/inputs\/updatePolicy.ui.json")
 
   "Delete a policy by its id."
   deletePolicy(
@@ -2623,7 +2623,7 @@ type RootMutationType {
 
     "Register a cloud metric alarm with an instance. The alarm appears in the UI immediately and receives state transitions as soon as the cloud provider reports them. Webhooks from AWS CloudWatch, Azure Monitor, GCP Cloud Monitoring, and Prometheus Alertmanager match against `cloudResourceId` to attach state."
     input: CreateInstanceAlarmInput!
-  ): AlarmPayload @inputs(name: "createInstanceAlarm", schema: "\/graphql\/v1\/inputs\/createInstanceAlarm.json", ui: "\/graphql\/v1\/inputs\/createInstanceAlarm.ui.json")
+  ): AlarmPayload @inputs(name: "createInstanceAlarm", schema: "\/graphql\/v2\/inputs\/createInstanceAlarm.json", ui: "\/graphql\/v2\/inputs\/createInstanceAlarm.ui.json")
 
   """
   Update a registered alarm's mutable fields.
@@ -2641,7 +2641,7 @@ type RootMutationType {
 
     "Update a registered alarm's mutable fields. Omit a field to leave it unchanged."
     input: UpdateInstanceAlarmInput!
-  ): AlarmPayload @inputs(name: "updateInstanceAlarm", schema: "\/graphql\/v1\/inputs\/updateInstanceAlarm.json", ui: "\/graphql\/v1\/inputs\/updateInstanceAlarm.ui.json")
+  ): AlarmPayload @inputs(name: "updateInstanceAlarm", schema: "\/graphql\/v2\/inputs\/updateInstanceAlarm.json", ui: "\/graphql\/v2\/inputs\/updateInstanceAlarm.ui.json")
 
   """
   Delete an alarm registration.
@@ -2672,7 +2672,7 @@ type RootMutationType {
 
     "Create a new OCI repository in your organization's catalog. Repositories must exist before any version can be published to them."
     input: CreateOciRepoInput!
-  ): OciRepoPayload @inputs(name: "createOciRepo", schema: "\/graphql\/v1\/inputs\/createOciRepo.json", ui: "\/graphql\/v1\/inputs\/createOciRepo.ui.json")
+  ): OciRepoPayload @inputs(name: "createOciRepo", schema: "\/graphql\/v2\/inputs\/createOciRepo.json", ui: "\/graphql\/v2\/inputs\/createOciRepo.ui.json")
 
   "Update an OCI repository's mutable metadata (today: attributes)."
   updateOciRepo(
@@ -2684,7 +2684,7 @@ type RootMutationType {
 
     "Update an OCI repository's user-settable metadata. The repository name and artifact type are immutable."
     input: UpdateOciRepoInput!
-  ): OciRepoPayload @inputs(name: "updateOciRepo", schema: "\/graphql\/v1\/inputs\/updateOciRepo.json", ui: "\/graphql\/v1\/inputs\/updateOciRepo.ui.json")
+  ): OciRepoPayload @inputs(name: "updateOciRepo", schema: "\/graphql\/v2\/inputs\/updateOciRepo.json", ui: "\/graphql\/v2\/inputs\/updateOciRepo.ui.json")
 
   """
   Delete an OCI repository.
@@ -2715,7 +2715,7 @@ type RootMutationType {
 
     "Share an OCI repo with recipient projects matching attribute conditions. The caller must have `repo:update` on the source repo."
     input: CreateRepoGrantInput!
-  ): GrantPayload @inputs(name: "createRepoGrant", schema: "\/graphql\/v1\/inputs\/createRepoGrant.json", ui: "\/graphql\/v1\/inputs\/createRepoGrant.ui.json")
+  ): GrantPayload @inputs(name: "createRepoGrant", schema: "\/graphql\/v2\/inputs\/createRepoGrant.json", ui: "\/graphql\/v2\/inputs\/createRepoGrant.ui.json")
 
   """
   Share a resource with recipient environments matching `recipientConditions`.
@@ -2732,7 +2732,7 @@ type RootMutationType {
 
     "Share a resource with recipient environments matching attribute conditions. The caller must have `resource:update` on the source resource."
     input: CreateResourceGrantInput!
-  ): GrantPayload @inputs(name: "createResourceGrant", schema: "\/graphql\/v1\/inputs\/createResourceGrant.json", ui: "\/graphql\/v1\/inputs\/createResourceGrant.ui.json")
+  ): GrantPayload @inputs(name: "createResourceGrant", schema: "\/graphql\/v2\/inputs\/createResourceGrant.json", ui: "\/graphql\/v2\/inputs\/createResourceGrant.ui.json")
 
   """
   Delete a grant by its id. The caller must have `repo:update` on the grant's
@@ -3625,7 +3625,7 @@ input ResourceTypesSort {
   order: SortOrder!
 }
 
-"Upsert a resource type for your organization from a JSON Schema document. If an existing resource type has the same identifier, its schema is replaced. **Deprecated:** this mutation exists solely to bridge V0 `publishArtifactDefinition` into the V1 API while resource types are being migrated to OCI. New integrations should use the OCI-native publishing flow — this mutation may be removed without notice."
+"Upsert a resource type for your organization from a JSON Schema document. If an existing resource type has the same identifier, its schema is replaced. **Deprecated:** this mutation exists solely to bridge V0 `publishArtifactDefinition` into the V2 API while resource types are being migrated to OCI. New integrations should use the OCI-native publishing flow — this mutation may be removed without notice."
 input PublishResourceTypeInput {
   "The full JSON Schema document describing the shape of data this resource type exposes to dependents. Must include `$md.name` (a kebab-case identifier like `aws-iam-role`) and should include `$md.label`, `$md.icon`, and `$md.ui.connectionOrientation`."
   schema: Map!
@@ -4230,7 +4230,7 @@ of actor, and `name` provides a human-readable label:
 
 If the original actor has been deleted, the `name` will indicate this (e.g., "deleted account").
 """
-type V1AuditLogActor {
+type AuditLogActor {
   "Unique identifier of the actor that performed the action."
   id: ID!
 
@@ -4274,7 +4274,7 @@ type AuditLog {
   data: Map
 
   "The actor (user, service account, deployment, or system) that performed this action."
-  actor: V1AuditLogActor!
+  actor: AuditLogActor!
 }
 
 type AuditLogsPage {

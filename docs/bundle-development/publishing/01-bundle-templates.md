@@ -98,7 +98,8 @@ connections:
   properties: {}
 {% endif %}
 
-# Artifacts - define outputs your bundle produces
+# Resources - declare the outputs your bundle produces.
+# The YAML key remains `artifacts:` for backwards compatibility.
 artifacts:
   properties: {}
 

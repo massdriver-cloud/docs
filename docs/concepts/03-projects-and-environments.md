@@ -41,4 +41,4 @@ It can be difficult to figure the differences in configuration between two diffe
 ## Related Documentation
 
 - [Getting Started](/getting-started/overview) - Deploy your first infrastructure
-- [Manifests, Packages & Deployments](/concepts/components-instances-deployments) - The deployment lifecycle
+- [Components, Instances & Deployments](/concepts/components-instances-deployments) - The deployment lifecycle

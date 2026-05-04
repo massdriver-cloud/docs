@@ -11,7 +11,7 @@ In self-hosted environments, you must publish these definitions yourself to onbo
 
 ## 🔍 What Are Resource Types?
 
-[Artifact definitions](/concepts/resources-and-types) are schema files that describe how structured data—like a cloud credential, Kubernetes configuration, or an ETL pipeline—should be validated, visualized in the UI, and connected to provisioning workflows. These definitions power the artifact system, enabling teams to plug and play infrastructure building blocks securely and consistently.
+[Resource types](/concepts/resources-and-types) are schema files that describe how structured data—like a cloud credential, Kubernetes configuration, or an ETL pipeline—should be validated, visualized in the UI, and connected to provisioning workflows. These definitions power the resource system, enabling teams to plug and play infrastructure building blocks securely and consistently.
 
 In both managed and self-hosted environments, resource types shape the Massdriver experience: they define how cloud credentials are onboarded, how services are linked, and how deployment data is standardized across environments. When a Massdriver instance starts up, these definitions populate the cloud onboarind flows, canvas defaults sidebar, and the connections between infrastructure bundles on your canvs.
 

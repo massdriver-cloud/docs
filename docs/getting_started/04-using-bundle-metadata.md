@@ -16,14 +16,16 @@ By the end of this guide, you'll understand:
 ✅ **Tagging strategies** - Applying default tags to all resources  
 ✅ **Conditional logic** - Environment-specific behavior using metadata  
 ✅ **Observability integration** - Sending alarms to Massdriver  
-✅ **Package context** - Using deployment timestamps and status
+✅ **Instance context** - Using deployment timestamps and status
 
 ## What is md_metadata?
 
-Bundle Deployment Metadata (`md_metadata`) is automatically injected by Massdriver into every bundle deployment. It provides context about the package, target environment, and deployment configuration without requiring you to pass these values as parameters.
+Bundle Deployment Metadata (`md_metadata`) is automatically injected by Massdriver into every bundle deployment. It provides context about the instance, environment, and deployment configuration without requiring you to pass these values as parameters.
+
+> Some keys inside `md_metadata` retain legacy names — `target` for environment data, `package` for instance metadata. The data is the same; the key shape is preserved for backwards compatibility.
 
 **Key benefits:**
-- **Eliminates redundant parameters** - No need to ask users for project, environment, or package names
+- **Eliminates redundant parameters** - No need to ask users for project, environment, or instance names
 - **Consistent naming** - Standardized resource naming across all deployments
 - **Automatic tagging** - Built-in tags for cost tracking and resource organization
 - **Deployment context** - Timestamps and status information for conditional logic
@@ -47,7 +49,7 @@ Here's a complete, real-world example showing how to use `md_metadata` in a Terr
 
 # Use name_prefix for consistent resource naming
 resource "aws_s3_bucket" "logs" {
-  bucket = "${var.md_metadata.name_prefix}-logs"  # e.g., "my-project-prod-my-package-logs"
+  bucket = "${var.md_metadata.name_prefix}-logs"  # e.g., "ecomm-prod-api-logs"
 }
 
 # Apply default tags to all resources (includes managed-by, md-project, md-environment, etc.)
@@ -118,11 +120,11 @@ The `md_metadata` object contains the following fields:
 ### `name_prefix`
 
 **Type**: `string`  
-**Source**: `package.name_prefix`
+**Source**: the instance's `name_prefix`
 
-The name prefix for the package. This incorporates the project, target (environment), and manifest slugs, providing a unique identifier for all resources created by this package.
+The name prefix for the instance. This incorporates the project, environment, and component identifiers, providing a unique prefix for all cloud resources created by this instance.
 
-**Example**: `"my-project-prod-my-package"`
+**Example**: `"ecomm-prod-api-abc1"`
 
 **Use case**: Resource naming to ensure uniqueness and traceability.
 
@@ -140,10 +142,10 @@ Default tags that should be applied to all resources created by the bundle. Thes
 
 **Tags included**:
 - `managed-by`: Always set to `"massdriver"`
-- `md-project`: The project slug (`package.target.project.slug`)
-- `md-environment`: The target (environment) slug (`package.target.slug`)
-- `md-component`: The manifest slug (`package.manifest.slug`)
-- `md-instance`: The package name prefix (`package.name_prefix`)
+- `md-project`: The project identifier
+- `md-environment`: The environment identifier
+- `md-component`: The component identifier
+- `md-instance`: The instance identifier
 
 **Use case**: Apply consistent tagging across all resources.
 
@@ -162,14 +164,14 @@ resource "aws_instance" "app" {
 
 **Type**: `object`
 
-Observability configuration for the package, including alarm webhook endpoints.
+Observability configuration for the instance, including alarm webhook endpoints.
 
 #### `observability.alarm_webhook_url`
 
 **Type**: `string`  
-**Source**: Generated webhook URL for the target's alarm endpoint
+**Source**: Generated webhook URL for the environment's alarm endpoint
 
-The webhook URL where bundles can send alarm notifications. This endpoint is specific to the target and allows bundles to report alarms back to Massdriver.
+The webhook URL where bundles can send alarm notifications. This endpoint is specific to the environment and allows bundles to report alarms back to Massdriver.
 
 **Use case**: Integrate CloudWatch alarms or other monitoring systems with Massdriver.
 
@@ -184,14 +186,14 @@ resource "aws_cloudwatch_metric_alarm" "high_cpu" {
 
 **Type**: `object`
 
-Target (legacy name for Environment) information for the deployment.
+Environment information for the deployment. The key is named `target` for backwards compatibility — the data is the environment's.
 
 #### `target.contact_email`
 
 **Type**: `string`  
-**Source**: `package.target.project.organization.owner.email`
+**Source**: the organization owner's email
 
-The email address of the organization owner associated with the target. This can be used for notifications or contact information in your infrastructure.
+The email address of the organization owner. This can be used for notifications or contact information in your infrastructure.
 
 **Use case**: Include contact information in resource tags or notifications.
 
@@ -205,35 +207,31 @@ resource "aws_sns_topic" "alerts" {
 
 **Type**: `object`
 
-Package metadata providing time and status context for the deployment.
+Instance metadata providing time and status context for the deployment. The key is named `package` for backwards compatibility — the data is the instance's.
 
 #### `package.created_at`
 
-**Type**: `string` (ISO 8601 datetime)  
-**Source**: `package.created_at`
+**Type**: `string` (ISO 8601 datetime)
 
-When the package was originally created.
+When the instance was originally created.
 
 #### `package.updated_at`
 
-**Type**: `string` (ISO 8601 datetime)  
-**Source**: `package.updated_at`
+**Type**: `string` (ISO 8601 datetime)
 
-When the package was last updated.
+When the instance was last updated.
 
 #### `package.deployment_enqueued_at`
 
-**Type**: `string` (ISO 8601 datetime)  
-**Source**: `DateTime.utc_now()` at deployment time
+**Type**: `string` (ISO 8601 datetime)
 
-When the current deployment was enqueued. This timestamp is set at deployment time, not package update time.
+When the current deployment was enqueued. This timestamp is set at deployment time, not at instance-update time.
 
 #### `package.previous_status`
 
-**Type**: `string`  
-**Source**: `package.status` before deployment
+**Type**: `string`
 
-The status of the package before this deployment was initiated. Useful for detecting state transitions (e.g., from "healthy" to "deploying").
+The status of the instance before this deployment was initiated. Useful for detecting state transitions (e.g., from "healthy" to "deploying").
 
 **Use case**: Conditional logic based on deployment history.
 
@@ -327,7 +325,7 @@ resource "aws_cloudwatch_metric_alarm" "high_cpu" {
 
 ### Deployment Context
 
-Use package metadata to make decisions based on deployment history:
+Use instance metadata to make decisions based on deployment history:
 
 ```hcl
 locals {
@@ -350,7 +348,7 @@ resource "kubernetes_job" "migrations" {
 2. **Apply `default_tags` to all resources** - Enables cost tracking and resource organization
 3. **Use tags for conditional logic** - Check `md-environment` for environment-specific behavior instead of parameters
 4. **Leverage `alarm_webhook_url`** - Integrate monitoring with Massdriver's alarm system
-5. **Use package metadata sparingly** - Most use cases don't need deployment timestamps, but they're available when needed
+5. **Use instance metadata sparingly** - Most use cases don't need deployment timestamps, but they're available when needed
 
 ## Next Steps
 

@@ -41,9 +41,9 @@ Since OpenTofu is [compatible with variables expressed in JSON syntax](https://o
 
 In order to view the structure of the params and connections fields you can run `mass bundle build` with the Massdriver CLI, and it will generate a `_massdriver_variables.tf` file with full type expressions for each parameter and connection. If modifications to fields are required, use a [`locals`](https://opentofu.org/docs/language/values/locals/) block to manipulate the data as needed.
 
-## Artifacts
+## Resources
 
-Artifacts can be created two ways using this provisioner: using the [Massdriver](https://registry.terraform.io/providers/massdriver-cloud/massdriver/latest) OpenTofu provider, and using OpenTofu `outputs`.
+Resources can be created two ways using this provisioner: using the [Massdriver](https://registry.terraform.io/providers/massdriver-cloud/massdriver/latest) OpenTofu provider, and using OpenTofu `outputs`. (The Terraform provider resource is named `massdriver_artifact` for backwards compatibility — it represents a Massdriver resource.)
 
 ### Massdriver OpenTofu Provider
 
@@ -73,7 +73,7 @@ resource "massdriver_artifact" "bucket" {
 
 ### OpenTofu Outputs
 
-After every provision, this provider will scan the module directory for files matching the pattern `artifact_<name>.jq`. If a file matching this pattern is present, it will be used as a JQ template to render and publish a Massdriver artifact. The inputs to the JQ template will be a JSON object with the params, connections, envs, secrets and module outputs as top level fields.
+After every provision, this provider will scan the module directory for files matching the pattern `artifact_<name>.jq`. If a file matching this pattern is present, it will be used as a JQ template to render and publish a Massdriver resource. The file pattern uses the legacy `artifact_` prefix; the underlying provisioner contract is being updated separately.
 
 ```json
 {
@@ -95,7 +95,7 @@ After every provision, this provider will scan the module directory for files ma
 }
 ```
 
-To demonstrate, let's say there is a AWS S3 bucket bundle with a single param (`region`), a single connection (`aws_iam_role`), and a single artifact (`bucket`). The `massdriver.yaml` would be similar to:
+To demonstrate, let's say there is an AWS S3 bucket bundle with a single param (`region`), a single connection (`aws_iam_role`), and a single resource (`bucket`). The `massdriver.yaml` would be similar to:
 
 
 ```yaml massdriver.yaml
@@ -121,15 +121,15 @@ artifacts:
       $ref: aws-s3-bucket
 ```
 
-Since the artifact is named `bucket` a file named `artifact_bucket.jq` would need to be in the module directory and the provisioner would use this file as a JQ template, passing the params, connections and outputs to it. There are two approaches to building the proper artifact structure:
-1. Fully render the artifact in the OpenTofu output
-2. Build the artifact using the jq template
+Since the resource is named `bucket` a file named `artifact_bucket.jq` would need to be in the module directory and the provisioner would use this file as a JQ template, passing the params, connections and outputs to it. There are two approaches to building the resource structure:
+1. Fully render the resource in the OpenTofu output
+2. Build the resource using the jq template
 
 Here are examples of each approach.
 
 #### Fully Render as OpenTofu Output
 
-If you choose to fully render the artifact in OpenTofu, it would be similar to:
+If you choose to fully render the resource in OpenTofu, it would be similar to:
 
 ```hcl
 output "artifact_bucket" {
@@ -188,9 +188,9 @@ Thus, the `artifact_bucket.jq` file would simply be:
 .outputs.artifact_bucket
 ```
 
-#### Build Artifact in JQ Template
+#### Build Resource in JQ Template
 
-Alternatively, you can build the artifact using the JQ template. This approach is best if you are attempting to minimize changes to your OpenTofu module. With this approach, all you would need to output is the bucket ARN.
+Alternatively, you can build the resource using the JQ template. This approach is best if you are attempting to minimize changes to your OpenTofu module. With this approach, all you would need to output is the bucket ARN.
 
 ```hcl
 output "bucket_arn" {
@@ -219,7 +219,7 @@ In this case, the input to the `artifact_bucket.jq` template file would be:
 }
 ```
 
-Now the artifact structure must be built through the `artifact_bucket.jq` template:
+Now the resource structure must be built through the `artifact_bucket.jq` template:
 
 ```jq artifact_bucket.jq
 {

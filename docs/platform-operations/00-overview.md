@@ -12,13 +12,13 @@ This section covers operating and administering the Massdriver platform.
 - **[State Management](./state-management)** - Manage Terraform/OpenTofu state for your deployments
 - **[Monitoring & Alarms](./monitoring-and-alarms)** - Configure alerts and observability
 - **[CI/CD Integration](./ci-cd/github-action)** - Automate deployments with GitHub Actions and Azure DevOps
-- **[Security](./security/overview)** - Service accounts, authorization, and access control
+- **[Security](./security/overview)** - Service accounts, access control, and ABAC policies
 - **[Self-Hosted](./self-hosted/overview)** - Deploy Massdriver in your own infrastructure
 
 ## Common operations
 
 ### Viewing deployment state
-Access state files and manage Terraform state for any deployed package through the Massdriver UI or CLI.
+Access state files and manage Terraform state for any deployed instance through the Massdriver UI or CLI.
 
 ### Setting up alerts
 Configure cloud-native alarms that integrate with Massdriver's notification system.
@@ -27,4 +27,4 @@ Configure cloud-native alarms that integrate with Massdriver's notification syst
 Use the CLI and service accounts to deploy from CI/CD pipelines.
 
 ### Managing access
-Configure RBAC and service accounts for teams and automation.
+Configure ABAC policies, groups, and service accounts for teams and automation.

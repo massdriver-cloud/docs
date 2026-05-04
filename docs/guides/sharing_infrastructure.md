@@ -175,7 +175,7 @@ Now we should be able to deploy our Aurora PostgreSQL server and our ECommerce A
 
 ### Using Remote References
 
-Remote reference uses the shared resource, but allows a developer to make a new environment and provision their own if the use case permits. The resource appears as a package on the canvas.
+Remote reference uses the shared resource, but allows a developer to make a new environment and provision their own if the use case permits. The resource appears as an instance on the canvas.
 
 This is particularly useful if in one environment you want to use a shared resource, but in another environment you want to use a dedicated resource you own.
 

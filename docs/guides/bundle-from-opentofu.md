@@ -9,7 +9,7 @@ If you already have existing Infrastructure-as-Code (IaC) modules you'd like to 
 
 :::tip DevEx-First
 
-If you're building a catalog of bundles, start with the **[Massdriver Catalog](https://github.com/massdriver-cloud/massdriver-catalog)** to design your developer experience first. Model bundle interfaces and artifact contracts, validate the experience in the UI, then implement. This guide is for filling in the infrastructure code once your catalog structure is in place.
+If you're building a catalog of bundles, start with the **[Massdriver Catalog](https://github.com/massdriver-cloud/massdriver-catalog)** to design your developer experience first. Model bundle interfaces and resource type contracts, validate the experience in the UI, then implement. This guide is for filling in the infrastructure code once your catalog structure is in place.
 
 :::
 

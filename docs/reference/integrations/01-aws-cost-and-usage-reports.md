@@ -7,7 +7,7 @@ sidebar_label: AWS Cost Reports
 
 # AWS Cost and Usage Reports
 
-The AWS Cost and Usage Reports integration enables Massdriver to collect detailed billing data from your AWS account, allowing you to track costs by package and resource.
+The AWS Cost and Usage Reports integration enables Massdriver to collect detailed billing data from your AWS account, allowing you to track costs by instance and resource.
 
 ## Prerequisites
 

@@ -7,17 +7,17 @@ sidebar_label: Operator Guides
 
 # Writing Operator Guides
 
-Operator guides (also called runbooks) provide operational documentation for your deployed infrastructure. They render **inside the Massdriver UI** after a package is deployed, giving operators context-aware instructions and reference information.
+Operator guides (also called runbooks) provide operational documentation for your deployed infrastructure. They render **inside the Massdriver UI** after an instance is deployed, giving operators context-aware instructions and reference information.
 
 **Key features:**
 - **Dynamic content**: Variables are interpolated at render time with actual deployed values
-- **Context-aware**: Shows configuration, connections, and artifact outputs specific to this package
+- **Context-aware**: Shows configuration, connections, and resource outputs specific to this instance
 - **Operational focus**: Command examples, troubleshooting steps, and reference information
 - **Customizable**: You control the content—this is your documentation
 
 ## What is an Operator Guide?
 
-Every bundle can include an `operator.md` file in its root directory. This file becomes the operational documentation for packages deployed from that bundle. The guide is rendered in the Massdriver UI's "Runbook" tab for each deployed package, with template variables replaced by actual values from that specific deployment.
+Every bundle can include an `operator.md` file in its root directory. This file becomes the operational documentation for instances deployed from that bundle. The guide is rendered in the Massdriver UI's "Runbook" tab for each deployed instance, with template variables replaced by actual values from that specific deployment.
 
 ## Choosing a Template Engine
 
@@ -51,16 +51,16 @@ Operator guides have access to the following data:
 
 | Variable | Description | Example |
 |----------|-------------|---------|
-| `{{slug}}` | Package slug (unique identifier) | `myapp-prod-useast1` |
+| `{{slug}}` | Instance slug (unique identifier) | `myapp-prod-useast1` |
 | `{{params.field}}` | Configuration parameter values | `{{params.database_name}}` |
-| `{{connections.name.specs.field}}` | Connected artifact specs (public metadata) | `{{connections.network.specs.cidr}}` |
-| `{{artifacts.name.specs.field}}` | This bundle's output artifact specs | `{{artifacts.database.specs.hostname}}` |
+| `{{connections.name.specs.field}}` | Connected resource specs (public metadata) | `{{connections.network.specs.cidr}}` |
+| `{{artifacts.name.specs.field}}` | This bundle's output resource specs (template key remains `artifacts`) | `{{artifacts.database.specs.hostname}}` |
 
 **Important notes:**
-- Artifact `data` fields (encrypted secrets/credentials) are **not accessible** in operator guides
+- Resource `data` fields (encrypted secrets/credentials) are **not accessible** in operator guides
 - Only `specs` (public metadata) are available
 - Connection names match what you defined in `massdriver.yaml`
-- Artifact names match the artifacts this bundle produces
+- The template key under `artifacts.<name>` matches the resources this bundle produces (declared under the `artifacts:` block in `massdriver.yaml`)
 
 ## Mustache Syntax Reference
 
@@ -69,7 +69,7 @@ Operator guides have access to the following data:
 Display a value:
 
 ```mustache
-Package: {{slug}}
+Instance: {{slug}}
 Database: {{params.database_name}}
 Version: {{params.version}}
 ```
@@ -125,7 +125,7 @@ templating: mustache
 > **Templating**: This runbook supports mustache templating.
 > **Available context**: `slug`, `params`, `connections.<name>.specs`, `artifacts.<name>.specs`
 
-## Package Information
+## Instance Information
 
 **Slug:** `{{slug}}`
 
@@ -155,7 +155,7 @@ _No dependency connected_
 some-cli --name {{params.name}} --version {{params.version}}
 \`\`\`
 
-**Example using artifact outputs:**
+**Example using resource outputs:**
 
 \`\`\`bash
 curl https://{{artifacts.api.specs.hostname}}/health
@@ -175,7 +175,7 @@ ping {{connections.network.specs.gateway_ip}}
 ## Writing Effective Operator Guides
 
 **Do:**
-- Use actual parameter/connection/artifact field names from your schemas
+- Use actual parameter/connection/resource field names from your schemas
 - Provide copy-paste-ready commands with interpolated values
 - Show common operations (connecting, testing, troubleshooting)
 - Keep it concise—operators skim these under pressure
@@ -190,8 +190,8 @@ ping {{connections.network.specs.gateway_ip}}
 
 ## Testing Your Guide
 
-1. Deploy a package using this bundle
-2. Open the package in Massdriver UI
+1. Deploy an instance using this bundle
+2. Open the instance in Massdriver UI
 3. Check the "Runbook" tab
 4. Verify all `{{variables}}` interpolated correctly
 5. Fix any missing fields or typos

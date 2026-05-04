@@ -7,7 +7,7 @@ sidebar_label: Module Patterns
 
 If your team has an existing library of Terraform or OpenTofu modules — naming utilities, diagnostic configurations, RBAC helpers, VM extensions, and other shared modules — this guide explains how each pattern maps to Massdriver and where your modules should live after migration.
 
-This guide assumes you're familiar with [bundles](/concepts/bundles), [artifacts](/concepts/resources-and-types), and [connections](/concepts/connections). If you're new to these concepts, start with the [getting started guides](/getting-started/deploying-first-bundle).
+This guide assumes you're familiar with [bundles](/concepts/bundles), [resources](/concepts/resources-and-types), and [connections](/concepts/connections). If you're new to these concepts, start with the [getting started guides](/getting-started/deploying-first-bundle).
 
 ## The Migration Map
 
@@ -34,7 +34,7 @@ This is one of the most immediate wins when migrating to Massdriver. Your naming
 
 ### What md_metadata provides
 
-- **`name_prefix`** — A unique, consistent identifier in the format `{project-slug}-{target-slug}-{manifest-slug}-{suffix}` (e.g., `ecomm-prod-api-abc1`). Use this everywhere you previously concatenated project, environment, and app names.
+- **`name_prefix`** — A unique, consistent identifier in the format `{project}-{environment}-{component}-{suffix}` (e.g., `ecomm-prod-api-abc1`). Use this everywhere you previously concatenated project, environment, and app names.
 - **`default_tags`** — Standard tags automatically applied to every deployment, including `managed-by`, `md-project`, `md-environment`, `md-component`, and `md-instance`.
 
 ### Before and after
@@ -154,9 +154,9 @@ Custom provisioners are available in [self-hosted Massdriver installations](/pla
 
 ### How connections supercharge child modules
 
-The real power of this pattern comes from combining child modules with Massdriver [connections](/concepts/connections). When a bundle declares a connection, it receives the full artifact data from another bundle — including infrastructure IDs, IAM policies, authentication details, and network configuration.
+The real power of this pattern comes from combining child modules with Massdriver [connections](/concepts/connections). When a bundle declares a connection, it receives the full resource data from another bundle — including infrastructure IDs, IAM policies, authentication details, and network configuration.
 
-Consider a bundle for a VM-based API that needs access to a PostgreSQL database. The database artifact includes everything the child module needs:
+Consider a bundle for a VM-based API that needs access to a PostgreSQL database. The database resource includes everything the child module needs:
 
 ```yaml title="massdriver.yaml"
 connections:
@@ -173,7 +173,7 @@ Inside the bundle, a shared child module processes that connection:
 module "postgres_access" {
   source = "../../../modules/opentofu/azure-postgres-artifact"
 
-  # The connection artifact provides everything needed
+  # The connection resource provides everything needed
   postgres_artifact = var.database
 
   # The identity to grant access to
@@ -183,7 +183,7 @@ module "postgres_access" {
 
 The child module handles fetching secrets from Key Vault, creating the IAM role assignment, and opening the firewall — all codified once by your security team and reused by every bundle that needs database access.
 
-This pattern means that many of your existing "utility" modules — RBAC helpers, firewall managers, secret fetchers — become artifact processors that live once in your catalog and get called from any bundle that declares the right connection.
+This pattern means that many of your existing "utility" modules — RBAC helpers, firewall managers, secret fetchers — become resource processors that live once in your catalog and get called from any bundle that declares the right connection.
 
 ## Pattern 3: Decorator Modules
 
@@ -249,7 +249,7 @@ steps:
 
 :::important
 
-A bundle doesn't need to produce artifacts to be useful. Decorator bundles exist purely to consume connections and provision side-effect resources. This is a valid and supported pattern in Massdriver.
+A bundle doesn't need to produce resources to be useful. Decorator bundles exist purely to consume connections and provision side-effect cloud resources. This is a valid and supported pattern in Massdriver.
 
 :::
 
@@ -285,11 +285,11 @@ These should be designed as full bundles because they benefit from:
 - **Rollback** — Revert to a previous configuration instantly
 - **Ephemeral testing** — Test an Entra App configuration change in a preview environment before applying to production
 - **Operator guides** — Documentation lives alongside the bundle in `operator.md`, so the team managing Entra knows exactly what other systems depend on it
-- **Connections** — Other bundles can depend on these resources. An Entra App bundle could produce an artifact that application bundles consume for SSO configuration
+- **Connections** — Other bundles can depend on these resources. An Entra App bundle could produce a resource that application bundles consume for SSO configuration
 
 :::tip DNS as a Connection
 
-DNS zone management is a common case where the meta config pattern intersects with connections. Design your DNS zone as a bundle that produces an artifact, then set it as an [environment default](/guides/sharing-infrastructure#using-environment-defaults). Bundles on that canvas can consume the DNS zone artifact to manage their own records — meaning your application bundles are trusted to manage their domains within the zone for that environment.
+DNS zone management is a common case where the meta config pattern intersects with connections. Design your DNS zone as a bundle that produces a resource, then set it as an [environment default](/guides/sharing-infrastructure#using-environment-defaults). Bundles on that canvas can consume the DNS zone resource to manage their own records — meaning your application bundles are trusted to manage their domains within the zone for that environment.
 
 :::
 

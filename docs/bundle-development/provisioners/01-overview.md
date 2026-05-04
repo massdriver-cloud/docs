@@ -67,7 +67,7 @@ The following files are generated and placed at the specified path in the provis
 
 | File Path                       | Description                                     |
 |---------------------------------|-------------------------------------------------|
-| `/massdriver/params.json`       | Parameters from package configuration           |
+| `/massdriver/params.json`       | Parameters from instance configuration          |
 | `/massdriver/connections.json`  | Connection artifacts                            |
 | `/massdriver/envs.json`         | Environment variables                           |
 | `/massdriver/secrets.json`      | Secrets (in decrypted form)                     |
@@ -87,12 +87,12 @@ The following environment variables are injected into the container and provide 
 | `MASSDRIVER_BUNDLE_VERSION`       | The version of the bundle being deployed.                                      |
 | `MASSDRIVER_DEPLOYMENT_ACTION`    | Action being executed: `plan`, `provision`, or `decommission`.                 |
 | `MASSDRIVER_DEPLOYMENT_ID`        | Unique identifier for the deployment operation.                                |
-| `MASSDRIVER_MANIFEST_ID`          | Identifier for the specific manifest file in the bundle.                       |
+| `MASSDRIVER_MANIFEST_ID`          | Identifier for the component (legacy variable name; component was previously called manifest). |
 | `MASSDRIVER_ORGANIZATION_ID`      | Identifier for the organization executing the deployment.                      |
-| `MASSDRIVER_PACKAGE_ID`           | Unique identifier for the package associated with this deployment.             |
-| `MASSDRIVER_PACKAGE_NAME`         | The human-readable name of the package (`proj-env-manifest-0000`)              |
+| `MASSDRIVER_PACKAGE_ID`           | Unique identifier for the instance associated with this deployment (legacy variable name). |
+| `MASSDRIVER_PACKAGE_NAME`         | The human-readable name of the instance, e.g. `ecomm-prod-api-0000` (legacy variable name). |
 | `MASSDRIVER_STEP_PATH`            | Path of the current step in the bundle deployment process.                     |
-| `MASSDRIVER_TARGET_MODE`          | Target mode for the deployment (`standard` or `preview`).                      |
+| `MASSDRIVER_TARGET_MODE`          | Deployment mode (`standard` or `preview`); legacy variable name preserved for backwards compatibility. |
 | `MASSDRIVER_TOKEN`                | Authentication token for accessing Massdriver APIs or services.                |
 | `MASSDRIVER_URL`                  | Base URL for interacting with Massdriver services.                             |
 

@@ -55,8 +55,8 @@ Development releases are a powerful means of rapidly testing Infrastructure as C
 - Deploy development releases to real cloud environments for comprehensive testing
 
 **Opt-in Testing Network:**
-- Set up multiple packages using release channels with "Enable Development Releases" toggle
-- These packages automatically pick up your latest development releases and run the full deploy/apply pipeline
+- Set up multiple instances using release channels with "Enable Development Releases" toggle
+- These instances automatically pick up your latest development releases and run the full deploy/apply pipeline
 - Run Terraform plans and compliance scans against actual provisioned resources
 - Validate infrastructure changes with real cloud provider APIs
 
@@ -80,7 +80,7 @@ This approach lets you stand up multiple real-world examples of your infrastruct
 
 ## Release Channels
 
-Release channels use tilde (`~`) constraints to specify compatible version ranges. When a package uses a release channel, it **automatically runs the full deploy/apply pipeline** whenever a new version matching that channel is published. This includes compliance checks, Terraform plans, and all other validation steps. This automates infrastructure version management.
+Release channels use tilde (`~`) constraints to specify compatible version ranges. When an instance uses a release channel, it **automatically runs the full deploy/apply pipeline** whenever a new version matching that channel is published. This includes compliance checks, Terraform plans, and all other validation steps. This automates infrastructure version management.
 
 ### Major Channel (`~1`)
 Matches the latest version within major version 1:
@@ -114,15 +114,15 @@ Matches the newest stable release:
 
 ## Development Releases and **Real Infrastructure** Testing
 
-Development releases let you test infrastructure changes against **actual cloud resources** before promoting a version to release. Publishing a development release outputs a monitoring URL for every package configured to test it. These packages automatically deploy the development release and run their full validation pipeline—Terraform plans, compliance checks, and deployments—against live cloud APIs.
+Development releases let you test infrastructure changes against **actual cloud resources** before promoting a version to release. Publishing a development release outputs a monitoring URL for every instance configured to test it. These instances automatically deploy the development release and run their full validation pipeline—Terraform plans, compliance checks, and deployments—against live cloud APIs.
 
 This process validates infrastructure changes across multiple environments and configurations simultaneously, revealing issues like API drift, quota limits, and provider-specific behaviors that static analysis tools can't catch.
 
 ## Automated Version Distribution with Release Channels
 
-Release channels automate version distribution across environments. Instead of updating every package manually, you publish once, and packages automatically upgrade based on their configured version constraints.
+Release channels automate version distribution across environments. Instead of updating every instance manually, you publish once, and instances automatically upgrade based on their configured version constraints.
 
-For example, a package on channel `~2.5` will automatically deploy any patch release (`2.5.1`, `2.5.2`, etc.), while staging or dev environments may use wider channels for faster updates. This keeps environments current within defined boundaries and ensures security patches flow automatically—without coordination or manual promotion steps.
+For example, an instance on channel `~2.5` will automatically deploy any patch release (`2.5.1`, `2.5.2`, etc.), while staging or dev environments may use wider channels for faster updates. This keeps environments current within defined boundaries and ensures security patches flow automatically—without coordination or manual promotion steps.
 
 ## Version Management in Massdriver
 
@@ -168,15 +168,15 @@ mass bundle publish -d
 - Perfect for feature branches and testing workflows
 - **Outputs a URL** to view all test infrastructure using this development release
   - See plan/apply/compliance pipelines executing in real-time
-  - Monitor all packages configured to test this development release
+  - Monitor all instances configured to test this development release
 
-### Package Version Management
+### Instance Version Management
 
 #### Version Selection Interface
 
-![Package version configuration panel](img/package-version-configuration.png)
+![Instance version configuration panel](img/package-version-configuration.png)
 
-In the package configuration panel, developers can set the version constraint:
+In the instance configuration panel, developers can set the version constraint:
 
 **Published Versions (Strict SemVer):**
 - `1.0.0`, `1.1.0`, `1.1.5`, `2.0.0` (exact published versions only)
@@ -258,7 +258,7 @@ graph TD
     G --> C
     F -->|"Yes"| D
     D --> H["Available in UI"]
-    H --> I["Package Deployment"]
+    H --> I["Instance Deployment"]
     I --> J{"Version Selection"}
     J -->|"Exact"| K["Pin to 1.2.0"]
     J -->|"Channel"| L["Use ~1.2"]
@@ -271,17 +271,17 @@ graph TD
 2. **Development Release**: Optional development release publishing for testing (`-d` flag)
 3. **Testing Phase**: Validate development releases in staging environments
 4. **Stable Release**: Publish final immutable version
-5. **Package Selection**: Choose version strategy in UI dropdown
-6. **Deployment**: Package runs with selected version/automation rule
+5. **Instance Selection**: Choose version strategy in UI dropdown
+6. **Deployment**: Instance runs with selected version/automation rule
 
 ## Version Fields and Properties
 
-Each package in Massdriver has several version-related fields that control how it behaves:
+Each instance in Massdriver has several version-related fields that control how it behaves:
 
-### Package Version Fields
+### Instance Version Fields
 
 - **`version`** - The version constraint (e.g., `"1.2.3"`, `"~1.2"`, `"latest"`)
-- **`releaseStrategy`** - Whether the package receives `stable` releases only or also `development` releases
+- **`releaseStrategy`** - Whether the instance receives `stable` releases only or also `development` releases
 - **`resolvedVersion`** - The resolved semantic version that will be deployed next
 - **`deployedVersion`** - The version that was last successfully deployed to infrastructure
 - **`availableUpgrade`** - The newest version available for upgrade based on the constraint

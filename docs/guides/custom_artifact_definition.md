@@ -9,7 +9,7 @@ sidebar_label: Custom Resource Type
 
 # Crafting Custom Resource Types
 
-In this guide, we're going to walk through the steps to create your own custom resource types in Massdriver. This is for those moments when the existing definitions just don't cut it for your unique needs. Let's demystify the process and make it as straightforward as possible. And, just in case you're looking for a primer on what artifacts and resource types actually are, make sure to check out our dedicated docs for [artifacts](/concepts/resources-and-types) and [resource types](/concepts/resources-and-types).
+In this guide, we're going to walk through the steps to create your own custom resource types in Massdriver. This is for those moments when the existing definitions just don't cut it for your unique needs. Let's demystify the process and make it as straightforward as possible. And, just in case you're looking for a primer on what resources and resource types actually are, make sure to check out the [Resources & Resource Types](/concepts/resources-and-types) concepts page.
 
 ## How to Create Your Own Custom Resource Type
 
@@ -19,7 +19,7 @@ Check out the Massdriver [resource types GitHub repo](https://github.com/massdri
 
 :::tip Bootstrap Your Resource Types
 
-If you're setting up a self-hosted Massdriver instance, check out the **[Massdriver Catalog](https://github.com/massdriver-cloud/massdriver-catalog)**. It includes example resource types for common infrastructure patterns (networks, databases, storage) that you can customize for your organization. This is a great starting point for designing your platform's artifact contracts before implementing infrastructure code.
+If you're setting up a self-hosted Massdriver instance, check out the **[Massdriver Catalog](https://github.com/massdriver-cloud/massdriver-catalog)**. It includes example resource types for common infrastructure patterns (networks, databases, storage) that you can customize for your organization. This is a great starting point for designing your platform's resource type contracts before implementing infrastructure code.
 
 :::
 
@@ -55,7 +55,7 @@ With the [Massdriver CLI](/reference/cli/overview), you've got the toolkit you n
 
 2. **Make It Your Own**: Copy its content into your favorite editor (like VS Code) and start tweaking it to suit your requirements.
 
-### Step 3: Key Components of an Resource Type
+### Step 3: Key Components of a Resource Type
 
 Structure your resource type to match your infrastructure abstraction. Group related properties logically and use `$md.sensitive: true` to protect sensitive fields like passwords and tokens.
 
@@ -179,7 +179,7 @@ Once published, snag your resource type with the `mass definition get org/defini
 
 ### Step 7: Using Your Custom Resource Type
 
-Now that your custom resource type is published, you can use it in your bundles. Just reference it in your bundle's `artifacts` field and structure your `_artifacts.tf` file, and you're good to go.
+Now that your custom resource type is published, you can use it in your bundles. Just reference it in your bundle's `artifacts:` field (the YAML key remains `artifacts:` for backwards compatibility) and structure your `_artifacts.tf` file, and you're good to go.
 
 :::tip Recommended: Omit Organization Prefix
 When referencing resource types from your own organization, you can omit the organization prefix. Massdriver will automatically use your organization's definitions. This keeps your bundle configuration cleaner and more portable.
@@ -230,15 +230,15 @@ To confirm that your custom resource type is working as expected for your bundle
 
 ### Customizing Onboarding
 
-Massdriver lets you fully customize the onboarding experience for cloud credentials and other artifact types. You can define onboarding instructions, UI labels, and icons directly in your resource type using the `$md` and `$md.ui` fields. This enables you to provide clear, step-by-step guidance for your users when they add new credentials.
+Massdriver lets you fully customize the onboarding experience for cloud credentials and other resource types. You can define onboarding instructions, UI labels, and icons directly in your resource type using the `$md` and `$md.ui` fields. This enables you to provide clear, step-by-step guidance for your users when they add new credentials.
 
 For example, the onboarding screen for cloud credentials (see below) is driven by the `ui.instructions` array in your resource type. Each instruction can include a label and content, allowing you to walk users through complex setup steps with clarity.
 
 ![Cloud Credentials Onboarding](../../static/img/ui/credentials-page.png)
 
 **Relevant schema fields:**
-- `$md.label`: Sets the display name for your artifact in the UI.
-- `$md.icon`: Sets a custom icon for your artifact.
+- `$md.label`: Sets the display name for your resource type in the UI.
+- `$md.icon`: Sets a custom icon for your resource type.
 - `$md.ui.instructions`: An array of onboarding steps, each with a `label` and `content`, shown to users during credential setup.
 
 See a real-world example of onboarding instructions in the [aws-iam-role resource type](https://github.com/massdriver-cloud/artifact-definitions/blob/main/definitions/artifacts/aws-iam-role.json#L20).
@@ -247,22 +247,22 @@ See a real-world example of onboarding instructions in the [aws-iam-role resourc
 
 Currently, icons (as data URLs) and `instructions.content` (as base64-encoded markdown) are packed directly into the JSON Schema. With our upcoming move to OCI for resource types (as we've already done for bundles), you'll soon be able to include these files directly in the same directory as your definition—no more packing required. Stay tuned for updates! Here is the [script](https://github.com/massdriver-cloud/artifact-definitions/blob/main/hack/pack.rb) we use for packaging resource types.
 
-### Customizing the Artifact Types that can be defaulted in an Environment
+### Customizing the Resource Types that can be defaulted in an Environment
 
-Massdriver environments support "environment default" artifacts—resources like credentials, networks, or DNS zones that are commonly shared across multiple bundles. You can control which artifact types are eligible to be set as environment defaults by specifying the `ui.environmentDefaultGroup` field in your resource type.
+Massdriver environments support "environment default" resources—things like credentials, networks, or DNS zones that are commonly shared across multiple bundles. You can control which resource types are eligible to be set as environment defaults by specifying the `ui.environmentDefaultGroup` field in your resource type.
 
-When you set this field, your artifact type will appear in the environment overlay, allowing users to assign a default resource for that group (e.g., default network, default credentials) without having to connect it individually to every bundle. This streamlines environment setup and reduces visual clutter in complex diagrams.
+When you set this field, your resource type will appear in the environment overlay, allowing users to assign a default resource for that group (e.g., default network, default credentials) without having to connect it individually to every bundle. This streamlines environment setup and reduces visual clutter in complex diagrams.
 
 ![Environment Defaults Overlay](../../static/img/ui/environment-defaults.png)
 
 **Relevant schema fields:**
-- `$md.ui.environmentDefaultGroup`: Adds your artifact type to the "environment default" overlay under the specified group (e.g., `networking`, `authentication`, `dns`). This is what makes an artifact eligible to be set as a default in an environment.
+- `$md.ui.environmentDefaultGroup`: Adds your resource type to the "environment default" overlay under the specified group (e.g., `networking`, `authentication`, `dns`). This is what makes a resource type eligible to be set as a default in an environment.
 
-> **Note:** There is a special 'magic' environment default group called `credentials`. Assigning your artifact to this group will make it appear on the credentials page and enables Massdriver to fetch credentials for use in your workflows. Besides that you can use any `environmentDefaultGroup` name that makes sense for your team.
+> **Note:** There is a special 'magic' environment default group called `credentials`. Assigning your resource type to this group will make it appear on the credentials page and enables Massdriver to fetch credentials for use in your workflows. Besides that you can use any `environmentDefaultGroup` name that makes sense for your team.
 
 See a real-world example of adding an environment default in the [aws-vpc resource type](https://github.com/massdriver-cloud/artifact-definitions/blob/main/definitions/artifacts/aws-vpc.json#L6).
 
-- `$md.ui.connectionOrientation`: Controls how the artifact appears on the canvas. If set to `"link"`, users can draw lines to connect bundles to the artifact. If set to `"environmentDefault"`, the artifact is only shown as a default and not as a connectable box. These options are independently controllable, so you can allow both defaulting and explicit connections if desired. For example, SREs might want to draw lines to a shared Kubernetes cluster, while end developers only see it as a default and don't interact with it directly.
+- `$md.ui.connectionOrientation`: Controls how resources of this type appear on the canvas. If set to `"link"`, users can draw lines to connect bundles to the resource. If set to `"environmentDefault"`, the resource is only shown as a default and not as a connectable box. These options are independently controllable, so you can allow both defaulting and explicit connections if desired. For example, SREs might want to draw lines to a shared Kubernetes cluster, while end developers only see it as a default and don't interact with it directly.
 
 **Example snippet:**
 ```json
@@ -286,10 +286,10 @@ See a real-world example of adding an environment default in the [aws-vpc resour
 ```
 
 **References:**
-- [Artifact definition JSON Schema](https://api.massdriver.cloud/json-schemas/artifact-definition.json)
+- [Resource type JSON Schema](https://api.massdriver.cloud/json-schemas/artifact-definition.json) (the JSON Schema URL retains the legacy filename)
 - [Open source resource types](https://github.com/massdriver-cloud/artifact-definitions)
 
-By leveraging these schema fields, you can tailor both the onboarding experience and environment default behavior for your custom artifact types, ensuring a seamless and intuitive experience for your users.
+By leveraging these schema fields, you can tailor both the onboarding experience and environment default behavior for your custom resource types, ensuring a seamless and intuitive experience for your users.
 
 ## Wrapping Up
 

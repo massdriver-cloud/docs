@@ -5,97 +5,88 @@ title: Identifier Constraints Reference
 sidebar_label: Identifier Constraints
 ---
 
-This document describes the validation constraints and naming conventions for all identifier resources in Massdriver. These constraints are important for organizational design, naming standards, and deployment strategies.
+This document describes the validation constraints and naming conventions for every identifiable resource in Massdriver. These constraints matter for organizational design, naming conventions, and deployment strategies.
 
 ## Table of Contents
 
 - [Organization](#organization)
 - [Project](#project)
-- [Environment (Target)](#environment-target)
-- [Manifest](#manifest)
-- [Package](#package)
-- [Bundle](#bundle)
-- [Resource Type](#artifact-definition)
-- [Artifact](#artifact)
+- [Environment](#environment)
+- [Component](#component)
+- [Instance](#instance)
+- [Bundle / OCI Repo](#bundle--oci-repo)
+- [Resource Type](#resource-type)
+- [Resource](#resource)
 - [Bundle Deployment Metadata](#bundle-deployment-metadata)
 
 ---
 
 ## Organization
 
-**Identifier Field:** `slug`
+**Identifier Field:** `id`
 
 ### Constraints
 
-- **Pattern:** `^[a-z0-9-]+$`
-  - Lowercase letters, numbers, and hyphens only
-  - No underscores or other special characters
-- **Length:** Minimum 2 characters, maximum 64 characters
-- **Uniqueness:** Must be globally unique across all organizations
+- **Pattern:** lowercase alphanumeric only (a-z, 0-9)
+- **Length:** Maximum 20 characters
+- **Uniqueness:** Globally unique across all organizations
+- **Immutability:** Once created, the identifier cannot be changed
 
 ### Examples
 
 ✅ **Valid:**
-- `acme-corp`
-- `engineering-team`
-- `my-org-123`
+- `acmecorp`
+- `engineering`
+- `myorg123`
 
 ❌ **Invalid:**
 - `AcmeCorp` (uppercase letters)
+- `my-org` (hyphens not allowed)
 - `my_org` (underscores not allowed)
-- `admin` (reserved slug)
-- `a` (too short, minimum 2 characters)
 
 ---
 
 ## Project
 
-**Identifier Field:** `slug`
+**Identifier Field:** `id`
 
-Projects are collections of manifests that compose an application or architecture. Project slugs are **immutable** once created.
+Projects are the blueprints of an application or architecture. Project identifiers are the **first segment** of every entity identifier inside the project, and they are **immutable** once created.
 
 ### Constraints
 
-- **Pattern:** `^[a-z][a-z0-9]{0,6}$`
-  - Must start with a lowercase letter
-  - Can contain lowercase letters and numbers
-  - No hyphens or special characters
-- **Length:** Minimum 1 character, maximum 7 characters
+- **Pattern:** lowercase alphanumeric only (a-z, 0-9)
+- **Length:** Maximum 20 characters
 - **Uniqueness:** Unique within an organization
-- **Immutability:** Once created, the slug cannot be changed
+- **Immutability:** Once created, the identifier cannot be changed
 
 ### Examples
 
 ✅ **Valid:**
+- `ecomm`
 - `webapp`
-- `api`
 - `data1`
 
 ❌ **Invalid:**
 - `web-app` (hyphens not allowed)
-- `WebApp` (uppercase letters not allowed)
+- `WebApp` (uppercase letters)
 - `1webapp` (must start with a letter)
-- `verylongname` (exceeds 7 character limit)
 
 ---
 
-## Environment (Target)
+## Environment
 
-**Identifier Field:** `slug`
+**Identifier Field:** `id`
 
-Environments represent named scopes for secrets and deployments within a project. **Note:** This resource was previously called "Target" and may occasionally be referenced that way for backwards compatibility - both terms refer to the same resource. Environment slugs are **immutable** once created.
+An environment is a named scope inside a project where deployments and secrets live. The environment identifier is the **second segment** of every instance identifier inside the project. Environment identifiers are **immutable** once created.
 
-**Identifier Format:** Environments use hierarchical slugs for API access. The full identifier format is `{project-slug}-{environment-slug}` (e.g., `web-prod`). You can use this hierarchical format in API calls, similar to how projects and packages are referenced.
+> **Naming note:** Environment was previously called "Target". The new term aligns with the UI; some legacy `md_metadata` keys still use the old name (see below).
 
 ### Constraints
 
-- **Pattern:** `^[a-z][a-z0-9]{0,6}$`
-  - Must start with a lowercase letter
-  - Can contain lowercase letters and numbers
-  - No hyphens or special characters
-- **Length:** Minimum 1 character, maximum 7 characters
+- **Pattern:** lowercase alphanumeric only (a-z, 0-9)
+- **Length:** Maximum 20 characters
 - **Uniqueness:** Unique within a project
-- **Immutability:** Once created, the slug cannot be changed
+- **Immutability:** Once created, the identifier cannot be changed
 
 ### Examples
 
@@ -106,101 +97,94 @@ Environments represent named scopes for secrets and deployments within a project
 
 ❌ **Invalid:**
 - `prod-env` (hyphens not allowed)
-- `Prod` (uppercase letters not allowed)
+- `Prod` (uppercase letters)
 - `1dev` (must start with a letter)
-- `production` (exceeds 7 character limit)
 
 ---
 
-## Manifest
+## Component
 
-**Identifier Field:** `slug`
+**Identifier Field:** `id`
 
-A Manifest represents a bundle with a specific purpose or context within a project. For example, a Redis bundle might be added to a project multiple times, once for "caching" and once for "sessions" - each instance would be a separate manifest. Manifest slugs are **immutable** once created.
+A component is a bundle attached to a project's blueprint with a specific purpose. For example, a Redis bundle might be added to a project twice — once as `caching` and once as `sessions` — each is a separate component. Component identifiers are the **third segment** of every instance identifier and are **immutable** once created.
+
+> **Naming note:** Component was previously called "Manifest".
 
 ### Constraints
 
-- **Pattern:** `^[a-z][a-z0-9]{0,11}$`
-  - Must start with a lowercase letter
-  - Can contain lowercase letters and numbers
-  - No hyphens or special characters
-- **Length:** Minimum 1 character, maximum 12 characters
+- **Pattern:** lowercase alphanumeric only (a-z, 0-9)
+- **Length:** Maximum 20 characters
 - **Uniqueness:** Unique within a project
-- **Immutability:** Once created, the slug cannot be changed
+- **Immutability:** Once created, the identifier cannot be changed
 
 ### Examples
 
 ✅ **Valid:**
 - `redis`
 - `database`
-- `api-server`
+- `apiserver`
 
 ❌ **Invalid:**
 - `redis-cluster` (hyphens not allowed)
-- `Redis` (uppercase letters not allowed)
-- `verylongmanifestname` (exceeds 12 character limit)
+- `Redis` (uppercase letters)
 
 ---
 
-## Package
+## Instance
 
-**Identifier Field:** `slug` (composite identifier)
+**Identifier Field:** `id` (composite identifier)
 
-A Package is a deployed instance of a manifest within a specific environment. It contains the configuration parameters and deployment state for that bundle in that environment.
+An **instance** is a component as it exists in a specific environment. It carries the configuration parameters and deployment state for that bundle in that environment.
 
-**Identifier Format:** The package slug is a composite identifier: `{project-slug}-{environment-slug}-{manifest-slug}` (e.g., `web-prod-api`). Use this format as the package ID in API calls.
+> **Naming note:** Instance was previously called "Package".
+
+**Identifier Format:** The instance identifier is composed of its parents: `{project}-{environment}-{component}` (e.g., `ecomm-prod-api`). Use this composite identifier as the instance ID in API calls.
 
 ### Constraints
 
-- **Slug Format:** `{project-slug}-{environment-slug}-{manifest-slug}`
-  - Example: `web-prod-api`
-  - Total length: 7 + 7 + 12 + 2 hyphens = 28 characters maximum
-- **Uniqueness:** Unique combination of environment and manifest within a project
-- **API Access:** Use the composite slug format (`proj-env-manifest`) as the package ID in API calls
+- **Format:** `{project}-{environment}-{component}`
+  - Example: `ecomm-prod-api`
+  - Max length: 20 + 20 + 20 + 2 hyphens = 62 characters
+- **Uniqueness:** Each `{environment, component}` combination produces exactly one instance per project
+- **API Access:** Use the composite identifier (e.g., `ecomm-prod-api`) to reference an instance in API calls
 
-### Examples
+### Example
 
-✅ **Valid Package:**
-- Project slug: `web`
-- Environment slug: `prod`
-- Manifest slug: `api`
-- Package slug (ID): `web-prod-api`
-- API access: Use `web-prod-api` as the package ID
+- Project: `ecomm`
+- Environment: `prod`
+- Component: `api`
+- Instance ID: `ecomm-prod-api`
 
 ### Name Prefix
 
-The `name_prefix` is a read-only field that extends the package slug with a 4-character suffix: `{project-slug}-{environment-slug}-{manifest-slug}-{suffix}` (e.g., `web-prod-api-abc1`). Use `name_prefix` in your Infrastructure as Code (IaC) to name resources. The suffix is automatically generated and cannot be set directly.
+The `name_prefix` is a read-only field that extends the instance identifier with a 4-character suffix: `{project}-{environment}-{component}-{suffix}` (e.g., `ecomm-prod-api-abc1`). Use `name_prefix` in your Infrastructure as Code (IaC) to name resources. The suffix is generated automatically and cannot be set directly.
 
 ---
 
-## Bundle
+## Bundle / OCI Repo
 
-**Identifier Field:** `name`
+**Identifier Field:** `id` (the OCI repository name)
 
-**Important Note:** Bundle names are the OCI repository name. The full bundle identifier is the repository name plus a version tag (e.g., `my-bundle:1.0.0`). The full repository path is `{organization-slug}/{bundle-name}`.
+Bundles are published to an OCI repository. The repository name is the bundle identifier; specific releases are addressed with a version tag (e.g., `aws-aurora-postgres:1.0.0`). The full repository path is `{organization}/{repo}`.
 
 ### Constraints
 
-- **Pattern:** `^[a-z][a-z0-9-]+[a-z0-9]$`
-  - Must start with a lowercase letter
-  - Can contain lowercase letters, numbers, and hyphens
-  - Must end with a lowercase letter or number
-  - Cannot end with a hyphen
-- **Length:** Minimum 3 characters, maximum 53 characters
+- **Pattern:** lowercase letters, numbers, dashes, and underscores
+- **Length:** Maximum 53 characters
 - **Uniqueness:** Unique within an organization
+- **Immutability:** Once created, the repo name cannot be changed
 
 ### Examples
 
 ✅ **Valid:**
+- `aws-aurora-postgres`
 - `redis-cluster`
-- `postgres-db`
 - `web-app-backend`
 
 ❌ **Invalid:**
-- `Redis-Cluster` (uppercase letters)
+- `Aws-Aurora` (uppercase letters)
 - `redis-` (cannot end with hyphen)
-- `-redis` (cannot start with hyphen)
-- `re` (too short, minimum 3 characters)
+- `re` (too short)
 
 ---
 
@@ -208,133 +192,127 @@ The `name_prefix` is a read-only field that extends the package slug with a 4-ch
 
 **Identifier Field:** `name`
 
-Artifact definition names define the types of artifacts that can be created and managed. They follow an organization-scoped naming pattern.
+A resource type defines the schema for the resources a bundle produces. Names follow an organization-scoped pattern.
+
+> **Naming note:** Resource Type was previously called "Artifact Definition".
 
 ### Constraints
 
-- **Pattern:** `[a-z0-9-]+\/[a-z0-9-]+`
-  - Must contain a forward slash (`/`) separating two parts
-  - Format: `organization-slug/artifact-type-name`
-  - The artifact type name part (after the slash) must match: `^[a-z0-9-]{3,100}$`
-- **Length:** 
-  - Organization part: Follows organization slug constraints
-  - Artifact type name part: Minimum 3 characters, maximum 100 characters
-- **Uniqueness:** The artifact type name must be unique within your organization
+- **Pattern:** `{organization}/{resource-type-name}`
+  - Two parts separated by a forward slash
+  - The name part matches `^[a-z0-9-]{3,100}$`
+- **Length:** name part is 3 – 100 characters; the organization part follows the organization-id rules
+- **Uniqueness:** The name part is unique within your organization
 
 ### Examples
 
 ✅ **Valid:**
-- `acme-corp/vpc-network`
-- `my-org/custom-database`
+- `acmecorp/vpc-network`
+- `myorg/custom-database`
 - `engineering/docker-registry`
 
 ❌ **Invalid:**
-- `vpc-network` (missing slash)
-- `acme-corp/VPC` (uppercase in artifact type name)
-- `acme-corp/vp` (artifact type name too short, minimum 3 characters)
+- `vpc-network` (missing slash / org)
+- `acmecorp/VPC` (uppercase in name part)
+- `acmecorp/vp` (name part too short)
 
 ---
 
-## Artifact
+## Resource
 
-**Identifier Field:** `identifier`
+**Identifier Field:** `id`
 
-Artifacts have different identifier formats depending on whether they were provisioned through Massdriver or imported.
+> **Naming note:** Resource was previously called "Artifact". The rename disambiguates Massdriver resources from OCI artifacts.
+
+Resources have different identifier shapes depending on whether they were provisioned by Massdriver or imported.
 
 ### Constraints
 
-**For Provisioned Artifacts:**
-- **Format:** `{package.name_prefix}-{field}`
-- **Package name_prefix:** `{project-slug}-{environment-slug}-{manifest-slug}-{suffix}`
-- **Required Fields:**
-  - `name`: Display name for the artifact
-  - `field`: Must be unique within a package, must match the field name defined in the bundle's resource type, cannot be changed after creation
-  - `specs`: Artifact specifications
-  - `data`: Artifact data
+**Provisioned Resources** (emitted by a deployment):
+- **Format:** `{instance.name_prefix}-{field}` — e.g., `ecomm-prod-api-abc1-database`
+- The `field` segment is unique within an instance and matches the field name declared in the bundle's resource type. It cannot change after creation.
 
-**For Imported Artifacts:**
-- **Format:** UUID
-- **Required Fields:**
-  - `name`: Display name for the artifact
-  - `specs`: Artifact specifications
-  - `data`: Artifact data
+**Imported Resources** (registered manually):
+- **Format:** UUID — e.g., `123e4567-e89b-12d3-a456-426614174000`
 
 ### Examples
 
-✅ **Valid Provisioned Artifact:**
-- Package name_prefix: `web-prod-api-abc1`
+✅ **Provisioned:**
+- Instance `name_prefix`: `ecomm-prod-api-abc1`
 - Field: `database`
-- Artifact identifier: `web-prod-api-abc1-database`
+- Resource id: `ecomm-prod-api-abc1-database`
 
-✅ **Valid Imported Artifact:**
-- Artifact identifier: `123e4567-e89b-12d3-a456-426614174000`
+✅ **Imported:**
+- `123e4567-e89b-12d3-a456-426614174000`
 
 ---
 
-## Hierarchical Slug Identifiers
+## Hierarchical identifiers
 
-Many resources use hierarchical slug identifiers for API access:
+Many entities use hierarchical identifiers built from their parents:
 
-- **Project:** `{project-slug}` (e.g., `web`)
-- **Environment:** `{project-slug}-{environment-slug}` (e.g., `web-prod`)
-- **Manifest:** `{manifest-slug}` (scoped within project)
-- **Package:** `{project-slug}-{environment-slug}-{manifest-slug}` (e.g., `web-prod-api`)
+- **Project:** `{project}` (e.g., `ecomm`)
+- **Environment:** `{project}-{environment}` (e.g., `ecomm-prod`)
+- **Component:** `{component}` (scoped within project)
+- **Instance:** `{project}-{environment}-{component}` (e.g., `ecomm-prod-api`)
+- **Provisioned resource:** `{instance.name_prefix}-{field}` (e.g., `ecomm-prod-api-abc1-database`)
 
-Use these hierarchical identifiers to reference resources in API calls.
+Use these identifiers to reference entities in API calls.
 
 ---
 
 ## Summary Table
 
-| Resource | Identifier Field | Pattern | Min Length | Max Length | Scope | Notes |
-|----------|-----------------|---------|------------|------------|-------|-------|
-| Organization | `slug` | `^[a-z0-9-]+$` | 2 | 64 | Global | Reserved slugs excluded |
-| Bundle | `name` | `^[a-z][a-z0-9-]+[a-z0-9]$` | 3 | 53 | Organization | Must start/end with alphanumeric |
-| Resource Type | `name` | `[a-z0-9-]+\/[a-z0-9-]+` | 3 | 100 | Organization | Format: `org/type-name` |
-| Artifact | `identifier` | Computed | N/A | N/A | Organization | `{package.name_prefix}-{field}` for provisioned, UUID for imported |
-| Project | `slug` | `^[a-z][a-z0-9]{0,6}$` | 1 | 7 | Organization | Immutable |
-| Environment (Target) | `slug` | `^[a-z][a-z0-9]{0,6}$` | 1 | 7 | Project | Immutable, hierarchical ID: `proj-env` |
-| Manifest | `slug` | `^[a-z][a-z0-9]{0,11}$` | 1 | 12 | Project | Immutable |
-| Package | `slug` | `{proj}-{env}-{manifest}` | N/A | 28 | Project | Hierarchical slug used as ID, includes suffix in name_prefix |
+| Resource | Identifier | Pattern | Min Length | Max Length | Scope | Notes |
+|---|---|---|---|---|---|---|
+| Organization | `id` | lowercase a-z 0-9 | 1 | 20 | Global | Immutable |
+| Project | `id` | lowercase a-z 0-9 | 1 | 20 | Organization | Immutable |
+| Environment | `id` | lowercase a-z 0-9 | 1 | 20 | Project | Immutable; previously "Target" |
+| Component | `id` | lowercase a-z 0-9 | 1 | 20 | Project | Immutable; previously "Manifest" |
+| Instance | `id` | `{proj}-{env}-{component}` | N/A | 62 | Project | Composite; previously "Package" |
+| Bundle / OCI Repo | `id` | lowercase, digits, `-`, `_` | 3 | 53 | Organization | OCI repo name |
+| Resource Type | `name` | `{org}/[a-z0-9-]{3,100}` | 3 | 100 | Organization | Previously "Artifact Definition" |
+| Resource | `id` | computed | N/A | N/A | Organization | Provisioned: `{instance.name_prefix}-{field}`. Imported: UUID |
 
 ---
 
 ## Bundle Deployment Metadata
 
-When bundles are deployed, Massdriver automatically injects Bundle Deployment Metadata (`md_metadata`) into the deployment context. This metadata includes identifiers and context about the package, target environment, and deployment configuration.
+When bundles are deployed, Massdriver automatically injects `md_metadata` into the deployment context. The shape below is preserved for backward compatibility — many of the keys still use the legacy nouns (`target`, `package`, `manifest`) even though the new terminology is Environment, Instance, and Component.
 
 The `md_metadata` object contains:
-- `name_prefix`: The package name prefix (incorporates project, target, and manifest slugs)
-- `default_tags`: Standard tags including `md-project`, `md-environment`, `md-component`, and `md-instance` identifiers
-- `observability`: Alarm webhook URL for the target
-- `target`: Target (legacy name for Environment) information including contact email
-- `package`: Package metadata with timestamps and status information
 
-This metadata is available to all bundle deployments and can be used for resource naming, tagging, conditional logic, and observability integration.
+- `name_prefix`: the instance name prefix (incorporates project, target, and manifest slugs in the legacy key shape)
+- `default_tags`: standard tags including `md-project`, `md-environment`, `md-component`, and `md-instance`
+- `observability`: alarm webhook URL for the environment
+- `target`: environment information including contact email (legacy key — same data as the environment)
+- `package`: instance metadata with timestamps and status (legacy key — same data as the instance)
 
-**Example `md_metadata` object structure:**
+This metadata is available to every bundle deployment and can be used for resource naming, tagging, conditional logic, and observability integration.
+
+**Example `md_metadata` object:**
 
 ```json
 {
-  "name_prefix": "api-prod-database-1j39",                // Unique identifer for package
-  "default_tags": {                                       // A default set of tags to include on your resources to integrate with Massdriver (Costs & Alerting)
-    "managed-by": "massdriver",                           // Always set to "massdriver"
-    "md-project": "my-project",                           // Project slug
-    "md-environment": "production",                            // Target (legacy name for Environment) slug. Target is legacy terminology.
-    "md-component": "my-manifest",                         // Manifest slug
-    "md-instance": "my-package"                            // Package name prefix
+  "name_prefix": "ecomm-prod-database-1j39",                 // Instance name prefix
+  "default_tags": {                                          // Default tags to apply to your cloud resources
+    "managed-by": "massdriver",
+    "md-project": "ecomm",                                   // Project id
+    "md-environment": "prod",                                // Environment id
+    "md-component": "database",                              // Component id
+    "md-instance": "ecomm-prod-database"                     // Instance id
   },
   "observability": {
-    "alarm_webhook_url": "https://api.massdriver.cloud/targets/abc123/alarms?token=xyz"  // Webhook for alarm notifications
+    "alarm_webhook_url": "https://api.massdriver.cloud/alarms/<env-id>/<alarm-token>"
   },
-  "target": {                                             // Target (legacy name for Environment) information
-    "contact_email": "admin@example.com"                  // Organization owner email
+  "target": {                                                // Legacy key — environment info
+    "contact_email": "admin@example.com"
   },
-  "package": {                                            // Package metadata
-    "created_at": "2024-01-15T10:30:00Z",                 // Package creation timestamp (ISO 8601)
-    "updated_at": "2024-01-20T14:45:00Z",                 // Last update timestamp (ISO 8601)
-    "deployment_enqueued_at": "2024-01-20T15:00:00Z",     // Current deployment enqueue time (ISO 8601)
-    "previous_status": "provisioned"                          // Package status before this deployment
+  "package": {                                               // Legacy key — instance metadata
+    "created_at": "2024-01-15T10:30:00Z",
+    "updated_at": "2024-01-20T14:45:00Z",
+    "deployment_enqueued_at": "2024-01-20T15:00:00Z",
+    "previous_status": "provisioned"
   }
 }
 ```
