@@ -30,15 +30,13 @@ If you're building a least-privilege policy, scan the table for the operations t
 | `cloneProject` | Mutation | `project:view`, `project:create` | View on source, then create on the proposed clone. |
 | `updateProject` | Mutation | `project:update` | |
 | `deleteProject` | Mutation | `project:delete` | Project must have no environments, components, or instances. |
-| `addComponent` | Mutation | `project:design` | Blueprint mutation. Checked on the proposed component's effective attributes (cascaded project attrs + `md-component`, `md-repo`). |
+| `addComponent` | Mutation | `project:design` | |
 | `updateComponent` | Mutation | `project:design` | |
 | `removeComponent` | Mutation | `project:design` | Component must have no provisioned instances. |
 | `linkComponents` | Mutation | `project:design` | |
 | `unlinkComponents` | Mutation | `project:design` | |
 | `setComponentPosition` | Mutation | `project:design` | |
 | `component` | Query | `project:view` | Loaded via parent project. |
-
-> All blueprint mutations (`addComponent`, `updateComponent`, `removeComponent`, `linkComponents`, `unlinkComponents`, `setComponentPosition`) are gated by `project:design`. There is no `component:create` permission.
 
 ## Environment
 

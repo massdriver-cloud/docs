@@ -369,6 +369,43 @@ policies:
     conditions: "*"
 ```
 
+### Compliance Auditor on PCI Projects
+
+Auditors can view and design any project flagged `pci: true`, and the
+`audit-tooling` bundle is the only one visible to them on those projects.
+
+```yaml
+custom_attribute:
+  key: pci
+  scope: project
+  required: false
+  values: ["true", "false"]
+
+group: compliance-auditors
+policies:
+  - effect: allow
+    actions: [project:view, project:design]
+    conditions: { pci: ["true"] }
+```
+
+Bundle visibility is gated on the publisher side. A grant on the
+`audit-tooling` repo makes it pullable by recipients whose project
+matches `pci: true`:
+
+```yaml
+# On the audit-tooling repo
+grant:
+  source: { repo: audit-tooling }
+  action: repo:pull
+  recipient_conditions: { pci: ["true"] }
+```
+
+The two layers compose: `project:design` lets the auditor touch the
+canvas of any PCI project, and `repo:pull` controls which bundles
+they can see and attach. To restrict them to only the audit bundle,
+don't grant any other `repo:view` / `repo:pull` policies — the bundle
+picker will only show what they have access to.
+
 ---
 
 ## Grants
