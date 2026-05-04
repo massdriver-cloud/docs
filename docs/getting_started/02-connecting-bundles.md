@@ -13,12 +13,12 @@ By the end of this guide, you'll understand:
 
 ✅ **What artifacts are** - How bundles share data with each other  
 ✅ **Artifact definitions** - The schema contracts that ensure type safety  
-✅ **Publishing artifact definitions** - Making reusable data contracts available  
+✅ **Publishing resource types** - Making reusable data contracts available  
 ✅ **Producing artifacts** - Updating bundles to output structured data  
 ✅ **Consuming artifacts** - Using artifacts as inputs to other bundles  
 ✅ **Bundle connections** - Connecting bundles visually in the UI  
 
-## Understanding Artifacts and Artifact Definitions
+## Understanding Artifacts and Resource Types
 
 ### What Are Artifacts?
 
@@ -27,34 +27,34 @@ By the end of this guide, you'll understand:
 - Bundles produce the artifacts that are specified in the `artifacts` field
 - Bundles consume the artifacts that are specified in the `connections` field
 
-### What Are Artifact Definitions?
+### What Are Resource Types?
 
 **Artifact definitions** are JSON Schema specifications that define the structure and type of data that artifacts must contain. They create an enforceable "contract" between bundles:
 
-- Bundles which produce artifacts are guaranteed to output JSON that matches the artifact definition schemas
-- Bundles which consume artifacts are guaranteed to receive JSON that matches the expected artifact definition schema
+- Bundles which produce artifacts are guaranteed to output JSON that matches the resource type schemas
+- Bundles which consume artifacts are guaranteed to receive JSON that matches the expected resource type schema
 
-:::tip Artifact Definitions vs Bundles
+:::tip Resource Types vs Bundles
 
 Artifact definitions are **not** paired 1-to-1 with bundles. This is intentional. Consider:
-- You might have one `aws-s3-bucket` artifact definition which contains information relevant to an S3 bucket
+- You might have one `aws-s3-bucket` resource type which contains information relevant to an S3 bucket
 - But multiple bundles that create different S3 buckets (logging bucket, data lake bucket, CloudFront bucket)
 - All these bundles produce the same S3 artifact type
 
-This separation allows for **reusable contracts** across your infrastructure ecosystem. Massdriver also maintains a set of artifact definitions which are used by our own internal bundles and public bundle templates. These artifact definitions are available to re-use in your own bundles, or modify and republish as your own.
+This separation allows for **reusable contracts** across your infrastructure ecosystem. Massdriver also maintains a set of resource types which are used by our own internal bundles and public bundle templates. These resource types are available to re-use in your own bundles, or modify and republish as your own.
 
 :::
 
-## Step 1: Create and Publish an Artifact Definition
+## Step 1: Create and Publish an Resource Type
 
-First, you'll create an artifact definition that contains data from the `getting-started` bundle in the previous guide.
+First, you'll create an resource type that contains data from the `getting-started` bundle in the previous guide.
 
-### Navigate to the Artifact Definitions Directory
+### Navigate to the Resource Types Directory
 
 1. In the `getting-started` repository, you should see an `artifact-definitions` directory
 2. Inside, you'll find a `getting-started.json` file that defines the schema for your bundle's outputs
 
-### Examine the Artifact Definition
+### Examine the Resource Type
 
 Open `artifact-definitions/getting-started.json` and examine its structure:
 
@@ -98,12 +98,12 @@ Open `artifact-definitions/getting-started.json` and examine its structure:
 ```
 
 This schema defines exactly what JSON structure bundles must produce and consume. Some key points:
-* The name of the artifact definition is in the top level `$md` block. In this case it's named `getting-started`.
-* There are two top level fields: `data` and `specs`. These are **`required`** and have significance in Massdriver. Review the [artifact definition docs](https://docs.massdriver.cloud/concepts/artifacts-and-definitions#structure) for more information.
+* The name of the resource type is in the top level `$md` block. In this case it's named `getting-started`.
+* There are two top level fields: `data` and `specs`. These are **`required`** and have significance in Massdriver. Review the [resource type docs](https://docs.massdriver.cloud/concepts/resources-and-types#structure) for more information.
 * Within the `data` block there are separate fields each piece of data produced in the `getting-started` bundle: a `pet-name` string, a `password` string, and a list of strings called `shuffle`. All 3 of these fields are **`required`**.
 * The `specs` field is empty.
 
-### Publish the Artifact Definition
+### Publish the Resource Type
 
 1. From your getting-started repository root, run:
 
@@ -204,8 +204,8 @@ Now you'll deploy a second bundle that consumes a `getting-started` artifact.
     mass bundle build
     ```
 
-2. **Notice**: This updates `src/_massdriver_variables.tf` to create a typed variable that matches the artifact definition from the connection
-3. **Examine**: Look at how the artifact definition became a typed Terraform variable:
+2. **Notice**: This updates `src/_massdriver_variables.tf` to create a typed variable that matches the resource type from the connection
+3. **Examine**: Look at how the resource type became a typed Terraform variable:
 
     ```hcl
     variable "your_first_connection" {
@@ -231,7 +231,7 @@ Now you'll deploy a second bundle that consumes a `getting-started` artifact.
 ### Connect the Bundles in the UI
 
 1. In the Massdriver UI, drag your `connecting-bundles` bundle onto the canvas and name it
-2. **Notice**: The left side has a connection port that matches your artifact definition
+2. **Notice**: The left side has a connection port that matches your resource type
 3. **Connect**: Draw a line from the output port of your `getting-started` bundle to the input port of your `connecting-bundles` bundle
 4. **Deploy**: Click on `connecting-bundles` and click **Deploy** from the Config tab
 
@@ -260,7 +260,7 @@ Once deployed, explore what the connecting bundle created:
 Now that you understand bundle connections, you can:
 
 1. **Create more complex architectures** - Chain multiple bundles together
-2. **Design reusable artifact definitions** - Create contracts for your infrastructure patterns
+2. **Design reusable resource types** - Create contracts for your infrastructure patterns
 3. **Build custom bundles** - Create your own infrastructure bundles with meaningful artifacts
 4. **Explore advanced features** - Learn about alarms, monitoring, and advanced bundle patterns
 

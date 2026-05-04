@@ -1,0 +1,74 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: update-custom-attribute-input
+title: UpdateCustomAttributeInput
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Replace the closed set of values for an existing custom attribute. The key and scope are immutable.
+
+
+```graphql
+input UpdateCustomAttributeInput {
+  required: Boolean
+  values: [String!]!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateCustomAttributeInput.<b>required</b></code>](#required)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#required\} 
+Whether this attribute must be set when creating a resource at the specified scope.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateCustomAttributeInput.<b>values</b></code>](#values)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#values\} 
+The closed set of values this attribute may take. Must contain at least one entry, no duplicates, and may not contain the literal "*" (reserved for a future "any value" semantic). Replaces the current set in full.
+
+
+
+
+
+
+### Member Of
+
+[`updateCustomAttribute`](/api/graphql/operations/mutations/update-custom-attribute.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

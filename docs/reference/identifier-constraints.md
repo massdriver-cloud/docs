@@ -15,7 +15,7 @@ This document describes the validation constraints and naming conventions for al
 - [Manifest](#manifest)
 - [Package](#package)
 - [Bundle](#bundle)
-- [Artifact Definition](#artifact-definition)
+- [Resource Type](#artifact-definition)
 - [Artifact](#artifact)
 - [Bundle Deployment Metadata](#bundle-deployment-metadata)
 
@@ -204,7 +204,7 @@ The `name_prefix` is a read-only field that extends the package slug with a 4-ch
 
 ---
 
-## Artifact Definition
+## Resource Type
 
 **Identifier Field:** `name`
 
@@ -248,7 +248,7 @@ Artifacts have different identifier formats depending on whether they were provi
 - **Package name_prefix:** `{project-slug}-{environment-slug}-{manifest-slug}-{suffix}`
 - **Required Fields:**
   - `name`: Display name for the artifact
-  - `field`: Must be unique within a package, must match the field name defined in the bundle's artifact definition, cannot be changed after creation
+  - `field`: Must be unique within a package, must match the field name defined in the bundle's resource type, cannot be changed after creation
   - `specs`: Artifact specifications
   - `data`: Artifact data
 
@@ -290,7 +290,7 @@ Use these hierarchical identifiers to reference resources in API calls.
 |----------|-----------------|---------|------------|------------|-------|-------|
 | Organization | `slug` | `^[a-z0-9-]+$` | 2 | 64 | Global | Reserved slugs excluded |
 | Bundle | `name` | `^[a-z][a-z0-9-]+[a-z0-9]$` | 3 | 53 | Organization | Must start/end with alphanumeric |
-| Artifact Definition | `name` | `[a-z0-9-]+\/[a-z0-9-]+` | 3 | 100 | Organization | Format: `org/type-name` |
+| Resource Type | `name` | `[a-z0-9-]+\/[a-z0-9-]+` | 3 | 100 | Organization | Format: `org/type-name` |
 | Artifact | `identifier` | Computed | N/A | N/A | Organization | `{package.name_prefix}-{field}` for provisioned, UUID for imported |
 | Project | `slug` | `^[a-z][a-z0-9]{0,6}$` | 1 | 7 | Organization | Immutable |
 | Environment (Target) | `slug` | `^[a-z][a-z0-9]{0,6}$` | 1 | 7 | Project | Immutable, hierarchical ID: `proj-env` |
@@ -305,7 +305,7 @@ When bundles are deployed, Massdriver automatically injects Bundle Deployment Me
 
 The `md_metadata` object contains:
 - `name_prefix`: The package name prefix (incorporates project, target, and manifest slugs)
-- `default_tags`: Standard tags including `md-project`, `md-target`, `md-manifest`, and `md-package` identifiers
+- `default_tags`: Standard tags including `md-project`, `md-environment`, `md-component`, and `md-instance` identifiers
 - `observability`: Alarm webhook URL for the target
 - `target`: Target (legacy name for Environment) information including contact email
 - `package`: Package metadata with timestamps and status information
@@ -320,9 +320,9 @@ This metadata is available to all bundle deployments and can be used for resourc
   "default_tags": {                                       // A default set of tags to include on your resources to integrate with Massdriver (Costs & Alerting)
     "managed-by": "massdriver",                           // Always set to "massdriver"
     "md-project": "my-project",                           // Project slug
-    "md-target": "production",                            // Target (legacy name for Environment) slug. Target is legacy terminology.
-    "md-manifest": "my-manifest",                         // Manifest slug
-    "md-package": "my-package"                            // Package name prefix
+    "md-environment": "production",                            // Target (legacy name for Environment) slug. Target is legacy terminology.
+    "md-component": "my-manifest",                         // Manifest slug
+    "md-instance": "my-package"                            // Package name prefix
   },
   "observability": {
     "alarm_webhook_url": "https://api.massdriver.cloud/targets/abc123/alarms?token=xyz"  // Webhook for alarm notifications

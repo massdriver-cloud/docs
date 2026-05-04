@@ -1,0 +1,84 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: copy-instance-input
+title: CopyInstanceInput
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Copy configuration from one instance to another. The source and destination must be instances of the same component. Source params (minus any fields marked non-copyable in the bundle) are written to the destination, then a plan deployment is created on the destination so the changes can be reviewed before applying.
+
+
+```graphql
+input CopyInstanceInput {
+  copyRemoteReferences: Boolean
+  copySecrets: Boolean
+  message: String
+  overrides: Map
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CopyInstanceInput.<b>copyRemoteReferences</b></code>](#copy-remote-references)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#copy-remote-references\} 
+When true, copies remote resource references from the source instance to the destination. Defaults to false.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CopyInstanceInput.<b>copySecrets</b></code>](#copy-secrets)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#copy-secrets\} 
+When true, copies secret values from the source instance to the destination. Defaults to false.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CopyInstanceInput.<b>message</b></code>](#message)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#message\} 
+An optional message attached to the plan deployment created on the destination, similar to a commit message.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CopyInstanceInput.<b>overrides</b></code>](#overrides)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#overrides\} 
+Optional overrides that are deep-merged onto the source params before writing to the destination. Useful for tweaking environment-specific values (e.g., instance sizes).
+
+
+
+
+
+
+### Member Of
+
+[`copyInstance`](/api/graphql/operations/mutations/copy-instance.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

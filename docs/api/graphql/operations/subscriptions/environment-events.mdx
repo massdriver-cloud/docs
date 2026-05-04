@@ -1,0 +1,105 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: environment-events
+title: environmentEvents
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Subscribe to events within a specific environment via WebSocket.
+
+Receives updates and deletions for the environment itself, lifecycle events
+for its default resources (set/removed), and creation, update, and deletion
+events for every instance, connection, and alarm in that environment
+(including alarm firing-state transitions). Environment creation events are
+delivered via `projectEvents` (the environment must exist before you can
+subscribe to it).
+
+```graphql
+subscription {
+  environmentEvents(organizationId: "my-org", environmentId: "my-project-prod") {
+    ... on Event { action timestamp }
+    ... on EnvironmentEvent {
+      environment { id name }
+    }
+    ... on EnvironmentDefaultEvent {
+      environmentDefault { id resource { id name } }
+    }
+    ... on InstanceEvent {
+      instance { id name status }
+    }
+    ... on ConnectionEvent {
+      connection { id fromField toField }
+    }
+    ... on AlarmEvent {
+      alarm { id displayName currentState { status message } }
+    }
+  }
+}
+```
+
+
+```graphql
+environmentEvents(
+  organizationId: ID!
+  environmentId: ID!
+): EnvironmentEventsPayload
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>environmentEvents.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>environmentEvents.<b>environmentId</b></code>](#environment-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#environment-id\} 
+The identifier of the environment to subscribe to.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>EnvironmentEventsPayload</b></code>](/api/graphql/types/unions/environment-events-payload.mdx) <Badge class="badge badge--secondary " text="union"/> 
+Events delivered by the `environmentEvents` subscription.
+
+Covers the environment itself, its default resources, every instance
+provisioned into it, every connection wired within it, every alarm attached
+to those instances, and every deployment run against them.

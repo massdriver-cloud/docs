@@ -1,0 +1,94 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: create-resource-grant
+title: createResourceGrant
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+<Badge class="badge badge--secondary badge--primary" text="form schema"/>
+
+
+
+Share a resource with recipient environments matching `recipientConditions`.
+
+The caller must have `resource:update` on the source resource. Grants are
+immutable — to change `action` or `recipientConditions`, delete and re-create.
+
+
+
+
+```graphql
+createResourceGrant(
+  organizationId: ID!
+  resourceId: ID!
+  input: CreateResourceGrantInput!
+): GrantPayload
+```
+
+
+
+
+
+### Form Schema
+
+This mutation supports dynamic form generation using JSON Schema.
+
+- [JSON Schema](https://api.massdriver.cloud/graphql/v1/inputs/createResourceGrant.json)
+- [UI Schema](https://api.massdriver.cloud/graphql/v1/inputs/createResourceGrant.ui.json)
+
+<SchemaForm
+  schemaUrl="https://api.massdriver.cloud/graphql/v1/inputs/createResourceGrant.json"
+  uiSchemaUrl="https://api.massdriver.cloud/graphql/v1/inputs/createResourceGrant.ui.json"
+  name="createResourceGrant"
+/>
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>createResourceGrant.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>createResourceGrant.<b>resourceId</b></code>](#resource-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#resource-id\} 
+The resource's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>createResourceGrant.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CreateResourceGrantInput!</b></code>](/api/graphql/types/inputs/create-resource-grant-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Share a resource with recipient environments matching attribute conditions. The caller must have `resource:update` on the source resource.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GrantPayload</b></code>](/api/graphql/types/objects/grant-payload.mdx) <Badge class="badge badge--secondary " text="object"/>

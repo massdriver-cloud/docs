@@ -1,0 +1,61 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: conditions
+title: Conditions
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Either the literal `"*"` (explicit whole-field wildcard) or a JSON-encoded non-empty object of attribute conditions. Per-key values are each either `"*"` (any value matches) or a non-empty array of strings (closed set). Empty `{}`, `null`, malformed JSON, top-level arrays, and bare strings other than `"*"` are rejected.
+
+
+```graphql
+scalar Conditions
+```
+
+
+
+
+
+
+
+
+### Member Of
+
+[`CreateGroupPolicyInput`](/api/graphql/types/inputs/create-group-policy-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`CreateRepoGrantInput`](/api/graphql/types/inputs/create-repo-grant-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`CreateResourceGrantInput`](/api/graphql/types/inputs/create-resource-grant-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`Grant`](/api/graphql/types/objects/grant.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Policy`](/api/graphql/types/objects/policy.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`UpdatePolicyInput`](/api/graphql/types/inputs/update-policy-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

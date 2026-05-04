@@ -1,0 +1,99 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: access-tokens
+title: accessTokens
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+List access tokens you own in an organization.
+
+Returns only tokens owned by the authenticated caller. Accounts see their own personal
+tokens; service accounts see tokens issued to themselves. There is no admin view of
+another user's personal tokens.
+
+**Example:**
+
+```graphql
+query {
+  accessTokens(
+    organizationId: "my-org"
+    filter: { revoked: false }
+    sort: { field: EXPIRES_AT, order: ASC }
+  ) {
+    items { id name prefix expiresAt }
+    cursor { next }
+  }
+}
+```
+
+
+```graphql
+accessTokens(
+  organizationId: ID!
+  filter: AccessTokensFilter
+  sort: AccessTokensSort
+  cursor: Cursor
+): AccessTokensPage
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>accessTokens.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>accessTokens.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AccessTokensFilter</b></code>](/api/graphql/types/inputs/access-tokens-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#filter\} 
+Optional filters to narrow results.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>accessTokens.<b>sort</b></code>](#sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AccessTokensSort</b></code>](/api/graphql/types/inputs/access-tokens-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#sort\} 
+Sort field and direction. Defaults to newest first.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>accessTokens.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#cursor\} 
+Cursor from a previous page to fetch the next set of results.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AccessTokensPage</b></code>](/api/graphql/types/objects/access-tokens-page.mdx) <Badge class="badge badge--secondary " text="object"/>

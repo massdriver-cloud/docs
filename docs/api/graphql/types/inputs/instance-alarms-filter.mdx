@@ -1,0 +1,91 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: instance-alarms-filter
+title: InstanceAlarmsFilter
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Narrows the instance alarms list to only matching records.
+
+All filters are combined with AND logic. Omit a filter to skip that criterion.
+
+
+```graphql
+input InstanceAlarmsFilter {
+  projectId: IdFilter
+  environmentId: IdFilter
+  componentId: IdFilter
+  instanceId: IdFilter
+  ociRepoName: OciRepoNameFilter
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>InstanceAlarmsFilter.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IdFilter</b></code>](/api/graphql/types/inputs/id-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#project-id\} 
+Return only alarms in the specified project(s).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InstanceAlarmsFilter.<b>environmentId</b></code>](#environment-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IdFilter</b></code>](/api/graphql/types/inputs/id-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#environment-id\} 
+Return only alarms in the specified environment(s).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InstanceAlarmsFilter.<b>componentId</b></code>](#component-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IdFilter</b></code>](/api/graphql/types/inputs/id-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#component-id\} 
+Return only alarms attached to the specified component(s).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InstanceAlarmsFilter.<b>instanceId</b></code>](#instance-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IdFilter</b></code>](/api/graphql/types/inputs/id-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#instance-id\} 
+Return only alarms for the specified instance(s).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InstanceAlarmsFilter.<b>ociRepoName</b></code>](#oci-repo-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoNameFilter</b></code>](/api/graphql/types/inputs/oci-repo-name-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#oci-repo-name\} 
+Return only alarms on instances of the given bundle (e.g., `aws-rds`).
+
+
+
+
+
+
+### Member Of
+
+[`instanceAlarms`](/api/graphql/operations/queries/instance-alarms.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

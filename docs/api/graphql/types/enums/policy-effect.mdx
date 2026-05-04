@@ -1,0 +1,77 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: policy-effect
+title: PolicyEffect
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Whether a policy grants or blocks its actions.
+
+`DENY` always wins over `ALLOW` — if any deny policy matches a resource, the
+action is blocked even if other allow policies also match.
+
+
+```graphql
+enum PolicyEffect {
+  ALLOW
+  DENY
+}
+```
+
+
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>PolicyEffect.<b>ALLOW</b></code>](#allow) \{#allow\} 
+Grant the policy's actions when the conditions match.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PolicyEffect.<b>DENY</b></code>](#deny) \{#deny\} 
+Block the policy's actions when the conditions match. Deny policies override every matching allow policy.
+
+
+
+
+
+
+### Member Of
+
+[`CreateGroupPolicyInput`](/api/graphql/types/inputs/create-group-policy-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`Policy`](/api/graphql/types/objects/policy.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PolicyEffectFilter`](/api/graphql/types/inputs/policy-effect-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`UpdatePolicyInput`](/api/graphql/types/inputs/update-policy-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

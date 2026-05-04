@@ -1,0 +1,115 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: custom-attribute
+title: CustomAttribute
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A user-declared attribute key, the resource scope where it applies, and whether it is required.
+
+Custom attributes enforce consistent metadata across your organization. When a custom
+attribute is marked as **required**, any resource created at the specified scope must
+include the attribute key. Optional custom attributes define allowed keys without
+mandating them.
+
+System attributes (`md-*`) are auto-injected by Massdriver and are not declared here —
+only user-defined keys live in this list.
+
+Use the `customAttributeSchema` query to generate a JSON Schema document narrowed
+to the values your policies permit for a given action — useful for client-side
+validation that mirrors what the API will accept on write. Use
+`customAttributeValues` to fetch just the closed set for a single key.
+
+**Example:** A custom attribute with `key: "TEAM"`, `scope: PROJECT`, `required: true`
+means every project must have a `TEAM` attribute set at creation time.
+
+
+```graphql
+type CustomAttribute {
+  id: ID!
+  key: String!
+  scope: AttributeScope!
+  required: Boolean!
+  values: [String!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CustomAttribute.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+Unique identifier for this custom attribute.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CustomAttribute.<b>key</b></code>](#key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#key\} 
+The attribute key name (e.g., `TEAM`, `COST_CENTER`, `DOMAIN`). Case-sensitive.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CustomAttribute.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AttributeScope!</b></code>](/api/graphql/types/enums/attribute-scope.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#scope\} 
+The resource level where this attribute must or may be set.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CustomAttribute.<b>required</b></code>](#required)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#required\} 
+When `true`, resources created at the specified scope must include this attribute. When `false`, the attribute is allowed but optional.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CustomAttribute.<b>values</b></code>](#values)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#values\} 
+The closed set of values this attribute may take. Resource attribute writes and policy conditions referencing this key must use one of these values.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CustomAttribute.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When this custom attribute was created (UTC).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CustomAttribute.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+When this custom attribute was last modified (UTC).
+
+
+
+
+
+
+### Member Of
+
+[`CustomAttributePayload`](/api/graphql/types/objects/custom-attribute-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`CustomAttributesPage`](/api/graphql/types/objects/custom-attributes-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

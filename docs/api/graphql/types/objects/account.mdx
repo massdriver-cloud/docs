@@ -1,0 +1,93 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: account
+title: Account
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A human user account in your organization.
+
+Returned wherever the API exposes the people behind group memberships and
+organization roster — for example as an element of `Group.members` and
+`Organization.members`. Every account in the result set is already a
+member of at least one group in the organization.
+
+
+```graphql
+type Account {
+  id: ID!
+  email: String!
+  firstName: String
+  lastName: String
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>Account.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+Unique identifier for this account.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Account.<b>email</b></code>](#email)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#email\} 
+Email address used to sign in and receive notifications.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Account.<b>firstName</b></code>](#first-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#first-name\} 
+Given name as it appears in the UI, or `null` if not set.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Account.<b>lastName</b></code>](#last-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#last-name\} 
+Family name as it appears in the UI, or `null` if not set.
+
+
+
+
+
+
+### Member Of
+
+[`AccountsPage`](/api/graphql/types/objects/accounts-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+
+### Implemented By
+
+[`AddedAccountToGroup`](/api/graphql/types/unions/added-account-to-group.mdx)  <Badge class="badge badge--secondary badge--relation" text="union"/>

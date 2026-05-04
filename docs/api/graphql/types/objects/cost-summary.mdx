@@ -1,0 +1,94 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: cost-summary
+title: CostSummary
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Aggregated cloud-provider cost metrics for a project or environment.
+
+Cost data is sourced from your cloud provider's billing APIs and refreshed periodically.
+Each metric is a `CostSample` containing an amount and currency. All four metrics are
+always present, but their inner `amount` and `currency` may be null if billing data has
+not yet been ingested.
+
+- **last_month** -- Total spend for the most recent complete billing cycle.
+- **monthly_average** -- Average monthly spend across all available billing cycles.
+- **last_day** -- Total spend for the most recent 24-hour period.
+- **daily_average** -- Average daily spend over the last 7 days.
+
+
+```graphql
+type CostSummary {
+  lastMonth: CostSample!
+  monthlyAverage: CostSample!
+  lastDay: CostSample!
+  dailyAverage: CostSample!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CostSummary.<b>lastMonth</b></code>](#last-month)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CostSample!</b></code>](/api/graphql/types/objects/cost-sample.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#last-month\} 
+Total cost for the most recent complete billing cycle.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CostSummary.<b>monthlyAverage</b></code>](#monthly-average)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CostSample!</b></code>](/api/graphql/types/objects/cost-sample.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#monthly-average\} 
+Average monthly cost across all available billing cycles.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CostSummary.<b>lastDay</b></code>](#last-day)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CostSample!</b></code>](/api/graphql/types/objects/cost-sample.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#last-day\} 
+Total cost for the most recent 24-hour period.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CostSummary.<b>dailyAverage</b></code>](#daily-average)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CostSample!</b></code>](/api/graphql/types/objects/cost-sample.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#daily-average\} 
+Average daily cost over the last 7 days.
+
+
+
+
+
+
+### Member Of
+
+[`Environment`](/api/graphql/types/objects/environment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Instance`](/api/graphql/types/objects/instance.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Project`](/api/graphql/types/objects/project.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

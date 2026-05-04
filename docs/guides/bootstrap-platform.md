@@ -7,7 +7,7 @@ sidebar_label: Bootstrap Your Platform
 
 # Bootstrap Your Platform
 
-The Massdriver Catalog is a bootstrap repository for self-hosted instances containing artifact definitions, bundle schemas, and credential templates. It lets you model your platform architecture and test the developer experience before implementing infrastructure code.
+The Massdriver Catalog is a bootstrap repository for self-hosted instances containing resource types, bundle schemas, and credential templates. It lets you model your platform architecture and test the developer experience before implementing infrastructure code.
 
 **[→ Massdriver Catalog on GitHub](https://github.com/massdriver-cloud/massdriver-catalog)**
 
@@ -19,7 +19,7 @@ This is useful for answering questions like: Should you have separate `postgres`
 
 ## What's Included
 
-- **Credential artifact definitions** - AWS, Azure, GCP authentication contracts
+- **Credential resource types** - AWS, Azure, GCP authentication contracts
 - **Artifact definitions** - Networks, databases (PostgreSQL, MySQL), storage buckets
 - **Infrastructure bundles** - Complete massdriver.yaml configs with parameter schemas, connections, artifacts, and UI schemas (placeholder IaC)
 
@@ -42,7 +42,7 @@ The repository contains setup instructions, customization guides, and examples.
 
 ## Related
 
-- [Custom Artifact Definitions](/guides/custom-artifact-definition)
-- [Core Artifact Definitions](https://github.com/massdriver-cloud/artifact-definitions)
+- [Custom Resource Types](/guides/custom-artifact-definition)
+- [Core Resource Types](https://github.com/massdriver-cloud/artifact-definitions)
 - [Massdriver Slack](https://massdriver.cloud/slack)
 

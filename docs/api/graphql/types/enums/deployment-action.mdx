@@ -1,0 +1,84 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: deployment-action
+title: DeploymentAction
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+The type of infrastructure operation to perform.
+
+Each action maps to a distinct phase of the infrastructure lifecycle:
+- **PROVISION** creates new infrastructure or updates existing infrastructure to match the desired configuration.
+- **DECOMMISSION** tears down all infrastructure managed by the instance.
+- **PLAN** generates a dry-run preview showing what changes _would_ be made, without actually applying them.
+
+
+```graphql
+enum DeploymentAction {
+  PROVISION
+  DECOMMISSION
+  PLAN
+}
+```
+
+
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentAction.<b>PROVISION</b></code>](#provision) \{#provision\} 
+Create new infrastructure or update existing infrastructure to match the instance's current configuration.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentAction.<b>DECOMMISSION</b></code>](#decommission) \{#decommission\} 
+Destroy all infrastructure managed by this instance. This action cannot be undone.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentAction.<b>PLAN</b></code>](#plan) \{#plan\} 
+Generate a dry-run preview of what changes would be made, without applying them. Useful for reviewing infrastructure changes before committing.
+
+
+
+
+
+
+### Member Of
+
+[`CreateDeploymentInput`](/api/graphql/types/inputs/create-deployment-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`Deployment`](/api/graphql/types/objects/deployment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`DeploymentActionFilter`](/api/graphql/types/inputs/deployment-action-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

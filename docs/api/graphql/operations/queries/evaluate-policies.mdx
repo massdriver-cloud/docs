@@ -1,0 +1,83 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: evaluate-policies
+title: evaluatePolicies
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Evaluate multiple `(action, entityId)` permissions in a single request.
+The list of `checks` is capped at 10 entries.
+
+Decisions are returned in the same order as `checks`. Each decision
+echoes its inputs so callers can correlate without relying on positional
+indices. Same not-found / cross-org behavior as `evaluatePolicy`. If any
+check references an action outside the policy catalog (or one that
+can't be evaluated against an id) the whole request returns a
+`NOT_FOUND` error.
+
+
+```graphql
+evaluatePolicies(
+  organizationId: ID!
+  checks: [PolicyDecisionInput!]!
+): [PolicyDecision!]!
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>evaluatePolicies.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>evaluatePolicies.<b>checks</b></code>](#checks)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[PolicyDecisionInput!]!</b></code>](/api/graphql/types/inputs/policy-decision-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#checks\} 
+The list of permissions to evaluate. Capped at 10 entries.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PolicyDecision</b></code>](/api/graphql/types/objects/policy-decision.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The decision returned by an `evaluatePolicy` request.
+
+`action` and `entityId` mirror the inputs so batch callers can correlate
+decisions with their original questions without tracking positions
+externally.

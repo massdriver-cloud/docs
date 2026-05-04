@@ -50,14 +50,14 @@ resource "aws_s3_bucket" "logs" {
   bucket = "${var.md_metadata.name_prefix}-logs"  # e.g., "my-project-prod-my-package-logs"
 }
 
-# Apply default tags to all resources (includes managed-by, md-project, md-target, etc.)
+# Apply default tags to all resources (includes managed-by, md-project, md-environment, etc.)
 resource "aws_instance" "app" {
   ami           = "ami-12345"
   instance_type = "t3.medium"
   
   # Merge default tags with custom tags
   tags = merge(
-    var.md_metadata.default_tags,  # { managed-by = "massdriver", md-project = "...", md-target = "prod", ... }
+    var.md_metadata.default_tags,  # { managed-by = "massdriver", md-project = "...", md-environment = "prod", ... }
     {
       Name = "${var.md_metadata.name_prefix}-app"
       Component = "application"
@@ -67,8 +67,8 @@ resource "aws_instance" "app" {
 
 # Use tags for conditional logic (e.g., enable stricter checks in production)
 locals {
-  is_production = var.md_metadata.default_tags["md-target"] == "production"
-  enable_backups = var.md_metadata.default_tags["md-target"] != "test"
+  is_production = var.md_metadata.default_tags["md-environment"] == "production"
+  enable_backups = var.md_metadata.default_tags["md-environment"] != "test"
 }
 
 # Use observability webhook for alarms
@@ -105,7 +105,7 @@ steps:
       # Only halt on security scan failures in production
       checkov:
         enable: true
-        halt_on_failure: '.params.md_metadata.default_tags["md-target"] == "prod"'
+        halt_on_failure: '.params.md_metadata.default_tags["md-environment"] == "prod"'
       
       # Use name prefix for workspace naming
       workspace: '.params.md_metadata.name_prefix'
@@ -141,9 +141,9 @@ Default tags that should be applied to all resources created by the bundle. Thes
 **Tags included**:
 - `managed-by`: Always set to `"massdriver"`
 - `md-project`: The project slug (`package.target.project.slug`)
-- `md-target`: The target (environment) slug (`package.target.slug`)
-- `md-manifest`: The manifest slug (`package.manifest.slug`)
-- `md-package`: The package name prefix (`package.name_prefix`)
+- `md-environment`: The target (environment) slug (`package.target.slug`)
+- `md-component`: The manifest slug (`package.manifest.slug`)
+- `md-instance`: The package name prefix (`package.name_prefix`)
 
 **Use case**: Apply consistent tagging across all resources.
 
@@ -284,8 +284,8 @@ Use tags to implement environment-specific behavior:
 
 ```hcl
 locals {
-  is_production = var.md_metadata.default_tags["md-target"] == "production"
-  enable_backups = var.md_metadata.default_tags["md-target"] != "test"
+  is_production = var.md_metadata.default_tags["md-environment"] == "production"
+  enable_backups = var.md_metadata.default_tags["md-environment"] != "test"
 }
 
 resource "aws_db_instance" "database" {
@@ -303,7 +303,7 @@ steps:
     config:
       checkov:
         enable: true
-        halt_on_failure: '.params.md_metadata.default_tags["md-target"] == "prod"'
+        halt_on_failure: '.params.md_metadata.default_tags["md-environment"] == "prod"'
 ```
 
 ### Alarm Integration
@@ -348,7 +348,7 @@ resource "kubernetes_job" "migrations" {
 
 1. **Always use `name_prefix` for resource naming** - Don't ask users for project/environment names as parameters
 2. **Apply `default_tags` to all resources** - Enables cost tracking and resource organization
-3. **Use tags for conditional logic** - Check `md-target` for environment-specific behavior instead of parameters
+3. **Use tags for conditional logic** - Check `md-environment` for environment-specific behavior instead of parameters
 4. **Leverage `alarm_webhook_url`** - Integrate monitoring with Massdriver's alarm system
 5. **Use package metadata sparingly** - Most use cases don't need deployment timestamps, but they're available when needed
 

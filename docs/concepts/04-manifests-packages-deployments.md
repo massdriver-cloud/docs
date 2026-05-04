@@ -1,41 +1,43 @@
 ---
-id: concepts-manifests-packages-deployments
-slug: /concepts/manifests-packages-deployments
-title: Manifests, Packages & Deployments
-sidebar_label: Manifests, Packages & Deployments
+id: concepts-components-instances-deployments
+slug: /concepts/components-instances-deployments
+title: Components, Instances & Deployments
+sidebar_label: Components, Instances & Deployments
 ---
 
 This page covers the lifecycle of infrastructure from blueprint to deployed resources.
 
-## Manifests
+## Components
 
-Manifests are [bundles](/concepts/bundles) that have been added to a project with a specific use case.
+A **component** (previously called a "manifest") is a [bundle](/concepts/bundles) that has been added to a project's blueprint with a specific use case.
 
-For example: You may add the `aws-elasticache-redis` bundle to a project for multiple use cases, one instance for `user-sessions` and a second instance for `caching`.
+For example: You may add the `aws-elasticache-redis` bundle to a project for multiple use cases — one component for `user-sessions` and a second component for `caching`.
 
 In the example below, an **SNS Topic** is added to the project for tracking _created orders_ in an e-commerce application.
 
-![Manifests](./img/manifests.gif)
+![Components](./img/manifests.gif)
 
-## Packages
+## Instances
 
-A _package_ is a [manifest](#manifests) that has been deployed to a specific [environment](/concepts/projects-and-environments) (e.g., production, staging, US West, etc).
+An **instance** (previously called a "package") is a component as it exists in a specific [environment](/concepts/projects-and-environments) (e.g. production, staging, US West, etc).
 
-In Massdriver, naming conventions for cloud resources are managed for you. The package's identifier can be seen by clicking on the manifest and selecting the `Details` tab. The `ID` will be the naming prefix for all resources created when this package is deployed.
+> An instance is the intersection of an environment and a component.
 
-![Packages](./img/packages.png)
+In Massdriver, naming conventions for cloud resources are managed for you. The instance's identifier can be seen by clicking on the component and selecting the `Details` tab. The `ID` will be the naming prefix for all resources created when this instance is deployed.
 
-### Package Alarms
+![Instances](./img/packages.png)
 
-Packages can integrate monitors and alarms into Massdriver's notification system. In the example below, a number of Cloudwatch Alarms are visible for Aurora Postgres.
+### Instance Alarms
 
-![Package Alarms](./img/packages-alarms.gif)
+Instances can integrate monitors and alarms into Massdriver's notification system. In the example below, a number of CloudWatch alarms are visible for Aurora Postgres.
 
-### Package Resources
+![Instance Alarms](./img/packages-alarms.gif)
 
-Cloud resources created by the package are tracked within Massdriver. Below is a view of the resources created by the [AWS EKS Cluster](https://github.com/massdriver-cloud/aws-eks-cluster) bundle.
+### Instance Resources
 
-![Package Resources](./img/packages-resources.gif)
+Cloud resources created by the instance are tracked within Massdriver. Below is a view of the resources created by the [AWS EKS Cluster](https://github.com/massdriver-cloud/aws-eks-cluster) bundle.
+
+![Instance Resources](./img/packages-resources.gif)
 
 ## Deployments
 
@@ -47,25 +49,25 @@ Massdriver keeps a record of every deployment, whether provisioning or decommiss
 
 ### Deployment Comparison
 
-Massdriver makes it easy to quickly view the difference in configuration between different deployments. It's a great way to provide information to auditors, or to debug issues related to a recent deployment.
+Massdriver makes it easy to view the difference in configuration between deployments. It's a great way to provide information to auditors, or to debug issues related to a recent deployment.
 
 ![Deployment Comparison](./img/deployments-comparison.gif)
 
 ## The Lifecycle
 
 ```
-Bundle → Manifest → Package → Deployment
-   ↓         ↓          ↓          ↓
-Template  Blueprint  Instance    Record
+Bundle → Component → Instance → Deployment
+   ↓         ↓          ↓           ↓
+Template  Blueprint  Env-bound    Record
 ```
 
 1. **Bundle**: A reusable infrastructure template (e.g., "PostgreSQL Database")
-2. **Manifest**: A bundle added to a project for a specific purpose (e.g., "User Database")
-3. **Package**: A manifest deployed to an environment (e.g., "User Database in Production")
-4. **Deployment**: A record of provisioning that package
+2. **Component**: A bundle added to a project for a specific purpose (e.g., "User Database")
+3. **Instance**: A component as it exists in a specific environment (e.g., "User Database in Production")
+4. **Deployment**: A record of provisioning or decommissioning that instance
 
 ## Related Documentation
 
 - [Bundles](/concepts/bundles) - Understanding bundle structure
 - [Projects & Environments](/concepts/projects-and-environments) - Organizing your infrastructure
-- [Artifacts & Definitions](/concepts/artifacts-and-definitions) - How packages connect
+- [Resources & Resource Types](/concepts/resources-and-types) - How instances connect

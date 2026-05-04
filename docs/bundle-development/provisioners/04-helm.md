@@ -152,10 +152,10 @@ Let's start with the `params.json`, which will look like:
     "md_metadata": {
         "default_tags": {
             "managed-by": "massdriver",
-            "md-manifest": "somebundle",
-            "md-package": "proj-env-somebundle-0000",
+            "md-component": "somebundle",
+            "md-instance": "proj-env-somebundle-0000",
             "md-project": "proj",
-            "md-target": "env"
+            "md-environment": "env"
         },
         "name_prefix": "proj-env-somebundle-0000"
         ...
@@ -174,10 +174,10 @@ This JQ command takes all of the original JSON and adds the field `commonLabels`
 ```yaml params.yaml
 commonLabels:
     managed-by: "massdriver",
-    md-manifest: "somebundle",
-    md-package: "proj-env-somebundle-0000",
+    md-component: "somebundle",
+    md-instance: "proj-env-somebundle-0000",
     md-project: "proj",
-    md-target: "env"
+    md-environment: "env"
 foo:
     bar: "bizzle"
     count: 10

@@ -1,0 +1,108 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: instance-events-payload
+title: InstanceEventsPayload
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Events delivered by the `instanceEvents` subscription.
+
+Covers the instance itself, incoming connections that terminate on it,
+alarms attached to it, and deployments run against it.
+
+
+```graphql
+union InstanceEventsPayload = InstanceEvent | ConnectionEvent | AlarmEvent | DeploymentEvent
+```
+
+
+
+
+### Possible types
+
+#### [<code style={{ fontWeight: 'normal' }}>InstanceEventsPayload.<b>InstanceEvent</b></code>](/api/graphql/types/objects/instance-event.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A lifecycle event for an instance.
+
+Emitted when an instance is created, updated (configuration changed, deployment triggered),
+or deleted. Subscribe via `instanceEvents` or `projectEvents`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InstanceEventsPayload.<b>ConnectionEvent</b></code>](/api/graphql/types/objects/connection-event.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A lifecycle event for a realized connection between two instances in an environment.
+
+A connection is the runtime materialization of a blueprint link — it wires one
+instance's output artifact into another instance's input field within a single
+environment. Emitted when a connection is established or torn down. Subscribe via
+`environmentEvents` for every connection in an environment, or via `instanceEvents`
+for connections that terminate on a specific instance.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InstanceEventsPayload.<b>AlarmEvent</b></code>](/api/graphql/types/objects/alarm-event.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A lifecycle event for a cloud metric alarm attached to an instance.
+
+Emitted when an alarm is registered, reconfigured, removed, or when its
+firing state changes (e.g., `OK` → `ALARM`). State transitions surface as
+`UPDATED` — read the latest status from `alarm.currentState`. Subscribe via
+`environmentEvents` or `instanceEvents`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InstanceEventsPayload.<b>DeploymentEvent</b></code>](/api/graphql/types/objects/deployment-event.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A lifecycle event for a deployment.
+
+Emitted when a deployment is created (`CREATED`) and each time its status
+transitions (`UPDATED`) — e.g., `PENDING` → `RUNNING` → `COMPLETED`. Log
+deltas are **not** carried on this event; subscribe to `deploymentLogs` for
+streaming log content.
+
+Subscribe via `deploymentEvents` for a single deployment's feed, or via
+`instanceEvents` / `environmentEvents` to see every deployment in an
+instance or environment.
+
+On `UPDATED`, re-select whichever fields you need (typically `status` and
+`elapsedTime`) — Apollo will merge the payload into its cache by `Deployment:id`.
+
+
+
+
+
+
+### Returned By
+
+[`instanceEvents`](/api/graphql/operations/subscriptions/instance-events.mdx)  <Badge class="badge badge--secondary badge--relation" text="subscription"/>

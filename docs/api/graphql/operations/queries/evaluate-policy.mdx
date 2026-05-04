@@ -1,0 +1,86 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: evaluate-policy
+title: evaluatePolicy
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Evaluate whether the authenticated subject is permitted to perform a
+single action on a single entity.
+
+Returns `allowed: false` (not an error) for entities that don't exist or
+that belong to a different organization, so that the caller can't probe
+for their existence. Returns a `NOT_FOUND` error when `action` is not
+in the policy catalog or refers to an entity that has no addressable id.
+
+
+```graphql
+evaluatePolicy(
+  organizationId: ID!
+  action: String!
+  entityId: ID!
+): PolicyDecision!
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>evaluatePolicy.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>evaluatePolicy.<b>action</b></code>](#action)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#action\} 
+Action id in `entity:verb` form (for example `project:view`). Query `policyActions` for the full catalog.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>evaluatePolicy.<b>entityId</b></code>](#entity-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#entity-id\} 
+The identifier of the entity (e.g., a project's identifier).
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PolicyDecision</b></code>](/api/graphql/types/objects/policy-decision.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The decision returned by an `evaluatePolicy` request.
+
+`action` and `entityId` mirror the inputs so batch callers can correlate
+decisions with their original questions without tracking positions
+externally.

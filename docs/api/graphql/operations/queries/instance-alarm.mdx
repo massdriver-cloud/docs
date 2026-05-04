@@ -1,0 +1,92 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: instance-alarm
+title: instanceAlarm
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Fetch a single alarm by its unique identifier.
+
+Returns the alarm with its most recent `currentState` attached, or a
+`NOT_FOUND` error if the alarm doesn't exist or its project isn't
+visible to the caller.
+
+```graphql
+query {
+  instanceAlarm(organizationId: "my-org", id: "0192…uuid") {
+    id
+    displayName
+    currentState { status occurredAt }
+    metric { namespace name }
+  }
+}
+```
+
+
+```graphql
+instanceAlarm(
+  organizationId: ID!
+  id: UUID!
+): Alarm
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>instanceAlarm.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>instanceAlarm.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UUID!</b></code>](/api/graphql/types/scalars/uuid.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+The alarm's unique identifier.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Alarm</b></code>](/api/graphql/types/objects/alarm.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A cloud metric alarm attached to an instance.
+
+Receives state updates via webhooks from AWS CloudWatch, Azure Monitor,
+GCP Cloud Monitoring, or Prometheus Alertmanager.
+
+Check `currentState` to see whether the alarm is firing. A `null`
+`currentState` means no state has been reported yet for this alarm.

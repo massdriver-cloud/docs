@@ -1,0 +1,98 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: param-dimensions
+title: paramDimensions
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Discover the configuration fields available across your instances.
+
+Introspects the bundle schemas of all accessible instances and returns the
+unique, filterable parameter fields. Use the results to build dynamic search
+filters or infrastructure dashboards.
+
+For example, if your database instances expose `database.instance_type` and
+your Kubernetes instances expose `cluster.node_count`, both will appear here.
+You can then pass those fields to the `paramDimension` filter on the
+`instances` query.
+
+```graphql
+query {
+  paramDimensions(organizationId: "my-org") {
+    items { field label type }
+    cursor { after }
+  }
+}
+```
+
+
+```graphql
+paramDimensions(
+  organizationId: ID!
+  filter: ParamDimensionsFilter
+  sort: ParamDimensionsSort
+  cursor: Cursor
+): ParamDimensionsPage
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>paramDimensions.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>paramDimensions.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ParamDimensionsFilter</b></code>](/api/graphql/types/inputs/param-dimensions-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#filter\} 
+Scope which instances' schemas to introspect.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>paramDimensions.<b>sort</b></code>](#sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ParamDimensionsSort</b></code>](/api/graphql/types/inputs/param-dimensions-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#sort\} 
+Sort field and direction. Defaults to `field` ascending.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>paramDimensions.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#cursor\} 
+Pagination cursor returned by a previous page.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ParamDimensionsPage</b></code>](/api/graphql/types/objects/param-dimensions-page.mdx) <Badge class="badge badge--secondary " text="object"/>

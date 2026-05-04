@@ -7,7 +7,7 @@ sidebar_label: Module Patterns
 
 If your team has an existing library of Terraform or OpenTofu modules — naming utilities, diagnostic configurations, RBAC helpers, VM extensions, and other shared modules — this guide explains how each pattern maps to Massdriver and where your modules should live after migration.
 
-This guide assumes you're familiar with [bundles](/concepts/bundles), [artifacts](/concepts/artifacts-and-definitions), and [connections](/concepts/connections). If you're new to these concepts, start with the [getting started guides](/getting-started/deploying-first-bundle).
+This guide assumes you're familiar with [bundles](/concepts/bundles), [artifacts](/concepts/resources-and-types), and [connections](/concepts/connections). If you're new to these concepts, start with the [getting started guides](/getting-started/deploying-first-bundle).
 
 ## The Migration Map
 
@@ -35,7 +35,7 @@ This is one of the most immediate wins when migrating to Massdriver. Your naming
 ### What md_metadata provides
 
 - **`name_prefix`** — A unique, consistent identifier in the format `{project-slug}-{target-slug}-{manifest-slug}-{suffix}` (e.g., `ecomm-prod-api-abc1`). Use this everywhere you previously concatenated project, environment, and app names.
-- **`default_tags`** — Standard tags automatically applied to every deployment, including `managed-by`, `md-project`, `md-target`, `md-manifest`, and `md-package`.
+- **`default_tags`** — Standard tags automatically applied to every deployment, including `managed-by`, `md-project`, `md-environment`, `md-component`, and `md-instance`.
 
 ### Before and after
 
@@ -339,7 +339,7 @@ Now when someone needs to update SSO settings, they configure it through the bun
 
 - [Creating a Bundle from an OpenTofu Module](/guides/bundle-from-opentofu) — Step-by-step conversion of a single module
 - [Bootstrap Your Platform](/guides/bootstrap-platform) — Model your entire platform architecture before implementing
-- [Custom Artifact Definitions](/guides/custom-artifact-definition) — Create the contracts that connect your bundles
+- [Custom Resource Types](/guides/custom-artifact-definition) — Create the contracts that connect your bundles
 - [Using Bundle Deployment Metadata](/getting-started/using-bundle-metadata) — Full reference for `md_metadata`
 - [Sharing Infrastructure](/guides/sharing-infrastructure) — Environment defaults and remote references
 

@@ -1,0 +1,95 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: grant
+title: Grant
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A grant: a specific OCI repo or resource shared with recipient projects /
+environments matching `recipientConditions`.
+
+
+```graphql
+type Grant {
+  id: ID!
+  action: String!
+  recipientConditions: Conditions!
+  source: GrantSource!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>Grant.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+Unique identifier for this grant.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Grant.<b>action</b></code>](#action)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#action\} 
+The action being granted on the source. Repo grants take `repo:view`/`repo:pull`/`repo:push`; resource grants take `resource:view`/`resource:export`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Grant.<b>recipientConditions</b></code>](#recipient-conditions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Conditions!</b></code>](/api/graphql/types/scalars/conditions.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#recipient-conditions\} 
+Either `"*"` (the grant is a wildcard — every recipient in the org sees the source) or a JSON-encoded object of attribute conditions the recipient project / environment must satisfy. Keys are attribute names; values are a string or list of strings.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Grant.<b>source</b></code>](#source)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GrantSource!</b></code>](/api/graphql/types/unions/grant-source.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="union"/> \{#source\} 
+The OCI repo or resource being shared.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Grant.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When this grant was created.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Grant.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+When this grant was last updated.
+
+
+
+
+
+
+### Member Of
+
+[`GrantPayload`](/api/graphql/types/objects/grant-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`GrantsPage`](/api/graphql/types/objects/grants-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

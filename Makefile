@@ -4,19 +4,10 @@ CLIPATH?=../mass
 all: sync-cli-docs sync-gql-docs sync-authz-docs
 
 .PHONY: sync-gql-docs
-sync-gql-docs: sync-gql-v0 sync-gql-v1 # Generate all GraphQL docs
-
-.PHONY: sync-gql-v0
-sync-gql-v0: # Generate v0 GraphQL docs from remote schema
-	rm -rf ./docs/api/graphql/v0/{operations,types,deprecated}
-	curl -s https://api.massdriver.cloud/graphql/schema.graphql -o ./schema/v0/schema.graphql
-	npx docusaurus graphql-to-doc:graphql-v0
-
-.PHONY: sync-gql-v1
-sync-gql-v1: # Generate v1 GraphQL docs from remote schema
-	rm -rf ./docs/api/graphql/v1/{operations,types}
-	curl -s https://api.massdriver.cloud/graphql/v1/schema.graphql -o ./schema/v1/schema.graphql
-	yarn gen:graphql-v1
+sync-gql-docs: # Generate GraphQL docs from remote schema
+	rm -rf ./docs/api/graphql/{operations,types,deprecated}
+	curl -s https://api.massdriver.cloud/graphql/v1/schema.graphql -o ./schema/schema.graphql
+	yarn gen:graphql
 
 .PHONY: yarn
 yarn:

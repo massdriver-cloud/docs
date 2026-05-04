@@ -1,0 +1,82 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: event-action
+title: EventAction
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+The type of lifecycle change that triggered an event.
+
+Every event carries an action indicating whether the resource was created,
+modified, or removed.
+
+
+```graphql
+enum EventAction {
+  CREATED
+  UPDATED
+  DELETED
+}
+```
+
+
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>EventAction.<b>CREATED</b></code>](#created) \{#created\} 
+A new resource was created.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventAction.<b>UPDATED</b></code>](#updated) \{#updated\} 
+An existing resource was modified (configuration, status, or metadata changed).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventAction.<b>DELETED</b></code>](#deleted) \{#deleted\} 
+A resource was permanently removed.
+
+
+
+
+
+
+### Member Of
+
+[`AlarmEvent`](/api/graphql/types/objects/alarm-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`BundleEvent`](/api/graphql/types/objects/bundle-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ComponentEvent`](/api/graphql/types/objects/component-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ConnectionEvent`](/api/graphql/types/objects/connection-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`DeploymentEvent`](/api/graphql/types/objects/deployment-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentDefaultEvent`](/api/graphql/types/objects/environment-default-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentEvent`](/api/graphql/types/objects/environment-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Event`](/api/graphql/types/interfaces/event.mdx)  <Badge class="badge badge--secondary badge--relation" text="interface"/><Bullet />[`EventType`](/api/graphql/types/objects/event-type.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`InstanceEvent`](/api/graphql/types/objects/instance-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`LinkEvent`](/api/graphql/types/objects/link-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`OciRepoEvent`](/api/graphql/types/objects/oci-repo-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ProjectEvent`](/api/graphql/types/objects/project-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

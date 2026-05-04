@@ -1,0 +1,96 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: instance-alarms
+title: instanceAlarms
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+List alarms across all projects you can see.
+
+Returns a paginated list. Use `filter` to narrow by project, environment,
+component, bundle (`ociRepoName`), or instance. Default sort is
+alphabetical by `displayName`.
+
+```graphql
+query {
+  instanceAlarms(
+    organizationId: "my-org"
+    filter: { environmentId: { eq: "prod" }, ociRepoName: { eq: "aws-rds" } }
+  ) {
+    items { id displayName currentState { status occurredAt } }
+    cursor { next }
+  }
+}
+```
+
+
+```graphql
+instanceAlarms(
+  organizationId: ID!
+  filter: InstanceAlarmsFilter
+  sort: InstanceAlarmsSort
+  cursor: Cursor
+): AlarmsPage
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>instanceAlarms.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>instanceAlarms.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InstanceAlarmsFilter</b></code>](/api/graphql/types/inputs/instance-alarms-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#filter\} 
+Narrow results by project, environment, component, bundle, or instance.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>instanceAlarms.<b>sort</b></code>](#sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InstanceAlarmsSort</b></code>](/api/graphql/types/inputs/instance-alarms-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#sort\} 
+Sort field and direction. Defaults to `displayName` ascending.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>instanceAlarms.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#cursor\} 
+Pagination cursor returned by a previous page.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AlarmsPage</b></code>](/api/graphql/types/objects/alarms-page.mdx) <Badge class="badge badge--secondary " text="object"/>

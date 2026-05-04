@@ -11,7 +11,7 @@ This guide will show you how to import a custom artifact into your organization.
 
 ## Prerequisites
 
-To import an artifact, you need a schema ([artifact definition](/concepts/artifacts-and-definitions)). You can either create a [custom artifact definition](/guides/custom-artifact-definition) or use an official [Massdriver artifact definition](https://github.com/massdriver-cloud/artifact-definitions/tree/main/definitions/artifacts). 
+To import an artifact, you need a schema ([resource type](/concepts/resources-and-types)). You can either create a [custom resource type](/guides/custom-artifact-definition) or use an official [Massdriver resource type](https://github.com/massdriver-cloud/artifact-definitions/tree/main/definitions/artifacts). 
 
 We'll also need a custom artifact that meets that schema, populated with actual values. Here's an example:
 

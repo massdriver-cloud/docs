@@ -1,0 +1,98 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: policy-actions
+title: policyActions
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Return the complete catalog of ABAC actions available in Massdriver.
+
+Actions are the building blocks of policies. Each action has an id in
+`{entity}:{verb}` form (for example `project:view`, `instance:deploy`) and
+a human-readable description. The full list is small and static, so this
+query returns every action in a single response — no pagination.
+
+Results are sorted alphabetically by id.
+
+**Visibility model:** if you can view a project, you can see every
+environment and instance within it. There is no `environment:view` or
+`instance:view` primitive. Sensitive payloads are protected by
+`resource:export` and `repo:pull` (both audit-logged), not by hiding
+topology.
+
+**Example:**
+
+```graphql
+query PolicyActions {
+  policyActions(organizationId: "my-org") {
+    id
+    verb
+    description
+    entity { id description }
+  }
+}
+```
+
+
+```graphql
+policyActions(
+  organizationId: ID!
+): [PolicyAction!]!
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>policyActions.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PolicyAction</b></code>](/api/graphql/types/objects/policy-action.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A single action a policy can allow or deny. Actions follow the format
+`{entity}:{verb}` — for example `project:view` or `instance:deploy`.
+
+Use `policyActions` to enumerate the complete catalog when building a
+policy-authoring UI. Descriptions are written for end users and explain what
+the action permits, what it does **not** permit, and how it relates to other
+actions (especially around the project-as-view-boundary model).

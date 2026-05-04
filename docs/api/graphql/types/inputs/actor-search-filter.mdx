@@ -1,0 +1,81 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: actor-search-filter
+title: ActorSearchFilter
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Case-insensitive substring search across the actor's identifying fields.
+
+Useful for finding every action taken by a specific user or bot without needing to
+know their exact ID. The search is matched against different fields depending on
+actor type:
+
+- **Human users (`ACCOUNT`)** — email, first name, and last name.
+- **Service accounts (`SERVICE_ACCOUNT`)** — service account name.
+- **Deployments (`DEPLOYMENT`)** and **system actions (`SYSTEM`)** — the recorded actor ID.
+
+Matching is case-insensitive and uses substring semantics, so `search: "alice"` will
+match `alice@example.com`, `Alice Wonderland`, and a service account named
+`alice-deploy-bot`.
+
+
+```graphql
+input ActorSearchFilter {
+  search: String
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ActorSearchFilter.<b>search</b></code>](#search)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#search\} 
+Substring to look for. Blank or missing values skip this filter.
+
+
+
+
+
+
+### Member Of
+
+[`AuditLogsFilter`](/api/graphql/types/inputs/audit-logs-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

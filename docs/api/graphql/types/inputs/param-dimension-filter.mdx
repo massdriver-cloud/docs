@@ -1,0 +1,107 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: param-dimension-filter
+title: ParamDimensionFilter
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Filter instances by the value of a configuration parameter at a specific JSON path.
+
+Parameter dimensions let you slice your infrastructure by any value in an instance's
+configuration — for example, filtering by database engine, instance size, or region.
+Use the `paramDimensions` query to discover which dimensions are available for your
+instances.
+
+```graphql
+# All instances using "db.r5.xlarge"
+{
+  "params": {
+    "dimension": ".database.instance_type",
+    "eq": "db.r5.xlarge"
+  }
+}
+
+# All instances whose region contains "us-east"
+{
+  "params": {
+    "dimension": ".region",
+    "contains": "us-east"
+  }
+}
+```
+
+
+```graphql
+input ParamDimensionFilter {
+  dimension: String!
+  eq: String
+  in: [String!]
+  contains: String
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ParamDimensionFilter.<b>dimension</b></code>](#dimension)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#dimension\} 
+jq-style path to the configuration parameter (e.g., `".database.instance_type"` or `".containers[0].image"`). Use the `paramDimensions` query to discover available paths.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ParamDimensionFilter.<b>eq</b></code>](#eq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#eq\} 
+Return only instances whose parameter value exactly equals this string.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ParamDimensionFilter.<b>in</b></code>](#in)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#in\} 
+Return instances whose parameter value matches any string in this list.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ParamDimensionFilter.<b>contains</b></code>](#contains)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#contains\} 
+Return instances whose parameter value contains this substring (case-insensitive).
+
+
+
+
+
+
+### Member Of
+
+[`InstancesFilter`](/api/graphql/types/inputs/instances-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

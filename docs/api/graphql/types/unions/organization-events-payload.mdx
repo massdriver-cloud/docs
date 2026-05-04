@@ -1,0 +1,89 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: organization-events-payload
+title: OrganizationEventsPayload
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Events delivered by the `organizationEvents` subscription.
+
+
+```graphql
+union OrganizationEventsPayload = ProjectEvent | OciRepoEvent | BundleEvent
+```
+
+
+
+
+### Possible types
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationEventsPayload.<b>ProjectEvent</b></code>](/api/graphql/types/objects/project-event.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A lifecycle event for a project.
+
+Emitted when a project is created, updated (renamed, settings changed), or deleted.
+Subscribe via `organizationEvents` or `projectEvents`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationEventsPayload.<b>OciRepoEvent</b></code>](/api/graphql/types/objects/oci-repo-event.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A lifecycle event for an OCI repository in the organization's bundle catalog.
+
+Emitted with action `CREATED` the first time a bundle is published under a
+new repository name. The registry is immutable — repositories cannot be
+renamed or deleted through the API today — so subsequent publishes to an
+existing repository fire a `BundleEvent` instead. Subscribe via
+`organizationEvents`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationEventsPayload.<b>BundleEvent</b></code>](/api/graphql/types/objects/bundle-event.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A lifecycle event for a published bundle version.
+
+Emitted with action `CREATED` each time a new bundle release is pushed to
+an OCI repository in the organization. Bundle versions are immutable, so
+neither `UPDATED` nor `DELETED` is emitted today. Subscribe via
+`organizationEvents`.
+
+
+
+
+
+
+### Returned By
+
+[`organizationEvents`](/api/graphql/operations/subscriptions/organization-events.mdx)  <Badge class="badge badge--secondary badge--relation" text="subscription"/>

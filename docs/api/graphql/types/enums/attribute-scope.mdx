@@ -1,0 +1,94 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: attribute-scope
+title: AttributeScope
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+The resource level where a custom attribute applies.
+
+Attributes set at hierarchy scopes (`PROJECT`, `ENVIRONMENT`, `COMPONENT`, `INSTANCE`) cascade
+downward — an attribute set at `PROJECT` is inherited by all environments and instances in
+that project. `REPO`-scoped attributes apply to OCI repositories; the bundle name is propagated
+to components, instances, deployments, and resources via the `md-repo` system attribute.
+
+
+```graphql
+enum AttributeScope {
+  PROJECT
+  ENVIRONMENT
+  COMPONENT
+  INSTANCE
+  REPO
+}
+```
+
+
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>AttributeScope.<b>PROJECT</b></code>](#project) \{#project\} 
+Attribute is set on individual projects.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AttributeScope.<b>ENVIRONMENT</b></code>](#environment) \{#environment\} 
+Attribute is set on individual environments.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AttributeScope.<b>COMPONENT</b></code>](#component) \{#component\} 
+Attribute is set on blueprint components (design-time).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AttributeScope.<b>INSTANCE</b></code>](#instance) \{#instance\} 
+Attribute is set on deployed instances (run-time).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AttributeScope.<b>REPO</b></code>](#repo) \{#repo\} 
+Attribute is set on individual OCI repositories (bundles).
+
+
+
+
+
+
+### Member Of
+
+[`CreateCustomAttributeInput`](/api/graphql/types/inputs/create-custom-attribute-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`CustomAttribute`](/api/graphql/types/objects/custom-attribute.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`customAttributeValues`](/api/graphql/operations/queries/custom-attribute-values.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

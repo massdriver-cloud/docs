@@ -1,0 +1,78 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: import-instruction
+title: ImportInstruction
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A single set of import instructions for a resource type, typically rendered as a tab.
+
+Resource types may ship multiple instruction variants (e.g., one for the CLI and one
+for the cloud console) so users can pick the workflow they prefer when importing an
+existing resource. The `label` is the tab heading; the `content` is the markdown body.
+
+
+```graphql
+type ImportInstruction {
+  label: String!
+  content: String!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ImportInstruction.<b>label</b></code>](#label)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#label\} 
+Short heading shown above this instruction set (e.g., "AWS CLI", "AWS Console").
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ImportInstruction.<b>content</b></code>](#content)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#content\} 
+Markdown body of the instructions. Already decoded from any base64 transport encoding.
+
+
+
+
+
+
+### Member Of
+
+[`ResourceType`](/api/graphql/types/objects/resource-type.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

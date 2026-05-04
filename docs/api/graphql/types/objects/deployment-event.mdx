@@ -1,0 +1,117 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: deployment-event
+title: DeploymentEvent
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A lifecycle event for a deployment.
+
+Emitted when a deployment is created (`CREATED`) and each time its status
+transitions (`UPDATED`) — e.g., `PENDING` → `RUNNING` → `COMPLETED`. Log
+deltas are **not** carried on this event; subscribe to `deploymentLogs` for
+streaming log content.
+
+Subscribe via `deploymentEvents` for a single deployment's feed, or via
+`instanceEvents` / `environmentEvents` to see every deployment in an
+instance or environment.
+
+On `UPDATED`, re-select whichever fields you need (typically `status` and
+`elapsedTime`) — Apollo will merge the payload into its cache by `Deployment:id`.
+
+
+```graphql
+type DeploymentEvent implements Event {
+  action: EventAction!
+  timestamp: DateTime!
+  deployment: Deployment!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentEvent.<b>action</b></code>](#action)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventAction!</b></code>](/api/graphql/types/enums/event-action.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#action\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentEvent.<b>timestamp</b></code>](#timestamp)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#timestamp\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentEvent.<b>deployment</b></code>](#deployment)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Deployment!</b></code>](/api/graphql/types/objects/deployment.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#deployment\} 
+The deployment that was created or updated.
+
+
+### Interfaces
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Event</b></code>](/api/graphql/types/interfaces/event.mdx) <Badge class="badge badge--secondary " text="interface"/> 
+Base interface implemented by all lifecycle events.
+
+Every event carries an `action` describing what happened and a `timestamp` recording
+when it occurred. Concrete event types add a field for the affected resource.
+
+Because each subscription returns a union, use an `... on Event` fragment to
+access the shared fields and concrete fragments for the resource payload:
+
+```graphql
+subscription {
+  projectEvents(organizationId: "my-org", projectId: "my-project") {
+    ... on Event { action timestamp }
+    ... on ComponentEvent {
+      component { id name }
+    }
+    ... on LinkEvent {
+      link { id fromField toField }
+    }
+  }
+}
+```
+
+
+
+
+
+
+### Implemented By
+
+[`DeploymentEventsPayload`](/api/graphql/types/unions/deployment-events-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="union"/><Bullet />[`EnvironmentEventsPayload`](/api/graphql/types/unions/environment-events-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="union"/><Bullet />[`InstanceEventsPayload`](/api/graphql/types/unions/instance-events-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="union"/>

@@ -1,21 +1,21 @@
 ---
 id: artifact-definition-spec
 slug: /bundle-development/connections-artifacts/artifact-definition-spec
-title: Artifact Definition Specification
-sidebar_label: Artifact Definition Spec
+title: Resource Type Specification
+sidebar_label: Resource Type Spec
 ---
 
-# Artifact Definition YAML Specification
+# Resource Type YAML Specification
 
-This document outlines the `massdriver.yaml` format for authoring artifact definitions. This format provides a more ergonomic authoring experience compared to writing raw JSON Schema, with support for referencing external files for instructions and export templates.
+This document outlines the `massdriver.yaml` format for authoring resource types. This format provides a more ergonomic authoring experience compared to writing raw JSON Schema, with support for referencing external files for instructions and export templates.
 
 :::tip When to Use This Format
-Use the `massdriver.yaml` format when creating new artifact definitions. It separates concerns by keeping markdown instructions and Liquid templates in their own files, making definitions easier to read and maintain.
+Use the `massdriver.yaml` format when creating new resource types. It separates concerns by keeping markdown instructions and Liquid templates in their own files, making definitions easier to read and maintain.
 :::
 
 ## File Structure
 
-An artifact definition using this format consists of a directory containing:
+An resource type using this format consists of a directory containing:
 
 ```
 my-artifact-definition/
@@ -35,7 +35,7 @@ my-artifact-definition/
 # =============================================================================
 
 # name (required)
-# The unique identifier for this artifact definition within your organization.
+# The unique identifier for this resource type within your organization.
 # Must be lowercase with hyphens. This becomes part of the artifact's reference
 # path: <org>/<name> (e.g., "acme/aws-rds-postgres")
 name: my-artifact-name
@@ -139,7 +139,7 @@ schema:
     authentication credentials and infrastructure identifiers.
 
   # type (required)
-  # Must be "object" for artifact definitions
+  # Must be "object" for resource types
   type: object
 
   # additionalProperties (recommended)
@@ -285,7 +285,7 @@ schema:
 
 ## Minimal Example
 
-A minimal artifact definition with just the required fields:
+A minimal resource type with just the required fields:
 
 ```yaml
 name: simple-credential
@@ -307,7 +307,7 @@ schema:
 
 ## Complete Example with All Features
 
-A full-featured artifact definition for a database credential:
+A full-featured resource type for a database credential:
 
 ```yaml
 name: postgres-database
@@ -425,7 +425,7 @@ DATABASE_NAME={{ artifact.authentication.database }}
 
 ## Publishing
 
-Publish your artifact definition using the Massdriver CLI:
+Publish your resource type using the Massdriver CLI:
 
 ```bash
 mass definition publish ./path/to/massdriver.yaml
@@ -435,12 +435,12 @@ The CLI will:
 1. Read and parse the `massdriver.yaml` file
 2. Inline the content from instruction and export template files
 3. Build the JSON Schema format expected by the API
-4. Validate against the artifact definition meta-schema
+4. Validate against the resource type meta-schema
 5. Publish to your organization
 
 ## Referencing in Bundles
 
-Once published, reference your artifact definition in bundle `massdriver.yaml` files:
+Once published, reference your resource type in bundle `massdriver.yaml` files:
 
 ```yaml
 # In a bundle's massdriver.yaml
@@ -482,6 +482,6 @@ connections:
 
 ## See Also
 
-- [Artifact Definitions Concept](/concepts/artifacts-and-definitions) - Understanding artifact definitions
-- [Custom Artifact Definition Guide](/guides/custom-artifact-definition) - JSON format and advanced customization
+- [Resource Types Concept](/concepts/resources-and-types) - Understanding resource types
+- [Custom Resource Type Guide](/guides/custom-artifact-definition) - JSON format and advanced customization
 - [Massdriver Annotations](/bundle-development/schema-design/massdriver-annotations) - Special `$md` annotations

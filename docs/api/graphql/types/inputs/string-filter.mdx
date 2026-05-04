@@ -1,0 +1,85 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: string-filter
+title: StringFilter
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Filter by a string field.
+
+All operators within a single filter are combined with **AND**. To match any of
+several values, use the `in` operator rather than multiple `eq` filters.
+
+```graphql
+# Exact match
+{ "name": { "eq": "production" } }
+
+# Match several values (logical OR between values)
+{ "name": { "in": ["production", "staging"] } }
+```
+
+
+```graphql
+input StringFilter {
+  eq: String
+  in: [String!]
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>StringFilter.<b>eq</b></code>](#eq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#eq\} 
+Return only results whose value exactly equals this string.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>StringFilter.<b>in</b></code>](#in)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#in\} 
+Return results whose value matches any string in this list.
+
+
+
+
+
+
+### Member Of
+
+[`AuditLogsFilter`](/api/graphql/types/inputs/audit-logs-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`BundlesFilter`](/api/graphql/types/inputs/bundles-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`EnvironmentsFilter`](/api/graphql/types/inputs/environments-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`EventTypesFilter`](/api/graphql/types/inputs/event-types-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`IntegrationsFilter`](/api/graphql/types/inputs/integrations-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`PoliciesFilter`](/api/graphql/types/inputs/policies-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`ResourcesFilter`](/api/graphql/types/inputs/resources-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`ResourceTypesFilter`](/api/graphql/types/inputs/resource-types-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

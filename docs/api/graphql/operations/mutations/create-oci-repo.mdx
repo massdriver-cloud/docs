@@ -1,0 +1,90 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: create-oci-repo
+title: createOciRepo
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+<Badge class="badge badge--secondary badge--primary" text="form schema"/>
+
+
+
+Create a new (empty) OCI repository in your organization's catalog.
+
+The `id` becomes the repository's permanent name and cannot be changed
+after creation. Repositories must exist before any version can be
+published — pushing to a non-existent repository returns 404.
+
+
+
+
+```graphql
+createOciRepo(
+  organizationId: ID!
+  input: CreateOciRepoInput!
+): OciRepoPayload
+```
+
+
+
+
+
+### Form Schema
+
+This mutation supports dynamic form generation using JSON Schema.
+
+- [JSON Schema](https://api.massdriver.cloud/graphql/v1/inputs/createOciRepo.json)
+- [UI Schema](https://api.massdriver.cloud/graphql/v1/inputs/createOciRepo.ui.json)
+
+<SchemaForm
+  schemaUrl="https://api.massdriver.cloud/graphql/v1/inputs/createOciRepo.json"
+  uiSchemaUrl="https://api.massdriver.cloud/graphql/v1/inputs/createOciRepo.ui.json"
+  name="createOciRepo"
+/>
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>createOciRepo.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>createOciRepo.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CreateOciRepoInput!</b></code>](/api/graphql/types/inputs/create-oci-repo-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Create a new OCI repository in your organization's catalog. Repositories must exist before any version can be published to them.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>OciRepoPayload</b></code>](/api/graphql/types/objects/oci-repo-payload.mdx) <Badge class="badge badge--secondary " text="object"/>

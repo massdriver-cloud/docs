@@ -85,5 +85,5 @@ Infrastructure runs in your cloud accounts, bundles are open specifications, and
 - [Bundle YAML Specification](/bundle-development/bundle-yaml-spec) - Complete reference for `massdriver.yaml`
 - [Schema Design](/bundle-development/schema-design/overview) - JSON Schema patterns and Massdriver annotations
 - [Provisioners](/bundle-development/provisioners/overview) - Configure OpenTofu, Terraform, Helm, Bicep
-- [Artifacts & Definitions](/concepts/artifacts-and-definitions) - How bundles connect through typed contracts
+- [Artifacts & Definitions](/concepts/resources-and-types) - How bundles connect through typed contracts
 - [Getting Started: Creating Bundles](/getting-started/creating-bundles) - Step-by-step tutorial

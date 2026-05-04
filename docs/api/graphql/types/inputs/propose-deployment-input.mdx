@@ -1,0 +1,79 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: propose-deployment-input
+title: ProposeDeploymentInput
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Propose a deployment for human review. The deployment is created in PROPOSED status and will not execute until it is approved via approveDeployment. Params are validated against the bundle's params schema and snapshotted into the proposal.
+
+
+```graphql
+input ProposeDeploymentInput {
+  action: ProposeDeploymentAction!
+  message: String
+  params: Map!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ProposeDeploymentInput.<b>action</b></code>](#action)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ProposeDeploymentAction!</b></code>](/api/graphql/types/enums/propose-deployment-action.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#action\} 
+The operation that will run once the proposal is approved. PLAN is not proposable — use createDeployment for dry-run previews.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ProposeDeploymentInput.<b>message</b></code>](#message)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#message\} 
+A short message describing the reason for this proposal
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ProposeDeploymentInput.<b>params</b></code>](#params)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#params\} 
+Bundle configuration parameters that should be applied if the proposal is approved. Validated against the bundle's params schema.
+
+
+
+
+
+
+### Member Of
+
+[`proposeDeployment`](/api/graphql/operations/mutations/propose-deployment.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

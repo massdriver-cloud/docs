@@ -1,0 +1,92 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: event-type
+title: EventType
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A single event type in the Massdriver event catalog.
+
+The `id` field follows dotted `entity.action` notation in past tense
+(e.g., `project.cloned`, `deployment.completed`).
+
+
+```graphql
+type EventType {
+  id: ID!
+  description: String!
+  entity: String!
+  action: String!
+  changeType: EventAction!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>EventType.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+Dotted, past-tense event id, e.g., `"environment.deployed"` or `"deployment.completed"`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventType.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+Human-readable summary of when this event fires and what its payload contains.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventType.<b>entity</b></code>](#entity)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#entity\} 
+The entity this event applies to (e.g., `"environment"`, `"deployment"`, `"instance"`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventType.<b>action</b></code>](#action)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#action\} 
+Past-tense verb describing what happened to the entity (e.g., `"created"`, `"deployed"`). Distinct from `PolicyAction.verb`, which is present-tense and describes what a principal may do.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventType.<b>changeType</b></code>](#change-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventAction!</b></code>](/api/graphql/types/enums/event-action.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#change-type\} 
+How the entity was modified. Consumers use this for cache invalidation — `CREATED` / `UPDATED` / `DELETED` maps cleanly onto an in-memory cache's add / replace / remove.
+
+
+
+
+
+
+### Returned By
+
+[`eventTypes`](/api/graphql/operations/queries/event-types.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

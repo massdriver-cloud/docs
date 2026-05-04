@@ -1,0 +1,97 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: update-policy
+title: updatePolicy
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+<Badge class="badge badge--secondary badge--primary" text="form schema"/>
+
+
+
+Edit a group policy's `effect`, `actions`, or `conditions` in place.
+
+The group is fixed at create time and cannot be changed — to retarget a
+policy, delete it and create a new one. Omit a field from the input to
+leave it unchanged. Set `conditions` to `"*"` explicitly to clear
+conditions and turn the policy into a wildcard. Setting `actions`
+replaces the entire list (no merge).
+
+
+
+
+```graphql
+updatePolicy(
+  organizationId: ID!
+  id: UUID!
+  input: UpdatePolicyInput!
+): PolicyPayload
+```
+
+
+
+
+
+### Form Schema
+
+This mutation supports dynamic form generation using JSON Schema.
+
+- [JSON Schema](https://api.massdriver.cloud/graphql/v1/inputs/updatePolicy.json)
+- [UI Schema](https://api.massdriver.cloud/graphql/v1/inputs/updatePolicy.ui.json)
+
+<SchemaForm
+  schemaUrl="https://api.massdriver.cloud/graphql/v1/inputs/updatePolicy.json"
+  uiSchemaUrl="https://api.massdriver.cloud/graphql/v1/inputs/updatePolicy.ui.json"
+  name="updatePolicy"
+/>
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>updatePolicy.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>updatePolicy.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UUID!</b></code>](/api/graphql/types/scalars/uuid.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+The policy's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>updatePolicy.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UpdatePolicyInput!</b></code>](/api/graphql/types/inputs/update-policy-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Edit an existing policy in place. The principal cannot be changed.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PolicyPayload</b></code>](/api/graphql/types/objects/policy-payload.mdx) <Badge class="badge badge--secondary " text="object"/>

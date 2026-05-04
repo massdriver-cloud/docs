@@ -1,0 +1,97 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: grant-source
+title: GrantSource
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+The thing a grant is sharing — exactly one of an OCI repo or a resource. The
+caller authoring the grant must have `repo:update` (for repo grants) or
+`resource:update` (for resource grants) on this source.
+
+
+```graphql
+union GrantSource = OciRepo | Resource
+```
+
+
+
+
+### Possible types
+
+#### [<code style={{ fontWeight: 'normal' }}>GrantSource.<b>OciRepo</b></code>](/api/graphql/types/objects/oci-repo.mdx) <Badge class="badge badge--secondary " text="object"/> 
+An OCI repository in your organization's bundle catalog.
+
+An OCI repository is the container for all published versions of a single
+infrastructure-as-code package. It is analogous to a Docker image repository
+but for Massdriver bundles.
+
+Each repository has a unique `name` (e.g., `aws-aurora-postgres`) and contains:
+
+- **Tags** -- the individual published versions (`1.0.0`, `1.1.0`, `1.2.3`, etc.)
+- **Release channels** -- auto-resolving version constraints (`latest`, `~1`, `~1.2`)
+  that always point to the newest matching tag
+
+To fetch a specific bundle version from a repository, use the `bundle` query
+with a `BundleId` like `aws-aurora-postgres@1.2.3` or `aws-aurora-postgres@~1`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GrantSource.<b>Resource</b></code>](/api/graphql/types/objects/resource.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A cloud credential, database connection string, network configuration, or other
+infrastructure output produced by (or imported into) Massdriver.
+
+Resources are the connective tissue between instances. When an instance is deployed, it
+produces resources as outputs. Other instances can consume those resources as inputs,
+creating a dependency graph of your infrastructure.
+
+Resources have two origins:
+- **Imported** — created directly through the API (e.g., uploading existing AWS credentials).
+  You have full CRUD control over these resources.
+- **Provisioned** — created automatically when an instance is deployed. These are read-only
+  and managed entirely by the owning instance's lifecycle.
+
+
+
+
+
+
+### Member Of
+
+[`Grant`](/api/graphql/types/objects/grant.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

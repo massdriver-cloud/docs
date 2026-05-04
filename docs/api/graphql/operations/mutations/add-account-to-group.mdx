@@ -1,0 +1,101 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: add-account-to-group
+title: addAccountToGroup
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+<Badge class="badge badge--secondary badge--primary" text="form schema"/>
+
+
+
+Add an account to a group by email.
+
+Behavior depends on whether the email already belongs to an organization member:
+
+- **If the user is already in the organization**, they are added to the group directly
+  with no invitation step. The mutation returns the resulting `Account`.
+- **If the user is not yet in the organization**, an invitation email is sent. The
+  mutation returns a `GroupInvitation`. The recipient joins the group when they accept.
+
+Use inline fragments on the union result to handle both branches in a single client call.
+Requires the `group:manage` action on this group.
+
+
+
+
+```graphql
+addAccountToGroup(
+  organizationId: ID!
+  groupId: UUID!
+  input: AddAccountToGroupInput!
+): AddedAccountToGroupPayload
+```
+
+
+
+
+
+### Form Schema
+
+This mutation supports dynamic form generation using JSON Schema.
+
+- [JSON Schema](https://api.massdriver.cloud/graphql/v1/inputs/addAccountToGroup.json)
+- [UI Schema](https://api.massdriver.cloud/graphql/v1/inputs/addAccountToGroup.ui.json)
+
+<SchemaForm
+  schemaUrl="https://api.massdriver.cloud/graphql/v1/inputs/addAccountToGroup.json"
+  uiSchemaUrl="https://api.massdriver.cloud/graphql/v1/inputs/addAccountToGroup.ui.json"
+  name="addAccountToGroup"
+/>
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>addAccountToGroup.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>addAccountToGroup.<b>groupId</b></code>](#group-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UUID!</b></code>](/api/graphql/types/scalars/uuid.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#group-id\} 
+The group to add the account to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>addAccountToGroup.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AddAccountToGroupInput!</b></code>](/api/graphql/types/inputs/add-account-to-group-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Add an account to a group by email. If the email belongs to an existing organization member they are added directly; otherwise an invitation is sent.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AddedAccountToGroupPayload</b></code>](/api/graphql/types/objects/added-account-to-group-payload.mdx) <Badge class="badge badge--secondary " text="object"/>

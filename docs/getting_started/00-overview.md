@@ -11,7 +11,7 @@ Welcome to Massdriver! This guide walks you through setting up your platform and
 
 **[Massdriver Catalog](https://github.com/massdriver-cloud/massdriver-catalog)** is the foundation for your infrastructure platform. Design your developer experience before writing infrastructure code.
 
-The catalog includes artifact definitions, bundle schemas, and project templates that let you:
+The catalog includes resource types, bundle schemas, and project templates that let you:
 
 - **Model your architecture** — Design how bundles connect and what artifacts they produce
 - **Test the developer experience** — Add bundles to your canvas, configure parameters, iterate on abstractions

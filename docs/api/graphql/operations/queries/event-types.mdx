@@ -1,0 +1,95 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: event-types
+title: eventTypes
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Return the catalog of V1 event types.
+
+Filter by `entity` to narrow the list.
+
+**Example:**
+
+```graphql
+query {
+  eventTypes(organizationId: "my-org") {
+    id
+    description
+    entity
+    action
+    changeType
+  }
+}
+```
+
+
+```graphql
+eventTypes(
+  organizationId: ID!
+  filter: EventTypesFilter
+  sort: EventTypesSort
+): [EventType!]!
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>eventTypes.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>eventTypes.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventTypesFilter</b></code>](/api/graphql/types/inputs/event-types-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#filter\} 
+Optional filter criteria to narrow results.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>eventTypes.<b>sort</b></code>](#sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventTypesSort</b></code>](/api/graphql/types/inputs/event-types-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#sort\} 
+Sort field and direction. Defaults to alphabetical by id.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>EventType</b></code>](/api/graphql/types/objects/event-type.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A single event type in the Massdriver event catalog.
+
+The `id` field follows dotted `entity.action` notation in past tense
+(e.g., `project.cloned`, `deployment.completed`).

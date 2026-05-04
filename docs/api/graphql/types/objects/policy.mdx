@@ -1,0 +1,109 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: policy
+title: Policy
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A single ABAC group policy: an effect (`ALLOW`/`DENY`), one or more actions,
+optional attribute conditions, and the group whose members the policy
+applies to.
+
+Conditions are evaluated AND within a policy and OR across policies on the
+same group. A policy with no conditions is a wildcard — it matches any
+resource of each action's entity. Deny policies win over allow policies. A
+policy can list actions across different entities (for example
+`project:view` together with `instance:deploy`); conditions whose attributes
+do not apply to a given entity simply never match for it. See
+`docs/guides/abac.md` for the full evaluation model.
+
+
+```graphql
+type Policy {
+  id: ID!
+  effect: PolicyEffect!
+  actions: [String!]!
+  conditions: Conditions!
+  group: Group!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>Policy.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+Unique identifier for this policy.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Policy.<b>effect</b></code>](#effect)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PolicyEffect!</b></code>](/api/graphql/types/enums/policy-effect.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#effect\} 
+Whether this policy grants (`ALLOW`) or blocks (`DENY`) the actions.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Policy.<b>actions</b></code>](#actions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#actions\} 
+The actions this policy authorizes, each in `{entity}:{verb}` form (for example `["repo:pull", "instance:deploy"]`). Always non-empty.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Policy.<b>conditions</b></code>](#conditions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Conditions!</b></code>](/api/graphql/types/scalars/conditions.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#conditions\} 
+Either `"*"` (the policy is a wildcard — every resource of the entity matches) or a JSON-encoded object of attribute conditions. Keys are attribute names; values are a string or list of strings.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Policy.<b>group</b></code>](#group)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Group!</b></code>](/api/graphql/types/objects/group.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#group\} 
+The group this policy applies to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Policy.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When this policy was created.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Policy.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+When this policy was last updated.
+
+
+
+
+
+
+### Member Of
+
+[`PoliciesPage`](/api/graphql/types/objects/policies-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PolicyPayload`](/api/graphql/types/objects/policy-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

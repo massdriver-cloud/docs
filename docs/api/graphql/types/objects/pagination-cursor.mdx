@@ -1,0 +1,78 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: pagination-cursor
+title: PaginationCursor
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Pagination cursors returned with every paginated response.
+
+Contains opaque cursor strings for navigating forward and backward through results.
+A `null` value for `next` indicates you have reached the last page; a `null` value
+for `previous` indicates you are on the first page.
+
+
+```graphql
+type PaginationCursor {
+  next: String
+  previous: String
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PaginationCursor.<b>next</b></code>](#next)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#next\} 
+Cursor for the next page. `null` if there are no more results.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PaginationCursor.<b>previous</b></code>](#previous)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#previous\} 
+Cursor for the previous page. `null` if this is the first page.
+
+
+
+
+
+
+### Member Of
+
+[`AccessTokensPage`](/api/graphql/types/objects/access-tokens-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AccountsPage`](/api/graphql/types/objects/accounts-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AlarmsPage`](/api/graphql/types/objects/alarms-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AuditLogsPage`](/api/graphql/types/objects/audit-logs-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`BundlesPage`](/api/graphql/types/objects/bundles-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ComponentsPage`](/api/graphql/types/objects/components-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ConnectionsPage`](/api/graphql/types/objects/connections-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`CustomAttributesPage`](/api/graphql/types/objects/custom-attributes-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`DeploymentsPage`](/api/graphql/types/objects/deployments-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentDefaultsPage`](/api/graphql/types/objects/environment-defaults-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentsPage`](/api/graphql/types/objects/environments-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`GrantsPage`](/api/graphql/types/objects/grants-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`GroupInvitationsPage`](/api/graphql/types/objects/group-invitations-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`GroupsPage`](/api/graphql/types/objects/groups-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`IdentitiesViewerPage`](/api/graphql/types/objects/identities-viewer-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`InstancesPage`](/api/graphql/types/objects/instances-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`IntegrationsPage`](/api/graphql/types/objects/integrations-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`IntegrationTypesPage`](/api/graphql/types/objects/integration-types-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`InvitesViewerPage`](/api/graphql/types/objects/invites-viewer-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`LinksPage`](/api/graphql/types/objects/links-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`OciRepoReleaseChannelsPage`](/api/graphql/types/objects/oci-repo-release-channels-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`OciReposPage`](/api/graphql/types/objects/oci-repos-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`OciRepoTagsPage`](/api/graphql/types/objects/oci-repo-tags-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`OrganizationsPage`](/api/graphql/types/objects/organizations-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ParamDimensionsPage`](/api/graphql/types/objects/param-dimensions-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PoliciesPage`](/api/graphql/types/objects/policies-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ProjectsPage`](/api/graphql/types/objects/projects-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`RemoteReferencesPage`](/api/graphql/types/objects/remote-references-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ResourcesPage`](/api/graphql/types/objects/resources-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ResourceTypesPage`](/api/graphql/types/objects/resource-types-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ServiceAccountsPage`](/api/graphql/types/objects/service-accounts-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

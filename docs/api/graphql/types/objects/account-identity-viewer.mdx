@@ -1,0 +1,82 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: account-identity-viewer
+title: AccountIdentityViewer
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+An OAuth or OIDC provider identity linked to your account.
+
+Identities represent external authentication providers (e.g., Google, GitHub) that you have
+connected to your Massdriver account. You can use any linked identity to sign in.
+
+
+```graphql
+type AccountIdentityViewer {
+  id: ID!
+  provider: String!
+  createdAt: DateTime!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AccountIdentityViewer.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+Unique identifier for this linked identity.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccountIdentityViewer.<b>provider</b></code>](#provider)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#provider\} 
+The OAuth/OIDC provider name (e.g., `google`, `github`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccountIdentityViewer.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When this identity was linked to your account (UTC).
+
+
+
+
+
+
+### Member Of
+
+[`IdentitiesViewerPage`](/api/graphql/types/objects/identities-viewer-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

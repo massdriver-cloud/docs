@@ -1,0 +1,95 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: create-group-policy
+title: createGroupPolicy
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+<Badge class="badge badge--secondary badge--primary" text="form schema"/>
+
+
+
+Attach an ABAC policy to a group.
+
+Group policies control what users and service accounts who are members of
+the group can do. Pair with `policyActions` to enumerate the catalog of
+available actions, and the access-control guide for common patterns.
+
+
+
+
+```graphql
+createGroupPolicy(
+  organizationId: ID!
+  groupId: UUID!
+  input: CreateGroupPolicyInput!
+): PolicyPayload
+```
+
+
+
+
+
+### Form Schema
+
+This mutation supports dynamic form generation using JSON Schema.
+
+- [JSON Schema](https://api.massdriver.cloud/graphql/v1/inputs/createGroupPolicy.json)
+- [UI Schema](https://api.massdriver.cloud/graphql/v1/inputs/createGroupPolicy.ui.json)
+
+<SchemaForm
+  schemaUrl="https://api.massdriver.cloud/graphql/v1/inputs/createGroupPolicy.json"
+  uiSchemaUrl="https://api.massdriver.cloud/graphql/v1/inputs/createGroupPolicy.ui.json"
+  name="createGroupPolicy"
+/>
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>createGroupPolicy.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>createGroupPolicy.<b>groupId</b></code>](#group-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UUID!</b></code>](/api/graphql/types/scalars/uuid.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#group-id\} 
+The group to attach the policy to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>createGroupPolicy.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CreateGroupPolicyInput!</b></code>](/api/graphql/types/inputs/create-group-policy-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Attach an ABAC policy to a group. Each policy grants or denies one or more actions on entities whose attributes satisfy the conditions.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PolicyPayload</b></code>](/api/graphql/types/objects/policy-payload.mdx) <Badge class="badge badge--secondary " text="object"/>

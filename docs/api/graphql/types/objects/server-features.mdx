@@ -1,0 +1,72 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: server-features
+title: ServerFeatures
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Server-level feature flags that gate UI affordances and API behavior on this Massdriver instance.
+
+Feature flags here describe what an unauthenticated client can or cannot do against this server,
+so login screens and signup flows can render the correct options.
+
+
+```graphql
+type ServerFeatures {
+  orgCreationEnabled: Boolean!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerFeatures.<b>orgCreationEnabled</b></code>](#org-creation-enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-creation-enabled\} 
+Whether end users may create new organizations on this server. Self-hosted installations may be capped to a single organization by license.
+
+
+
+
+
+
+### Member Of
+
+[`Server`](/api/graphql/types/objects/server.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

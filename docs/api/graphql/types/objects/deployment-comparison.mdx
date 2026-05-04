@@ -1,0 +1,91 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: deployment-comparison
+title: DeploymentComparison
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Side-by-side comparison of two deployments.
+
+Returned by `compareDeployments`. Use this to audit what changed between two
+points in an instance's history ("what did this deploy change?") or to
+contrast two different deployments against each other.
+
+The comparison is limited to snapshotted configuration — bundle version and
+params. Runtime state, logs, and produced artifacts are out of scope.
+
+
+```graphql
+type DeploymentComparison {
+  source: Deployment!
+  target: Deployment!
+  version: VersionComparison!
+  params: [ParamComparison!]!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentComparison.<b>source</b></code>](#source)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Deployment!</b></code>](/api/graphql/types/objects/deployment.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#source\} 
+The deployment on the source side of the comparison.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentComparison.<b>target</b></code>](#target)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Deployment!</b></code>](/api/graphql/types/objects/deployment.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#target\} 
+The deployment on the target side of the comparison.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentComparison.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>VersionComparison!</b></code>](/api/graphql/types/objects/version-comparison.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#version\} 
+Bundle version on each side, with an `equal` flag for quick check.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentComparison.<b>params</b></code>](#params)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ParamComparison!]!</b></code>](/api/graphql/types/objects/param-comparison.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#params\} 
+Flat, leaf-level diff of the two deployments' snapshotted params. Empty when both snapshots have no values to compare.
+
+
+
+
+
+
+### Returned By
+
+[`compareDeployments`](/api/graphql/operations/queries/compare-deployments.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

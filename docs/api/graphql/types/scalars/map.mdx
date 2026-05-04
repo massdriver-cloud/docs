@@ -1,0 +1,65 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: map
+title: Map
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A JSON object (key-value map) encoded as a string. Accepts only `{}` objects — arrays, strings, numbers, booleans, and `null` are rejected. Pass values as a JSON-encoded string, e.g. `{"key": "value"}`. Used for dynamic configuration data like integration configs, parameter overrides, and schemas.
+
+
+```graphql
+scalar Map
+```
+
+
+
+
+
+
+
+
+### Returned By
+
+[`customAttributeSchema`](/api/graphql/operations/queries/custom-attribute-schema.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+
+### Member Of
+
+[`AddComponentInput`](/api/graphql/types/inputs/add-component-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`AuditLog`](/api/graphql/types/objects/audit-log.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`CloneProjectInput`](/api/graphql/types/inputs/clone-project-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`Component`](/api/graphql/types/objects/component.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`CopyInstanceInput`](/api/graphql/types/inputs/copy-instance-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`CreateDeploymentInput`](/api/graphql/types/inputs/create-deployment-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`CreateEnvironmentInput`](/api/graphql/types/inputs/create-environment-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`CreateIntegrationInput`](/api/graphql/types/inputs/create-integration-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`CreateOciRepoInput`](/api/graphql/types/inputs/create-oci-repo-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`CreateProjectInput`](/api/graphql/types/inputs/create-project-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`CreateResourceInput`](/api/graphql/types/inputs/create-resource-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`Deployment`](/api/graphql/types/objects/deployment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Environment`](/api/graphql/types/objects/environment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ForkEnvironmentInput`](/api/graphql/types/inputs/fork-environment-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`Instance`](/api/graphql/types/objects/instance.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Integration`](/api/graphql/types/objects/integration.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`IntegrationActivation`](/api/graphql/types/objects/integration-activation.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`IntegrationTypeInfo`](/api/graphql/types/objects/integration-type-info.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`OciRepo`](/api/graphql/types/objects/oci-repo.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Project`](/api/graphql/types/objects/project.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ProposeDeploymentInput`](/api/graphql/types/inputs/propose-deployment-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`PublishResourceTypeInput`](/api/graphql/types/inputs/publish-resource-type-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`Resource`](/api/graphql/types/objects/resource.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ResourceType`](/api/graphql/types/objects/resource-type.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ResourceWithSensitiveValues`](/api/graphql/types/objects/resource-with-sensitive-values.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`UpdateComponentInput`](/api/graphql/types/inputs/update-component-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`UpdateEnvironmentInput`](/api/graphql/types/inputs/update-environment-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`UpdateOciRepoInput`](/api/graphql/types/inputs/update-oci-repo-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`UpdateProjectInput`](/api/graphql/types/inputs/update-project-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`UpdateResourceInput`](/api/graphql/types/inputs/update-resource-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

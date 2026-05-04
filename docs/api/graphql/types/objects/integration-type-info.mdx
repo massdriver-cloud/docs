@@ -1,0 +1,98 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: integration-type-info
+title: IntegrationTypeInfo
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A supported integration type from the Massdriver catalog.
+
+Integration types describe what external services can be connected and provide
+the JSON schemas needed to configure them. Use the `configSchema` and `authSchema`
+to build dynamic forms or validate input before calling `createIntegration`.
+
+
+```graphql
+type IntegrationTypeInfo {
+  id: String!
+  name: String!
+  description: String
+  docs: String!
+  configSchema: Map!
+  authSchema: Map!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationTypeInfo.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+Unique identifier for this integration type (e.g., `"aws-cost-and-usage-reports"`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationTypeInfo.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Human-readable display name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationTypeInfo.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+Brief explanation of what this integration does and what data it provides.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationTypeInfo.<b>docs</b></code>](#docs)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#docs\} 
+URL to the full documentation for setting up this integration.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationTypeInfo.<b>configSchema</b></code>](#config-schema)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#config-schema\} 
+JSON Schema describing the structure of the `config` field when creating this integration. Use this to build configuration forms or validate input.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationTypeInfo.<b>authSchema</b></code>](#auth-schema)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#auth-schema\} 
+JSON Schema describing the structure of the `auth` field when creating this integration. Typically contains credential requirements like IAM role ARNs or service account keys.
+
+
+
+
+
+
+### Member Of
+
+[`IntegrationTypesPage`](/api/graphql/types/objects/integration-types-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

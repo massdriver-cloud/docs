@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 /**
  * Post-processes generated GraphQL mutation docs to add SchemaForm components.
- * Run this after `docusaurus graphql-to-doc:graphql-v1`
+ * Run this after `docusaurus graphql-to-doc:graphql`
  */
 const fs = require('fs');
 const path = require('path');
 const { parse, visit } = require('graphql');
 
-const mutationsDir = path.join(__dirname, '../docs/api/graphql/v1/operations/mutations');
-const schemaPath = path.join(__dirname, '../schema/v1/schema.graphql');
+const mutationsDir = path.join(__dirname, '../docs/api/graphql/operations/mutations');
+const schemaPath = path.join(__dirname, '../schema/schema.graphql');
 
 // Base URL for schema endpoints (override with SCHEMA_BASE_URL for local dev)
 const BASE_URL = process.env.SCHEMA_BASE_URL || 'https://api.massdriver.cloud';

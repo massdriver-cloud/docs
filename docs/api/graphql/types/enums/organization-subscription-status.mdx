@@ -1,0 +1,108 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: organization-subscription-status
+title: OrganizationSubscriptionStatus
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Subscription status for an organization.
+
+Use this to display billing warnings, gate features for unpaid accounts,
+or guide users toward resolving payment issues. Visible to every member
+of the organization regardless of role.
+
+
+```graphql
+enum OrganizationSubscriptionStatus {
+  TRIAL
+  ACTIVE
+  PAST_DUE
+  EXPIRED
+  CANCELED
+  SUSPENDED
+  PAYMENT_PENDING
+  PAYMENT_FAILED
+}
+```
+
+
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationSubscriptionStatus.<b>TRIAL</b></code>](#trial) \{#trial\} 
+Free trial period. The organization has full access until the trial expires.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationSubscriptionStatus.<b>ACTIVE</b></code>](#active) \{#active\} 
+Subscription is active and in good standing.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationSubscriptionStatus.<b>PAST&#x005F;DUE</b></code>](#past-due) \{#past-due\} 
+A payment is overdue. Access continues but action is needed to avoid suspension.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationSubscriptionStatus.<b>EXPIRED</b></code>](#expired) \{#expired\} 
+The free trial has ended without a subscription. Functionality is limited.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationSubscriptionStatus.<b>CANCELED</b></code>](#canceled) \{#canceled\} 
+The subscription was canceled. The organization is in a grace period.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationSubscriptionStatus.<b>SUSPENDED</b></code>](#suspended) \{#suspended\} 
+The account is suspended due to billing issues. Most operations are blocked.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationSubscriptionStatus.<b>PAYMENT&#x005F;PENDING</b></code>](#payment-pending) \{#payment-pending\} 
+A payment is being processed. This is typically a brief transitional state.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationSubscriptionStatus.<b>PAYMENT&#x005F;FAILED</b></code>](#payment-failed) \{#payment-failed\} 
+The most recent payment attempt failed. Update payment details to restore access.
+
+
+
+
+
+
+### Member Of
+
+[`Organization`](/api/graphql/types/objects/organization.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

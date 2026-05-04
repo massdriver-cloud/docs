@@ -112,7 +112,7 @@ steps:
         enable: true
         quiet: true
         # JQ expression: halt on failure only in production
-        halt_on_failure: '.params.md_metadata.default_tags["md-target"] == "prod"'
+        halt_on_failure: '.params.md_metadata.default_tags["md-environment"] == "prod"'
 
   # Second step: Helm chart deployment
   - path: chart
@@ -291,7 +291,7 @@ params:
 # JSON Schema defining artifacts this bundle consumes from other bundles.
 # Connections enable type-safe infrastructure composition.
 #
-# Each connection must reference an artifact definition using $ref.
+# Each connection must reference an resource type using $ref.
 # Artifact definitions define the contract for infrastructure types.
 connections:
   # required (optional)
@@ -306,7 +306,7 @@ connections:
     # VPC connection - required network infrastructure
     vpc:
       # $ref (required for connections)
-      # Reference to an artifact definition.
+      # Reference to an resource type.
       #
       # Formats:
       #   - artifact-name               - Artifact from your organization
@@ -354,7 +354,7 @@ connections:
 # JSON Schema defining artifacts this bundle produces.
 # Artifacts can be consumed as connections by other bundles.
 #
-# Each artifact must reference an artifact definition using $ref.
+# Each artifact must reference an resource type using $ref.
 artifacts:
   # required (optional)
   # List of artifacts that will always be produced.
@@ -366,7 +366,7 @@ artifacts:
   properties:
     database:
       # $ref (required for artifacts)
-      # Reference to the artifact definition schema.
+      # Reference to the resource type schema.
       $ref: postgresql-authentication
       title: PostgreSQL Database
       description: Connection details for the provisioned database
@@ -445,7 +445,7 @@ app:
 
     # Extract values from params
     LOG_LEVEL: .params.log_level
-    ENVIRONMENT: .params.md_metadata.default_tags["md-target"]
+    ENVIRONMENT: .params.md_metadata.default_tags["md-environment"]
 
     # Transform and combine values
     DATABASE_URL: >-
@@ -537,7 +537,7 @@ steps:
     config:
       checkov:
         enable: true
-        halt_on_failure: '.params.md_metadata.default_tags["md-target"] == "prod"'
+        halt_on_failure: '.params.md_metadata.default_tags["md-environment"] == "prod"'
 
 params:
   examples:
@@ -744,5 +744,5 @@ ui:
 - [Bundles Concept](/concepts/bundles) - Understanding bundles
 - [Provisioners Overview](/bundle-development/provisioners/overview) - Available provisioners
 - [Massdriver Annotations](/bundle-development/schema-design/massdriver-annotations) - `$md.*` extensions
-- [Artifact Definitions](/concepts/artifacts-and-definitions) - Connection contracts
+- [Resource Types](/concepts/resources-and-types) - Connection contracts
 - [Bundle Meta Schema](https://api.massdriver.cloud/json-schemas/bundle.json) - Validation schema

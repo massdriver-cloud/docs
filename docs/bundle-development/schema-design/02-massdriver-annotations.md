@@ -375,7 +375,7 @@ The `$md.copyable` annotation:
 
 ### Scope
 
-**Artifact definition schemas only** - Used in artifact definition `schema` field to mask sensitive data in GraphQL queries and API responses.
+**Artifact definition schemas only** - Used in resource type `schema` field to mask sensitive data in GraphQL queries and API responses.
 
 ### Use Case
 
@@ -469,7 +469,7 @@ All `downloadArtifact` operations are tracked in the audit log, providing a comp
 
 The `$md.sensitive` annotation:
 1. Is evaluated when resolving the GraphQL `payload` field on artifacts
-2. Walks the artifact payload in parallel with the artifact definition schema
+2. Walks the artifact payload in parallel with the resource type schema
 3. Replaces values marked as sensitive with `"[SENSITIVE]"`
 4. Preserves structure for objects (keeps keys) and arrays (keeps length)
 5. Does not affect the stored artifact data - masking only occurs in API responses

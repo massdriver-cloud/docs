@@ -1,0 +1,96 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: instance-events
+title: instanceEvents
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Subscribe to events for a specific instance via WebSocket.
+
+Receives events when the instance's configuration changes, a deployment is created,
+an incoming connection is added or removed, or a cloud metric alarm on the instance
+is registered, updated, deleted, or changes firing state. Requires read access to
+the instance's project.
+
+```graphql
+subscription {
+  instanceEvents(organizationId: "my-org", instanceId: "my-database") {
+    ... on Event { action timestamp }
+    ... on InstanceEvent {
+      instance { id name status }
+    }
+    ... on ConnectionEvent {
+      connection { id fromField toField }
+    }
+    ... on AlarmEvent {
+      alarm { id displayName currentState { status message } }
+    }
+  }
+}
+```
+
+
+```graphql
+instanceEvents(
+  organizationId: ID!
+  instanceId: ID!
+): InstanceEventsPayload
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>instanceEvents.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>instanceEvents.<b>instanceId</b></code>](#instance-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#instance-id\} 
+The identifier of the instance to subscribe to.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>InstanceEventsPayload</b></code>](/api/graphql/types/unions/instance-events-payload.mdx) <Badge class="badge badge--secondary " text="union"/> 
+Events delivered by the `instanceEvents` subscription.
+
+Covers the instance itself, incoming connections that terminate on it,
+alarms attached to it, and deployments run against it.

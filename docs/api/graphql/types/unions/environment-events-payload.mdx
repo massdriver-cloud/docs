@@ -1,0 +1,130 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: environment-events-payload
+title: EnvironmentEventsPayload
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Events delivered by the `environmentEvents` subscription.
+
+Covers the environment itself, its default resources, every instance
+provisioned into it, every connection wired within it, every alarm attached
+to those instances, and every deployment run against them.
+
+
+```graphql
+union EnvironmentEventsPayload = EnvironmentEvent | EnvironmentDefaultEvent | InstanceEvent | ConnectionEvent | AlarmEvent | DeploymentEvent
+```
+
+
+
+
+### Possible types
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentEventsPayload.<b>EnvironmentEvent</b></code>](/api/graphql/types/objects/environment-event.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A lifecycle event for an environment.
+
+Emitted when an environment is created, updated (renamed, settings changed), or deleted
+within a project. Subscribe via `projectEvents` for any environment in the project, or
+via `environmentEvents` for a specific environment (updates and deletes only — the
+environment must exist to subscribe to it).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentEventsPayload.<b>EnvironmentDefaultEvent</b></code>](/api/graphql/types/objects/environment-default-event.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A lifecycle event for an environment default — a resource pre-assigned to an
+environment so instances inherit it automatically when their connection schema
+matches the resource type.
+
+Fires `CREATED` when `setEnvironmentDefault` adds a default and `DELETED` when
+`removeEnvironmentDefault` clears one. Defaults are exposed as a paginated
+`environment.defaults` connection, so refetch that page on receipt rather than
+relying on cache merging — the parent `Environment` row is unchanged.
+Subscribe via `environmentEvents`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentEventsPayload.<b>InstanceEvent</b></code>](/api/graphql/types/objects/instance-event.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A lifecycle event for an instance.
+
+Emitted when an instance is created, updated (configuration changed, deployment triggered),
+or deleted. Subscribe via `instanceEvents` or `projectEvents`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentEventsPayload.<b>ConnectionEvent</b></code>](/api/graphql/types/objects/connection-event.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A lifecycle event for a realized connection between two instances in an environment.
+
+A connection is the runtime materialization of a blueprint link — it wires one
+instance's output artifact into another instance's input field within a single
+environment. Emitted when a connection is established or torn down. Subscribe via
+`environmentEvents` for every connection in an environment, or via `instanceEvents`
+for connections that terminate on a specific instance.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentEventsPayload.<b>AlarmEvent</b></code>](/api/graphql/types/objects/alarm-event.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A lifecycle event for a cloud metric alarm attached to an instance.
+
+Emitted when an alarm is registered, reconfigured, removed, or when its
+firing state changes (e.g., `OK` → `ALARM`). State transitions surface as
+`UPDATED` — read the latest status from `alarm.currentState`. Subscribe via
+`environmentEvents` or `instanceEvents`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentEventsPayload.<b>DeploymentEvent</b></code>](/api/graphql/types/objects/deployment-event.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A lifecycle event for a deployment.
+
+Emitted when a deployment is created (`CREATED`) and each time its status
+transitions (`UPDATED`) — e.g., `PENDING` → `RUNNING` → `COMPLETED`. Log
+deltas are **not** carried on this event; subscribe to `deploymentLogs` for
+streaming log content.
+
+Subscribe via `deploymentEvents` for a single deployment's feed, or via
+`instanceEvents` / `environmentEvents` to see every deployment in an
+instance or environment.
+
+On `UPDATED`, re-select whichever fields you need (typically `status` and
+`elapsedTime`) — Apollo will merge the payload into its cache by `Deployment:id`.
+
+
+
+
+
+
+### Returned By
+
+[`environmentEvents`](/api/graphql/operations/subscriptions/environment-events.mdx)  <Badge class="badge badge--secondary badge--relation" text="subscription"/>

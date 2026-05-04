@@ -1,0 +1,77 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: release-strategy
+title: ReleaseStrategy
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Controls which bundle releases are eligible for deployment.
+
+The release strategy works in conjunction with the version constraint to
+determine which bundle version is resolved for deployment.
+
+
+```graphql
+enum ReleaseStrategy {
+  STABLE
+  DEVELOPMENT
+}
+```
+
+
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>ReleaseStrategy.<b>STABLE</b></code>](#stable) \{#stable\} 
+Only use stable, published releases. Recommended for production environments.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ReleaseStrategy.<b>DEVELOPMENT</b></code>](#development) \{#development\} 
+Include pre-release/development builds. Useful for testing unreleased bundle changes.
+
+
+
+
+
+
+### Member Of
+
+[`Instance`](/api/graphql/types/objects/instance.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`UpdateInstanceInput`](/api/graphql/types/inputs/update-instance-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

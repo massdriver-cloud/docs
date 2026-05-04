@@ -1,0 +1,83 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: export-resource
+title: exportResource
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Export a resource, returning it along with its unmasked `payload` and a `rendered`
+copy in the requested `format` (defaults to `json`).
+
+Exports are recorded in the audit log so that access to sensitive payload data —
+credentials, connection strings, IaC outputs — is attributable to the actor who
+performed it. The resource itself is not modified.
+
+Works for both imported and provisioned resources. The caller must have permission
+to view the resource.
+
+
+```graphql
+exportResource(
+  organizationId: ID!
+  id: ID!
+  format: String
+): ResourceWithSensitiveValuesPayload
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>exportResource.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>exportResource.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+The resource to export.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>exportResource.<b>format</b></code>](#format)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#format\} 
+Output format for the `rendered` field. `json` serializes the payload; other values (e.g. `yaml`, `env`) must be declared in the resource type's schema.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ResourceWithSensitiveValuesPayload</b></code>](/api/graphql/types/objects/resource-with-sensitive-values-payload.mdx) <Badge class="badge badge--secondary " text="object"/>

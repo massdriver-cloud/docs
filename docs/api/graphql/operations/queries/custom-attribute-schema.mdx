@@ -1,0 +1,87 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: custom-attribute-schema
+title: customAttributeSchema
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Returns a JSON Schema document describing the custom-attribute keys and
+permitted values for a given action, narrowed by the caller's policies.
+
+The schema is the org's custom-attribute schema for the action's scope
+(e.g. `project:create` → project-scope attributes), with each key's
+`enum` reduced to the values the caller's allow policies permit for
+that action. Org admins see the full closed set; non-admins with no
+matching policy receive `{"properties": {}, "additionalProperties": false}`,
+which rejects any write. Actions whose entity has no custom-attribute
+scope (group, organization, resource, resource_type) return
+`{"type": "object"}` (no constraints).
+
+Renders well as a form schema for `createProject`, `createEnvironment`,
+`setComponentAttributes`, etc. — only the choices the API will actually
+accept on write are surfaced.
+
+Returns a `NOT_FOUND` error when `action` is not in the policy catalog.
+
+
+```graphql
+customAttributeSchema(
+  organizationId: ID!
+  action: String!
+): Map!
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>customAttributeSchema.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>customAttributeSchema.<b>action</b></code>](#action)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#action\} 
+Action id in `entity:verb` form (for example `project:create`). Query `policyActions` for the catalog.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+A JSON object (key-value map) encoded as a string. Accepts only `{}` objects — arrays, strings, numbers, booleans, and `null` are rejected. Pass values as a JSON-encoded string, e.g. `{"key": "value"}`. Used for dynamic configuration data like integration configs, parameter overrides, and schemas.

@@ -1,0 +1,76 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: propose-deployment-action
+title: ProposeDeploymentAction
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Actions that support the propose/approve/reject workflow. `PLAN` is excluded
+because a plan is already a non-destructive preview — gating it behind
+approval adds no value.
+
+
+```graphql
+enum ProposeDeploymentAction {
+  PROVISION
+  DECOMMISSION
+}
+```
+
+
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>ProposeDeploymentAction.<b>PROVISION</b></code>](#provision) \{#provision\} 
+Propose creating or updating infrastructure. On approval, the deployment runs with the snapshotted params.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ProposeDeploymentAction.<b>DECOMMISSION</b></code>](#decommission) \{#decommission\} 
+Propose destroying all infrastructure managed by this instance. On approval, the teardown runs.
+
+
+
+
+
+
+### Member Of
+
+[`ProposeDeploymentInput`](/api/graphql/types/inputs/propose-deployment-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

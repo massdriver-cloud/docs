@@ -116,7 +116,7 @@ ui:
 | `{{ description }}` | Bundle description provided by user |
 | `{{ connections }}` | Array of connection objects with `name` and `artifact_definition` |
 | `{{ paramsSchema }}` | YAML string of params imported from existing IaC |
-| `{{ envs }}` | Map of environment variable templates from artifact definitions |
+| `{{ envs }}` | Map of environment variable templates from resource types |
 
 ### 3. Add IaC Files
 
@@ -241,7 +241,7 @@ mass bundle new \
 
 Always include the appropriate cloud credential connection for your target cloud:
 
-| Cloud | Artifact Definition | Suggested Name |
+| Cloud | Resource Type | Suggested Name |
 |-------|---------------------|----------------|
 | AWS | `aws-iam-role` | `aws_authentication` |
 | GCP | `gcp-service-account` | `gcp_authentication` |

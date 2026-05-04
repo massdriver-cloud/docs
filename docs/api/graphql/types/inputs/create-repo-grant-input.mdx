@@ -1,0 +1,74 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: create-repo-grant-input
+title: CreateRepoGrantInput
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Share an OCI repo with recipient projects matching attribute conditions. The caller must have `repo:update` on the source repo.
+
+
+```graphql
+input CreateRepoGrantInput {
+  action: String!
+  recipientConditions: Conditions!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateRepoGrantInput.<b>action</b></code>](#action)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#action\} 
+The action being granted on the repo. Currently the only grantable repo action is `repo:pull` — repo visibility is inferred from any granted action, and publishing is not a sharing concern.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateRepoGrantInput.<b>recipientConditions</b></code>](#recipient-conditions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Conditions!</b></code>](/api/graphql/types/scalars/conditions.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#recipient-conditions\} 
+Restrict this grant to recipient projects whose attributes match every condition. Send the literal `"*"` to apply to every project in the organization. Per-key, send `"*"` to match any value or a non-empty list of strings to match a closed set.
+
+
+
+
+
+
+### Member Of
+
+[`createRepoGrant`](/api/graphql/operations/mutations/create-repo-grant.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
