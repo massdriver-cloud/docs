@@ -1,0 +1,525 @@
+---
+id: cheatsheet
+title: Cheatsheet
+sidebar_label: Cheatsheet
+sidebar_position: 1
+description: Copy-paste examples for the most common Massdriver GraphQL flows.
+---
+
+# Cheatsheet
+
+Worked examples for the flows you'll run most often: declaring custom attributes, standing up a project with environments, reading the project graph, and authoring groups and policies. Every snippet ships with its variables — paste the operation and the JSON straight into your GraphQL client.
+
+The placeholder `my-org-id` in the variables is your organization's slug; replace it with your own. For authentication, see the [Authentication guide](./authentication).
+
+---
+
+## 1. Organization-wide attribute constraints
+
+Custom attributes declare which keys can be set at each scope (`PROJECT`, `ENVIRONMENT`, `COMPONENT`) and lock the allowed values. Required attributes must be supplied when creating an entity at the matching scope. Declaring them up front makes policy conditions enforceable: a policy that says `team: ["eng"]` only works if `team` is a declared key.
+
+A typical org's constraints:
+
+- `project:team` — required, closed set of owning teams
+- `project:cost_center` — optional, closed set for finance reporting
+- `environment:stage` — required, `dev` / `staging` / `prod`
+- `component:pci` — optional, true / false flag
+- `component:soc2` — optional, true / false flag
+
+```graphql
+# 1. Owning team for every project. Required so no project ships without an owner.
+mutation DeclareTeamAttribute($organizationId: ID!, $team: CreateCustomAttributeInput!) {
+  createCustomAttribute(organizationId: $organizationId, input: $team) {
+    successful
+    messages { field message }
+    result { id key scope required values }
+  }
+}
+
+# 2. Cost center on the project so finance can roll up spend by group.
+#    PROJECT scope cascades to environments and instances — anything per-component
+#    or per-instance would fragment the chargeback report.
+mutation DeclareCostCenterAttribute($organizationId: ID!, $costCenter: CreateCustomAttributeInput!) {
+  createCustomAttribute(organizationId: $organizationId, input: $costCenter) {
+    successful
+    messages { field message }
+    result { id key scope required values }
+  }
+}
+
+# 3. Stage on every environment so policies can target prod-only or non-prod-only.
+mutation DeclareStageAttribute($organizationId: ID!, $stage: CreateCustomAttributeInput!) {
+  createCustomAttribute(organizationId: $organizationId, input: $stage) {
+    successful
+    messages { field message }
+    result { id key scope required values }
+  }
+}
+
+# 4. PCI flag on the component (blueprint) — pinned at design time, not run time.
+mutation DeclarePciAttribute($organizationId: ID!, $pci: CreateCustomAttributeInput!) {
+  createCustomAttribute(organizationId: $organizationId, input: $pci) {
+    successful
+    messages { field message }
+    result { id key scope required values }
+  }
+}
+
+# 5. SOC 2 flag, also at the component level.
+mutation DeclareSoc2Attribute($organizationId: ID!, $soc2: CreateCustomAttributeInput!) {
+  createCustomAttribute(organizationId: $organizationId, input: $soc2) {
+    successful
+    messages { field message }
+    result { id key scope required values }
+  }
+}
+
+# Read everything back. Useful after the mutations above, or any time you want to
+# audit which keys are currently enforced.
+query ListCustomAttributes($organizationId: ID!) {
+  organization(organizationId: $organizationId) {
+    id
+    customAttributes(sort: { field: SCOPE, order: ASC }) {
+      items {
+        id
+        key
+        scope
+        required
+        values
+        createdAt
+      }
+      cursor { next previous }
+    }
+  }
+}
+
+# Generate a JSON Schema for a given action — handy for client-side validation
+# before submitting a createProject / createEnvironment / etc. The schema is
+# already narrowed to the values the caller's policies permit, so the form
+# only renders choices the API will actually accept on write.
+query CustomAttributeSchemaForAction($organizationId: ID!, $action: String!) {
+  customAttributeSchema(organizationId: $organizationId, action: $action)
+}
+
+# Fetch the closed set of values for one custom attribute by key. Equivalent
+# to looking up `customAttribute.values` without paginating through the full
+# list. Useful for populating a single dropdown (e.g., a TEAM selector).
+query TeamValues($organizationId: ID!) {
+  customAttributeValues(organizationId: $organizationId, scope: PROJECT, key: "team")
+}
+
+# Replace the allowed values for an existing attribute. Key + scope are immutable;
+# only `values` and `required` can change.
+mutation UpdateTeamValues($organizationId: ID!, $id: ID!, $input: UpdateCustomAttributeInput!) {
+  updateCustomAttribute(organizationId: $organizationId, id: $id, input: $input) {
+    successful
+    messages { field message }
+    result { id key scope required values }
+  }
+}
+```
+
+```json title="Variables"
+{
+  "organizationId": "my-org-id",
+  "scope": "PROJECT",
+  "id": "team",
+  "action": "project:create",
+  "team": {
+    "key": "team",
+    "scope": "PROJECT",
+    "required": true,
+    "values": ["eng", "ops", "sre", "data"]
+  },
+  "costCenter": {
+    "key": "cost_center",
+    "scope": "PROJECT",
+    "required": false,
+    "values": ["rnd", "infra", "platform", "shared"]
+  },
+  "stage": {
+    "key": "stage",
+    "scope": "ENVIRONMENT",
+    "required": true,
+    "values": ["dev", "staging", "prod"]
+  },
+  "pci": {
+    "key": "pci",
+    "scope": "COMPONENT",
+    "required": false,
+    "values": ["true", "false"]
+  },
+  "soc2": {
+    "key": "soc2",
+    "scope": "COMPONENT",
+    "required": false,
+    "values": ["true", "false"]
+  },
+  "input": {
+    "required": true,
+    "values": ["eng", "ops", "sre", "data", "ml"]
+  }
+}
+```
+
+---
+
+## 2. Create a project and its environments
+
+A project owns a blueprint (architecture) and one or more environments (deploy targets). Project attributes cascade to environments and instances — set them once at the project level and they apply everywhere underneath.
+
+Run order:
+
+1. `CreateProject` — id `ecomm`, `team=eng`, `cost_center=rnd`
+2. `CreateProdEnvironment` — id `prod`, `stage=prod`
+3. `CreateStagingEnvironment` — id `staging`, `stage=staging`
+
+Both `team` and `stage` are required attributes (declared above). If you skip them or pass a value not in the closed set, the mutation fails with a validation message — try it.
+
+```graphql
+mutation CreateProject($organizationId: ID!, $input: CreateProjectInput!) {
+  createProject(organizationId: $organizationId, input: $input) {
+    successful
+    messages { field message }
+    result {
+      id
+      name
+      description
+      attributes
+      effectiveAttributes
+      createdAt
+    }
+  }
+}
+
+mutation CreateProdEnvironment($organizationId: ID!, $projectId: ID!, $prod: CreateEnvironmentInput!) {
+  createEnvironment(organizationId: $organizationId, projectId: $projectId, input: $prod) {
+    successful
+    messages { field message }
+    result {
+      id
+      name
+      description
+      attributes
+      effectiveAttributes
+      project { id name }
+      createdAt
+    }
+  }
+}
+
+mutation CreateStagingEnvironment($organizationId: ID!, $projectId: ID!, $staging: CreateEnvironmentInput!) {
+  createEnvironment(organizationId: $organizationId, projectId: $projectId, input: $staging) {
+    successful
+    messages { field message }
+    result {
+      id
+      name
+      description
+      attributes
+      effectiveAttributes
+      project { id name }
+      createdAt
+    }
+  }
+}
+```
+
+```json title="Variables"
+{
+  "organizationId": "my-org-id",
+  "projectId": "ecomm",
+  "input": {
+    "id": "ecomm",
+    "name": "E-Commerce Platform",
+    "description": "Main customer-facing storefront and checkout.",
+    "attributes": {
+      "team": "eng",
+      "cost_center": "rnd"
+    }
+  },
+  "prod": {
+    "id": "prod",
+    "name": "Production",
+    "description": "Customer-facing production environment.",
+    "attributes": {
+      "stage": "prod"
+    }
+  },
+  "staging": {
+    "id": "staging",
+    "name": "Staging",
+    "description": "Pre-production integration environment.",
+    "attributes": {
+      "stage": "staging"
+    }
+  }
+}
+```
+
+---
+
+## 3. Read projects
+
+Three queries, each going progressively deeper:
+
+1. `ListProjects` — page 1, alphabetical, with cost roll-up.
+2. `ListProjectsRecent` — same shape, sorted by newest first.
+3. `ProjectDeepLoad` — single project + environments + blueprint (components and links) + instances per component.
+
+All paginated lists return `cursor.next` / `cursor.previous` — pass `next` back as `cursor` to fetch the next page. Default page size is 20, max 100. See the [Pagination guide](./pagination) for the full conventions.
+
+```graphql
+# Page through every project, alphabetical by name. Includes spend so the
+# response is enough to render a project list view.
+query ListProjects($organizationId: ID!, $cursor: Cursor) {
+  projects(
+    organizationId: $organizationId
+    sort: { field: NAME, order: ASC }
+    cursor: $cursor
+  ) {
+    items {
+      id
+      name
+      description
+      attributes
+      createdAt
+      cost {
+        lastMonth { amount currency }
+        monthlyAverage { amount currency }
+      }
+    }
+    cursor { next previous }
+  }
+}
+
+# Same projects, sorted newest-first. Useful for "what was created this week?"
+query ListProjectsRecent($organizationId: ID!) {
+  projects(organizationId: $organizationId, sort: { field: CREATED_AT, order: DESC }) {
+    items {
+      id
+      name
+      attributes
+      createdAt
+    }
+    cursor { next previous }
+  }
+}
+
+# Deep load a single project. Pulls everything you'd need to render a project
+# detail page in one round-trip:
+#   - project + cost (last month, monthly avg, last day, daily avg)
+#   - environments, sorted alphabetically, with their effective attributes
+#   - blueprint components, alphabetical, each with its bundle and deployed instances
+#   - blueprint links, oldest first, with both endpoints resolved
+query ProjectDeepLoad($organizationId: ID!, $id: ID!) {
+  project(organizationId: $organizationId, id: $id) {
+    id
+    name
+    description
+    attributes
+    effectiveAttributes
+    createdAt
+    updatedAt
+
+    cost {
+      lastDay { amount currency }
+      dailyAverage { amount currency }
+      lastMonth { amount currency }
+      monthlyAverage { amount currency }
+    }
+
+    deletable {
+      result
+      constraints { type message id }
+    }
+
+    environments(sort: { field: NAME, order: ASC }) {
+      items {
+        id
+        name
+        attributes
+        effectiveAttributes
+        createdAt
+      }
+      cursor { next previous }
+    }
+
+    blueprint {
+      components(sort: { field: NAME, order: ASC }) {
+        items {
+          id
+          name
+          attributes
+          effectiveAttributes
+          ociRepo { name }
+          instances(sort: { field: NAME, order: ASC }) {
+            items {
+              id
+              name
+              status
+              version
+            }
+          }
+        }
+        cursor { next previous }
+      }
+      links(sort: { field: CREATED_AT, order: ASC }) {
+        items {
+          id
+          fromField
+          toField
+          fromComponent { id name }
+          toComponent { id name }
+        }
+        cursor { next previous }
+      }
+    }
+  }
+}
+```
+
+```json title="Variables"
+{
+  "organizationId": "my-org-id",
+  "id": "ecomm",
+  "cursor": null
+}
+```
+
+---
+
+## 4. Groups and ABAC policies
+
+Massdriver authorizes actions through [attribute-based access control (ABAC)](/platform-operations/security/access-control). Each policy is `{effect, actions, conditions}`, attached to a group. `conditions` is matched against the target entity's effective attributes (project's, environment's, instance's, etc.).
+
+Run order:
+
+1. `CreateGroup` — make a `platform-eng` custom group.
+2. `CreateProjectViewPolicy` — let the group view any project where `team=eng`.
+3. `CreateInstanceDeployPolicy` — let them deploy in non-prod environments.
+4. `GroupPoliciesAndMembers` — read everything attached to the group.
+
+Browse the action / entity catalog at the bottom for a complete list of actions you can put in a policy. The mapping of GraphQL operations to required permissions is in the [GraphQL permissions reference](/platform-operations/security/graphql-permissions).
+
+```graphql
+# Create a custom group (CUSTOM role — no built-in permissions).
+mutation CreateGroup($organizationId: ID!, $groupInput: CreateGroupInput!) {
+  createGroup(organizationId: $organizationId, input: $groupInput) {
+    successful
+    messages { field message }
+    result {
+      id
+      name
+      description
+      role
+      createdAt
+    }
+  }
+}
+
+# Allow the group to VIEW any project tagged team=eng.
+# `conditions` is JSON-encoded: every key is matched as an exact set or "*".
+mutation CreateProjectViewPolicy($organizationId: ID!, $groupId: ID!, $viewInput: CreateGroupPolicyInput!) {
+  createGroupPolicy(organizationId: $organizationId, groupId: $groupId, input: $viewInput) {
+    successful
+    messages { field message }
+    result {
+      id
+      effect
+      actions
+      conditions
+      group { id name }
+      createdAt
+    }
+  }
+}
+
+# Allow the group to DEPLOY instances in any environment whose stage is
+# dev or staging. Prod is intentionally excluded.
+mutation CreateInstanceDeployPolicy(
+  $organizationId: ID!
+  $groupId: ID!
+  $deployInput: CreateGroupPolicyInput!
+) {
+  createGroupPolicy(organizationId: $organizationId, groupId: $groupId, input: $deployInput) {
+    successful
+    messages { field message }
+    result {
+      id
+      effect
+      actions
+      conditions
+      group { id name }
+    }
+  }
+}
+
+# Read every policy currently attached to the group, plus its members.
+query GroupPoliciesAndMembers($organizationId: ID!, $groupId: ID!) {
+  group(organizationId: $organizationId, id: $groupId) {
+    id
+    name
+    role
+    policies(sort: { field: CREATED_AT, order: ASC }) {
+      items {
+        id
+        effect
+        actions
+        conditions
+        createdAt
+      }
+      cursor { next previous }
+    }
+    members {
+      items {
+        id
+        email
+        firstName
+        lastName
+      }
+      cursor { next previous }
+    }
+  }
+}
+
+# Browse the action catalog. Returns every `{entity}:{verb}` you can put in a
+# policy, with the human-readable description of what it grants.
+query PolicyActions($organizationId: ID!) {
+  policyActions(organizationId: $organizationId) {
+    id
+    verb
+    description
+    entity { id description }
+  }
+}
+
+# Browse the entity catalog. Each action acts on exactly one of these.
+query PolicyEntities($organizationId: ID!) {
+  policyEntities(organizationId: $organizationId) {
+    id
+    description
+  }
+}
+```
+
+```json title="Variables"
+{
+  "organizationId": "my-org-id",
+  "groupId": "platform-eng",
+  "groupInput": {
+    "name": "Platform Engineering",
+    "description": "Platform team — owns shared infra, can deploy to non-prod."
+  },
+  "viewInput": {
+    "effect": "ALLOW",
+    "actions": ["project:view"],
+    "conditions": "{\"team\": [\"eng\"]}"
+  },
+  "deployInput": {
+    "effect": "ALLOW",
+    "actions": ["instance:deploy"],
+    "conditions": "{\"stage\": [\"dev\", \"staging\"]}"
+  }
+}
+```
