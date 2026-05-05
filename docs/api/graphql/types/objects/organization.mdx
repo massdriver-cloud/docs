@@ -74,7 +74,7 @@ type Organization {
   createdAt: DateTime!
   updatedAt: DateTime!
   subscriptionStatus: OrganizationSubscriptionStatus!
-  trialEndsAt: DateTime!
+  trialEndsAt: DateTime
   planExpiresOn: Date
   logo: LogoOrganization
   members(
@@ -115,12 +115,13 @@ surface billing warnings or lock down features for delinquent accounts. Detailed
 payment, seat, and invoice data live behind the admin-only `billing` field.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Organization.<b>trialEndsAt</b></code>](#trial-ends-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#trial-ends-at\} 
-When this organization's free trial ends (UTC).
+#### [<code style={{ fontWeight: 'normal' }}>Organization.<b>trialEndsAt</b></code>](#trial-ends-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#trial-ends-at\} 
+When the current free trial expires (UTC).
 
-Every organization is created with a trial period. If a paid plan is not active
-by this timestamp, `subscriptionStatus` becomes `EXPIRED` and most write
-operations are blocked until billing is resolved.
+Only populated while `subscriptionStatus` is `TRIAL`. If a paid plan is not
+active by this timestamp, `subscriptionStatus` becomes `EXPIRED` and most
+write operations are blocked until billing is resolved. Once the organization
+upgrades to a paid plan or the trial expires, this field returns `null`.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Organization.<b>planExpiresOn</b></code>](#plan-expires-on)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Date</b></code>](/api/graphql/types/scalars/date.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#plan-expires-on\} 

@@ -915,6 +915,47 @@ type RootQueryType {
   ): [PolicyEntity!]!
 
   """
+  Render a policy spec — the same input shape as `createGroupPolicy` — as a
+  list of plain-English sentences describing what it permits or blocks.
+
+  The explanation reflects the engine's scope-aware evaluation: a condition
+  whose attribute key isn't reachable from a given action's entity is
+  dropped before rendering, which can widen that action to be unconditional.
+  Pair this with the policy editor so authors see exactly what the policy
+  will allow before saving.
+
+  Conditions referencing undeclared custom attribute keys are silently
+  ignored — the explainer is lenient by design, so typos surface as a
+  "wider than expected" sentence rather than a hard error.
+
+  **Example input:**
+
+  ```graphql
+  {
+    effect: ALLOW
+    actions: ["project:create", "project:update", "environment:create"]
+    conditions: "{\"md-environment\":[\"dev\",\"staging\",\"prod\"]}"
+  }
+  ```
+
+  **Example output:**
+
+  ```
+  [
+    "Can create environments with identifiers [dev, staging, prod].",
+    "Can create and update any project."
+  ]
+  ```
+  """
+  explainPolicy(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The policy spec to explain — same shape as the `createGroupPolicy` input."
+    input: CreateGroupPolicyInput!
+  ): [String!]!
+
+  """
   Return the catalog of V2 event types.
 
   Filter by `entity` to narrow the list.
@@ -5177,13 +5218,14 @@ type Organization {
   subscriptionStatus: OrganizationSubscriptionStatus!
 
   """
-  When this organization's free trial ends (UTC).
+  When the current free trial expires (UTC).
 
-  Every organization is created with a trial period. If a paid plan is not active
-  by this timestamp, `subscriptionStatus` becomes `EXPIRED` and most write
-  operations are blocked until billing is resolved.
+  Only populated while `subscriptionStatus` is `TRIAL`. If a paid plan is not
+  active by this timestamp, `subscriptionStatus` becomes `EXPIRED` and most
+  write operations are blocked until billing is resolved. Once the organization
+  upgrades to a paid plan or the trial expires, this field returns `null`.
   """
-  trialEndsAt: DateTime!
+  trialEndsAt: DateTime
 
   """
   Date the current paid plan period ends.
@@ -5375,8 +5417,8 @@ type OrganizationBilling {
   "Friendly attribution name for the partner that referred this org (e.g., `\"Y Combinator\"`)."
   affiliate: String
 
-  "When the free trial expires (UTC)."
-  trialEndsAt: DateTime!
+  "When the current free trial expires (UTC). `null` once `subscriptionStatus` is anything other than `TRIAL`."
+  trialEndsAt: DateTime
 
   "End date of the current paid plan or grace period. `null` when not applicable (e.g., monthly plans)."
   planExpiresOn: Date

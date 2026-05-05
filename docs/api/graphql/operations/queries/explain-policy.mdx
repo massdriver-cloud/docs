@@ -1,0 +1,101 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: explain-policy
+title: explainPolicy
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Render a policy spec — the same input shape as `createGroupPolicy` — as a
+list of plain-English sentences describing what it permits or blocks.
+
+The explanation reflects the engine's scope-aware evaluation: a condition
+whose attribute key isn't reachable from a given action's entity is
+dropped before rendering, which can widen that action to be unconditional.
+Pair this with the policy editor so authors see exactly what the policy
+will allow before saving.
+
+Conditions referencing undeclared custom attribute keys are silently
+ignored — the explainer is lenient by design, so typos surface as a
+"wider than expected" sentence rather than a hard error.
+
+**Example input:**
+
+```graphql
+{
+  effect: ALLOW
+  actions: ["project:create", "project:update", "environment:create"]
+  conditions: "{\"md-environment\":[\"dev\",\"staging\",\"prod\"]}"
+}
+```
+
+**Example output:**
+
+```
+[
+  "Can create environments with identifiers [dev, staging, prod].",
+  "Can create and update any project."
+]
+```
+
+
+```graphql
+explainPolicy(
+  organizationId: ID!
+  input: CreateGroupPolicyInput!
+): [String!]!
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>explainPolicy.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>explainPolicy.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CreateGroupPolicyInput!</b></code>](/api/graphql/types/inputs/create-group-policy-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The policy spec to explain — same shape as the `createGroupPolicy` input.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.

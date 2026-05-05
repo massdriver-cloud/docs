@@ -63,7 +63,7 @@ type AuditLog {
   source: String!
   subject: String
   data: Map
-  actor: V1AuditLogActor!
+  actor: AuditLogActor!
 }
 ```
 
@@ -96,7 +96,7 @@ The affected resource in MRI format (e.g., `mri://organization/my-org/project/ba
 Event payload containing context-specific details about the action. The structure varies by event type.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AuditLog.<b>actor</b></code>](#actor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>V1AuditLogActor!</b></code>](/api/graphql/types/objects/v1-audit-log-actor.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#actor\} 
+#### [<code style={{ fontWeight: 'normal' }}>AuditLog.<b>actor</b></code>](#actor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AuditLogActor!</b></code>](/api/graphql/types/objects/audit-log-actor.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#actor\} 
 The actor (user, service account, deployment, or system) that performed this action.
 
 

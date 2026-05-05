@@ -55,7 +55,7 @@ type OrganizationBilling {
   currency: String
   frequency: BillingFrequency
   affiliate: String
-  trialEndsAt: DateTime!
+  trialEndsAt: DateTime
   planExpiresOn: Date
   portalUrl: String!
   plans: [BillingPlan!]!
@@ -87,8 +87,8 @@ Cadence the org is currently billed at. `null` if the org is not on a paid plan.
 Friendly attribution name for the partner that referred this org (e.g., `"Y Combinator"`).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>OrganizationBilling.<b>trialEndsAt</b></code>](#trial-ends-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#trial-ends-at\} 
-When the free trial expires (UTC).
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBilling.<b>trialEndsAt</b></code>](#trial-ends-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#trial-ends-at\} 
+When the current free trial expires (UTC). `null` once `subscriptionStatus` is anything other than `TRIAL`.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OrganizationBilling.<b>planExpiresOn</b></code>](#plan-expires-on)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Date</b></code>](/api/graphql/types/scalars/date.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#plan-expires-on\} 

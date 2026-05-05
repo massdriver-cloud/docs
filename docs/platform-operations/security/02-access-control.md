@@ -209,7 +209,7 @@ For per-repo or per-resource sharing — making a specific OCI repo or resource 
 - **Partial matches never accumulate** — you cannot combine conditions from different policies
 - **Deny wins** — if any deny policy matches, access is denied regardless of allow policies
 - **Implicit deny** — if no policy matches, access is denied
-- **Org admin bypass** — members of the organization admin group skip all access control checks
+- **Org admin bypass** — the organization owner account and any group with the `organization:admin` action skip all access control checks
 - **Empty conditions are invalid** — use `*` for wildcard
 
 ### Condition Matching
@@ -302,6 +302,12 @@ Massdriver defines its permissions using an `entity:verb` format. See the [Graph
 | `resource:import` | Import external cloud resources into Massdriver |
 | `resource:update` | Update an imported resource |
 | `resource:delete` | Delete a resource |
+
+### Resource Type
+
+Resource types are organization-level catalog metadata. Listing and viewing resource types is gated by `organization:view`. Publishing (`publishResourceType` / `PUT /v1/resource-types`) and deleting (`deleteResourceType`) currently require `organization:manage`.
+
+Dedicated resource type permissions will be introduced when resource types move to OCI-hosted distribution.
 
 ### Organization
 
@@ -433,36 +439,64 @@ an existing grant, it picks up that visibility automatically.
 
 ### How visibility composes
 
-A caller's set of visible repos is the union of:
+Group `repo:view` and `resource:view` policies decide what shows up in lists
+and metadata reads — "this group can see bundles / resources whose attributes
+match." Grants decide what a project or environment can actually *use* —
+"this specific bundle is usable by projects that match these attributes;
+this specific resource is usable by environments that match these
+attributes."
 
-- repos their groups have a `repo:view` (or higher) policy on, **plus**
-- repos with a grant whose `recipient_conditions` match a project the caller
-  has `project:view` on.
+A caller's visible bundles is the union of:
 
-A caller's visible resources is the analogous union for `resource:view`
-plus the project cascade (resources of provisioned instances inherit
-their parent project's visibility). Org admins bypass.
+- bundles their groups have a `repo:view` (or higher) policy on, **plus**
+- bundles with a grant whose `recipient_conditions` match a project the
+  caller has `project:view` on.
 
-The `ociRepos` and `resources` query filters honor grants today. The
-prospective `Authorization.can_i?/3` API does not yet load grants —
-a `repo:pull` grant makes the repo *visible* in lists but invoking
-`pullBundle` still requires a matching policy. Closing that gap is a
-follow-up.
+A caller's visible resources is the union of:
+
+- the project cascade — provisioned resources whose parent project the
+  caller has `project:view` on, **plus**
+- resources their groups have a `resource:view` policy on, **plus**
+- resources with a grant whose `recipient_conditions` match an environment
+  the caller can see (envs are visible via their parent project's
+  `project:view`).
+
+Org admins bypass.
 
 ### Recipient matching
 
-Grant `recipient_conditions` are evaluated against the caller's visible
-projects' effective attributes (each project's user attributes plus
-`md-project` / `md-id`). Matching uses the same condition semantics as
-group policies: AND-within-conditions, per-key `"*"` requires the
-attribute to be present, list values are any-of. A grant with
-`recipient_conditions = nil` is the org-wide wildcard.
+Grants target different recipient kinds depending on the source:
 
-Recipient conditions on environment-only attributes (`md-environment`,
-local env identifiers) are not yet honored on the recipient side — the
-match runs against project attributes, not environment attributes. Use
-project-scoped attributes (`md-project`, `TEAM`, `pci`, etc.) on grants
-for now.
+| Source kind | Recipient kind | Match against |
+|---|---|---|
+| Repo | Project | the recipient project's effective attributes (user attrs + `md-project` + `md-id`) |
+| Resource | Environment | the recipient env's effective attributes (env user attrs + project cascade + `md-environment` + `md-project` + `md-id`) |
+
+Matching uses the same condition semantics as group policies:
+AND-within-conditions, per-key `"*"` requires the attribute to be present,
+list values are any-of. A grant with `recipient_conditions = nil` is the
+org-wide wildcard.
+
+Because env effective attributes inherit cascaded project attributes, you
+can write a resource grant against a project-scoped attribute like
+`md-project`, `TEAM`, or `pci` and it will match envs in projects that
+satisfy the condition.
+
+### Use vs. view
+
+- **View** is gated by group `repo:view` / `resource:view` policies.
+- **Use** is gated by a grant covering the destination project or
+  environment, in addition to the caller's view permission:
+
+| Action | View check | Grant check |
+|---|---|---|
+| `addComponent` (project blueprint) | `repo:view` on the bundle | a repo grant covering the destination project |
+| `setRemoteReference` (instance) | `resource:view` on the resource | a resource grant covering the instance's environment |
+| `setEnvironmentDefault` | `resource:view` on the resource | a resource grant covering the destination environment |
+
+Seeing a bundle in the catalog or a resource in the resources list is not
+the same as the destination being permitted to consume it. Both gates apply
+at the consumption mutation; org admins bypass both.
 
 ### Examples
 
@@ -474,7 +508,15 @@ action: repo:pull
 recipient_conditions: { TEAM: [payments] }
 ```
 
-Share a managed-database resource with PCI-flagged projects:
+Share a managed-database resource with prod and staging environments:
+
+```yaml
+source: { resource: payments-prod-postgres-primary }
+action: resource:export
+recipient_conditions: { md-environment: [prod, staging] }
+```
+
+Share a managed-database resource with every environment in PCI projects:
 
 ```yaml
 source: { resource: payments-prod-postgres-primary }
@@ -793,7 +835,7 @@ Because permissions are attribute-based rather than ID-based, authorization surv
 
 ## Built-in Administration
 
-A group with the `organization:admin` action bypasses all access control checks in that organization. Use sparingly — limit to the small number of people who own the account itself.
+The organization owner account always bypasses access control checks. A group with the `organization:admin` action also bypasses all access control checks in that organization. Use sparingly — limit to the small number of people who own the account itself.
 
 ## Related
 

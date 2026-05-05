@@ -30,7 +30,7 @@ If you're building a least-privilege policy, scan the table for the operations t
 | `cloneProject` | Mutation | `project:view`, `project:create` | View on source, then create on the proposed clone. |
 | `updateProject` | Mutation | `project:update` | |
 | `deleteProject` | Mutation | `project:delete` | Project must have no environments, components, or instances. |
-| `addComponent` | Mutation | `project:design` | |
+| `addComponent` | Mutation | `project:design` | Also requires a repo grant on the bundle covering the destination project (view + grant gate). |
 | `updateComponent` | Mutation | `project:design` | |
 | `removeComponent` | Mutation | `project:design` | Component must have no provisioned instances. |
 | `linkComponents` | Mutation | `project:design` | |
@@ -49,7 +49,7 @@ If you're building a least-privilege policy, scan the table for the operations t
 | `forkEnvironment` | Mutation | `project:view`, `environment:create` | Same shape as `createEnvironment`. |
 | `updateEnvironment` | Mutation | `environment:update` | |
 | `deleteEnvironment` | Mutation | `environment:delete` | Environment must have no provisioned instances. |
-| `setEnvironmentDefault` | Mutation | `environment:configure`, `resource:view` | Configure the env, view the resource being defaulted in. |
+| `setEnvironmentDefault` | Mutation | `environment:configure`, `resource:view` | Configure the env, view the resource being defaulted in. Also requires a resource grant covering the destination environment. |
 | `removeEnvironmentDefault` | Mutation | `environment:configure` | |
 
 ## Instance
@@ -64,7 +64,7 @@ Deployments are an action *on* an instance — `createDeployment`, `proposeDeplo
 | `updateInstance` | Mutation | `instance:configure` | Sets version constraints, release strategy. |
 | `setInstanceSecret` | Mutation | `instance:configure` | |
 | `removeInstanceSecret` | Mutation | `instance:configure` | |
-| `setRemoteReference` | Mutation | `instance:configure`, `resource:view` | Configure the destination instance, view the resource being wired in. |
+| `setRemoteReference` | Mutation | `instance:configure`, `resource:view` | Configure the destination instance, view the resource being wired in. Also requires a resource grant covering the instance's environment. |
 | `removeRemoteReference` | Mutation | `instance:configure` | |
 | `copyInstance` | Mutation | `project:view`, `instance:configure` | View on source instance, configure on destination. |
 | `createDeployment` | Mutation | `instance:deploy`, `instance:plan`, or `instance:decommission` | Permission depends on `input.action`: `PROVISION` → `instance:deploy`, `PLAN` → `instance:plan`, `DECOMMISSION` → `instance:decommission`. |
@@ -107,8 +107,8 @@ Deployments are an action *on* an instance — `createDeployment`, `proposeDeplo
 |---|---|---|---|
 | `resourceTypes` | Query | *no explicit gate* | Available to any authenticated member. |
 | `resourceType` | Query | *no explicit gate* | |
-| `publishResourceType` | Mutation | `organization:manage` | Deprecated bridge from V0 `publishArtifactDefinition`. |
-| `deleteResourceType` | Mutation | `organization:manage` | Deprecated bridge from V0 `deleteArtifactDefinition`. |
+| `publishResourceType` | Mutation | `organization:manage` | Deprecated bridge from V0 `publishArtifactDefinition`. Dedicated resource type permissions are coming when resource types move to OCI-hosted distribution. |
+| `deleteResourceType` | Mutation | `organization:manage` | Deprecated bridge from V0 `deleteArtifactDefinition`. Dedicated resource type permissions are coming when resource types move to OCI-hosted distribution. |
 
 ## OCI Repo / Bundle
 

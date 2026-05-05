@@ -49,7 +49,7 @@ Transitional shim from V0 `publishArtifactDefinition` during the migration to OC
 :::
 
 **Deprecated — use at your own risk.** This mutation exists only to bridge V0's
-`publishArtifactDefinition` into V1 while resource types are being migrated to OCI.
+`publishArtifactDefinition` into V2 while resource types are being migrated to OCI.
 New integrations should use the OCI-native publishing flow. This mutation may be
 removed or change behavior without notice.
 
@@ -100,7 +100,7 @@ Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>publishResourceType.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PublishResourceTypeInput!</b></code>](/api/graphql/types/inputs/publish-resource-type-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
-Upsert a resource type for your organization from a JSON Schema document. If an existing resource type has the same identifier, its schema is replaced. **Deprecated:** this mutation exists solely to bridge V0 `publishArtifactDefinition` into the V1 API while resource types are being migrated to OCI. New integrations should use the OCI-native publishing flow — this mutation may be removed without notice.
+Upsert a resource type for your organization from a JSON Schema document. If an existing resource type has the same identifier, its schema is replaced. **Deprecated:** this mutation exists solely to bridge V0 `publishArtifactDefinition` into the V2 API while resource types are being migrated to OCI. New integrations should use the OCI-native publishing flow — this mutation may be removed without notice.
 
 
 ### Type
