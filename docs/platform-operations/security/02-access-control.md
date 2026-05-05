@@ -7,7 +7,7 @@ sidebar_label: Access Control
 
 # Access Control
 
-Massdriver uses attribute-based access control (ABAC) to manage permissions. Access is determined by attributes on entities, not by assigning users to specific entities. When a new project, environment, or instance is created with the right attributes, existing permissions apply automatically. No manual grants, no permission drift as your infrastructure scales.
+Massdriver uses attribute-based access control to manage permissions. Access is determined by attributes on resources, not by assigning users to specific resources. When a new project, environment, or instance is created with the right attributes, existing permissions apply automatically. No manual grants, no permission drift as your infrastructure scales.
 
 ## How It Works
 
@@ -29,13 +29,15 @@ Custom attributes define what structural attribute keys exist in your organizati
 | Field | Description |
 |---|---|
 | key | The attribute name (e.g., `TEAM`, `TIER`, `DOMAIN`). Identifier-like — 1-64 chars, letters/digits/underscore, starting with a letter or underscore. Case-insensitive. |
-| scope | The level where this attribute is set: `project`, `environment`, `component`, `instance`, or `repo` |
+| scope | The level where this attribute is set: `project`, `environment`, `component`, or `repo` |
 | required | Whether the attribute must be provided when creating or updating an entity at that scope |
 | values | The closed set of valid values for this attribute. Required, non-empty, all unique. The literal `"*"` is reserved for a future "any value accepted" semantic and rejected today. |
 
 ### Scoping and Cascade
 
 Each attribute key is assigned to exactly one level. If `TEAM` is scoped to `project`, only projects can set it. Environments, components, instances, deployments, and resources below that project inherit the value automatically. Lower levels cannot change or override it.
+
+Resource types push `md-resource-type` (a system attribute) onto every resource produced from them, but do not yet carry user-settable custom attributes — that arrives when resource types move to OCI-hosted distribution.
 
 Every structural attribute on any entity has a single, unambiguous origin. There is no merge logic and no precedence to debug.
 
@@ -105,16 +107,17 @@ Massdriver automatically injects system attributes on every entity. These use th
                 │  Instance   │
                 └──────┬──────┘
                        ▼
-                ┌─────────────┐
-                │ Deployment  │
-                └──────┬──────┘
-                       ▼
-                ┌─────────────┐
-                │  Resource   │
-                └─────────────┘
+                ┌─────────────┐      ┌───────────────┐
+                │ Deployment  │      │ Resource Type │
+                └──────┬──────┘      └───────┬───────┘
+                       └──────────┬──────────┘
+                                  ▼
+                           ┌─────────────┐
+                           │  Resource   │
+                           └─────────────┘
 ```
 
-An instance is the intersection of an environment and a component. Attributes set at any level cascade downward — a resource at the bottom carries attributes from every level above it.
+An instance is the intersection of an environment and a component, and a resource is the intersection of a deployment and a resource type (the resource type contributes only `md-resource-type` today). Attributes set anywhere upstream cascade downward — a resource at the bottom carries attributes from every parent above it.
 
 ### Attribute Reference
 
@@ -127,7 +130,7 @@ An instance is the intersection of an environment and a component. Attributes se
 | `md-repo` | component | `aws-aurora` | instance, deployment, resource |
 | `md-instance` | instance | `api-prod-database` | deployment, resource |
 | `md-bundle` | instance | `aws-aurora@1.2.3` | deployment, resource |
-| `md-resource-type` | resource | `aws-iam-role` | nowhere |
+| `md-resource-type` | resource type | `aws-iam-role` | resource (every resource produced from this type) |
 
 `md-id` is always the *entity's own* identifier, never inherited:
 
@@ -191,26 +194,45 @@ A policy grants or denies a principal the ability to perform an action on entiti
 | Field | Description |
 |---|---|
 | effect | `allow` or `deny` |
-| actions | A non-empty list of operations being granted or denied (e.g., `[instance:deploy]` or `[project:view, project:update]`) |
+| action | The operation being granted or denied (e.g., `instance:deploy`) |
 | conditions | Attribute key/value pairs the entity must match, or `*` for any entity of that type |
 
-The action determines what kind of entity the policy applies to — `project:view` applies to projects, `instance:deploy` applies to instances. All actions in a single policy must target the same entity type.
+The action determines what kind of entity the policy applies to — `project:view` applies to projects, `instance:deploy` applies to instances.
 
 ### Principals
 
-Policies are attached to **groups**. Group membership determines who the policy applies to; the policy's `actions` and `conditions` determine what they can do and against which entities.
+Policies are attached to **groups**. Group membership determines who the policy applies to; the policy's `action` and `conditions` determine what they can do and against which entities.
 
 For per-repo or per-resource sharing — making a specific OCI repo or resource visible to other projects / environments — see [Grants](#grants) below.
 
 ### Evaluation Rules
 
-- **Within a single policy**, all attribute conditions are AND — every attribute must match
+- **Within a single policy**, every reachable attribute condition is AND — every condition whose attribute scope can plausibly appear on the action's entity must match. See [Conditions and Action Reach](#conditions-and-action-reach) for what "reachable" means for each action.
 - **Across policies**, evaluation is OR — any single fully-matching policy is sufficient
 - **Partial matches never accumulate** — you cannot combine conditions from different policies
 - **Deny wins** — if any deny policy matches, access is denied regardless of allow policies
 - **Implicit deny** — if no policy matches, access is denied
-- **Org admin bypass** — the organization owner account and any group with the `organization:admin` action skip all access control checks
+- **Org admin bypass** — the organization owner account and any group with the `organization:manage` action skip all access control checks
 - **Empty conditions are invalid** — use `*` for wildcard
+
+### Multi-Action Policies and Scope Filtering
+
+A single policy can list actions across different entities:
+
+```yaml
+- effect: allow
+  action: [project:create, instance:configure]
+  conditions:
+    team: [eng]       # registered scope: project
+    soc2: ["true"]    # registered scope: component
+```
+
+The same `conditions` map applies to every listed action, but each condition is evaluated only on the actions whose entity can carry the attribute via the cascade tree:
+
+- `project:create` evaluates with `{team: [eng]}` (soc2 is component-scoped — projects sit above components in the tree and don't inherit from them — it's dropped).
+- `instance:configure` evaluates with `{team: [eng], soc2: ["true"]}` (instances inherit `team` from the project cascade and `soc2` from their component).
+
+When a policy's conditions filter to empty for a given action, the policy is a **wildcard match** for that action only. Authoring tip: if you want different gating per action, write multiple policies — every condition you list intends to gate every action it's reachable for.
 
 ### Condition Matching
 
@@ -237,11 +259,36 @@ Using system attributes and custom attributes together:
 - Your team's non-prod instances: `TEAM: [payments], md-environment: [dev, staging]`
 - Any project's prod environment: `md-project: "*", md-environment: [prod]`
 
+### Conditions and Action Reach
+
+This is the table of which attributes are reachable for each action's entity. A condition referencing an attribute that **isn't** in the action's row is dropped from the policy when that action is evaluated; if all conditions drop, the policy is a wildcard for that action.
+
+Use this table to avoid relying on `md-id` wildcards (`md-id: [api-prod-*]`). System attributes like `md-environment: [prod]` already carry the meaning — you don't need to encode it into a wildcarded id pattern.
+
+| Action's entity | Reachable system attributes                                      | Reachable custom attribute scopes              |
+|-----------------|------------------------------------------------------------------|------------------------------------------------|
+| project         | `md-id`, `md-project`                                            | `:project`                                     |
+| environment     | `md-id`, `md-project`, `md-environment`                          | `:project`, `:environment`                     |
+| component       | `md-id`, `md-project`, `md-component`, `md-repo`                 | `:project`, `:component`                       |
+| instance        | `md-id`, `md-project`, `md-environment`, `md-component`, `md-repo`, `md-instance`, `md-bundle` | `:project`, `:environment`, `:component` |
+| resource        | `md-id`, `md-project`, `md-environment`, `md-component`, `md-repo`, `md-instance`, `md-bundle`, `md-resource-type` | `:project`, `:environment`, `:component` |
+| group           | `md-id`                                                          | (none — groups are principals, not scoped entities) |
+| repo            | `md-id`, `md-repo`                                               | `:repo`                                        |
+| resource_type   | `md-id`                                                          | (none today)                                   |
+
+**Cascade**: a custom attribute registered at scope `:project` is reachable on every descendant — environment, component, instance, resource — because the project's value flows down. Setting `team: payments` at the project level means every instance in that project carries `team=payments` for policy matching, even though the value isn't physically stored on each instance row.
+
+**Examples**:
+
+- `[project:create]` with `conditions: {md-environment: [prod]}` — `md-environment` isn't reachable for `:project`, drops, policy is a wildcard. The `md-environment` filter is meaningless here; rewrite the policy.
+- `[instance:deploy]` with `conditions: {team: [eng]}` — `team` (at project scope) cascades to instances. The instance's effective `team` (inherited from its project) must equal `eng`.
+- `[project:view, instance:deploy]` with `conditions: {soc2: ["true"]}` (component scope) — `project:view` becomes a wildcard (`soc2` drops); `instance:deploy` requires the instance's component to be tagged `soc2=true`.
+
 ---
 
 ## Permissions
 
-Massdriver defines its permissions using an `entity:verb` format. See the [GraphQL permissions reference](/platform-operations/security/graphql-permissions) for the mapping of every API operation to the permission(s) it requires.
+Massdriver defines 34 permissions using an `entity:verb` format.
 
 ### Project
 
@@ -305,19 +352,16 @@ Massdriver defines its permissions using an `entity:verb` format. See the [Graph
 
 ### Resource Type
 
-Resource types are organization-level catalog metadata. Listing and viewing resource types is gated by `organization:view`. Publishing (`publishResourceType` / `PUT /v1/resource-types`) and deleting (`deleteResourceType`) currently require `organization:manage`.
+Resource types are organization-level catalog metadata. Listing and viewing resource types is gated by `organization:view`. Publishing (`publishResourceType`) and deleting (`deleteResourceType`) require `organization:manage`.
 
-Dedicated resource type permissions will be introduced when resource types move to OCI-hosted distribution.
+Resource types push `md-resource-type` onto every resource produced from them, so policies can target by type (`md-resource-type: [aws-iam-role]`). User-settable resource-type attributes will arrive when resource types move to OCI-hosted distribution.
 
 ### Organization
 
 | Permission | Description |
 |---|---|
-| `organization:admin` | Bypass all access control checks in the organization. Use sparingly — limit to the small number of people who own the account itself. |
 | `organization:view` | Load the organization's public profile (name, logo, identifier). Granted implicitly to every member through their group memberships. |
-| `organization:manage` | Update organization-level settings such as the display name and logo, and remove members from the organization. Required to view the org's member roster as a single list. |
-| `organization:manageBilling` | View and manage subscription, payment method, seat counts, and the Stripe customer-portal link. |
-| `organization:manageAttributes` | Define and edit the custom attribute schema used across the organization's projects, environments, components, instances, and resources. |
+| `organization:manage` | Update organization-level settings — display name, logo, members, billing (subscription, payment, seats, Stripe customer portal), and the custom attribute schema that governs every project, environment, and resource. Required to view the member roster as a single list. |
 
 ---
 
@@ -331,19 +375,19 @@ The team can view their projects, design architecture, configure and deploy to d
 group: payments-eng
 policies:
   - effect: allow
-    actions: [project:view, project:update, project:design]
+    action: [project:view, project:update, project:design]
     conditions: { TEAM: [payments] }
 
   - effect: allow
-    actions: [environment:create, environment:update, environment:configure]
+    action: [environment:create, environment:update, environment:configure]
     conditions: { TEAM: [payments], md-environment: [dev, staging] }
 
   - effect: allow
-    actions: [instance:configure, instance:deploy, instance:plan]
+    action: [instance:configure, instance:deploy, instance:plan]
     conditions: { TEAM: [payments], md-environment: [dev, staging] }
 
   - effect: allow
-    actions: [instance:propose]
+    action: instance:propose
     conditions: { TEAM: [payments], md-environment: [production] }
 ```
 
@@ -355,11 +399,11 @@ SRE can see all projects, deploy and decommission anything in production, and ap
 group: sre
 policies:
   - effect: allow
-    actions: [project:view]
+    action: project:view
     conditions: "*"
 
   - effect: allow
-    actions: [instance:deploy, instance:decommission, instance:approve]
+    action: [instance:deploy, instance:decommission, instance:approve]
     conditions: { md-environment: production }
 ```
 
@@ -371,7 +415,7 @@ Full visibility, no write access.
 group: auditors
 policies:
   - effect: allow
-    actions: [project:view, group:view, repo:view, resource:view]
+    action: [project:view, group:view, repo:view, resource:view]
     conditions: "*"
 ```
 
@@ -390,7 +434,7 @@ custom_attribute:
 group: compliance-auditors
 policies:
   - effect: allow
-    actions: [project:view, project:design]
+    action: [project:view, project:design]
     conditions: { pci: ["true"] }
 ```
 
@@ -409,7 +453,7 @@ grant:
 The two layers compose: `project:design` lets the auditor touch the
 canvas of any PCI project, and `repo:pull` controls which bundles
 they can see and attach. To restrict them to only the audit bundle,
-don't grant any other `repo:view` / `repo:pull` policies — the bundle
+don't grant any other `repo:view`/`repo:pull` policies — the bundle
 picker will only show what they have access to.
 
 ---
@@ -563,7 +607,7 @@ Because `md-environment` *is* the slug of the environment, constraining it on `e
 group: developers
 policies:
   - effect: allow
-    actions: [environment:create]
+    action: environment:create
     conditions: { md-environment: [dev, staging, prod] }
 ```
 
@@ -591,13 +635,13 @@ Then two groups, each contributing its own slice:
 group: developers
 policies:
   - effect: allow
-    actions: [environment:create]
+    action: environment:create
     conditions: { md-environment: [dev, staging, prod] }
 
 group: ai-team
 policies:
   - effect: allow
-    actions: [environment:create]
+    action: environment:create
     conditions:
       md-environment: [model-build]
       ARCHITECTURE_TEAM: ai
@@ -630,14 +674,14 @@ group: developers
 policies:
   # Standard projects get the normal lifecycle
   - effect: allow
-    actions: [environment:create]
+    action: environment:create
     conditions:
       PROJECT_KIND: standard
       md-environment: [dev, staging, prod]
 
   # Template projects get exactly one environment, named "template"
   - effect: allow
-    actions: [environment:create]
+    action: environment:create
     conditions:
       PROJECT_KIND: template
       md-environment: [template]
@@ -683,7 +727,7 @@ Custom attribute:
   values: [koalas, otters, pandas, dba, netops]
 ```
 
-Project-scope attributes cascade down to environments, instances, and resources. Environment-scope attributes cascade to instances, deployments, and resources beneath them. Component-scope attributes cascade to instances and downward. A single resource at the bottom of the hierarchy can carry every role attribute set above it — and policies can match on any combination.
+Project-scope attributes cascade down to environments, instances, and resources. Environment-scope attributes cascade to instances, deployments, and resources beneath them. Component-scope attributes cascade to instances and downward. Resource-type-scoped attributes apply to every resource of that type from any project. A single resource at the bottom of the hierarchy can carry every role attribute set above it — and policies can match on any combination.
 
 Each group keys off the role that matches its responsibility:
 
@@ -691,21 +735,21 @@ Each group keys off the role that matches its responsibility:
 group: koalas-sre
 policies:
   - effect: allow
-    actions: [project:view]
+    action: project:view
     conditions: "*"
 
   - effect: allow
-    actions: [instance:deploy, instance:decommission, instance:approve]
+    action: [instance:deploy, instance:decommission, instance:approve]
     conditions: { SRE_TEAM: koalas }
 
 group: appsec
 policies:
   - effect: allow
-    actions: [project:view]
+    action: project:view
     conditions: "*"
 
   - effect: allow
-    actions: [resource:view, resource:export]
+    action: [resource:view, resource:export]
     conditions: { SECURITY_TEAM: appsec }
 ```
 
@@ -733,15 +777,15 @@ A specialist group then keys off purpose rather than ownership:
 group: dba
 policies:
   - effect: allow
-    actions: [project:view]
+    action: project:view
     conditions: "*"
 
   - effect: allow
-    actions: [instance:configure, instance:deploy, instance:plan, resource:update]
+    action: [instance:configure, instance:deploy, instance:plan, resource:update]
     conditions: { PURPOSE: [database, storage] }
 
   - effect: allow
-    actions: [instance:approve]
+    action: instance:approve
     conditions:
       PURPOSE: [database, storage]
       md-environment: prod
@@ -776,11 +820,11 @@ Custom attribute:
 group: developers
 policies:
   - effect: allow
-    actions: [environment:create]
+    action: environment:create
     conditions: { md-environment: [dev, staging, prod] }
 
   - effect: allow
-    actions: [environment:create]
+    action: environment:create
     conditions:
       SLA_TIER: ["99.95", "99.99"]
       md-environment: [load-test]
@@ -800,7 +844,7 @@ Custom attribute:
 group: developers
 policies:
   - effect: allow
-    actions: [environment:create]
+    action: environment:create
     conditions:
       SLA: ["99.9", "99.99"]
       md-environment: [load, standby, chaos]
@@ -835,7 +879,7 @@ Because permissions are attribute-based rather than ID-based, authorization surv
 
 ## Built-in Administration
 
-The organization owner account always bypasses access control checks. A group with the `organization:admin` action also bypasses all access control checks in that organization. Use sparingly — limit to the small number of people who own the account itself.
+The organization owner account always bypasses access control checks. The built-in `organization.admin` group also bypasses all access control checks in that organization. Use sparingly — limit to the small number of people who own the account itself.
 
 ## Related
 
