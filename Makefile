@@ -23,4 +23,5 @@ dev:
 
 .PHONY: sync-cli-docs
 sync-cli-docs: # Generate CLI docs
+	rm -rf ./docs/reference/cli/commands/
 	rsync -a ${CLIPATH}/docs/generated/ ./docs/reference/cli/commands/
