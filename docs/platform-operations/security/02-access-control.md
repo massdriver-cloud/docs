@@ -316,11 +316,10 @@ Massdriver defines 34 permissions using an `entity:verb` format.
 | Permission | Description |
 |---|---|
 | `instance:configure` | Set parameters, secrets, version, and remote references |
-| `instance:deploy` | Deploy infrastructure |
+| `instance:deploy` | Deploy infrastructure. Also approves or rejects proposed deployments — anyone who can deploy an instance can decide a proposal for it. |
 | `instance:plan` | Run an infrastructure plan without deploying |
 | `instance:decommission` | Tear down infrastructure |
 | `instance:propose` | Submit a deployment for approval |
-| `instance:approve` | Approve or reject a proposed deployment |
 
 ### Group
 
@@ -393,7 +392,7 @@ policies:
 
 ### SRE with Cross-Cutting Production Access
 
-SRE can see all projects, deploy and decommission anything in production, and approve deployments from any team.
+SRE can see all projects and deploy, decommission, or approve proposed deployments anywhere in production. `instance:deploy` covers both running a deployment and deciding a proposal submitted by another team.
 
 ```yaml
 group: sre
@@ -403,7 +402,7 @@ policies:
     conditions: "*"
 
   - effect: allow
-    action: [instance:deploy, instance:decommission, instance:approve]
+    action: [instance:deploy, instance:decommission]
     conditions: { md-environment: production }
 ```
 
@@ -739,7 +738,7 @@ policies:
     conditions: "*"
 
   - effect: allow
-    action: [instance:deploy, instance:decommission, instance:approve]
+    action: [instance:deploy, instance:decommission]
     conditions: { SRE_TEAM: koalas }
 
 group: appsec
@@ -783,15 +782,9 @@ policies:
   - effect: allow
     action: [instance:configure, instance:deploy, instance:plan, resource:update]
     conditions: { PURPOSE: [database, storage] }
-
-  - effect: allow
-    action: instance:approve
-    conditions:
-      PURPOSE: [database, storage]
-      md-environment: prod
 ```
 
-The DBA team can configure and deploy any database or storage component across every project and environment, with a stricter `instance:approve` scope tied to production specifically. A newly created project doesn't need to grant DBA access — as long as its database components are tagged `PURPOSE: database`, the existing policy applies automatically.
+The DBA team can configure, deploy, and decide proposed deployments for any database or storage component across every project and environment. `instance:deploy` covers both running a deployment and approving or rejecting one a product team has proposed. A newly created project doesn't need to grant DBA access — as long as its database components are tagged `PURPOSE: database`, the existing policy applies automatically.
 
 The same shape extends to other specialist functions:
 
