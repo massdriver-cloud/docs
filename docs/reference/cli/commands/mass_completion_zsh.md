@@ -15,29 +15,21 @@ Generate the autocompletion script for the zsh shell.
 If shell completion is not already enabled in your environment you will need
 to enable it.  You can execute the following once:
 
-```bash
-echo "autoload -U compinit; compinit" >> ~/.zshrc
-```
+	echo "autoload -U compinit; compinit" >> ~/.zshrc
 
 To load completions in your current shell session:
 
-```bash
-source <(mass completion zsh)
-```
+	source <(mass completion zsh)
 
 To load completions for every new session, execute once:
 
 #### Linux:
 
-```bash
-mass completion zsh > "${fpath[1]}/_mass"
-```
+	mass completion zsh > "${fpath[1]}/_mass"
 
 #### macOS:
 
-```bash
-mass completion zsh > $(brew --prefix)/share/zsh/site-functions/_mass
-```
+	mass completion zsh > $(brew --prefix)/share/zsh/site-functions/_mass
 
 You will need to start a new shell for this setup to take effect.
 
