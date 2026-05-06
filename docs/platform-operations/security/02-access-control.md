@@ -337,6 +337,7 @@ Massdriver defines 34 permissions using an `entity:verb` format.
 | `repo:push` | Publish new bundle versions |
 | `repo:create` | Create a new (empty) OCI repository |
 | `repo:update` | Modify a repository's user-settable metadata (e.g. attributes) |
+| `repo:grant` | Author or revoke grants sharing this repo with recipient projects. Distinct from `repo:update` (metadata) and `repo:pull` (downloading bundle contents). |
 | `repo:delete` | Remove an OCI repository (only when no versions are published) |
 
 ### Resource
@@ -347,6 +348,7 @@ Massdriver defines 34 permissions using an `entity:verb` format.
 | `resource:export` | Download credential payloads — IAM roles, connection strings, certificates |
 | `resource:import` | Import external cloud resources into Massdriver |
 | `resource:update` | Update an imported resource |
+| `resource:grant` | Author or revoke grants sharing this resource with recipient environments. Distinct from `resource:update` (metadata) and `resource:export` (downloading the unmasked payload). |
 | `resource:delete` | Delete a resource |
 
 ### Resource Type
@@ -581,9 +583,9 @@ Grant mutations are gated by edit access on the source:
 
 | Mutation | Authorization |
 |---|---|
-| `createRepoGrant` | `repo:update` on the source repo |
-| `createResourceGrant` | `resource:update` on the source resource |
-| `deleteGrant` | `repo:update` (repo-source grant) or `resource:update` (resource-source grant) |
+| `createRepoGrant` | `repo:grant` on the source repo |
+| `createResourceGrant` | `resource:grant` on the source resource |
+| `deleteGrant` | `repo:grant` (repo-source grant) or `resource:grant` (resource-source grant) |
 
 Grants are immutable: to change `recipient_conditions` or `action`, delete and
 re-create. There is no `updateGrant`.
