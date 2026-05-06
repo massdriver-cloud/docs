@@ -69,8 +69,8 @@ Deployments are an action *on* an instance — `createDeployment`, `proposeDeplo
 | `copyInstance` | Mutation | `project:view`, `instance:configure` | View on source instance, configure on destination. |
 | `createDeployment` | Mutation | `instance:deploy`, `instance:plan`, or `instance:decommission` | Permission depends on `input.action`: `PROVISION` → `instance:deploy`, `PLAN` → `instance:plan`, `DECOMMISSION` → `instance:decommission`. |
 | `proposeDeployment` | Mutation | `instance:propose` | Only `PROVISION` and `DECOMMISSION` are proposable. |
-| `approveDeployment` | Mutation | `instance:approve` | |
-| `rejectDeployment` | Mutation | `instance:approve` | Same permission as approve — both close out a proposal. |
+| `approveDeployment` | Mutation | `instance:deploy` | |
+| `rejectDeployment` | Mutation | `instance:deploy` | Same permission as approve — both close out a proposal. |
 
 ## Deployment
 
