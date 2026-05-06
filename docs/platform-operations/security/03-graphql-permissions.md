@@ -126,9 +126,9 @@ Deployments are an action *on* an instance — `createDeployment`, `proposeDeplo
 
 | Operation | Type | Required permission(s) | Notes |
 |---|---|---|---|
-| `createRepoGrant` | Mutation | `repo:update` | On the source repo. |
-| `createResourceGrant` | Mutation | `resource:update` | On the source resource. |
-| `deleteGrant` | Mutation | `repo:update` *or* `resource:update` | Dispatch on grant kind: `repo:update` for repo-source grants, `resource:update` for resource-source grants. |
+| `createRepoGrant` | Mutation | `repo:grant` | On the source repo. |
+| `createResourceGrant` | Mutation | `resource:grant` | On the source resource. |
+| `deleteGrant` | Mutation | `repo:grant` *or* `resource:grant` | Dispatch on grant kind: `repo:grant` for repo-source grants, `resource:grant` for resource-source grants. |
 
 There is no `updateGrant` — grants are immutable; delete and re-create to change `recipient_conditions` or `action`.
 
