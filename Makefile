@@ -24,7 +24,3 @@ dev:
 .PHONY: sync-cli-docs
 sync-cli-docs: # Generate CLI docs
 	rsync -a ${CLIPATH}/docs/generated/ ./docs/cli/commands/
-
-.PHONY: sync-authz-docs
-sync-authz-docs: 
-	cp ${MDPATH}/adrs/0013* ./docs/security/02-authorization.md
