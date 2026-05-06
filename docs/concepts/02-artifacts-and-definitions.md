@@ -1,21 +1,23 @@
 ---
-id: concepts-artifacts-and-definitions
-slug: /concepts/artifacts-and-definitions
-title: Artifacts & Definitions
-sidebar_label: Artifacts & Definitions
+id: concepts-resources-and-types
+slug: /concepts/resources-and-types
+title: Resources & Resource Types
+sidebar_label: Resources & Resource Types
 ---
 
 ## Overview
 
-**Artifacts** are structured outputs produced by [bundles](/concepts/bundles) that represent cloud resources and their configuration. **Artifact definitions** are JSON Schema-based contracts that define what data artifacts contain and how they can connect to other infrastructure components.
+**Resources** are structured outputs produced by [bundles](/concepts/bundles) that represent cloud resources and their configuration. **Resource Types** are JSON Schema-based contracts that define what data a resource contains and how it can connect to other infrastructure components.
 
-Together, they enable type-safe composition of infrastructure—one bundle's outputs become another bundle's inputs through a validated contract.
+Together, they enable type-safe composition of infrastructure — one bundle's outputs become another bundle's inputs through a validated contract.
 
-## How Artifacts Work
+> **Naming note:** Resource Type was previously called "Artifact Definition", and Resource was previously called "Artifact". The new names disambiguate Massdriver's API from the OCI registry's notion of artifacts.
 
-When a PostgreSQL bundle provisions a database, it produces an artifact containing connection details. An application bundle can then consume this artifact as a connection, automatically receiving the correct database hostname, port, and credentials—all validated against the artifact definition schema.
+## How Resources Work
 
-**Example PostgreSQL Artifact**:
+When a PostgreSQL bundle provisions a database, it produces a resource containing connection details. An application bundle can then consume this resource as a connection, automatically receiving the correct database hostname, port, and credentials — all validated against the resource type schema.
+
+**Example PostgreSQL Resource**:
 ```json
 {
   "authentication": {
@@ -31,16 +33,16 @@ When a PostgreSQL bundle provisions a database, it produces an artifact containi
 }
 ```
 
-## Artifact Definitions
+## Resource Types
 
-Artifact definitions serve as contracts between infrastructure components:
+Resource types serve as contracts between infrastructure components:
 
-1. **Contract Definition**: Define the schema for what data artifacts contain
+1. **Contract Definition**: Define the schema for what data a resource contains
 2. **Type Safety**: Ensure only compatible components can connect
 3. **Cross-Tool State Transit**: Enable state to pass between Terraform, Helm, Bicep, etc.
 4. **Sensitive Data Protection**: Mark fields with `$md.sensitive` for automatic masking
 
-**Example Artifact Definition**:
+**Example Resource Type**:
 ```json
 {
   "type": "object",
@@ -61,16 +63,16 @@ Artifact definitions serve as contracts between infrastructure components:
 }
 ```
 
-## Artifact Origins
+## Resource Origins
 
-### Provisioned Artifacts
+### Provisioned Resources
 Created automatically when a bundle deploys:
-- Associated with a specific package
-- Identified by: `{project}-{environment}-{manifest}.{field}`
+- Associated with a specific instance
+- Identified by: `{project}-{environment}-{component}.{field}`
 - Automatically updated on redeployment
-- Lifecycle tied to the source package
+- Lifecycle tied to the source instance
 
-### Imported Artifacts
+### Imported Resources
 Created manually for external resources:
 - Cloud authentication (AWS IAM roles, GCP service accounts)
 - Existing resources not managed by Massdriver
@@ -79,14 +81,14 @@ Created manually for external resources:
 
 ## Connection Lifecycle
 
-1. **Nominal Typing**: When you connect packages in the UI, the system validates artifact type compatibility
+1. **Nominal Typing**: When you connect components in the UI, the system validates resource type compatibility
 2. **Structural Matching**: Once provisioned, the actual data is validated against the schema
-3. **Data Injection**: During deployment, artifact data is injected into the consuming bundle
+3. **Data Injection**: During deployment, resource data is injected into the consuming bundle
 
 ## Usage in massdriver.yaml
 
 ```yaml
-# Bundle consumes a VPC artifact
+# Bundle consumes a VPC resource
 connections:
   required:
     - vpc
@@ -94,7 +96,7 @@ connections:
     vpc:
       $ref: aws-vpc
 
-# Bundle produces a database artifact
+# Bundle produces a database resource
 artifacts:
   required:
     - database
@@ -103,16 +105,18 @@ artifacts:
       $ref: postgresql-authentication
 ```
 
+> The bundle spec keys (`connections`, `artifacts`) retain their original names so existing `massdriver.yaml` files keep building. The bundle spec is moving to `resources` over time.
+
 ## Best Practices
 
 - Mark sensitive fields with `$md.sensitive` for automatic masking
 - Group related properties logically (authentication, infrastructure, iam)
 - Use descriptive field names that indicate what the resource represents
-- Design artifact definitions for reuse across multiple bundles
+- Design resource types for reuse across multiple bundles
 
 ## Related Documentation
 
-- [Bundle YAML Specification](/bundle-development/bundle-yaml-spec) - Connection and artifact configuration
-- [Artifact Definition Specification](/bundle-development/connections-artifacts/artifact-definition-spec) - Complete schema reference
-- [Artifact Definitions Repository](https://github.com/massdriver-cloud/artifact-definitions) - Standard artifact types
+- [Bundle YAML Specification](/bundle-development/bundle-yaml-spec) - Connection and resource configuration
+- [Resource Type Specification](/bundle-development/connections-artifacts/artifact-definition-spec) - Complete schema reference
+- [Resource Types Repository](https://github.com/massdriver-cloud/artifact-definitions) - Standard resource types
 - [Massdriver Annotations](/bundle-development/schema-design/massdriver-annotations) - `$md.sensitive` and other extensions

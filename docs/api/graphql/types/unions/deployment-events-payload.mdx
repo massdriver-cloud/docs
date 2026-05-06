@@ -1,0 +1,83 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: deployment-events-payload
+title: DeploymentEventsPayload
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Events delivered by the `deploymentEvents` subscription.
+
+A single-deployment feed. Fires on creation and every status transition.
+For log content, subscribe to `deploymentLogs` — log deltas don't travel on
+this feed.
+
+
+```graphql
+union DeploymentEventsPayload = DeploymentEvent
+```
+
+
+
+
+### Possible types
+
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentEventsPayload.<b>DeploymentEvent</b></code>](/api/graphql/types/objects/deployment-event.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A lifecycle event for a deployment.
+
+Emitted when a deployment is created (`CREATED`) and each time its status
+transitions (`UPDATED`) — e.g., `PENDING` → `RUNNING` → `COMPLETED`. Log
+deltas are **not** carried on this event; subscribe to `deploymentLogs` for
+streaming log content.
+
+Subscribe via `deploymentEvents` for a single deployment's feed, or via
+`instanceEvents` / `environmentEvents` to see every deployment in an
+instance or environment.
+
+On `UPDATED`, re-select whichever fields you need (typically `status` and
+`elapsedTime`) — Apollo will merge the payload into its cache by `Deployment:id`.
+
+
+
+
+
+
+### Returned By
+
+[`deploymentEvents`](/api/graphql/operations/subscriptions/deployment-events.mdx)  <Badge class="badge badge--secondary badge--relation" text="subscription"/>

@@ -39,7 +39,7 @@ Attach the credential you created in the `Create environment` screen.
 
 If you followed the guide in the [previous section](/applications/create) your application will depend on a Kubernetes Cluster and PostgreSQL.
 
-Add and connect the following resources from the bundle sidebar. To expand the sidebar click the "package" icon.
+Add and connect the following resources from the bundle sidebar. To expand the sidebar click the bundle-bar icon.
 
 You'll need to add:
 
@@ -47,11 +47,11 @@ You'll need to add:
 * aws-eks-cluster
 * aws-rds-postgres or aws-aurora-serverless-postgres
 
-After adding each to the canvas, click on the package. Feel free to fine tune the configuration, but if you are new to cloud infrastructure the `Configuration Presets` are a great way to get started quickly. Select a preset like **Development** and then click **Deploy**.
+After adding each to the canvas, click on the instance. Feel free to fine-tune the configuration, but if you are new to cloud infrastructure the `Configuration Presets` are a great way to get started quickly. Select a preset like **Development** and then click **Deploy**.
 
 :::note
 
-The artifact system in Massdriver (the boxes you connect lines to) shares common types between bundles to make it possible to swap between different infrastructure bundles that provide the same functionality.
+The resource system in Massdriver (the boxes you connect lines to) shares common types between bundles to make it possible to swap between different infrastructure bundles that provide the same functionality.
 
 In this example you could use `aws-rds-postgres`, `aws-aurora-serverless-postgres`, or a version of PostgreSQL running on Kubernetes.
 
@@ -64,9 +64,9 @@ You can now click configure and set your values. You can set any values here tha
 
 Once your application has been configured and connected, it can also be deployed from our CLI.
 
-The `deploy` command expects the package name in the format of `foo-bar-baz`. If you followed the above example it will be `example-staging-phoenixchat`. If you can't remember the name of your application, mouse over its human-friendly name in the UI and it will be displayed.
+The `deploy` command expects the instance identifier in the format of `foo-bar-baz`. If you followed the above example it will be `example-staging-phoenixchat`. If you can't remember the identifier, mouse over its human-friendly name in the UI and it will be displayed.
 
-![Package Name](./package-name.png)
+![Instance Name](./package-name.png)
 
 `mass deploy` can be added to your CI/CD pipeline to trigger deployments to your Kubernetes cluster.
 

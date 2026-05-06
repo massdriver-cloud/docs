@@ -9,7 +9,7 @@ Massdriver requires blob storage for several key functions:
 - **OCI bundle repository and provisioning log storage** (the `massdriver` bucket)
 - **Terraform/OpenTofu remote state storage** (the `state` bucket)
 
-Argo Workflows also requires blob storage, but only for [**workflow artifact storage**](https://argo-workflows.readthedocs.io/en/latest/walk-through/artifacts/) (not to be confused with [Massdriver artifacts](/concepts/artifacts-and-definitions)).
+Argo Workflows also requires blob storage, but only for [**workflow artifact storage**](https://argo-workflows.readthedocs.io/en/latest/walk-through/artifacts/) (not to be confused with [Massdriver resources](/concepts/resources-and-types)).
 
 By default, Massdriver installs and configures [MinIO](https://www.min.io/) for all these use cases. However for **production** Massdriver installations, we strongly recommend using **cloud object storage** instead of the included MinIO instance. Cloud object storage provides higher durability, richer configuration options and easier data browsing and inspection.
 
@@ -273,7 +273,7 @@ After migrating your data and updating your Helm configuration, verify the migra
 2. **Verify application functionality:**
    - Log into Massdriver and check that you can view the files of existing bundles
    - Check deployment logs and make sure that historical logs are visible
-   - Execute a "plan" on a test package to confirm state is being read properly
+   - Execute a "plan" on a test instance to confirm state is being read properly
 
 ---
 

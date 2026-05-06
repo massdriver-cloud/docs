@@ -1,0 +1,80 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: policy-entities
+title: policyEntities
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Return the complete catalog of ABAC entities — the kinds of things an
+action can apply to.
+
+An entity is the `{entity}` portion of an action id. Use this alongside
+`policyActions` when you want to group actions by what they apply to
+(for example rendering a UI that collapses all `project:*` actions under a
+single "Projects" header).
+
+Results are sorted alphabetically by id.
+
+
+```graphql
+policyEntities(
+  organizationId: ID!
+): [PolicyEntity!]!
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>policyEntities.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PolicyEntity</b></code>](/api/graphql/types/objects/policy-entity.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A kind of thing an ABAC policy can be attached to — a *project*, an
+*environment*, a *resource*, and so on.
+
+Every action in the policy catalog acts on exactly one entity, encoded as the
+prefix of the action id (`project` in `project:view`). Use `policyEntities`
+to enumerate every entity with its description when building a
+policy-authoring UI.

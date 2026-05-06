@@ -1,0 +1,108 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: compare-environments
+title: compareEnvironments
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Compare two environments in the same project, instance-by-instance.
+
+Instances are paired by component. For each component, the result reports
+the resolved version on each side and a flat, leaf-level diff of the
+configured params. Environment-level attributes and default wiring are not part
+of the comparison.
+
+Both environments must belong to the same project; passing environments
+from different projects returns a `FORBIDDEN` error because components
+don't cross project boundaries.
+
+```graphql
+query {
+  compareEnvironments(organizationId: "my-org", sourceId: "staging", targetId: "prod") {
+    source { id } target { id }
+    instances {
+      component { id name }
+      source { id } target { id }
+      version { source target equal }
+      params { path equal source { value } target { value } }
+      equal
+    }
+  }
+}
+```
+
+
+```graphql
+compareEnvironments(
+  organizationId: ID!
+  sourceId: ID!
+  targetId: ID!
+): EnvironmentComparison
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>compareEnvironments.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>compareEnvironments.<b>sourceId</b></code>](#source-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#source-id\} 
+The source environment's identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>compareEnvironments.<b>targetId</b></code>](#target-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#target-id\} 
+The target environment's identifier.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>EnvironmentComparison</b></code>](/api/graphql/types/objects/environment-comparison.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Side-by-side comparison of two environments in the same project.
+
+Returned by `compareEnvironments`. The comparison pairs instances by
+component and reports a per-instance diff of the resolved version and
+configured params. Environment-level attributes and default resource wiring
+are intentionally out of scope.
+
+Environments must belong to the same project — cross-project comparisons
+are not meaningful because components are project-scoped.

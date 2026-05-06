@@ -1,0 +1,86 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: instance-property
+title: InstanceProperty
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A flattened leaf value from one of this instance's resources.
+
+Each entry is a single scalar produced by the instance's deployments (e.g. a
+database hostname, a queue URL). Values are drawn from both the instance's own
+provisioned resources and any remote references wired in.
+
+Sensitive fields (marked `$md.sensitive: true` on the resource type's schema)
+are replaced with `"[SENSITIVE]"`.
+
+
+```graphql
+type InstanceProperty {
+  name: String!
+  path: String!
+  value: String
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>InstanceProperty.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Display label built from the resource's title and the field's title (e.g. `Database: Hostname`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InstanceProperty.<b>path</b></code>](#path)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#path\} 
+jq-style path to the value from the instance root. Identifier-safe keys render as `.key`; keys with special characters are quoted (`."key.with.dots"`); array elements use `[n]`. Examples: `.database.port`, `.cluster.nodes[0].host`, `.labels."app.kubernetes.io/name"`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InstanceProperty.<b>value</b></code>](#value)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#value\} 
+Scalar value at this path, serialized as a string. Null if the underlying value is null. Sensitive fields appear as `[SENSITIVE]`.
+
+
+
+
+
+
+### Member Of
+
+[`Instance`](/api/graphql/types/objects/instance.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

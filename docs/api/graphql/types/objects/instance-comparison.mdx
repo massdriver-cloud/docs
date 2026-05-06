@@ -1,0 +1,99 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: instance-comparison
+title: InstanceComparison
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A per-component comparison between two environments.
+
+Instances are paired across environments by their underlying component.
+When only one side has an instance for a given component, the other
+side's `source`/`target` is `null`, and every param appears as present
+on the populated side only.
+
+
+```graphql
+type InstanceComparison {
+  component: Component!
+  source: Instance
+  target: Instance
+  version: VersionComparison!
+  params: [ParamComparison!]!
+  equal: Boolean!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>InstanceComparison.<b>component</b></code>](#component)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Component!</b></code>](/api/graphql/types/objects/component.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#component\} 
+The component shared (or would-be-shared) by the two instances being compared.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InstanceComparison.<b>source</b></code>](#source)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Instance</b></code>](/api/graphql/types/objects/instance.mdx) <Badge class="badge badge--secondary " text="object"/> \{#source\} 
+The instance on the source environment, or `null` if the component is not deployed there.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InstanceComparison.<b>target</b></code>](#target)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Instance</b></code>](/api/graphql/types/objects/instance.mdx) <Badge class="badge badge--secondary " text="object"/> \{#target\} 
+The instance on the target environment, or `null` if the component is not deployed there.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InstanceComparison.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>VersionComparison!</b></code>](/api/graphql/types/objects/version-comparison.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#version\} 
+The instance's resolved version on each side, with an `equal` flag.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InstanceComparison.<b>params</b></code>](#params)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ParamComparison!]!</b></code>](/api/graphql/types/objects/param-comparison.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#params\} 
+Flat, leaf-level diff of the two instances' configured params.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InstanceComparison.<b>equal</b></code>](#equal)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#equal\} 
+`true` when both instances are present, the versions match, and every param is equal.
+
+
+
+
+
+
+### Member Of
+
+[`EnvironmentComparison`](/api/graphql/types/objects/environment-comparison.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

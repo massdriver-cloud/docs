@@ -1,0 +1,87 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: audit-log-actor-type
+title: AuditLogActorType
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+The type of actor that performed an audit-logged action.
+
+Every audit log event records who (or what) triggered it. The actor type tells you
+whether the action was performed by a human, an automated system, or a deployment process.
+
+
+```graphql
+enum AuditLogActorType {
+  ACCOUNT
+  SERVICE_ACCOUNT
+  DEPLOYMENT
+  SYSTEM
+}
+```
+
+
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>AuditLogActorType.<b>ACCOUNT</b></code>](#account) \{#account\} 
+A human user authenticated with their personal account.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AuditLogActorType.<b>SERVICE&#x005F;ACCOUNT</b></code>](#service-account) \{#service-account\} 
+A service account authenticated via API key or access token.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AuditLogActorType.<b>DEPLOYMENT</b></code>](#deployment) \{#deployment\} 
+An automated deployment process (e.g., Terraform apply).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AuditLogActorType.<b>SYSTEM</b></code>](#system) \{#system\} 
+An internal system action with no specific user or service account. Also used for legacy events recorded before actor tracking was introduced.
+
+
+
+
+
+
+### Member Of
+
+[`AuditLogActor`](/api/graphql/types/objects/audit-log-actor.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AuditLogActorTypeFilter`](/api/graphql/types/inputs/audit-log-actor-type-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

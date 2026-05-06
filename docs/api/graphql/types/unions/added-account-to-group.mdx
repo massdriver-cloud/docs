@@ -1,0 +1,103 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: added-account-to-group
+title: AddedAccountToGroup
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+The result of `addAccountToGroup`.
+
+- When the email already belongs to an organization member, the API adds them to the group
+  directly and returns an `Account`.
+- When the email is new to the organization, the API sends an invitation and returns a
+  `GroupInvitation`. The recipient becomes a member when they accept.
+
+Use inline fragments to react to each branch:
+
+```graphql
+mutation {
+  addAccountToGroup(
+    organizationId: "my-org"
+    groupId: "platform"
+    input: { email: "newuser@example.com" }
+  ) {
+    successful
+    result {
+      ... on Account { id email }
+      ... on GroupInvitation { email createdAt }
+    }
+  }
+}
+```
+
+
+```graphql
+union AddedAccountToGroup = Account | GroupInvitation
+```
+
+
+
+
+### Possible types
+
+#### [<code style={{ fontWeight: 'normal' }}>AddedAccountToGroup.<b>Account</b></code>](/api/graphql/types/objects/account.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A human user account in your organization.
+
+Returned wherever the API exposes the people behind group memberships and
+organization roster — for example as an element of `Group.members` and
+`Organization.members`. Every account in the result set is already a
+member of at least one group in the organization.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AddedAccountToGroup.<b>GroupInvitation</b></code>](/api/graphql/types/objects/group-invitation.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A pending invitation for a user to join a group.
+
+Invitations are sent by email. The invited user must accept the invitation to become
+a group member. Pending invitations can be revoked by an organization admin before
+they are accepted.
+
+
+
+
+
+
+### Member Of
+
+[`AddedAccountToGroupPayload`](/api/graphql/types/objects/added-account-to-group-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

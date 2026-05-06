@@ -1,0 +1,89 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: viewer
+title: viewer
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Get information about the currently authenticated entity.
+
+Returns an `AccountViewer` for human users or a `ServiceAccountViewer` for API clients.
+This is the "who am I?" query — use it to bootstrap user profiles, display org switchers,
+check billing status, or verify which service account is making requests.
+
+Returns an authentication error if the request has no valid credentials.
+
+
+```graphql
+viewer: Viewer
+```
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Viewer</b></code>](/api/graphql/types/unions/viewer.mdx) <Badge class="badge badge--secondary " text="union"/> 
+The authenticated entity making this API request.
+
+This is a union type — check `__typename` to determine whether the viewer is a human
+user (`AccountViewer`) or an API client (`ServiceAccountViewer`), then query the
+appropriate fields.
+
+**Example:**
+
+```graphql
+query {
+  viewer {
+    __typename
+    ... on AccountViewer {
+      id
+      email
+      firstName
+      organizations { data { id name } }
+    }
+    ... on ServiceAccountViewer {
+      id
+      name
+      organization { id name }
+    }
+  }
+}
+```

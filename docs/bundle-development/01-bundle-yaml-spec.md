@@ -99,9 +99,9 @@ steps:
     #
     # JQ expressions start with "." and can reference:
     #   - .params.<field>                    - Bundle parameters
-    #   - .connections.<name>                - Connection artifacts
-    #   - .connections.<name>.data.<path>    - Artifact data
-    #   - .connections.<name>.specs.<path>   - Artifact specs
+    #   - .connections.<name>                - Connection resources
+    #   - .connections.<name>.data.<path>    - Resource data
+    #   - .connections.<name>.specs.<path>   - Resource specs
     config:
       # OpenTofu/Terraform config options:
       #   json: boolean              - Enable JSON output (default: false)
@@ -112,7 +112,7 @@ steps:
         enable: true
         quiet: true
         # JQ expression: halt on failure only in production
-        halt_on_failure: '.params.md_metadata.default_tags["md-target"] == "prod"'
+        halt_on_failure: '.params.md_metadata.default_tags["md-environment"] == "prod"'
 
   # Second step: Helm chart deployment
   - path: chart
@@ -284,15 +284,14 @@ params:
               const: false
 
 # =============================================================================
-# CONNECTIONS (Input Artifacts)
+# CONNECTIONS (Input Resources)
 # =============================================================================
 
 # connections (required)
-# JSON Schema defining artifacts this bundle consumes from other bundles.
+# JSON Schema defining resources this bundle consumes from other bundles.
 # Connections enable type-safe infrastructure composition.
 #
-# Each connection must reference an artifact definition using $ref.
-# Artifact definitions define the contract for infrastructure types.
+# Each connection must reference a resource type using $ref.
 connections:
   # required (optional)
   # List of connections that must be provided.
@@ -306,11 +305,11 @@ connections:
     # VPC connection - required network infrastructure
     vpc:
       # $ref (required for connections)
-      # Reference to an artifact definition.
+      # Reference to a resource type.
       #
       # Formats:
-      #   - artifact-name               - Artifact from your organization
-      #   - other-org/artifact-name     - Artifact from another organization
+      #   - resource-type-name              - Resource type from your organization
+      #   - other-org/resource-type-name    - Resource type from another organization
       $ref: aws-vpc
       title: VPC
       description: The VPC where the database will be deployed
@@ -327,14 +326,14 @@ connections:
       title: Monitoring
       description: Optional Datadog agent for metrics
 
-    # Constrained connection - only accepts artifacts matching additional criteria
-    # You can add `properties` alongside `$ref` to validate artifact fields
+    # Constrained connection - only accepts resources matching additional criteria
+    # You can add `properties` alongside `$ref` to validate resource fields
     # before allowing the connection.
     database:
       $ref: postgresql
       title: PostgreSQL Database
       description: Database connection (requires PostgreSQL 16)
-      # Only allow PostgreSQL 16 artifacts to connect
+      # Only allow PostgreSQL 16 resources to connect
       properties:
         version:
           const: "16"
@@ -347,31 +346,35 @@ connections:
     #       enum: ["us-east-1", "us-west-2"]
 
 # =============================================================================
-# ARTIFACTS (Outputs)
+# RESOURCES (Outputs)
+#
+# The YAML key remains `artifacts:` for backwards compatibility, but
+# semantically this block declares the resources the bundle produces.
 # =============================================================================
 
 # artifacts (required)
-# JSON Schema defining artifacts this bundle produces.
-# Artifacts can be consumed as connections by other bundles.
+# JSON Schema defining resources this bundle produces. The key name
+# `artifacts` is preserved from the original bundle spec.
+# These outputs can be consumed as connections by other bundles.
 #
-# Each artifact must reference an artifact definition using $ref.
+# Each entry must reference a resource type using $ref.
 artifacts:
   # required (optional)
-  # List of artifacts that will always be produced.
+  # List of resources that will always be produced.
   required:
     - database
 
   # properties (required)
-  # Artifact definitions.
+  # Resource declarations.
   properties:
     database:
-      # $ref (required for artifacts)
-      # Reference to the artifact definition schema.
+      # $ref (required)
+      # Reference to the resource type schema.
       $ref: postgresql-authentication
       title: PostgreSQL Database
       description: Connection details for the provisioned database
 
-    # Additional artifact example
+    # Additional resource example
     read_replica:
       $ref: postgresql-authentication
       title: Read Replica
@@ -445,7 +448,7 @@ app:
 
     # Extract values from params
     LOG_LEVEL: .params.log_level
-    ENVIRONMENT: .params.md_metadata.default_tags["md-target"]
+    ENVIRONMENT: .params.md_metadata.default_tags["md-environment"]
 
     # Transform and combine values
     DATABASE_URL: >-
@@ -537,7 +540,7 @@ steps:
     config:
       checkov:
         enable: true
-        halt_on_failure: '.params.md_metadata.default_tags["md-target"] == "prod"'
+        halt_on_failure: '.params.md_metadata.default_tags["md-environment"] == "prod"'
 
 params:
   examples:
@@ -710,8 +713,8 @@ ui:
 | `name` | `string` | Bundle identifier (3-53 chars, lowercase with hyphens) |
 | `description` | `string` | Human-readable description (10-1024 chars) |
 | `params` | `object` | JSON Schema for user parameters |
-| `connections` | `object` | JSON Schema for input artifacts |
-| `artifacts` | `object` | JSON Schema for output artifacts |
+| `connections` | `object` | JSON Schema for input resources |
+| `artifacts` | `object` | JSON Schema for output resources (YAML key kept for backwards compatibility) |
 
 ### Optional Fields
 
@@ -744,5 +747,5 @@ ui:
 - [Bundles Concept](/concepts/bundles) - Understanding bundles
 - [Provisioners Overview](/bundle-development/provisioners/overview) - Available provisioners
 - [Massdriver Annotations](/bundle-development/schema-design/massdriver-annotations) - `$md.*` extensions
-- [Artifact Definitions](/concepts/artifacts-and-definitions) - Connection contracts
+- [Resource Types](/concepts/resources-and-types) - Connection contracts
 - [Bundle Meta Schema](https://api.massdriver.cloud/json-schemas/bundle.json) - Validation schema

@@ -1,0 +1,84 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: param-value
+title: ParamValue
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+One leaf value in a params comparison, captured for a single side.
+
+`present` indicates whether the key exists on this side:
+- `present: false` means the key is missing entirely.
+- `present: true, value: null` means the key exists with a JSON `null` value.
+- `present: true, value: "..."` means the key exists with the given value.
+
+`value` is a display string — for non-string leaves (numbers, booleans,
+arrays), the value is rendered as text (`"5432"`, `"true"`, `"[1,2,3]"`).
+Use the corresponding `paramDimensions` entry or the bundle schema for
+the original type.
+
+
+```graphql
+type ParamValue {
+  present: Boolean!
+  value: String
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ParamValue.<b>present</b></code>](#present)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#present\} 
+Whether a value exists at this path on this side of the comparison.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ParamValue.<b>value</b></code>](#value)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#value\} 
+Display-ready string form of the leaf value. `null` when the key is missing or its value is JSON `null` — disambiguate with `present`.
+
+
+
+
+
+
+### Member Of
+
+[`ParamComparison`](/api/graphql/types/objects/param-comparison.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

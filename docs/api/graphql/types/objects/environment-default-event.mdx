@@ -1,0 +1,113 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: environment-default-event
+title: EnvironmentDefaultEvent
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A lifecycle event for an environment default — a resource pre-assigned to an
+environment so instances inherit it automatically when their connection schema
+matches the resource type.
+
+Fires `CREATED` when `setEnvironmentDefault` adds a default and `DELETED` when
+`removeEnvironmentDefault` clears one. Defaults are exposed as a paginated
+`environment.defaults` connection, so refetch that page on receipt rather than
+relying on cache merging — the parent `Environment` row is unchanged.
+Subscribe via `environmentEvents`.
+
+
+```graphql
+type EnvironmentDefaultEvent implements Event {
+  action: EventAction!
+  timestamp: DateTime!
+  environmentDefault: EnvironmentDefault!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentDefaultEvent.<b>action</b></code>](#action)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventAction!</b></code>](/api/graphql/types/enums/event-action.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#action\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentDefaultEvent.<b>timestamp</b></code>](#timestamp)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#timestamp\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentDefaultEvent.<b>environmentDefault</b></code>](#environment-default)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EnvironmentDefault!</b></code>](/api/graphql/types/objects/environment-default.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#environment-default\} 
+The environment default that was created or deleted.
+
+
+### Interfaces
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Event</b></code>](/api/graphql/types/interfaces/event.mdx) <Badge class="badge badge--secondary " text="interface"/> 
+Base interface implemented by all lifecycle events.
+
+Every event carries an `action` describing what happened and a `timestamp` recording
+when it occurred. Concrete event types add a field for the affected resource.
+
+Because each subscription returns a union, use an `... on Event` fragment to
+access the shared fields and concrete fragments for the resource payload:
+
+```graphql
+subscription {
+  projectEvents(organizationId: "my-org", projectId: "my-project") {
+    ... on Event { action timestamp }
+    ... on ComponentEvent {
+      component { id name }
+    }
+    ... on LinkEvent {
+      link { id fromField toField }
+    }
+  }
+}
+```
+
+
+
+
+
+
+### Implemented By
+
+[`EnvironmentEventsPayload`](/api/graphql/types/unions/environment-events-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="union"/>

@@ -1,0 +1,103 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: compare-deployments
+title: compareDeployments
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Compare two deployments side-by-side.
+
+Returns the bundle version on each side and a flat, leaf-level diff of
+the snapshotted params. Useful for auditing what a deploy changed, or
+for contrasting deploys from different points in time.
+
+Both deployments must belong to the requesting organization. There is no
+requirement that they target the same instance — callers can pass any
+two deployments they have access to, though comparisons across unrelated
+instances will naturally show every leaf as "only on one side".
+
+```graphql
+query {
+  compareDeployments(organizationId: "my-org", sourceId: "<uuid-a>", targetId: "<uuid-b>") {
+    source { id status version }
+    target { id status version }
+    version { source target equal }
+    params { path source { value } target { value } equal }
+  }
+}
+```
+
+
+```graphql
+compareDeployments(
+  organizationId: ID!
+  sourceId: UUID!
+  targetId: UUID!
+): DeploymentComparison
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>compareDeployments.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>compareDeployments.<b>sourceId</b></code>](#source-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UUID!</b></code>](/api/graphql/types/scalars/uuid.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#source-id\} 
+The source deployment's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>compareDeployments.<b>targetId</b></code>](#target-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UUID!</b></code>](/api/graphql/types/scalars/uuid.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#target-id\} 
+The target deployment's unique identifier.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>DeploymentComparison</b></code>](/api/graphql/types/objects/deployment-comparison.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Side-by-side comparison of two deployments.
+
+Returned by `compareDeployments`. Use this to audit what changed between two
+points in an instance's history ("what did this deploy change?") or to
+contrast two different deployments against each other.
+
+The comparison is limited to snapshotted configuration — bundle version and
+params. Runtime state, logs, and produced artifacts are out of scope.

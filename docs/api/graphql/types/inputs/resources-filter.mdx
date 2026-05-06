@@ -1,0 +1,86 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: resources-filter
+title: ResourcesFilter
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Narrows the resources list to only matching records.
+
+All filters are combined with AND logic. Omit a filter to skip that criterion.
+
+
+```graphql
+input ResourcesFilter {
+  origin: ResourceOriginFilter
+  resourceType: StringFilter
+  environmentId: IdFilter
+  search: String
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ResourcesFilter.<b>origin</b></code>](#origin)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ResourceOriginFilter</b></code>](/api/graphql/types/inputs/resource-origin-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#origin\} 
+Return only resources with the specified origin (IMPORTED or PROVISIONED).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ResourcesFilter.<b>resourceType</b></code>](#resource-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>StringFilter</b></code>](/api/graphql/types/inputs/string-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#resource-type\} 
+Return only resources of the given resource type, matched by the type's identifier (e.g., `aws-iam-role`, `kubernetes-cluster`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ResourcesFilter.<b>environmentId</b></code>](#environment-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IdFilter</b></code>](/api/graphql/types/inputs/id-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#environment-id\} 
+Return only resources provisioned into the specified environment(s). Imported resources have no environment and are excluded when this filter is set.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ResourcesFilter.<b>search</b></code>](#search)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#search\} 
+Full-text search across the resource name. Results are ranked by relevance unless you provide an explicit `sort`. For terms longer than 3 characters, name-prefix matches are also included. **Note:** pagination cursors returned by search results use offset-based pagination and are not interchangeable with cursors from non-search queries.
+
+
+
+
+
+
+### Member Of
+
+[`resources`](/api/graphql/operations/queries/resources.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

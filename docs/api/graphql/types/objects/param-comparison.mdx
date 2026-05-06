@@ -1,0 +1,88 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: param-comparison
+title: ParamComparison
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A single leaf-level comparison between two params maps.
+
+The list of `ParamComparison` entries returned by a comparison query is flat:
+every entry is a terminal leaf (maps and arrays are walked to the bottom).
+Use `equal` to filter to only the entries that differ.
+
+
+```graphql
+type ParamComparison {
+  path: String!
+  source: ParamValue!
+  target: ParamValue!
+  equal: Boolean!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ParamComparison.<b>path</b></code>](#path)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#path\} 
+jq-style path to this leaf value, e.g. `.database.port` or `.containers[0].image`. Paths are stable across both sides of the comparison.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ParamComparison.<b>source</b></code>](#source)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ParamValue!</b></code>](/api/graphql/types/objects/param-value.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#source\} 
+The value (or absence) on the source side of the comparison.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ParamComparison.<b>target</b></code>](#target)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ParamValue!</b></code>](/api/graphql/types/objects/param-value.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#target\} 
+The value (or absence) on the target side of the comparison.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ParamComparison.<b>equal</b></code>](#equal)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#equal\} 
+`true` when both sides have the same presence and the same value. `false` when either the key is only on one side or the values differ.
+
+
+
+
+
+
+### Member Of
+
+[`DeploymentComparison`](/api/graphql/types/objects/deployment-comparison.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`InstanceComparison`](/api/graphql/types/objects/instance-comparison.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

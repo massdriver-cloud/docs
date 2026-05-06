@@ -117,7 +117,7 @@ Once enabled, Massdriver:
 1. Authenticates using the service principal credentials
 2. Lists blobs in the cost export container
 3. Downloads the latest export CSV
-4. Parses and aggregates costs by `md-package` tag
+4. Parses and aggregates costs by `md-instance` tag
 5. Stores daily and monthly cost data
 
 Data is collected every 24 hours.
@@ -134,7 +134,7 @@ The blob container doesn't exist. Verify the OpenTofu module was applied success
 
 ### No cost data appears
 
-- Verify resources have the `md-package` tag applied
+- Verify resources have the `md-instance` tag applied
 - Cost exports take up to 24 hours to generate initially
 - Check the Azure portal to confirm exports are being written
 

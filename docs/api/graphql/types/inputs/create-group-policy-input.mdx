@@ -1,0 +1,79 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: create-group-policy-input
+title: CreateGroupPolicyInput
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Attach an ABAC policy to a group. Each policy grants or denies one or more actions on entities whose attributes satisfy the conditions.
+
+
+```graphql
+input CreateGroupPolicyInput {
+  actions: [String!]!
+  conditions: Conditions!
+  effect: PolicyEffect!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateGroupPolicyInput.<b>actions</b></code>](#actions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#actions\} 
+What members of this group can do. Pass one or more action ids in `{entity}:{verb}` form. Conditions apply to every action; actions whose entity does not support a given condition simply never match. Duplicate entries are rejected.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateGroupPolicyInput.<b>conditions</b></code>](#conditions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Conditions!</b></code>](/api/graphql/types/scalars/conditions.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#conditions\} 
+Restrict the actions to entities whose attributes match every condition. Send the literal `"*"` to apply to all entities of each action's type. Per-key, send `"*"` to match any value or a non-empty list of strings to match a closed set. Within a policy all conditions are AND. Across policies, evaluation is OR.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateGroupPolicyInput.<b>effect</b></code>](#effect)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PolicyEffect!</b></code>](/api/graphql/types/enums/policy-effect.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#effect\} 
+ALLOW grants the actions. DENY blocks them and wins over any matching ALLOW.
+
+
+
+
+
+
+### Member Of
+
+[`createGroupPolicy`](/api/graphql/operations/mutations/create-group-policy.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`explainPolicy`](/api/graphql/operations/queries/explain-policy.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

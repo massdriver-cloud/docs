@@ -1,0 +1,83 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: version-comparison
+title: VersionComparison
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A comparison of a single version string between two sides.
+
+`source` and `target` may each be `null` when the corresponding side has no
+version to report (e.g., an instance that exists on one side of an
+environment comparison but not the other).
+
+
+```graphql
+type VersionComparison {
+  source: String
+  target: String
+  equal: Boolean!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>VersionComparison.<b>source</b></code>](#source)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#source\} 
+The version on the source side, or `null` if no version applies.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>VersionComparison.<b>target</b></code>](#target)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#target\} 
+The version on the target side, or `null` if no version applies.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>VersionComparison.<b>equal</b></code>](#equal)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#equal\} 
+`true` when both sides have the same version string (including both being `null`).
+
+
+
+
+
+
+### Member Of
+
+[`DeploymentComparison`](/api/graphql/types/objects/deployment-comparison.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`InstanceComparison`](/api/graphql/types/objects/instance-comparison.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

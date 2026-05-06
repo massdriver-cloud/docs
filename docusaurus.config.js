@@ -117,37 +117,11 @@ module.exports = {
     [
       "@graphql-markdown/docusaurus",
       {
-        id: "graphql-v0",
-        schema: "./schema/v0/schema.graphql",
+        id: "graphql",
+        schema: "./schema/schema.graphql",
         rootPath: "./docs",
-        baseURL: "api/graphql/v0",
-        homepage: "./docs/api/graphql/v0.md",
-        printer: require.resolve("./src/graphql-markdown-printer"),
-        docOptions: {
-          frontMatter: {
-            pagination_next: null,
-            pagination_prev: null,
-            hide_table_of_contents: true,
-          },
-          index: true,
-        },
-        loaders: {
-          GraphQLFileLoader: "@graphql-tools/graphql-file-loader"
-        },
-        printTypeOptions: {
-          deprecated: "group",
-        },
-        diffMethod: "SCHEMA-HASH",
-      },
-    ],
-    [
-      "@graphql-markdown/docusaurus",
-      {
-        id: "graphql-v1",
-        schema: "./schema/v1/schema.graphql",
-        rootPath: "./docs",
-        baseURL: "api/graphql/v1",
-        homepage: "./docs/api/graphql/v1.md",
+        baseURL: "api/graphql",
+        homepage: "./docs/api/graphql/graphql.md",
         printer: require.resolve("./src/graphql-markdown-printer"),
         docOptions: {
           frontMatter: {

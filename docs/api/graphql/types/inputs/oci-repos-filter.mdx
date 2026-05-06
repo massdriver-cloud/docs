@@ -1,0 +1,81 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: oci-repos-filter
+title: OciReposFilter
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Filters for narrowing the OCI repositories list.
+
+All filters are combined with AND logic.
+
+
+```graphql
+input OciReposFilter {
+  artifactType: String
+  name: OciRepoNameFilter
+  search: String
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>OciReposFilter.<b>artifactType</b></code>](#artifact-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#artifact-type\} 
+Filter by OCI artifact media type. Currently the only supported type is `application/vnd.massdriver.bundle.v1+json`. Passing an unsupported type returns an empty list.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciReposFilter.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoNameFilter</b></code>](/api/graphql/types/inputs/oci-repo-name-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#name\} 
+Filter repositories by name using exact match, prefix, or set membership.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciReposFilter.<b>search</b></code>](#search)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#search\} 
+Full-text search across the repository name, readme, and changelog. Results are ranked by relevance unless you provide an explicit `sort`. For terms longer than 3 characters, name-prefix matches are also included. **Note:** pagination cursors returned by search results use offset-based pagination and are not interchangeable with cursors from non-search queries.
+
+
+
+
+
+
+### Member Of
+
+[`ociRepos`](/api/graphql/operations/queries/oci-repos.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

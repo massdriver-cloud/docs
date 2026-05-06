@@ -1,24 +1,24 @@
 ---
 id: artifact-definition-spec
 slug: /bundle-development/connections-artifacts/artifact-definition-spec
-title: Artifact Definition Specification
-sidebar_label: Artifact Definition Spec
+title: Resource Type Specification
+sidebar_label: Resource Type Spec
 ---
 
-# Artifact Definition YAML Specification
+# Resource Type YAML Specification
 
-This document outlines the `massdriver.yaml` format for authoring artifact definitions. This format provides a more ergonomic authoring experience compared to writing raw JSON Schema, with support for referencing external files for instructions and export templates.
+This document outlines the `massdriver.yaml` format for authoring resource types. This format provides a more ergonomic authoring experience compared to writing raw JSON Schema, with support for referencing external files for instructions and export templates.
 
 :::tip When to Use This Format
-Use the `massdriver.yaml` format when creating new artifact definitions. It separates concerns by keeping markdown instructions and Liquid templates in their own files, making definitions easier to read and maintain.
+Use the `massdriver.yaml` format when creating new resource types. It separates concerns by keeping markdown instructions and Liquid templates in their own files, making definitions easier to read and maintain.
 :::
 
 ## File Structure
 
-An artifact definition using this format consists of a directory containing:
+A resource type using this format consists of a directory containing:
 
 ```
-my-artifact-definition/
+my-resource-type/
 ├── massdriver.yaml          # Main definition file
 ├── instructions/            # Onboarding instruction markdown files
 │   ├── step1.md
@@ -31,23 +31,23 @@ my-artifact-definition/
 
 ```yaml
 # =============================================================================
-# ARTIFACT DEFINITION METADATA
+# RESOURCE TYPE METADATA
 # =============================================================================
 
 # name (required)
-# The unique identifier for this artifact definition within your organization.
-# Must be lowercase with hyphens. This becomes part of the artifact's reference
-# path: <org>/<name> (e.g., "acme/aws-rds-postgres")
-name: my-artifact-name
+# The unique identifier for this resource type within your organization.
+# Must be lowercase with hyphens. This becomes part of the resource type's
+# reference path: <org>/<name> (e.g., "acme/aws-rds-postgres")
+name: my-resource-type-name
 
 # label (required)
 # Human-readable display name shown in the Massdriver UI.
-# Used in dropdowns, connection labels, and the artifact type selector.
-label: My Artifact Display Name
+# Used in dropdowns, connection labels, and the resource type selector.
+label: My Resource Type Display Name
 
 # icon (optional)
-# URL to an icon representing this artifact type.
-# Displayed in the UI next to the artifact name.
+# URL to an icon representing this resource type.
+# Displayed in the UI next to the resource type name.
 # Can be an HTTPS URL or a data URL for embedded images.
 icon: https://example.com/my-icon.svg
 
@@ -56,13 +56,13 @@ icon: https://example.com/my-icon.svg
 # =============================================================================
 
 # ui (optional)
-# Controls how this artifact type appears and behaves in the Massdriver UI.
+# Controls how this resource type appears and behaves in the Massdriver UI.
 ui:
   # connectionOrientation (optional)
-  # Controls how artifacts of this type appear on the canvas.
+  # Controls how resources of this type appear on the canvas.
   # Values:
-  #   - "link": Users can draw connection lines to/from this artifact
-  #   - "environmentDefault": Artifact only appears as an environment default,
+  #   - "link": Users can draw connection lines to/from resources of this type
+  #   - "environmentDefault": Resources only appear as an environment default,
   #                           not as a connectable box on the canvas
   # You can configure both orientations independently for different user roles.
   # Example: SREs might draw lines to a shared K8s cluster while developers
@@ -70,7 +70,7 @@ ui:
   connectionOrientation: link
 
   # environmentDefaultGroup (optional)
-  # Makes this artifact type available as an environment default under the
+  # Makes this resource type available as an environment default under the
   # specified group. Environment defaults are shared resources (credentials,
   # networks, DNS zones) that can be automatically connected to bundles.
   #
@@ -83,7 +83,7 @@ ui:
   environmentDefaultGroup: credentials
 
   # instructions (optional)
-  # Onboarding instructions shown to users when they create artifacts of this
+  # Onboarding instructions shown to users when they create resources of this
   # type. Each instruction becomes a step in the onboarding wizard.
   # Useful for guiding users through credential setup or complex configurations.
   instructions:
@@ -101,8 +101,8 @@ ui:
 # =============================================================================
 
 # exports (optional)
-# Define downloadable file formats for artifact data. Users can download
-# configuration files pre-populated with artifact values (e.g., kubeconfig,
+# Define downloadable file formats for resource data. Users can download
+# configuration files pre-populated with resource values (e.g., kubeconfig,
 # database connection files).
 exports:
   # downloadButtonText: Label for the download button in the UI
@@ -124,22 +124,22 @@ exports:
 # =============================================================================
 
 # schema (required)
-# The JSON Schema that defines the structure of artifacts of this type.
-# This schema validates artifact data and enables type-safe connections
+# The JSON Schema that defines the structure of resources of this type.
+# This schema validates resource data and enables type-safe connections
 # between bundles.
 schema:
   # title (recommended)
   # Human-readable title for the schema
-  title: My Artifact Type
+  title: My Resource Type
 
   # description (optional)
-  # Detailed description of what this artifact represents
+  # Detailed description of what this resource represents
   description: |
     Describes a connection to a managed database service including
     authentication credentials and infrastructure identifiers.
 
   # type (required)
-  # Must be "object" for artifact definitions
+  # Must be "object" for resource types
   type: object
 
   # additionalProperties (recommended)
@@ -153,7 +153,7 @@ schema:
     - authentication
 
   # properties (required)
-  # Define the structure of your artifact data.
+  # Define the structure of your resource data.
   # Common patterns include grouping by: infrastructure, authentication,
   # iam, cloud, specs, data
   properties:
@@ -279,13 +279,13 @@ schema:
     # data: Application-specific data
     data:
       title: Data
-      description: Additional artifact data
+      description: Additional resource data
       type: object
 ```
 
 ## Minimal Example
 
-A minimal artifact definition with just the required fields:
+A minimal resource type with just the required fields:
 
 ```yaml
 name: simple-credential
@@ -307,7 +307,7 @@ schema:
 
 ## Complete Example with All Features
 
-A full-featured artifact definition for a database credential:
+A full-featured resource type for a database credential:
 
 ```yaml
 name: postgres-database
@@ -335,7 +335,7 @@ exports:
 
 schema:
   title: PostgreSQL Database
-  description: A PostgreSQL database connection artifact
+  description: A PostgreSQL database connection resource
   type: object
   additionalProperties: false
   required:
@@ -398,7 +398,7 @@ schema:
 ```markdown
 # PostgreSQL Database Setup
 
-This artifact represents a PostgreSQL database connection.
+This resource represents a PostgreSQL database connection.
 
 ## Prerequisites
 
@@ -425,7 +425,7 @@ DATABASE_NAME={{ artifact.authentication.database }}
 
 ## Publishing
 
-Publish your artifact definition using the Massdriver CLI:
+Publish your resource type using the Massdriver CLI:
 
 ```bash
 mass definition publish ./path/to/massdriver.yaml
@@ -435,12 +435,12 @@ The CLI will:
 1. Read and parse the `massdriver.yaml` file
 2. Inline the content from instruction and export template files
 3. Build the JSON Schema format expected by the API
-4. Validate against the artifact definition meta-schema
+4. Validate against the resource type meta-schema
 5. Publish to your organization
 
 ## Referencing in Bundles
 
-Once published, reference your artifact definition in bundle `massdriver.yaml` files:
+Once published, reference your resource type in bundle `massdriver.yaml` files:
 
 ```yaml
 # In a bundle's massdriver.yaml
@@ -482,6 +482,6 @@ connections:
 
 ## See Also
 
-- [Artifact Definitions Concept](/concepts/artifacts-and-definitions) - Understanding artifact definitions
-- [Custom Artifact Definition Guide](/guides/custom-artifact-definition) - JSON format and advanced customization
+- [Resource Types Concept](/concepts/resources-and-types) - Understanding resource types
+- [Custom Resource Type Guide](/guides/custom-artifact-definition) - JSON format and advanced customization
 - [Massdriver Annotations](/bundle-development/schema-design/massdriver-annotations) - Special `$md` annotations

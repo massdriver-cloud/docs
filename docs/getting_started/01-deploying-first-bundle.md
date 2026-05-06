@@ -151,7 +151,7 @@ Now that you understand the basics, you can:
 1. **Experiment**: Try changing parameters and redeploying to see how the infrastructure updates
 2. **Learn More**: Explore the bundle's `README.md` for detailed explanations of each concept
 3. **Create Custom Bundles**: Use this as a template to create your own infrastructure bundles
-4. **Connect Bundles**: Learn about artifacts and connections to build more complex architectures
+4. **Connect Bundles**: Learn about resources and connections to build more complex architectures
 
 In the next guide, we'll look at connecting this bundle to another bundle to pass information. [Get started now](02-connecting-bundles.md)!
 

@@ -1,0 +1,108 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: publish-resource-type
+title: publishResourceType
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+<Badge class="badge badge--secondary badge--primary" text="form schema"/>
+
+
+
+:::warning[DEPRECATED]
+
+Transitional shim from V0 `publishArtifactDefinition` during the migration to OCI-hosted resource types. Prefer the OCI-native publishing flow; this mutation may be removed without notice.
+
+:::
+
+**Deprecated — use at your own risk.** This mutation exists only to bridge V0's
+`publishArtifactDefinition` into V2 while resource types are being migrated to OCI.
+New integrations should use the OCI-native publishing flow. This mutation may be
+removed or change behavior without notice.
+
+Upsert a resource type from a JSON Schema document. If an existing resource type in
+your organization has the same `$md.name`, its schema is replaced; otherwise a new
+resource type is created.
+
+The schema describes the shape of data this resource type exposes to dependents. It
+must include a `$md` extension that declares the type's identifier (`$md.name`),
+display label, icon, and UI behavior.
+
+```graphql
+mutation {
+  publishResourceType(
+    organizationId: "your-org-id"
+    input: {
+      schema: {
+        "$md": { name: "aws-iam-role", label: "AWS IAM Role" }
+        type: "object"
+        properties: { data: { type: "object", required: ["arn"], properties: { arn: { type: "string" } } } }
+      }
+    }
+  ) {
+    successful
+    result { id name }
+    messages { field message }
+  }
+}
+```
+
+
+
+
+```graphql
+publishResourceType(
+  organizationId: ID!
+  input: PublishResourceTypeInput!
+): ResourceTypePayload @deprecated
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>publishResourceType.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>publishResourceType.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PublishResourceTypeInput!</b></code>](/api/graphql/types/inputs/publish-resource-type-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Upsert a resource type for your organization from a JSON Schema document. If an existing resource type has the same identifier, its schema is replaced. **Deprecated:** this mutation exists solely to bridge V0 `publishArtifactDefinition` into the V2 API while resource types are being migrated to OCI. New integrations should use the OCI-native publishing flow — this mutation may be removed without notice.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ResourceTypePayload</b></code>](/api/graphql/types/objects/resource-type-payload.mdx) <Badge class="badge badge--secondary " text="object"/>

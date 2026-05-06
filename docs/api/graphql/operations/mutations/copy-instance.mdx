@@ -1,0 +1,116 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: copy-instance
+title: copyInstance
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+<Badge class="badge badge--secondary badge--primary" text="form schema"/>
+
+
+
+Copy configuration from one instance to another.
+
+Both instances must be built from the same component. Source params (minus any
+fields the bundle marks non-copyable) are written to the destination, deep-merged
+with any `overrides`. A plan deployment is then created on the destination so the
+caller can review the changes before applying them. `copySecrets` and
+`copyRemoteReferences` opt in to additional state transfer.
+
+```graphql
+mutation {
+  copyInstance(
+    organizationId: "my-org"
+    sourceId: "ecomm-prod-db"
+    destinationId: "ecomm-staging-db"
+    input: { overrides: { size: "small" }, copySecrets: true, message: "Promote prod config" }
+  ) {
+    result { id params }
+    successful
+  }
+}
+```
+
+
+
+
+```graphql
+copyInstance(
+  organizationId: ID!
+  sourceId: ID!
+  destinationId: ID!
+  input: CopyInstanceInput!
+): InstancePayload
+```
+
+
+
+
+
+### Form Schema
+
+This mutation supports dynamic form generation using JSON Schema.
+
+- [JSON Schema](https://api.massdriver.cloud/graphql/v2/inputs/copyInstance.json)
+- [UI Schema](https://api.massdriver.cloud/graphql/v2/inputs/copyInstance.ui.json)
+
+<SchemaForm
+  schemaUrl="https://api.massdriver.cloud/graphql/v2/inputs/copyInstance.json"
+  uiSchemaUrl="https://api.massdriver.cloud/graphql/v2/inputs/copyInstance.ui.json"
+  name="copyInstance"
+/>
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>copyInstance.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>copyInstance.<b>sourceId</b></code>](#source-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#source-id\} 
+The instance to copy configuration from.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>copyInstance.<b>destinationId</b></code>](#destination-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#destination-id\} 
+The instance to copy configuration into. Must be built from the same component as the source.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>copyInstance.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CopyInstanceInput!</b></code>](/api/graphql/types/inputs/copy-instance-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Copy configuration from one instance to another. The source and destination must be instances of the same component. Source params (minus any fields marked non-copyable in the bundle) are written to the destination, then a plan deployment is created on the destination so the changes can be reviewed before applying.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>InstancePayload</b></code>](/api/graphql/types/objects/instance-payload.mdx) <Badge class="badge badge--secondary " text="object"/>

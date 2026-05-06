@@ -1,0 +1,95 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: oci-file
+title: OciFile
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A single file inside an OCI artifact — for example, a bundle's
+`README.md`, a Terraform module's `src/main.tf`, or a Helm chart's
+`templates/deployment.yaml`. File names may include nested paths.
+
+Use `url` to download the bytes; use `mediaType` to decide how to render
+them; use `digest` and `size` to verify integrity or to pull the file
+directly with an OCI client.
+
+
+```graphql
+type OciFile {
+  name: String!
+  mediaType: String!
+  size: Int!
+  digest: String!
+  url: String!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>OciFile.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+The file's path within the artifact, including any directory segments (e.g., `README.md`, `src/main.tf`, `helm/templates/deployment.yaml`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciFile.<b>mediaType</b></code>](#media-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#media-type\} 
+Content type the publisher declared for this file (e.g., `text/markdown`, `application/json`, `image/svg+xml`, `text/x-terraform`). Use this to pick a renderer in your UI — the response from `url` is always served as plain text for safety, so the consumer is responsible for interpreting the bytes.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciFile.<b>size</b></code>](#size)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/api/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#size\} 
+File size in bytes.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciFile.<b>digest</b></code>](#digest)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#digest\} 
+Content-addressable SHA-256 digest of the file (e.g., `sha256:e3b0c44298fc1c14...`). Stable across re-publishes of identical content; useful for integrity checks or pulling the file directly with an OCI client like `oras`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciFile.<b>url</b></code>](#url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#url\} 
+Authenticated URL to download this file. Requires an active session or API credentials, and `repo:view` on the OCI repository. The response is always served as `text/plain` (regardless of the file's `mediaType`) so it cannot execute scripts in a browser. To render the file, fetch the URL with credentials, read the bytes, and render them client-side according to `mediaType`. Direct embedding via `<img>` or `<iframe>` will not work.
+
+
+
+
+
+
+### Member Of
+
+[`OciFilesPage`](/api/graphql/types/objects/oci-files-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

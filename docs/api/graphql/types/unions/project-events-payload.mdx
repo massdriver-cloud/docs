@@ -1,0 +1,97 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: project-events-payload
+title: ProjectEventsPayload
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Events delivered by the `projectEvents` subscription.
+
+Covers the project itself plus its blueprint (components, links) and the
+environments provisioned from it.
+
+
+```graphql
+union ProjectEventsPayload = ProjectEvent | EnvironmentEvent | ComponentEvent | LinkEvent
+```
+
+
+
+
+### Possible types
+
+#### [<code style={{ fontWeight: 'normal' }}>ProjectEventsPayload.<b>ProjectEvent</b></code>](/api/graphql/types/objects/project-event.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A lifecycle event for a project.
+
+Emitted when a project is created, updated (renamed, settings changed), or deleted.
+Subscribe via `organizationEvents` or `projectEvents`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ProjectEventsPayload.<b>EnvironmentEvent</b></code>](/api/graphql/types/objects/environment-event.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A lifecycle event for an environment.
+
+Emitted when an environment is created, updated (renamed, settings changed), or deleted
+within a project. Subscribe via `projectEvents` for any environment in the project, or
+via `environmentEvents` for a specific environment (updates and deletes only — the
+environment must exist to subscribe to it).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ProjectEventsPayload.<b>ComponentEvent</b></code>](/api/graphql/types/objects/component-event.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A lifecycle event for a component.
+
+Emitted when a component is added to a blueprint, moved on the canvas, renamed or
+re-tagged, or removed. Subscribe via `projectEvents`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ProjectEventsPayload.<b>LinkEvent</b></code>](/api/graphql/types/objects/link-event.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A lifecycle event for a blueprint link between two components.
+
+Emitted when components are linked or unlinked in a project's blueprint. Links have
+no mutable body, so only `CREATED` and `DELETED` actions are emitted. Subscribe via
+`projectEvents`.
+
+
+
+
+
+
+### Returned By
+
+[`projectEvents`](/api/graphql/operations/subscriptions/project-events.mdx)  <Badge class="badge badge--secondary badge--relation" text="subscription"/>

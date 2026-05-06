@@ -1,0 +1,113 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: audit-log
+title: AuditLog
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+An audit log event recording a significant action in your organization.
+
+Every state-changing operation in Massdriver is captured as an audit log event, following
+the [CloudEvents](https://cloudevents.io/) specification. Use audit logs to track who
+made changes, investigate incidents, and satisfy compliance requirements.
+
+**Event types** use dot notation to categorize actions (e.g., `project.created`,
+`deployment.completed`, `group.member_added`).
+
+**Subjects** use MRI (Massdriver Resource Identifier) format to identify the affected
+resource (e.g., `mri://organization/my-org/project/backend`).
+
+
+```graphql
+type AuditLog {
+  id: ID!
+  occurredAt: DateTime!
+  type: String!
+  source: String!
+  subject: String
+  data: Map
+  actor: AuditLogActor!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AuditLog.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+Unique identifier for this audit log event.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AuditLog.<b>occurredAt</b></code>](#occurred-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#occurred-at\} 
+When the event occurred (UTC). This is the authoritative timestamp for the action.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AuditLog.<b>type</b></code>](#type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#type\} 
+Event type in dot notation (e.g., `project.created`, `deployment.completed`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AuditLog.<b>source</b></code>](#source)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#source\} 
+The system component or service that generated this event.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AuditLog.<b>subject</b></code>](#subject)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#subject\} 
+The affected resource in MRI format (e.g., `mri://organization/my-org/project/backend`). May be `null` for organization-wide events.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AuditLog.<b>data</b></code>](#data)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#data\} 
+Event payload containing context-specific details about the action. The structure varies by event type.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AuditLog.<b>actor</b></code>](#actor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AuditLogActor!</b></code>](/api/graphql/types/objects/audit-log-actor.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#actor\} 
+The actor (user, service account, deployment, or system) that performed this action.
+
+
+
+
+
+
+### Returned By
+
+[`auditLog`](/api/graphql/operations/queries/audit-log.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+
+### Member Of
+
+[`AuditLogsPage`](/api/graphql/types/objects/audit-logs-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

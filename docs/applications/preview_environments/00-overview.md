@@ -21,7 +21,7 @@ mass project list
 mass preview init $projectSlug
 ```
 
-You'll be prompted to select the credentials you want to use for your preview environment and this will generate a `preview.json` configuration file for your project with a set of default parameters for each of the packages in your project.
+You'll be prompted to select the credentials you want to use for your preview environment. This generates a `preview.json` configuration file for your project with a set of default parameters for each of the instances in your project. (The JSON key under each instance entry is `packages:` for backwards compatibility — same data, legacy key shape.)
 
 Next, edit the `preview.json` file to set the parameters, remote references, and secrets for your preview environment.
 

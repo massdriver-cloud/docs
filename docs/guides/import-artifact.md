@@ -1,19 +1,22 @@
 ---
 id: import-artifact
-slug: /guides/import-artifact
-title: Import an Artifact
-sidebar_label: Import Artifact
+slug: /guides/import-resource
+title: Import a Resource
+sidebar_label: Import Resource
 ---
 
-This guide will show you how to import a custom artifact into your organization. Why might you want to import an artifact? Here are some possible scenarios:
-* You want to connect resources in Massdriver to resources outside of Massdriver
-* You want to customize the artifact data for a specific use case
+This guide walks through importing a custom resource into your organization. The page slug retains `/guides/import-artifact` for backwards compatibility, but the workflow itself uses the new GraphQL nouns (`createResource`, `Resource`, `resourceTypeId`).
+
+Why import a resource? A few common scenarios:
+
+* You want to connect resources in Massdriver to resources outside Massdriver
+* You want to customize the resource payload for a specific use case
 
 ## Prerequisites
 
-To import an artifact, you need a schema ([artifact definition](/concepts/artifacts-and-definitions)). You can either create a [custom artifact definition](/guides/custom-artifact-definition) or use an official [Massdriver artifact definition](https://github.com/massdriver-cloud/artifact-definitions/tree/main/definitions/artifacts). 
+To import a resource, you need a [resource type](/concepts/resources-and-types) (its schema). You can create a [custom resource type](/guides/custom-artifact-definition) or use an [official Massdriver resource type](https://github.com/massdriver-cloud/artifact-definitions/tree/main/definitions/artifacts).
 
-We'll also need a custom artifact that meets that schema, populated with actual values. Here's an example:
+You also need a payload that conforms to that resource type. Example schema and payload:
 
 ```json title="schema.json"
 {
@@ -57,7 +60,8 @@ We'll also need a custom artifact that meets that schema, populated with actual 
   }
 }
 ```
-```json title="artifact.json"
+
+```json title="resource.json"
 {
   "infrastructure": {
     "arn": "arn:aws:ec2:us-west-2:123456789012:vpc/vpc-1234567890abcdef0",
@@ -72,107 +76,83 @@ We'll also need a custom artifact that meets that schema, populated with actual 
 ## CLI
 
 :::note
-
-If you haven't already, be sure to install the [CLI](/reference/cli/overview).
-
+If you haven't already, install the [Massdriver CLI](/reference/cli/overview). The CLI command names are being updated; this guide will follow shortly.
 :::
 
-Once you have a schema and the custom artifact, you can import the artifact using the following command:
+The current CLI invocation imports the resource (the command name still uses the legacy `artifact` noun):
 
 ```bash
-mass artifact import -n my-artifact-name -t mymdorg/myartifactdef -f /path/to/artifact.json
+mass artifact import -n my-resource-name -t mymdorg/myresourcetype -f /path/to/resource.json
 ```
 
-You'll then see the following output:
-```bash title="Output"
-Creating artifact my-artifact-name of type mymdorg/myartifactdef...
-Artifact my-artifact-name created! (Artifact ID: 12345678-1234-1234-1234-123456789012)
+Output:
+
+```text title="Output"
+Creating resource my-resource-name of type mymdorg/myresourcetype...
+Resource my-resource-name created! (Resource ID: 12345678-1234-1234-1234-123456789012)
 ```
 
-You can now view the artifact in the Massdriver UI.
+You can now view the resource in the Massdriver UI.
 
 ## API
 
-To import an artifact using the API, you can do so using GraphiQL, GraphQL, Fetch, or a cURL request.
+To import a resource via the GraphQL API, use the `createResource` mutation. Example via GraphiQL or any GraphQL client:
 
-### GraphiQL
-
-You can access our GraphiQL interface [here](https://api.massdriver.cloud/api/graphiql).
-
-```graphql title="createArtifact.gql"
-mutation importVpc($orgId: ID!) {
-  createArtifact(
-    payload: "{\"infrastructure\":{\"arn\":\"arn:aws:ec2:us-west-2:123456789012:vpc/vpc-1234567890abcdef0\",\"cidr\":\"10.0.0.0/16\"},\"aws\":{\"region\":\"us-west-2\"}}"
-    name: "my-artifact-name"
-    organizationId: $orgId
-    type: "mymdorg/myartifactdef"
-  ){
-    result{id}
-    messages{message}
+```graphql title="createResource.gql"
+mutation ImportVpc($organizationId: ID!, $resourceTypeId: ID!, $input: CreateResourceInput!) {
+  createResource(
+    organizationId: $organizationId
+    resourceTypeId: $resourceTypeId
+    input: $input
+  ) {
     successful
+    messages { field message }
+    result { id name origin }
   }
 }
 ```
-```graphql title="query variables"
+
+```json title="Variables"
 {
-  "orgId": "12345678-1234-1234-1234-123456789012"
-}
-```
-
-### GraphQL-Request
-
-```javascript title="createArtifact.js"
-import { GraphQLClient } from 'graphql-request'
-
-const client = new GraphQLClient('https://api.massdriver.cloud/api/graphiql', {
-  headers: {
-    Authorization: 'Bearer YOUR_AUTH_TOKEN',
-  },
-});
-
-
-function setItem() {
-  return client.request(`
-    {
-      createArtifact(
-        payload: "{\"infrastructure\":{\"arn\":\"arn:aws:ec2:us-west-2:123456789012:vpc/vpc-1234567890abcdef0\",\"cidr\":\"10.0.0.0/16\"},\"aws\":{\"region\":\"us-west-2\"}}"
-        name: "my-artifact-name"
-        organizationId: $orgId
-        type: "mymdorg/myartifactdef"
-      ){
-        result{id}
-        messages{message}
-        successful
+  "organizationId": "my-org-id",
+  "resourceTypeId": "mymdorg/myresourcetype",
+  "input": {
+    "name": "my-resource-name",
+    "payload": {
+      "infrastructure": {
+        "arn": "arn:aws:ec2:us-west-2:123456789012:vpc/vpc-1234567890abcdef0",
+        "cidr": "10.0.0.0/16"
+      },
+      "aws": {
+        "region": "us-west-2"
       }
     }
-  `)
+  }
 }
 ```
 
-### Fetch
-
-```javascript title="createArtifact.js"
-require('es6-promise').polyfill()
-require('isomorphic-fetch')
-      
-function setItem() { 
-  return fetch('https://api.massdriver.cloud/api/graphiql', {
-    method: 'post',
-    headers: {
-      'Content-Type': 'application/json',
-    //'Authorization': 'Bearer YOUR_AUTH_TOKEN'
-    },
-    body: '{"query":"mutationimportVpc($orgId:ID!){createArtifact(payload:\"{\\\"infrastructure\\\":{\\\"arn\\\":\\\"arn:aws:ec2:us-west-2:123456789012:vpc/vpc-1234567890abcdef0\\\",\\\"cidr\\\":\\\"10.0.0.0/16\\\"},\\\"aws\\\":{\\\"region\\\":\\\"us-west-2\\\"}}\"name:\"my-artifact-name\"organizationId:$orgIdtype:\"mymdorg/myartifactdef\"){result{id}messages{message}successful}}"}', 
-  }) 
-}
-```
-
-
-### CURL
+### cURL
 
 ```bash title="cURL"
-curl 'https://api.massdriver.cloud/api/graphiql'  
-  -H 'Authorization: Bearer YOUR_AUTH_TOKEN'  
-  -d '{"query":"mutationimportVpc($orgId:ID!){createArtifact(payload:\"{\\\"infrastructure\\\":{\\\"arn\\\":\\\"arn:aws:ec2:us-west-2:123456789012:vpc/vpc-1234567890abcdef0\\\",\\\"cidr\\\":\\\"10.0.0.0/16\\\"},\\\"aws\\\":{\\\"region\\\":\\\"us-west-2\\\"}}\"name:\"my-artifact-name\"organizationId:$orgIdtype:\"mymdorg/myartifactdef\"){result{id}messages{message}successful}}"}'
+curl 'https://api.massdriver.cloud/api/v1' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Basic <BASE64(org_slug:service_account_secret)>' \
+  --data @- <<'JSON'
+{
+  "query": "mutation ImportVpc($organizationId: ID!, $resourceTypeId: ID!, $input: CreateResourceInput!) { createResource(organizationId: $organizationId, resourceTypeId: $resourceTypeId, input: $input) { successful messages { field message } result { id name origin } } }",
+  "variables": {
+    "organizationId": "my-org-id",
+    "resourceTypeId": "mymdorg/myresourcetype",
+    "input": {
+      "name": "my-resource-name",
+      "payload": {
+        "infrastructure": { "arn": "arn:aws:ec2:us-west-2:123456789012:vpc/vpc-1234567890abcdef0", "cidr": "10.0.0.0/16" },
+        "aws": { "region": "us-west-2" }
+      }
+    }
+  }
+}
+JSON
 ```
 
+See the [GraphQL API reference](/api/graphql) for the full operation set, and the [GraphQL permissions reference](/platform-operations/security/graphql-permissions) for the permission required by `createResource` (`resource:import`).

@@ -11,7 +11,7 @@ Massdriver extends JSON Schema with custom annotations prefixed with `$md.` to p
 
 ### Scope
 
-**Bundle params schemas only** - Used in bundle `params` field to control field editability in package configuration.
+**Bundle params schemas only** - Used in bundle `params` field to control field editability in instance configuration.
 
 ### Use Case
 
@@ -25,7 +25,7 @@ Prevents modification of critical infrastructure parameters after initial provis
 
 ### Behavior
 
-When a package is provisioned, fields marked with `$md.immutable: true` are transformed to read-only fields in the UI. For packages that haven't been provisioned yet, these fields remain editable.
+When an instance is provisioned, fields marked with `$md.immutable: true` are transformed to read-only fields in the UI. For instances that haven't been provisioned yet, these fields remain editable.
 
 :::note
 This annotation is currently supported on top-level properties and nested properties within objects.
@@ -59,7 +59,7 @@ properties:
 
 ### Technical Details
 
-Internally, `$md.immutable` is transformed to the JSON Schema standard `readOnly` property when the package is in a provisioned state. The transformation only applies to packages that have been deployed at least once.
+Internally, `$md.immutable` is transformed to the JSON Schema standard `readOnly` property when the instance is in a provisioned state. The transformation only applies to instances that have been deployed at least once.
 
 ---
 
@@ -67,14 +67,14 @@ Internally, `$md.immutable` is transformed to the JSON Schema standard `readOnly
 
 ### Scope
 
-**Bundle params schemas only** - Used in bundle `params` field to create dynamic dropdowns based on connected artifact data.
+**Bundle params schemas only** - Used in bundle `params` field to create dynamic dropdowns based on connected resource data.
 
 ### Use Case
 
-Creates dynamic dropdown options based on data from connected artifacts. This allows users to select from available resources in their connected infrastructure, such as:
+Creates dynamic dropdown options based on data from connected resources. This allows users to select from available resources in their connected infrastructure, such as:
 - Selecting a specific database instance from a connected database cluster
 - Choosing a subnet from a connected VPC
-- Picking an IAM role from a connected security artifact
+- Picking an IAM role from a connected security resource
 - Selecting a topic from a connected messaging service
 
 ### Problem Solved
@@ -90,8 +90,8 @@ The `$md.enum` annotation expects a map with the following properties:
 
 | Property | Required | Description |
 |----------|----------|-------------|
-| `connection` | Yes | Name of the connection artifact to query |
-| `options` | Yes | JQ filter to extract available options from the artifact data |
+| `connection` | Yes | Name of the connection resource to query |
+| `options` | Yes | JQ filter to extract available options from the resource data |
 | `value` | No | JQ formatter for option values (defaults to `.`) |
 | `label` | No | JQ formatter for option labels (defaults to `value` formatter) |
 
@@ -121,7 +121,7 @@ properties:
 ```
 
 **How it works:**
-- Queries the `postgres_cluster` connection artifact
+- Queries the `postgres_cluster` connection resource
 - Extracts instance names using the JQ filter `.data.instances[]`
 - Creates a dropdown with each instance as both the value and label
 
@@ -153,14 +153,14 @@ properties:
 ```
 
 **How it works:**
-- Queries the `vpc` connection artifact
+- Queries the `vpc` connection resource
 - Iterates over subnets using `.data.infrastructure.subnets[]`
 - Extracts the subnet ID as the value: `.id`
 - Creates a formatted label: `"Private Subnet 1 - 10.0.1.0/24 (us-east-1a)"`
 
 ### Example: IAM Policies
 
-Select an IAM policy from a connected security artifact:
+Select an IAM policy from a connected security resource:
 
 ```yaml
 title: Security Configuration
@@ -196,8 +196,8 @@ These errors help developers identify configuration issues during bundle develop
 ### Technical Details
 
 The `$md.enum` extension:
-1. Finds the specified connection by the `package_field` name
-2. Executes the JQ `options` filter against the connection's artifact data
+1. Finds the specified connection by its name on the consuming bundle
+2. Executes the JQ `options` filter against the connection's resource data
 3. For each result, applies the `value` and `label` formatters
 4. Generates a JSON Schema `oneOf` array with `const` (value) and `title` (label) pairs
 5. Removes the `$md.enum` annotation from the final schema
@@ -208,11 +208,11 @@ The `$md.enum` extension:
 
 ### Scope
 
-**Bundle params schemas only** - Used in bundle `params` field to control which fields are copied during `copyPackageParams` operations.
+**Bundle params schemas only** - Used in bundle `params` field to control which fields are copied during `copyInstance` operations.
 
 ### Use Case
 
-Controls which parameters should be copied when duplicating package configuration between environments (e.g., from production to staging). This is particularly useful for:
+Controls which parameters should be copied when duplicating instance configuration between environments (e.g., from production to staging). This is particularly useful for:
 - Excluding environment-specific secrets (passwords, API keys, tokens)
 - Preventing sensitive data from being duplicated across environments
 - Allowing safe configuration reuse while maintaining security boundaries
@@ -226,7 +226,7 @@ Controls which parameters should be copied when duplicating package configuratio
 
 ### Behavior
 
-When using the `copyPackageParams` GraphQL mutation to copy configuration from one package to another:
+When using the `copyInstance` GraphQL mutation to copy configuration from one instance to another:
 - Fields with `$md.copyable: false` are **excluded** from the copy
 - Fields with `$md.copyable: true` or without the annotation (default) are **included**
 - The annotation works recursively through nested objects
@@ -314,7 +314,7 @@ properties:
 
 ### Using copyPackageParams
 
-The `copyPackageParams` GraphQL mutation respects the `$md.copyable` annotation:
+The `copyInstance` GraphQL mutation respects the `$md.copyable` annotation:
 
 ```graphql
 mutation CopyFromProdToStaging {
@@ -357,7 +357,7 @@ mutation CopyFromProdToStaging {
 The `$md.copyable` annotation:
 - Defaults to `true` if not specified
 - Is evaluated recursively for nested objects
-- Only affects the `copyPackageParams` operation
+- Only affects the `copyInstance` operation
 - Does not prevent direct editing or setting of these fields
 - Works at any level of nesting in the params schema
 
@@ -375,32 +375,32 @@ The `$md.copyable` annotation:
 
 ### Scope
 
-**Artifact definition schemas only** - Used in artifact definition `schema` field to mask sensitive data in GraphQL queries and API responses.
+**Resource type schemas only** - Used in resource type `schema` field to mask sensitive data in GraphQL queries and API responses.
 
 ### Use Case
 
-Marks fields in artifact payloads as sensitive, causing their values to be masked when artifacts are retrieved via GraphQL queries or REST API GET operations. This is essential for:
+Marks fields in resource payloads as sensitive, causing their values to be masked when resources are retrieved via GraphQL queries or REST API GET operations. This is essential for:
 - Protecting credentials (passwords, API keys, tokens, certificates)
 - Masking connection strings with embedded secrets
 - Hiding sensitive configuration data
 - Preventing accidental exposure in logs, UIs, or monitoring tools
 
 :::note
-All artifacts are encrypted at rest and in transit. The `$md.sensitive` annotation controls whether field values are **masked in API responses and UI displays**, not whether they are encrypted for storage or transmission.
+All resources are encrypted at rest and in transit. The `$md.sensitive` annotation controls whether field values are **masked in API responses and UI displays**, not whether they are encrypted for storage or transmission.
 :::
 
 ### Problem Solved
 
 - **Data protection**: Prevents sensitive values from being exposed in API responses and UI displays
 - **Compliance**: Helps meet security and compliance requirements for credential handling
-- **Auditability**: Allows users to see artifact structure without exposing actual secrets
+- **Auditability**: Allows users to see resource structure without exposing actual secrets
 - **Debugging**: Preserves field names and structure while hiding sensitive values
 
 ### Behavior
 
-When an artifact is queried via GraphQL or REST API:
+When a resource is queried via GraphQL or REST API:
 - Fields marked with `$md.sensitive: true` are replaced with `"[SENSITIVE]"` in the response
-- The structure of the artifact is preserved (object keys, array lengths)
+- The structure of the resource is preserved (object keys, array lengths)
 - The `downloadArtifact` operation returns unmasked values for actual usage
 - **All `downloadArtifact` operations are tracked in the audit log** for security and compliance
 - Masking is applied recursively to nested objects and arrays
@@ -443,37 +443,37 @@ properties:
 }
 ```
 
-### Download Endpoint
+### Export Endpoint
 
-To retrieve unmasked artifact values for actual usage (e.g., connecting to infrastructure):
+To retrieve unmasked resource values for actual usage (e.g., connecting to infrastructure):
 
 ```graphql
 mutation {
-  downloadArtifact(
+  exportResource(
     organizationId: "org-123"
-    artifactId: "art-456"
-    format: "json"
+    id: "art-456"
   ) {
-    url
+    successful
+    result { id payload }
   }
 }
 ```
 
-The download endpoint returns the complete, unmasked artifact payload.
+The `exportResource` mutation returns the complete, unmasked resource payload.
 
 :::important
-All `downloadArtifact` operations are tracked in the audit log, providing a complete record of when sensitive artifact data is accessed and by whom. This ensures compliance and security monitoring for credential access.
+Every `exportResource` operation is tracked in the audit log, providing a complete record of when sensitive resource data is accessed and by whom. This ensures compliance and security monitoring for credential access.
 :::
 
 ### Technical Details
 
 The `$md.sensitive` annotation:
-1. Is evaluated when resolving the GraphQL `payload` field on artifacts
-2. Walks the artifact payload in parallel with the artifact definition schema
+1. Is evaluated when resolving the GraphQL `payload` field on resources
+2. Walks the resource payload in parallel with the resource type schema
 3. Replaces values marked as sensitive with `"[SENSITIVE]"`
 4. Preserves structure for objects (keeps keys) and arrays (keeps length)
-5. Does not affect the stored artifact data - masking only occurs in API responses
-6. Does not affect the `downloadArtifact` operation - full payload is downloadable
+5. Does not affect the stored resource data — masking only occurs in API responses
+6. Does not affect the `exportResource` mutation — the full payload is returned
 
 ### Best Practices
 

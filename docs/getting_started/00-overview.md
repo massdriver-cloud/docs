@@ -11,9 +11,9 @@ Welcome to Massdriver! This guide walks you through setting up your platform and
 
 **[Massdriver Catalog](https://github.com/massdriver-cloud/massdriver-catalog)** is the foundation for your infrastructure platform. Design your developer experience before writing infrastructure code.
 
-The catalog includes artifact definitions, bundle schemas, and project templates that let you:
+The catalog includes resource types, bundle schemas, and project templates that let you:
 
-- **Model your architecture** — Design how bundles connect and what artifacts they produce
+- **Model your architecture** — Design how bundles connect and what resources they produce
 - **Test the developer experience** — Add bundles to your canvas, configure parameters, iterate on abstractions
 - **Validate before implementing** — Once you've confirmed the experience works, fill in the OpenTofu/Terraform
 
@@ -26,7 +26,7 @@ Clone the catalog, publish it to your instance, and start designing. When you're
 Work through these guides using example bundles from the catalog:
 
 1. **[Deploying Your First Bundle](01-deploying-first-bundle.md)** — Publish, configure, and deploy a bundle
-2. **[Connecting Bundles](02-connecting-bundles.md)** — Pass artifacts between infrastructure components
+2. **[Connecting Bundles](02-connecting-bundles.md)** — Pass resources between infrastructure components
 3. **[Creating Your Own Bundle](03-creating-bundles.md)** — Convert existing Terraform/OpenTofu modules into bundles
 4. **[Bundle Metadata](04-using-bundle-metadata.md)** — Use injected metadata for naming, tagging, and conditional logic
 
@@ -39,8 +39,8 @@ Each guide builds on the previous one.
 
 ## Key Concepts
 
-- **Bundles** — Reusable infrastructure modules with schemas, policies, and artifact contracts
-- **Artifacts** — Typed outputs that enable bundles to connect and share state
+- **Bundles** — Reusable infrastructure modules with schemas, policies, and resource contracts
+- **Resources** — Typed outputs that enable bundles to connect and share state
 
 You'll see these in action as you work through the guides.
 

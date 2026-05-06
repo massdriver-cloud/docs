@@ -11,7 +11,7 @@ sidebar_label: Helm
 
 ## Structure
 
-This provisioner expects the `path` to be the base directory of a helm chart if using a local chart. This means it should contain the `Chart.yaml` and `values.yaml` files at a minimium. If using a remote chart, the `path` should still include any relevant files for manipulating inputs or creating artifacts.
+This provisioner expects the `path` to be the base directory of a helm chart if using a local chart. This means it should contain the `Chart.yaml` and `values.yaml` files at a minimium. If using a remote chart, the `path` should still include any relevant files for manipulating inputs or creating resources.
 
 ## Tooling
 
@@ -27,7 +27,7 @@ The following configuration options are available:
 |-|-|-|-|
 | `kubernetes_cluster` | object | `.connections.kubernetes_cluster` | `jq` path to a `kubernetes-cluster` connection for authentication to Kubernetes |
 | `namespace` | string | `"default"` | Kubernetes namespace to install the chart into. Defaults to the `default` namespace |
-| `release_name` | string | (package name) | Specifies the release name for the helm chart. Defaults to the Massdriver package name if not specified. |
+| `release_name` | string | (instance name) | Specifies the release name for the helm chart. Defaults to the Massdriver instance name if not specified. |
 | `.chart.repo` | string | `null` | Specifies the URL of the chart repo (required if using [remote chart](#local-vs-remote-chart-vs-oci-chart)) |
 | `.chart.name` | string | `null` | Specifies the name of the chart from the repo to use (required if using [remote chart](#local-vs-remote-chart-vs-oci-chart)) |
 | `.chart.oci` | string | `null` | Specifies the OCI URI of the chart to use (required if using [OCI chart](#local-vs-remote-chart-vs-oci-chart)) |
@@ -43,7 +43,7 @@ The following configuration options are available:
 
 ### Local vs Remote Chart vs OCI Chart
 
-This provisioner supports local, remote and OCI charts. By default the provisioner will assume a local chart exists in the directory specified by the `path` field of the bundle step. However, if **both** `.chart.repo` and `.chart.name` are specified then the provisioner will attempt to use the specified remote chart. Similarly, if `.chart.oci` is set, the provisioner will attempt to use the specified OCI registry to pull the chart. Regarding inputs and artifacts, provisioner behavior is the same for all charts. If a `values.yaml` file exists in the `path` directory, then it will be used to override the specified default values in the remote chart (as Helm typically does with the `-f/--values` flag).
+This provisioner supports local, remote and OCI charts. By default the provisioner will assume a local chart exists in the directory specified by the `path` field of the bundle step. However, if **both** `.chart.repo` and `.chart.name` are specified then the provisioner will attempt to use the specified remote chart. Similarly, if `.chart.oci` is set, the provisioner will attempt to use the specified OCI registry to pull the chart. Regarding inputs and resources, provisioner behavior is the same for all charts. If a `values.yaml` file exists in the `path` directory, then it will be used to override the specified default values in the remote chart (as Helm typically does with the `-f/--values` flag).
 
 #### Local Chart Example
 
@@ -152,10 +152,10 @@ Let's start with the `params.json`, which will look like:
     "md_metadata": {
         "default_tags": {
             "managed-by": "massdriver",
-            "md-manifest": "somebundle",
-            "md-package": "proj-env-somebundle-0000",
+            "md-component": "somebundle",
+            "md-instance": "proj-env-somebundle-0000",
             "md-project": "proj",
-            "md-target": "env"
+            "md-environment": "env"
         },
         "name_prefix": "proj-env-somebundle-0000"
         ...
@@ -174,10 +174,10 @@ This JQ command takes all of the original JSON and adds the field `commonLabels`
 ```yaml params.yaml
 commonLabels:
     managed-by: "massdriver",
-    md-manifest: "somebundle",
-    md-package: "proj-env-somebundle-0000",
+    md-component: "somebundle",
+    md-instance: "proj-env-somebundle-0000",
     md-project: "proj",
-    md-target: "env"
+    md-environment: "env"
 foo:
     bar: "bizzle"
     count: 10
@@ -285,9 +285,9 @@ deployment:
 
 This converts the data in `envs.json` to match the expected field in `values.yaml`.
 
-## Artifacts
+## Resources
 
-After every provision, this provider will scan the template directory for files matching the pattern `artifact_<name>.jq`. If a file matching this pattern is present, it will be used as a JQ template to render and publish a Massdriver artifact. The inputs to the JQ template will be a JSON object with the params, connections, envs, secrets and [helm manifests](https://helm.sh/docs/helm/helm_get_manifest/) as top level fields. Note that the `params`, `connections`, `envs` and `secrets` will contain the original content of `params.json`, `connections.json`, `envs.json` and `secrets.json` without any modifications that may have been applied through `params.jq`, `connections.jq`, `envs.jq` and `secrets.jq`. The `outputs` field will contain the result of `helm get manifest` for the chart after it is installed. Since the output of `helm get manifest` is list of yaml files, the `outputs` block will be a JSON array with each element being a JSON object of an individual kubernetes resource manifest.
+After every provision, this provider will scan the template directory for files matching the pattern `artifact_<name>.jq` (the file pattern uses the legacy "artifact" name; provisioner contracts are CLI-adjacent and being updated separately). If a file matching this pattern is present, it will be used as a JQ template to render and publish a Massdriver resource. The inputs to the JQ template will be a JSON object with the params, connections, envs, secrets and [helm manifests](https://helm.sh/docs/helm/helm_get_manifest/) as top level fields. Note that the `params`, `connections`, `envs` and `secrets` will contain the original content of `params.json`, `connections.json`, `envs.json` and `secrets.json` without any modifications that may have been applied through `params.jq`, `connections.jq`, `envs.jq` and `secrets.jq`. The `outputs` field will contain the result of `helm get manifest` for the chart after it is installed. Since the output of `helm get manifest` is list of yaml files, the `outputs` block will be a JSON array with each element being a JSON object of an individual kubernetes resource manifest.
 
 ```json
 {
@@ -309,7 +309,7 @@ After every provision, this provider will scan the template directory for files 
 }
 ```
 
-To demonstrate, let's say there is a Helm bundle with a single param (`namespace`), a single connection (`kubernetes_cluster`), and a single artifact (`api_endpoint`). The `massdriver.yaml` would be similar to:
+To demonstrate, let's say there is a Helm bundle with a single param (`namespace`), a single connection (`kubernetes_cluster`), and a single resource (`api_endpoint`). The `massdriver.yaml` would be similar to:
 
 
 ```yaml massdriver.yaml
@@ -335,7 +335,7 @@ artifacts:
       $ref: api
 ```
 
-Since the artifact is named `api_endpoint` a file named `artifact_api_endpoint.jq` would need to be in the template directory and the provisioner would use this file as a JQ template, passing the params, connections and outputs to it. For this example, let's say the helm chart will produce two manifests: a `deployment`, and a `service`. The output of `helm get manifest` would be something like:
+Since the resource is named `api_endpoint` a file named `artifact_api_endpoint.jq` would need to be in the template directory and the provisioner would use this file as a JQ template, passing the params, connections and outputs to it. For this example, let's say the helm chart will produce two manifests: a `deployment`, and a `service`. The output of `helm get manifest` would be something like:
 
 ```yaml
 ---
@@ -436,7 +436,7 @@ In this case, the input to the `artifact_api_endpoint.jq` template file would be
 }
 ```
 
-We need to build an API artifact from these inputs. We'll use Kubernetes built in DNS pattern for services to build the API endpoint from the service name, namespace and port. Thus, the `artifact_api_endpoint.jq` file would be:
+We need to build an API resource from these inputs. We'll use Kubernetes built in DNS pattern for services to build the API endpoint from the service name, namespace and port. Thus, the `artifact_api_endpoint.jq` file would be:
 
 ```jq
 {
@@ -455,4 +455,4 @@ We need to build an API artifact from these inputs. We'll use Kubernetes built i
 }
 ```
 
-In this template, we are using the [`select` function in JQ](https://jqlang.github.io/jq/manual/#select) to find the proper manifest and extract the relevant values to build a properly formatted artifact.
+In this template, we are using the [`select` function in JQ](https://jqlang.github.io/jq/manual/#select) to find the proper manifest and extract the relevant values to build a properly formatted resource.

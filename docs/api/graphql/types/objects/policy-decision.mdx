@@ -1,0 +1,83 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: policy-decision
+title: PolicyDecision
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+The decision returned by an `evaluatePolicy` request.
+
+`action` and `entityId` mirror the inputs so batch callers can correlate
+decisions with their original questions without tracking positions
+externally.
+
+
+```graphql
+type PolicyDecision {
+  allowed: Boolean!
+  action: String!
+  entityId: ID!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PolicyDecision.<b>allowed</b></code>](#allowed)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#allowed\} 
+`true` if the subject is permitted to perform the action; `false` otherwise.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PolicyDecision.<b>action</b></code>](#action)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#action\} 
+The action that was evaluated.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PolicyDecision.<b>entityId</b></code>](#entity-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#entity-id\} 
+The identifier of the entity the action was evaluated against, echoed from the request.
+
+
+
+
+
+
+### Returned By
+
+[`evaluatePolicies`](/api/graphql/operations/queries/evaluate-policies.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`evaluatePolicy`](/api/graphql/operations/queries/evaluate-policy.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

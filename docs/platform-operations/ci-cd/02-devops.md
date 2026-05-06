@@ -23,9 +23,9 @@ Before getting started, you'll need:
 
 ## Publish your application
 
-Before you can set up an Azure DevOps Pipeline to deploy your application, first you'll need to publish it to Massdriver and create a package. You can do this by following the [Create App](/applications/create) guide.
+Before you can set up an Azure DevOps Pipeline to deploy your application, first you'll need to publish it to Massdriver and create an instance. You can do this by following the [Create App](/applications/create) guide.
 
-After you publish your application, you'll need to create a package. You can do this by dragging your application out from the bundle bar in the Massdriver canvas. Fill in the fields of your application and click **Save**. 
+After you publish your application, you'll need to create an instance. You can do this by dragging your application out from the bundle bar in the Massdriver canvas. Fill in the fields of your application and click **Save**. 
 
 ## Set secrets and vars
 
@@ -35,7 +35,7 @@ Once you've published your application, you'll need to set the following variabl
 | ------------------------ | ----------------------------------------------------------- | -------- | -------------------------------------------------------------------------------------- |
 | `MASSDRIVER_ORG_ID`      | Your Massdriver organization ID                             | secret   | Copy your [Organization ID](/concepts/organizations#find-your-organization-id)         |
 | `MASSDRIVER_API_KEY`     | Your Massdriver API key                                     | secret   | Create a [Service Account](/platform-operations/security/service-accounts)                                 |
-| `MASSDRIVER_ARTIFACT_ID` | The ID of the authentication artifact in Massdriver         | secret   | Copy your [Artifact ID](/concepts/artifacts-and-definitions#artifact-id)                               |
+| `MASSDRIVER_ARTIFACT_ID` | The ID of the authentication resource in Massdriver         | secret   | Copy your resource ID. See [Resources & Resource Types](/concepts/resources-and-types). The env-var name `MASSDRIVER_ARTIFACT_ID` is preserved for backwards compatibility with the Azure DevOps task. |
 | `NAMESPACE`              | The namespace of your build                                 | variable | If it does not exist paired with the `IMAGE_NAME`, then it will be created for you     |
 | `IMAGE_NAME`             | The image name of your build                                | variable | If it does not exist paired with the `NAMESPACE`, then it will be created for you      |
 | `REGION`                 | The region where your cloud container repository is located | variable | Must be a valid cloud region. For example: `eastus` for Azure, or `us-west-1` for AWS. |
@@ -87,7 +87,7 @@ stages:
       inputs:
         project: <insert-project-name-here>
         env: <insert-environment-name-here>
-        manifest: <insert-manifest-name-here>
+        manifest: <insert-component-id-here>  # task input key still named "manifest"
         set: '.image.tag="$(Build.SourceVersion)"'
 
     - task: mass-app-deploy@0
@@ -95,23 +95,23 @@ stages:
       inputs:
         project: <insert-project-name-here>
         env: <insert-environment-name-here>
-        manifest: <insert-manifest-name-here>
+        manifest: <insert-component-id-here>  # task input key still named "manifest"
 ```
 
 This example is configured to trigger on pushes to the repository's `main` branch. Be sure to update the trigger to match your branching and git workflow process.
 
 When this DevOps Pipeline runs, it will:
 * Build and push your image to your Azure container repository
-* Update the tag in your application package
+* Update the tag in your application instance
 * Redeploy your application in Massdriver with the updated tag
 
 ## Infrastructure
 
 ## Publish your bundle
 
-Before you can set up an Azure DevOps Pipeline to automate publishing your bundle, first you'll need to manually publish it to Massdriver and create a package. You can do this by following the [Bundle Creation Walkthrough](/getting-started/creating-bundles) guide.
+Before you can set up an Azure DevOps Pipeline to automate publishing your bundle, first you'll need to manually publish it to Massdriver and create an instance. You can do this by following the [Bundle Creation Walkthrough](/getting-started/creating-bundles) guide.
 
-After you publish your bundle, you'll need to create a package. You can do this by dragging your bundle out from the bundle bar in the Massdriver canvas. Fill in the fields of your bundle and click **Save**. 
+After you publish your bundle, you'll need to create an instance. You can do this by dragging your bundle out from the bundle bar in the Massdriver canvas. Fill in the fields of your bundle and click **Save**. 
 
 ### Set secrets
 
@@ -155,10 +155,10 @@ stages:
 
 ## FAQs
 
-### Where can I find my secrets, project, environment, and manifest names?
+### Where can I find my secrets, project, environment, and component names?
 
 * [Secrets & vars](#set-secrets-and-vars)
-* `Project`, `environment`, and `manifest` names are found in the `Massdriver package name`:
+* `Project`, `environment`, and `component` names are found in the instance identifier shown in the Massdriver UI:
 
 ![Slug Name](slug.png)
 

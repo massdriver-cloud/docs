@@ -309,4 +309,4 @@ For assistance with your self-hosted installation:
 
 ## Next Steps
 
-* **[Explore the Massdriver Catalog](https://github.com/massdriver-cloud/massdriver-catalog)** - Jump-start your self-hosted instance with a complete git-ready catalog of artifact definitions and infrastructure bundles. This catalog helps you model your platform architecture and developer experience _before_ writing infrastructure code. Clone it, customize it, and use it as the foundation for your platform team's infrastructure delivery.
+* **[Explore the Massdriver Catalog](https://github.com/massdriver-cloud/massdriver-catalog)** - Jump-start your self-hosted instance with a complete git-ready catalog of resource types and infrastructure bundles. This catalog helps you model your platform architecture and developer experience _before_ writing infrastructure code. Clone it, customize it, and use it as the foundation for your platform team's infrastructure delivery.

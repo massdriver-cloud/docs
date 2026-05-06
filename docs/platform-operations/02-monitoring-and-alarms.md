@@ -5,12 +5,14 @@ title: Integrating Cloud Monitoring Alarms into Massdriver
 sidebar_label: Monitoring & Alarms
 ---
 
-A **package alarm** is a monitoring mechanism that allows you to track the health and performance of your cloud resources managed through Massdriver packages. Package alarms are directly associated with packages and provide real-time visibility into the state of your infrastructure.
+An **instance alarm** is a monitoring mechanism that allows you to track the health and performance of your cloud resources managed through a Massdriver instance. Instance alarms are directly associated with instances and provide real-time visibility into the state of your infrastructure.
 
-## Relationship to Packages
+> The Terraform provider resource name (`massdriver_package_alarm`) and the REST path (`/v1/packages/{package_id}/alarms`) preserve the legacy "package" noun for backwards compatibility. The data is the same — an instance alarm.
 
-* **Cardinality**: A package can have multiple alarms associated with it. Each alarm monitors a specific metric or condition for that package's resources.
-* **Lifecycle**: Package alarms are created, updated, and deleted along with their associated packages. When a package is decommissioned, its alarms are automatically cleaned up.
+## Relationship to Instances
+
+* **Cardinality**: An instance can have multiple alarms associated with it. Each alarm monitors a specific metric or condition for that instance's resources.
+* **Lifecycle**: Instance alarms are created, updated, and deleted along with their associated instances. When an instance is decommissioned, its alarms are automatically cleaned up.
 
 ## Supported Cloud Alarm Services
 
@@ -42,7 +44,7 @@ Massdriver integrates with the following cloud provider alarm services:
 
 ## Alarm States
 
-Package alarms can be in one of three states:
+Instance alarms can be in one of three states:
 
 1. **OK** – The metric is within normal operating parameters and below the alarm threshold.
 2. **ALARM** – The metric has exceeded the configured threshold and triggered the alarm condition.
@@ -50,25 +52,25 @@ Package alarms can be in one of three states:
 
 ## Webhook Integration
 
-Package alarms can be integrated with your Massdriver canvas through an automatically generated `alarm_webhook_url`. This webhook URL is unique for each package and follows the format:
+Instance alarms can be integrated with your Massdriver canvas through an automatically generated `alarm_webhook_url`. This webhook URL is unique for each instance and follows the format:
 
 ```
-{alarm_webhook_path_prefix}/{target_id}/{alarm_token}
+{alarm_webhook_path_prefix}/{environment_id}/{alarm_token}
 ```
 
 To integrate alarms with your canvas:
 
-1. **Configure** your cloud provider's alarm/alert service to send notifications to the package's webhook URL.
+1. **Configure** your cloud provider's alarm/alert service to send notifications to the instance's webhook URL.
 2. **Triggering** an alarm will instruct Massdriver to:
 
    * Update the alarm state in the system
    * Send notifications to configured channels
-   * Update the visual state of the package on your canvas
+   * Update the visual state of the instance on your canvas
    * Provide detailed information about the alarm condition
 
 ## Cloud Provider Integration Examples
 
-For each major cloud platform, you can use Terraform to connect their native alarm/alerting services to Massdriver. The following examples illustrate how to configure an alarm in AWS CloudWatch, Google Cloud Monitoring, Azure Monitor, and Prometheus Alertmanager. In each case, the cloud provider sends alarm notifications to Massdriver's webhook, and a `massdriver_package_alarm` resource registers the alarm in the Massdriver system.
+For each major cloud platform, you can use Terraform to connect their native alarm/alerting services to Massdriver. The following examples illustrate how to configure an alarm in AWS CloudWatch, Google Cloud Monitoring, Azure Monitor, and Prometheus Alertmanager. In each case, the cloud provider sends alarm notifications to Massdriver's webhook, and a `massdriver_package_alarm` resource registers the alarm in the Massdriver system. (The Terraform provider resource type retains the legacy `_package_` name; it represents an instance alarm.)
 
 ### AWS (CloudWatch Alarms) + Massdriver
 
@@ -122,7 +124,7 @@ resource "aws_cloudwatch_metric_alarm" "alarm" {
   dimensions = try({ for dim in var.alarm.dimensions : dim.name => dim.value }, {})
 }
 
-# Massdriver Package Alarm resource (linking the CloudWatch alarm to Massdriver)
+# Massdriver Instance Alarm resource (linking the CloudWatch alarm to Massdriver)
 resource "massdriver_package_alarm" "aws_package_alarm" {
   count             = var.alarm.alarm_enabled ? 1 : 0
   display_name      = var.alarm.massdriver_display_name
@@ -184,7 +186,7 @@ resource "google_monitoring_alert_policy" "cpu_alert" {
   notification_channels = [google_monitoring_notification_channel.webhook.name]
 }
 
-# Massdriver Package Alarm resource for GCP
+# Massdriver Instance Alarm resource for GCP
 resource "massdriver_package_alarm" "gcp_package_alarm" {
   count             = var.alarm.alarm_enabled ? 1 : 0
   display_name      = var.alarm.massdriver_display_name
@@ -248,7 +250,7 @@ resource "azurerm_monitor_metric_alert" "cpu_alert" {
   }
 }
 
-# Massdriver Package Alarm resource for Azure
+# Massdriver Instance Alarm resource for Azure
 resource "massdriver_package_alarm" "azure_package_alarm" {
   count             = var.alarm.alarm_enabled ? 1 : 0
   display_name      = var.alarm.massdriver_display_name
@@ -296,7 +298,7 @@ resource "kubernetes_config_map" "alertmanager" {
   }
 }
 
-# Massdriver Package Alarm resource for Alertmanager
+# Massdriver Instance Alarm resource for Alertmanager
 resource "massdriver_package_alarm" "alertmanager_package_alarm" {
   count             = var.alarm.alarm_enabled ? 1 : 0
   display_name      = var.alarm.massdriver_display_name
@@ -317,10 +319,10 @@ resource "massdriver_package_alarm" "alertmanager_package_alarm" {
 
 ## API Integration
 
-You can also register alarms programmatically using the Massdriver API, which allows integration into scripts or CI/CD pipelines. The example below demonstrates creating a new package alarm with a simple HTTP request (using `curl`). Once this API call is executed, the alarm becomes active and its state will be tracked and visualized on your Massdriver canvas in real time (just like alarms created via Terraform or the UI).
+You can also register alarms programmatically using the Massdriver API, which allows integration into scripts or CI/CD pipelines. The example below demonstrates creating a new instance alarm with a simple HTTP request (using `curl`). Once this API call is executed, the alarm becomes active and its state will be tracked and visualized on your Massdriver canvas in real time (just like alarms created via Terraform or the UI).
 
 ```bash
-# Register a new package alarm via API
+# Register a new instance alarm via API (URL path retains legacy "packages" segment)
 curl -X POST \
   "https://api.massdriver.cloud/v1/packages/{package_id}/alarms" \
   -H "Content-Type: application/json" \

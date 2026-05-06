@@ -1,0 +1,91 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: update-oci-repo
+title: updateOciRepo
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+<Badge class="badge badge--secondary badge--primary" text="form schema"/>
+
+
+
+Update an OCI repository's mutable metadata (today: attributes).
+
+
+
+
+```graphql
+updateOciRepo(
+  organizationId: ID!
+  id: ID!
+  input: UpdateOciRepoInput!
+): OciRepoPayload
+```
+
+
+
+
+
+### Form Schema
+
+This mutation supports dynamic form generation using JSON Schema.
+
+- [JSON Schema](https://api.massdriver.cloud/graphql/v2/inputs/updateOciRepo.json)
+- [UI Schema](https://api.massdriver.cloud/graphql/v2/inputs/updateOciRepo.ui.json)
+
+<SchemaForm
+  schemaUrl="https://api.massdriver.cloud/graphql/v2/inputs/updateOciRepo.json"
+  uiSchemaUrl="https://api.massdriver.cloud/graphql/v2/inputs/updateOciRepo.ui.json"
+  name="updateOciRepo"
+/>
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>updateOciRepo.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>updateOciRepo.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+The repository name (e.g., `aws-aurora-postgres`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>updateOciRepo.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UpdateOciRepoInput!</b></code>](/api/graphql/types/inputs/update-oci-repo-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Update an OCI repository's user-settable metadata. The repository name and artifact type are immutable.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>OciRepoPayload</b></code>](/api/graphql/types/objects/oci-repo-payload.mdx) <Badge class="badge badge--secondary " text="object"/>

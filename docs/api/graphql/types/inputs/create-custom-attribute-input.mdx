@@ -1,0 +1,84 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: create-custom-attribute-input
+title: CreateCustomAttributeInput
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Declare a custom attribute key for your organization. Custom attributes control which user-defined attribute keys can be set on resources at each level of the hierarchy. System attributes (md-*) are auto-injected by Massdriver and do not need to be declared.
+
+
+```graphql
+input CreateCustomAttributeInput {
+  key: String!
+  required: Boolean
+  scope: AttributeScope!
+  values: [String!]!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateCustomAttributeInput.<b>key</b></code>](#key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#key\} 
+1-64 characters, identifier-like: starts with a letter or underscore; letters, digits, and underscores only. Case-insensitive (TEAM and team are the same key). Keys starting with md- are reserved for system use.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateCustomAttributeInput.<b>required</b></code>](#required)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#required\} 
+Whether this attribute must be set when creating a resource at the specified scope.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateCustomAttributeInput.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AttributeScope!</b></code>](/api/graphql/types/enums/attribute-scope.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#scope\} 
+The resource level where this attribute is set. Hierarchy scopes (PROJECT, ENVIRONMENT, COMPONENT, INSTANCE) cascade values downward. REPO scope applies to OCI repositories; the bundle name propagates to derived components, instances, deployments, and resources via the md-repo system attribute.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateCustomAttributeInput.<b>values</b></code>](#values)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#values\} 
+The closed set of values this attribute may take. Must contain at least one entry, no duplicates, and may not contain the literal "*" (reserved for a future "any value" semantic).
+
+
+
+
+
+
+### Member Of
+
+[`createCustomAttribute`](/api/graphql/operations/mutations/create-custom-attribute.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

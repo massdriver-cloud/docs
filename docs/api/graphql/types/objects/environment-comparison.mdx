@@ -1,0 +1,87 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: environment-comparison
+title: EnvironmentComparison
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Side-by-side comparison of two environments in the same project.
+
+Returned by `compareEnvironments`. The comparison pairs instances by
+component and reports a per-instance diff of the resolved version and
+configured params. Environment-level attributes and default resource wiring
+are intentionally out of scope.
+
+Environments must belong to the same project — cross-project comparisons
+are not meaningful because components are project-scoped.
+
+
+```graphql
+type EnvironmentComparison {
+  source: Environment!
+  target: Environment!
+  instances: [InstanceComparison!]!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentComparison.<b>source</b></code>](#source)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Environment!</b></code>](/api/graphql/types/objects/environment.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#source\} 
+The environment on the source side of the comparison.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentComparison.<b>target</b></code>](#target)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Environment!</b></code>](/api/graphql/types/objects/environment.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#target\} 
+The environment on the target side of the comparison.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentComparison.<b>instances</b></code>](#instances)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[InstanceComparison!]!</b></code>](/api/graphql/types/objects/instance-comparison.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#instances\} 
+Per-component diff, sorted by component identifier for a stable output.
+
+
+
+
+
+
+### Returned By
+
+[`compareEnvironments`](/api/graphql/operations/queries/compare-environments.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

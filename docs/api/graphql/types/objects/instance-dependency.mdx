@@ -1,0 +1,93 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: instance-dependency
+title: InstanceDependency
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+An input dependency consumed by an instance, keyed by the field handle that receives it.
+
+Dependencies are resources wired into this instance's bundle slots — either
+through a blueprint connection, a per-instance remote-reference override, or
+the environment's default for the resource type.
+
+
+```graphql
+type InstanceDependency {
+  field: String!
+  resource: Resource!
+  required: Boolean!
+  resourceType: ResourceType!
+  source: InstanceDependencySource!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>InstanceDependency.<b>field</b></code>](#field)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#field\} 
+The input handle name that consumes this resource (e.g., `database`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InstanceDependency.<b>resource</b></code>](#resource)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Resource!</b></code>](/api/graphql/types/objects/resource.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#resource\} 
+The resource containing the actual data.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InstanceDependency.<b>required</b></code>](#required)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#required\} 
+Whether this dependency must be connected before the instance can be deployed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InstanceDependency.<b>resourceType</b></code>](#resource-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ResourceType!</b></code>](/api/graphql/types/objects/resource-type.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#resource-type\} 
+The resource type (artifact definition) this dependency slot accepts.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InstanceDependency.<b>source</b></code>](#source)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InstanceDependencySource!</b></code>](/api/graphql/types/unions/instance-dependency-source.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="union"/> \{#source\} 
+Where this slot's wire-in comes from. Inspect the concrete type — `Connection`, `RemoteReference`, or `EnvironmentDefault` — to distinguish.
+
+
+
+
+
+
+### Member Of
+
+[`Instance`](/api/graphql/types/objects/instance.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

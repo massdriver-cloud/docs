@@ -1,0 +1,85 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: id-filter
+title: IdFilter
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Filter by an identifier field.
+
+All operators within a single filter are combined with **AND**. To match any of
+several values, use the `in` operator rather than multiple `eq` filters.
+
+```graphql
+# Exact match
+{ "id": { "eq": "my-resource" } }
+
+# Match several IDs (logical OR between values)
+{ "id": { "in": ["resource-a", "resource-b"] } }
+```
+
+
+```graphql
+input IdFilter {
+  eq: ID
+  in: [ID!]
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>IdFilter.<b>eq</b></code>](#eq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#eq\} 
+Return only results whose ID exactly equals this value.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>IdFilter.<b>in</b></code>](#in)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ID!]</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#in\} 
+Return results whose ID matches any value in this list.
+
+
+
+
+
+
+### Member Of
+
+[`AuditLogsFilter`](/api/graphql/types/inputs/audit-logs-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`ComponentsFilter`](/api/graphql/types/inputs/components-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`ConnectionsFilter`](/api/graphql/types/inputs/connections-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`DeploymentsFilter`](/api/graphql/types/inputs/deployments-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`EnvironmentsFilter`](/api/graphql/types/inputs/environments-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`InstanceAlarmsFilter`](/api/graphql/types/inputs/instance-alarms-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`InstancesFilter`](/api/graphql/types/inputs/instances-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`LinksFilter`](/api/graphql/types/inputs/links-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`ParamDimensionsFilter`](/api/graphql/types/inputs/param-dimensions-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`ResourcesFilter`](/api/graphql/types/inputs/resources-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`ServiceAccountsFilter`](/api/graphql/types/inputs/service-accounts-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

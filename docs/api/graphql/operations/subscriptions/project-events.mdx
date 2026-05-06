@@ -1,0 +1,97 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: project-events
+title: projectEvents
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Subscribe to events within a specific project via WebSocket.
+
+Receives events for the project itself, its environments, and its blueprint
+(components and links). Requires read access to the project.
+
+```graphql
+subscription {
+  projectEvents(organizationId: "my-org", projectId: "my-project") {
+    ... on Event { action timestamp }
+    ... on ProjectEvent {
+      project { id name }
+    }
+    ... on EnvironmentEvent {
+      environment { id name }
+    }
+    ... on ComponentEvent {
+      component { id name }
+    }
+    ... on LinkEvent {
+      link { id fromField toField }
+    }
+  }
+}
+```
+
+
+```graphql
+projectEvents(
+  organizationId: ID!
+  projectId: ID!
+): ProjectEventsPayload
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>projectEvents.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>projectEvents.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#project-id\} 
+The identifier of the project to subscribe to.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ProjectEventsPayload</b></code>](/api/graphql/types/unions/project-events-payload.mdx) <Badge class="badge badge--secondary " text="union"/> 
+Events delivered by the `projectEvents` subscription.
+
+Covers the project itself plus its blueprint (components, links) and the
+environments provisioned from it.

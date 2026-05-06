@@ -1,0 +1,115 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: propose-deployment
+title: proposeDeployment
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+<Badge class="badge badge--secondary badge--primary" text="form schema"/>
+
+
+
+Propose a deployment for human review.
+
+Creates a deployment in `PROPOSED` status. Proposed deployments are **not**
+scheduled and do **not** block the queue — other deployments on the same
+instance can continue to run while a proposal is outstanding.
+
+Approve a proposal with `approveDeployment` to release it into the run queue,
+or discard it with `rejectDeployment`.
+
+Only `PROVISION` and `DECOMMISSION` actions are proposable — `PLAN` is
+already a non-destructive preview and needs no approval gate.
+
+```graphql
+mutation {
+  proposeDeployment(
+    organizationId: "my-org"
+    id: "my-database"
+    input: { action: PROVISION, params: { size: "large" }, message: "Scale up for Black Friday" }
+  ) {
+    result { id status action }
+    successful
+    messages { field message }
+  }
+}
+```
+
+
+
+
+```graphql
+proposeDeployment(
+  organizationId: ID!
+  id: ID!
+  input: ProposeDeploymentInput!
+): DeploymentPayload
+```
+
+
+
+
+
+### Form Schema
+
+This mutation supports dynamic form generation using JSON Schema.
+
+- [JSON Schema](https://api.massdriver.cloud/graphql/v2/inputs/proposeDeployment.json)
+- [UI Schema](https://api.massdriver.cloud/graphql/v2/inputs/proposeDeployment.ui.json)
+
+<SchemaForm
+  schemaUrl="https://api.massdriver.cloud/graphql/v2/inputs/proposeDeployment.json"
+  uiSchemaUrl="https://api.massdriver.cloud/graphql/v2/inputs/proposeDeployment.ui.json"
+  name="proposeDeployment"
+/>
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>proposeDeployment.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>proposeDeployment.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+The instance to propose a deployment for.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>proposeDeployment.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ProposeDeploymentInput!</b></code>](/api/graphql/types/inputs/propose-deployment-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Propose a deployment for human review. The deployment is created in PROPOSED status and will not execute until it is approved via approveDeployment. Params are validated against the bundle's params schema and snapshotted into the proposal.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>DeploymentPayload</b></code>](/api/graphql/types/objects/deployment-payload.mdx) <Badge class="badge badge--secondary " text="object"/>

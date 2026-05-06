@@ -102,7 +102,7 @@ In this example, we generated a Kubernetes deployment with a Helm chart. The gen
 In addition to the configuration options exposed in the _bundle guide_, two additional configuration options are exposed to application bundles:
 
 * `app.envs` - _Map_ of environment variables to set on the running application.
-* `app.secrets` - _Map_ of secret **definitions**. These will be presented in your application's configuration interface in Massdriver and can be set per-package or for preview environments.
+* `app.secrets` - _Map_ of secret **definitions**. These will be presented in your application's configuration interface in Massdriver and can be set per-instance or for preview environments.
 
 Both of these configuration options expect [jq](https://stedolan.github.io/jq/manual/) queries to extract values from `parameters` or upstream `connections`.
 
@@ -133,7 +133,7 @@ While secrets are automatically converted to environment variables, they can als
 
 :::info
 
-The structure of each artifact type is documented [here](https://github.com/massdriver-cloud/artifact-definitions/tree/main/definitions/artifacts).
+The structure of each resource type is documented [in the artifact-definitions repo](https://github.com/massdriver-cloud/artifact-definitions/tree/main/definitions/artifacts) (the GitHub repository name retains its legacy form).
 
 :::
 

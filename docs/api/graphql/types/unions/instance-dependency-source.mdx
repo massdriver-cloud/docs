@@ -1,0 +1,112 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: instance-dependency-source
+title: InstanceDependencySource
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Where a dependency wire-in comes from.
+
+- `Connection` — the wire was drawn from a blueprint Link between two
+  components in this project.
+- `RemoteReference` — the wire is a per-instance override pointing at a
+  resource from another project (or an imported resource).
+- `EnvironmentDefault` — no explicit wire was set, so the slot is filled
+  from the environment's default for this resource type.
+
+Per-instance `RemoteReference` overrides take priority over blueprint
+`Connection`s, which take priority over `EnvironmentDefault`s.
+
+
+```graphql
+union InstanceDependencySource = Connection | RemoteReference | EnvironmentDefault
+```
+
+
+
+
+### Possible types
+
+#### [<code style={{ fontWeight: 'normal' }}>InstanceDependencySource.<b>Connection</b></code>](/api/graphql/types/objects/connection.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A runtime wiring between two instances in an environment.
+
+A connection is the **runtime realization** of a blueprint link. Where a link
+says "the database component's `authentication` output goes to the app
+component's `database` input," the connection in each environment carries the
+*actual* resource data (e.g., a connection string) from the source instance
+to the destination instance.
+
+Connections are created automatically when instances are deployed and a
+matching blueprint link exists.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InstanceDependencySource.<b>RemoteReference</b></code>](/api/graphql/types/objects/remote-reference.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A per-instance override of a single connection slot. The blueprint Link wires
+a slot from a sibling package's output; a remote reference overrides that
+wiring on one instance, pointing the slot at a resource from another project
+(or an imported resource) instead.
+
+Remote references enable cross-project infrastructure sharing. For example, a
+networking team provisions a VPC in one project, and application teams override
+the `vpc` connection slot on their database/cache/etc. instances to point at
+that shared VPC.
+
+Each remote reference binds a specific `field` on the instance — a key in the
+instance's bundle's `connectionsSchema` — to the target resource. The override
+takes priority over any blueprint-level Link on the same slot, and reverts to
+the Link (or environment default) when removed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InstanceDependencySource.<b>EnvironmentDefault</b></code>](/api/graphql/types/objects/environment-default.mdx) <Badge class="badge badge--secondary " text="object"/> 
+An environment default that automatically provides a resource to instances.
+
+When an instance in the environment requires a resource type that matches this default,
+the resource is automatically connected without manual configuration. Only one default
+per resource type is allowed per environment -- remove the existing default before
+setting a new one.
+
+
+
+
+
+
+### Member Of
+
+[`InstanceDependency`](/api/graphql/types/objects/instance-dependency.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

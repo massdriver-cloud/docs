@@ -1,0 +1,65 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: policies-filter
+title: PoliciesFilter
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Filters for narrowing a list of policies. All filters are optional and combine with AND logic.
+
+
+```graphql
+input PoliciesFilter {
+  effect: PolicyEffectFilter
+  action: StringFilter
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PoliciesFilter.<b>effect</b></code>](#effect)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PolicyEffectFilter</b></code>](/api/graphql/types/inputs/policy-effect-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#effect\} 
+Filter by `ALLOW` or `DENY`. Use `in` to match either.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PoliciesFilter.<b>action</b></code>](#action)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>StringFilter</b></code>](/api/graphql/types/inputs/string-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#action\} 
+Filter by action id (e.g. `project:view`, `instance:deploy`). Returns policies whose `actions` list contains the value. Use `in` to return policies whose `actions` list intersects the supplied list.

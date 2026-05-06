@@ -1,0 +1,112 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: organization-billing
+title: OrganizationBilling
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Subscription, trial, and upgrade information for an organization.
+
+Returned by `Organization.billing` for organization administrators only.
+Non-admin members will see `null` here even when they can otherwise view the organization.
+
+
+```graphql
+type OrganizationBilling {
+  seats: Int!
+  cost: Int
+  currency: String
+  frequency: BillingFrequency
+  affiliate: String
+  trialEndsAt: DateTime
+  planExpiresOn: Date
+  portalUrl: String!
+  plans: [BillingPlan!]!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBilling.<b>seats</b></code>](#seats)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/api/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#seats\} 
+Number of seats currently provisioned on the subscription (the org's max member count).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBilling.<b>cost</b></code>](#cost)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/api/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#cost\} 
+Current subscription cost for the full billing period, expressed in the smallest subunit of `currency` (e.g., cents for `USD`). `null` if the org is not on a paid plan.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBilling.<b>currency</b></code>](#currency)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#currency\} 
+ISO 4217 currency code for `cost` (e.g., `USD`). `null` if the org is not on a paid plan.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBilling.<b>frequency</b></code>](#frequency)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BillingFrequency</b></code>](/api/graphql/types/enums/billing-frequency.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#frequency\} 
+Cadence the org is currently billed at. `null` if the org is not on a paid plan.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBilling.<b>affiliate</b></code>](#affiliate)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#affiliate\} 
+Friendly attribution name for the partner that referred this org (e.g., `"Y Combinator"`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBilling.<b>trialEndsAt</b></code>](#trial-ends-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#trial-ends-at\} 
+When the current free trial expires (UTC). `null` once `subscriptionStatus` is anything other than `TRIAL`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBilling.<b>planExpiresOn</b></code>](#plan-expires-on)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Date</b></code>](/api/graphql/types/scalars/date.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#plan-expires-on\} 
+End date of the current paid plan or grace period. `null` when not applicable (e.g., monthly plans).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBilling.<b>portalUrl</b></code>](#portal-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#portal-url\} 
+Stripe Customer Portal URL for managing payment methods, invoices, and cancellation.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBilling.<b>plans</b></code>](#plans)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[BillingPlan!]!</b></code>](/api/graphql/types/objects/billing-plan.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#plans\} 
+Plans the organization can upgrade or switch to. URLs are prefilled with this org's reference for one-click checkout.
+
+
+
+
+
+
+### Member Of
+
+[`Organization`](/api/graphql/types/objects/organization.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

@@ -29,7 +29,7 @@ The following configuration options are available:
 | `location` | string | `"eastus"` | Azure region to deploy template resources into. Defaults to `"eastus"`. |
 | `scope` | string | `"group"` | Sets the [Azure Resource Manager deployment scope](https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/deploy-cli#deployment-scope). Currently supports `group` and `sub`. For more information, refer to the [Deployment Scope](#deployment-scope) section. |
 | `complete` | boolean | `true` | Sets the [Azure Resource Manager deployment mode](https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/deployment-modes) to "Complete" (sets the `--mode Complete` flag). If this is set to `false`, deployment mode will be "Incremental". Only applies to steps with scope `group`. For more information, refer to the [Deployment Mode](#deployment-mode) section. |
-| `resource_group` | string | (package name) | Specifies the resource group name. Defaults to the Massdriver package name if not specified. Only applies to steps with scope `group`. |
+| `resource_group` | string | (instance name) | Specifies the resource group name. Defaults to the Massdriver instance name if not specified. Only applies to steps with scope `group`. |
 | `create_resource_group` | boolean | `true` | Determines whether the resource group will be created during provisioning. If this is set to `false`, the resource group must already exist in Azure. Only applies to steps with scope `group`. |
 | `delete_resource_group` | boolean | `true` | Determines whether the resource group will be deleted during decommissioning. Only applies to steps with scope `group`. |
 | `checkov.enable` | boolean |  `true` | Enables Checkov policy evaluation. If `false`, Checkov will not be run. |
@@ -84,9 +84,9 @@ This restructuring is performed automatically by the provisioner on params and c
 
 In order to view the structure of the params and connections fields you can run `mass bundle build` with the Massdriver CLI, and it will append Bicep parameter definitions to the end of the `template.bicep` file with full type expressions. If modifications to fields are required, use Bicep [`variables`](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/variables) to manipulate the values as needed.
 
-## Artifacts
+## Resources
 
-After every provision, this provider will scan the template directory for files matching the pattern `artifact_<name>.jq`. If a file matching this pattern is present, it will be used as a JQ template to render and publish a Massdriver artifact. The inputs to the JQ template will be a JSON object with the params, connections, envs, secrets and [Bicep outputs](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/outputs?tabs=azure-powershell) as top level fields. The `outputs` field is copied directly from the output of the Bicep command. These output fields have the same format mentioned in the above Inputs section, where the value of the output is nested underneath a `value` block. This is something to be aware of when referencing the values in a Bicep output. You'll see this pattern reflected in the examples below.
+After every provision, this provider will scan the template directory for files matching the pattern `artifact_<name>.jq` (the file pattern uses the legacy `artifact_` prefix). If a file matching this pattern is present, it will be used as a JQ template to render and publish a Massdriver resource. The inputs to the JQ template will be a JSON object with the params, connections, envs, secrets and [Bicep outputs](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/outputs?tabs=azure-powershell) as top level fields. The `outputs` field is copied directly from the output of the Bicep command. These output fields have the same format mentioned in the above Inputs section, where the value of the output is nested underneath a `value` block. This is something to be aware of when referencing the values in a Bicep output. You'll see this pattern reflected in the examples below.
 
 ```json
 {
@@ -108,7 +108,7 @@ After every provision, this provider will scan the template directory for files 
 }
 ```
 
-To demonstrate, let's say there is a Azure Storage Account bundle with a single param (`region`), a single connection (`azure_service_principal`), and a single artifact (`storage_account`). The `massdriver.yaml` would be similar to:
+To demonstrate, let's say there is an Azure Storage Account bundle with a single param (`region`), a single connection (`azure_service_principal`), and a single resource (`storage_account`). The `massdriver.yaml` would be similar to:
 
 
 ```yaml massdriver.yaml
@@ -134,15 +134,15 @@ artifacts:
       $ref: azure-storage-account-blob
 ```
 
-Since the artifact is named `storage_account` a file named `artifact_storage_account.jq` would need to be in the template directory and the provisioner would use this file as a JQ template, passing the params, connections and outputs to it. There are two approaches to building the proper artifact structure:
-1. Fully render the artifact in the Bicep output
-2. Build the artifact structure using the JQ template
+Since the resource is named `storage_account` a file named `artifact_storage_account.jq` would need to be in the template directory and the provisioner would use this file as a JQ template, passing the params, connections and outputs to it. There are two approaches to building the resource structure:
+1. Fully render the resource in the Bicep output
+2. Build the resource structure using the JQ template
 
 Here are examples of each approach.
 
 #### Fully Render as Bicep Output
 
-If you choose to fully render the artifact in a Bicep output, it would be similar to:
+If you choose to fully render the resource in a Bicep output, it would be similar to:
 
 ```bicep
 param region string
@@ -211,9 +211,9 @@ Thus, the `artifact_storage_account.jq` file would simply be:
 .outputs.artifact_storage_account
 ```
 
-#### Build Artifact in JQ Template
+#### Build Resource in JQ Template
 
-Alternatively, you can build the artifact structure using the JQ template. This approach is best if you are attempting to minimize changes to your Bicep template. With this approach, you would need to output the storage account ID and endpoint.
+Alternatively, you can build the resource structure using the JQ template. This approach is best if you are attempting to minimize changes to your Bicep template. With this approach, you would need to output the storage account ID and endpoint.
 
 ```bicep
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
@@ -250,7 +250,7 @@ In this case, the input to the `artifact_storage_account.jq` template file would
 }
 ```
 
-Now the artifact structure must be built through the `artifact_storage_account.jq` template:
+Now the resource structure must be built through the `artifact_storage_account.jq` template:
 
 ```jq artifact_storage_account.jq
 {

@@ -1,0 +1,137 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: resource-type
+title: ResourceType
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A resource type that defines what kind of infrastructure a resource represents.
+
+Resource types are the schema layer for Massdriver's connection system. Every
+dependency a bundle declares and every resource a bundle produces references a
+resource type. This is what makes bundles composable -- a database bundle that
+produces an `aws-rds-instance` resource can be connected to any application
+bundle that declares an `aws-rds-instance` dependency.
+
+Resource types include both public types provided by Massdriver (e.g.,
+`aws-iam-role`, `kubernetes-cluster`) and private types defined by your
+organization for custom infrastructure.
+
+
+```graphql
+type ResourceType {
+  id: ID!
+  name: String!
+  icon: String
+  connectionOrientation: ConnectionOrientation!
+  schema: Map!
+  uiSchema: Map!
+  instructions: [ImportInstruction!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ResourceType.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+Unique identifier in kebab-case (e.g., `aws-iam-role`, `kubernetes-cluster`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ResourceType.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Human-readable display name (e.g., "AWS IAM Role", "Kubernetes Cluster").
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ResourceType.<b>icon</b></code>](#icon)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#icon\} 
+URL to the icon representing this resource type, if available.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ResourceType.<b>connectionOrientation</b></code>](#connection-orientation)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ConnectionOrientation!</b></code>](/api/graphql/types/enums/connection-orientation.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#connection-orientation\} 
+How instances receive a dependency of this resource type. Determines whether connections are explicit links on the canvas or automatic environment-level defaults.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ResourceType.<b>schema</b></code>](#schema)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#schema\} 
+The full JSON Schema describing the shape of data this resource type exposes to dependents.
+
+Use this to generate forms, validate inputs, or inspect the fields available on a connection
+of this resource type. The schema is returned verbatim, including Massdriver's `$md` extensions
+(e.g., `icon`, `ui`). Callers that only want the data contract can read `properties.data` or
+strip `$md` themselves.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ResourceType.<b>uiSchema</b></code>](#ui-schema)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#ui-schema\} 
+UI hints describing how to render the import form for this resource type.
+
+Follows [react-jsonschema-form](https://rjsf-team.github.io/react-jsonschema-form/)'s
+`uiSchema` conventions: keys mirror the `data` schema's structure and values contain
+rendering directives (e.g., `ui:widget`, `ui:order`, `ui:help`). Returns an empty
+object when the resource type does not provide UI hints.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ResourceType.<b>instructions</b></code>](#instructions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ImportInstruction!]!</b></code>](/api/graphql/types/objects/import-instruction.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#instructions\} 
+Step-by-step import instructions, typically one entry per workflow (CLI, console, etc.).
+
+Each entry is rendered as its own tab or section so users can pick the workflow they
+prefer when importing an existing resource. Returns an empty list when the resource
+type does not provide instructions.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ResourceType.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+Timestamp when this resource type was created (UTC).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ResourceType.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+Timestamp when this resource type was last modified (UTC).
+
+
+
+
+
+
+### Returned By
+
+[`resourceType`](/api/graphql/operations/queries/resource-type.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+
+### Member Of
+
+[`BundleDependency`](/api/graphql/types/objects/bundle-dependency.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`BundleResource`](/api/graphql/types/objects/bundle-resource.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentDefaultResource`](/api/graphql/types/objects/environment-default-resource.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`InstanceDependency`](/api/graphql/types/objects/instance-dependency.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`InstanceResource`](/api/graphql/types/objects/instance-resource.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Resource`](/api/graphql/types/objects/resource.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ResourceTypePayload`](/api/graphql/types/objects/resource-type-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ResourceTypesPage`](/api/graphql/types/objects/resource-types-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ResourceWithSensitiveValues`](/api/graphql/types/objects/resource-with-sensitive-values.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

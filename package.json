@@ -7,7 +7,7 @@
     "build": "docusaurus build",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
-    "gen:graphql-v1": "docusaurus graphql-to-doc:graphql-v1 && node scripts/add-schema-forms.js"
+    "gen:graphql": "docusaurus graphql-to-doc:graphql && node scripts/add-schema-forms.js"
   },
   "dependencies": {
     "@cmfcmf/docusaurus-search-local": "^0.11.0",

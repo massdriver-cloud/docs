@@ -32,7 +32,7 @@ Set up your environment variables for authentication and state management:
 export TF_HTTP_USERNAME=${MASSDRIVER_ORG_SLUG}
 export TF_HTTP_PASSWORD=${MASSDRIVER_SERVICE_ACCOUNT_TOKEN}
 
-# Your package friendly ID available from your details panel (without the four character suffix -xxxx)
+# Your instance friendly ID available from the details panel (without the four-character suffix -xxxx). The env-var name keeps the legacy "PACKAGE" segment.
 export MASSDRIVER_PACKAGE_ID="YOUR-PACKAGE-SLUG"
 
 # Massdriver supports putting multiple IaC tools into the same "bundle".
@@ -108,7 +108,7 @@ Set up your environment variables for authentication and state management:
 export TF_HTTP_USERNAME=${MASSDRIVER_ORG_SLUG}
 export TF_HTTP_PASSWORD=${MASSDRIVER_SERVICE_ACCOUNT_TOKEN}
 
-# Your package friendly ID available from your details panel (without the four character suffix -xxxx)
+# Your instance friendly ID available from the details panel (without the four-character suffix -xxxx). The env-var name keeps the legacy "PACKAGE" segment.
 export MASSDRIVER_PACKAGE_ID="YOUR-PACKAGE-SLUG"
 
 # Massdriver supports putting multiple IaC tools into the same "bundle".

@@ -1,0 +1,93 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: alarm-metric-input
+title: AlarmMetricInput
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+The cloud metric an alarm evaluates.
+
+Most fields are optional because availability depends on the cloud provider.
+Pass `dimensions: []` if the provider doesn't expose structured dimensions
+for this metric.
+
+
+```graphql
+input AlarmMetricInput {
+  namespace: String
+  name: String
+  statistic: String
+  region: String
+  dimensions: [AlarmMetricDimensionInput!]
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AlarmMetricInput.<b>namespace</b></code>](#namespace)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#namespace\} 
+Cloud service namespace that categorizes the metric (e.g., `AWS/RDS`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlarmMetricInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Metric name within the namespace (e.g., `CPUUtilization`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlarmMetricInput.<b>statistic</b></code>](#statistic)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#statistic\} 
+Aggregation function applied to samples (e.g., `Average`). Optional for providers without it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlarmMetricInput.<b>region</b></code>](#region)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#region\} 
+Cloud region the metric is scoped to, when applicable.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlarmMetricInput.<b>dimensions</b></code>](#dimensions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[AlarmMetricDimensionInput!]</b></code>](/api/graphql/types/inputs/alarm-metric-dimension-input.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#dimensions\} 
+Dimensions identifying the monitored resource. Omit or pass an empty list when the cloud provider doesn't expose structured dimensions.
+
+
+
+
+
+
+### Member Of
+
+[`CreateInstanceAlarmInput`](/api/graphql/types/inputs/create-instance-alarm-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`UpdateInstanceAlarmInput`](/api/graphql/types/inputs/update-instance-alarm-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

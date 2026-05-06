@@ -7,7 +7,7 @@ sidebar_label: AWS Cost Reports
 
 # AWS Cost and Usage Reports
 
-The AWS Cost and Usage Reports integration enables Massdriver to collect detailed billing data from your AWS account, allowing you to track costs by package and resource.
+The AWS Cost and Usage Reports integration enables Massdriver to collect detailed billing data from your AWS account, allowing you to track costs by instance and resource.
 
 ## Prerequisites
 
@@ -128,7 +128,7 @@ Once enabled, Massdriver:
 1. Authenticates using the IAM user credentials
 2. Lists the S3 bucket for available reports
 3. Downloads and parses the latest report
-4. Aggregates costs by `md-package` tag
+4. Aggregates costs by `md-instance` tag
 5. Stores daily and monthly cost data
 
 Data is collected every 24 hours.
@@ -145,7 +145,7 @@ The S3 bucket doesn't exist or the IAM user doesn't have `s3:HeadBucket` permiss
 
 ### No cost data appears
 
-- Verify resources have the `md-package` tag applied
+- Verify resources have the `md-instance` tag applied
 - CUR reports take up to 24 hours to generate initially
 - Check that the report is being written to the S3 bucket
 
