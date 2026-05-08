@@ -11,7 +11,7 @@ Operator guides (also called runbooks) provide operational documentation for you
 
 **Key features:**
 - **Dynamic content**: Variables are interpolated at render time with actual deployed values
-- **Context-aware**: Shows configuration, connections, and resource outputs specific to this instance
+- **Context-aware**: Shows configuration, dependencies, and resource outputs specific to this instance
 - **Operational focus**: Command examples, troubleshooting steps, and reference information
 - **Customizable**: You control the content—this is your documentation
 
@@ -54,11 +54,13 @@ Operator guides have access to the following top-level variables:
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `{{id}}` | Instance identifier | `myapp-prod-useast1` |
-| `{{slug}}` | **Deprecated** alias for `id` (will be removed 2026-03-12) | `myapp-prod-useast1` |
 | `{{params.<field>}}` | Configuration parameter values | `{{params.database_name}}` |
 | `{{params.md_metadata.<field>}}` | Massdriver-injected metadata (see below) | `{{params.md_metadata.name_prefix}}` |
-| `{{connections.<name>.<...>}}` | Connected resource payload (shape depends on artifact schema) | `{{connections.network.specs.aws.region}}` |
-| `{{artifacts.<name>.<...>}}` | This bundle's output payload (shape depends on artifact definition) | `{{artifacts.database.data.infrastructure.arn}}` |
+| `{{dependencies.<name>.<...>}}` | Upstream dependency payload (shape depends on its resource type) | `{{dependencies.network.specs.aws.region}}` |
+| `{{resources.<name>.<...>}}` | This bundle's output payload (shape depends on its resource type) | `{{resources.database.data.infrastructure.arn}}` |
+| `{{slug}}` | **Deprecated** alias for `id` (will be removed 2026-03-12) | `myapp-prod-useast1` |
+| `{{connections.<name>.<...>}}` | **Deprecated** alias for `dependencies` (will be removed 2026-05-07) | `{{connections.network.specs.aws.region}}` |
+| `{{artifacts.<name>.<...>}}` | **Deprecated** alias for `resources` (will be removed 2026-05-07) | `{{artifacts.database.data.infrastructure.arn}}` |
 
 ### `params.md_metadata`
 
@@ -79,21 +81,25 @@ Massdriver injects a `md_metadata` block into `params` with deployment context:
 | `params.md_metadata.package.previous_status` | Status of the package before this deployment |
 | `params.md_metadata.target.contact_email` | Contact email of the user/service account that triggered the deployment |
 
-### Connections and Artifacts
+### Dependencies and Resources
 
-The shape of `connections.<name>` and `artifacts.<name>` is determined by the **artifact definition schema** they conform to. Massdriver's V1 artifact definitions typically split fields into two top-level keys:
+The shape of `dependencies.<name>` and `resources.<name>` is determined by the **resource type schema** they conform to. Massdriver's V1 artifact definitions typically split fields into two top-level keys:
 
 - **`specs`** — public metadata (regions, names, configuration)
 - **`data`** — connection details (ARNs, hostnames, credentials)
 
-So an AWS Lambda connection might expose `{{connections.my_lambda.specs.aws.region}}` and `{{connections.my_lambda.data.infrastructure.arn}}`. V2 resource-type schemas may use a flatter shape — always inspect the artifact definition (or `bundle.json` `connections_schema`) to see the exact field layout.
+So an AWS Lambda dependency might expose `{{dependencies.my_lambda.specs.aws.region}}` and `{{dependencies.my_lambda.data.infrastructure.arn}}`. V2 resource-type schemas may use a flatter shape — always inspect the resource type (or `bundle.json` `connections_schema`) to see the exact field layout.
+
+:::note Renamed from `connections` / `artifacts`
+`connections` and `artifacts` were renamed to `dependencies` and `resources` on 2026-05-07. The old names still work as aliases but will be removed — update your `operator.md` files to the new names.
+:::
 
 ### Sensitive field masking
 
-Fields marked `$md.sensitive: true` in the artifact's schema are **masked** to `[SENSITIVE]` rather than removed. The shape of the value is preserved (a sensitive object becomes an object with each leaf replaced; a sensitive array becomes a list of `[SENSITIVE]` strings). For example:
+Fields marked `$md.sensitive: true` in the resource type schema are **masked** to `[SENSITIVE]` rather than removed. The shape of the value is preserved (a sensitive object becomes an object with each leaf replaced; a sensitive array becomes a list of `[SENSITIVE]` strings). For example:
 
 ```mustache
-Password: {{connections.my_db.data.authentication.password}}
+Password: {{dependencies.my_db.data.authentication.password}}
 ```
 
 Renders as:
@@ -127,14 +133,14 @@ Version: {{params.version}}
 Check if a value exists:
 
 ```mustache
-{{#connections.database}}
+{{#dependencies.database}}
 **Database Connected:** Yes
 **Hostname:** {{data.infrastructure.hostname}}
-{{/connections.database}}
+{{/dependencies.database}}
 
-{{^connections.database}}
+{{^dependencies.database}}
 _No database connected_
-{{/connections.database}}
+{{/dependencies.database}}
 ```
 
 `{{#name}}` — Renders if truthy
@@ -193,21 +199,21 @@ templating: mustache
 - **App name:** `{{params.app_name}}`
 - **Version:** `{{params.version}}`
 
-## Connections
+## Dependencies
 
-{{#connections.network}}
+{{#dependencies.network}}
 - **VPC region:** `{{specs.aws.region}}`
 - **VPC ID:** `{{data.infrastructure.arn}}`
-{{/connections.network}}
+{{/dependencies.network}}
 
-{{^connections.network}}
-_No network connection wired up._
-{{/connections.network}}
+{{^dependencies.network}}
+_No network dependency wired up._
+{{/dependencies.network}}
 
-## Outputs (this bundle)
+## Resources (this bundle's outputs)
 
-- **API endpoint:** `https://{{artifacts.api.specs.hostname}}`
-- **Lambda ARN:** `{{artifacts.fn.data.infrastructure.arn}}`
+- **API endpoint:** `https://{{resources.api.specs.hostname}}`
+- **Lambda ARN:** `{{resources.fn.data.infrastructure.arn}}`
 
 ## Operational Commands
 
@@ -238,7 +244,7 @@ Contact for this environment: `{{params.md_metadata.target.contact_email}}`
 **Don't:**
 - Print sensitive fields — they render as `[SENSITIVE]`
 - Use placeholders like `<replace-me>` when you can interpolate
-- Rely on `{{slug}}` in new guides — use `{{id}}` (slug is deprecated and will be removed)
+- Rely on the deprecated names `{{slug}}`, `{{connections.*}}`, or `{{artifacts.*}}` in new guides — use `{{id}}`, `{{dependencies.*}}`, and `{{resources.*}}`
 - Forget to update the guide when you change schemas
 
 ## Testing Your Guide
