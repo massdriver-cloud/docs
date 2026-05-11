@@ -1,0 +1,72 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: oci-artifact-type
+title: OciArtifactType
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+The kind of artifact stored in an OCI repository.
+
+Each value maps to a concrete [OCI artifact type](https://github.com/opencontainers/image-spec/blob/main/manifest.md#guidelines-for-artifact-usage)
+media string written to the manifest. Today only `BUNDLE` is supported; additional types will be added as the catalog expands.
+
+
+```graphql
+enum OciArtifactType {
+  BUNDLE
+}
+```
+
+
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>OciArtifactType.<b>BUNDLE</b></code>](#bundle) \{#bundle\} 
+Massdriver bundle (`application/vnd.massdriver.bundle.v1+json`).
+
+
+
+
+
+
+### Member Of
+
+[`CreateOciRepoInput`](/api/graphql/types/inputs/create-oci-repo-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

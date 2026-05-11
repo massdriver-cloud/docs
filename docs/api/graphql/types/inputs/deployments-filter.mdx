@@ -52,6 +52,8 @@ input DeploymentsFilter {
   instanceId: IdFilter
   status: DeploymentStatusFilter
   action: DeploymentActionFilter
+  ociRepoName: OciRepoNameFilter
+  bundleId: BundleIdFilter
 }
 ```
 
@@ -70,6 +72,14 @@ Return only deployments in the specified status(es).
 
 #### [<code style={{ fontWeight: 'normal' }}>DeploymentsFilter.<b>action</b></code>](#action)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DeploymentActionFilter</b></code>](/api/graphql/types/inputs/deployment-action-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#action\} 
 Return only deployments with the specified action type(s).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentsFilter.<b>ociRepoName</b></code>](#oci-repo-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoNameFilter</b></code>](/api/graphql/types/inputs/oci-repo-name-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#oci-repo-name\} 
+Return only deployments of instances on the named bundle (e.g., `aws-rds`). Matches every version published to the repo.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentsFilter.<b>bundleId</b></code>](#bundle-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BundleIdFilter</b></code>](/api/graphql/types/inputs/bundle-id-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#bundle-id\} 
+Return only deployments stamped with a specific bundle version (`name@version`) or release channel (`name@~1`, `name@latest`). Each deployment carries the version it ran, so this surfaces the audit log of deploys of that exact release — even after the underlying instance has moved on.
 
 
 

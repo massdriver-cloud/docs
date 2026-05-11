@@ -50,7 +50,8 @@ to correlate inbound webhooks (CloudWatch, Azure Monitor, GCP Cloud
 Monitoring, Alertmanager) back to this alarm — it must be unique within
 the instance.
 
-Requires `environment:update` on the alarm's environment.
+Requires `environment:update` on the alarm's environment, or the
+deployment subject that owns the underlying instance.
 
 
 

@@ -54,7 +54,7 @@ If you're building a least-privilege policy, scan the table for the operations t
 
 ## Instance
 
-Deployments are an action *on* an instance — `createDeployment`, `proposeDeployment`, `approveDeployment`, and `rejectDeployment` are listed here. The two listing queries (`deployments`, `deployment`) are in the [Deployment](#deployment) section below.
+Deployments are an action *on* an instance — `createDeployment`, `planDeployment`, `proposeDeployment`, `approveDeployment`, `rejectDeployment`, and `abortDeployment` are listed here. The two listing queries (`deployments`, `deployment`) are in the [Deployment](#deployment) section below.
 
 | Operation | Type | Required permission(s) | Notes |
 |---|---|---|---|
@@ -67,10 +67,13 @@ Deployments are an action *on* an instance — `createDeployment`, `proposeDeplo
 | `setRemoteReference` | Mutation | `instance:configure`, `resource:view` | Configure the destination instance, view the resource being wired in. Also requires a resource grant covering the instance's environment. |
 | `removeRemoteReference` | Mutation | `instance:configure` | |
 | `copyInstance` | Mutation | `project:view`, `instance:configure` | View on source instance, configure on destination. |
+| `orphanInstance` | Mutation | `instance:decommission` | Break-glass reset to `INITIALIZED`. Clears state locks, bulk-aborts in-flight deployments, and (with `deleteState: true`) deletes the remote Terraform/OpenTofu state files. |
 | `createDeployment` | Mutation | `instance:deploy`, `instance:plan`, or `instance:decommission` | Permission depends on `input.action`: `PROVISION` → `instance:deploy`, `PLAN` → `instance:plan`, `DECOMMISSION` → `instance:decommission`. |
+| `planDeployment` | Mutation | `instance:plan` | Re-runs a `PLAN` against a source deployment's params on the same instance. Source may be in any status. |
 | `proposeDeployment` | Mutation | `instance:propose` | Only `PROVISION` and `DECOMMISSION` are proposable. |
 | `approveDeployment` | Mutation | `instance:deploy` | |
 | `rejectDeployment` | Mutation | `instance:deploy` | Same permission as approve — both close out a proposal. |
+| `abortDeployment` | Mutation | `instance:deploy`, `instance:plan`, or `instance:decommission` | Permission mirrors the deployment's original action: `PROVISION` → `instance:deploy`, `PLAN` → `instance:plan`, `DECOMMISSION` → `instance:decommission`. Only `PENDING`, `APPROVED`, or `RUNNING` deployments are abortable — use `rejectDeployment` to discard a `PROPOSED` deployment. |
 
 ## Deployment
 
@@ -86,9 +89,9 @@ Deployments are an action *on* an instance — `createDeployment`, `proposeDeplo
 |---|---|---|---|
 | `instanceAlarms` | Query | *visibility-filtered* | |
 | `instanceAlarm` | Query | `project:view` | |
-| `createInstanceAlarm` | Mutation | `environment:update` | Alarms attach to an instance but the gate is on the surrounding environment. |
-| `updateInstanceAlarm` | Mutation | `environment:update` | |
-| `deleteInstanceAlarm` | Mutation | `environment:update` | |
+| `createInstanceAlarm` | Mutation | `environment:update` | Alarms attach to an instance but the gate is on the surrounding environment. A deployment subject that owns the underlying instance is also allowed. |
+| `updateInstanceAlarm` | Mutation | `environment:update` | A deployment subject that owns the underlying instance is also allowed. |
+| `deleteInstanceAlarm` | Mutation | `environment:update` | A deployment subject that owns the underlying instance is also allowed. |
 
 ## Resource
 
@@ -155,6 +158,7 @@ There is no `updateGrant` — grants are immutable; delete and re-create to chan
 | `policyActions` | Query | *no explicit gate* | Catalog of available actions. |
 | `evaluatePolicy` | Query | *no explicit gate* | Evaluation runs against the caller's own effective permissions. |
 | `evaluatePolicies` | Query | *no explicit gate* | Batched form of `evaluatePolicy`. |
+| `explainPolicy` | Query | `organization:view` | Renders a policy spec (same shape as `createGroupPolicy` input) as plain-English sentences. Does not require the policy to exist. |
 | `createGroupPolicy` | Mutation | `group:manage` | Policies attach to groups. |
 | `updatePolicy` | Mutation | `group:manage` | |
 | `deletePolicy` | Mutation | `group:manage` | |
@@ -165,15 +169,15 @@ There is no `updateGrant` — grants are immutable; delete and re-create to chan
 |---|---|---|---|
 | `customAttributeSchema` | Query | *no explicit gate* | Schema is org-public. |
 | `customAttributeValues` | Query | *no explicit gate* | |
-| `createCustomAttribute` | Mutation | `organization:manageAttributes` | |
-| `updateCustomAttribute` | Mutation | `organization:manageAttributes` | |
-| `deleteCustomAttribute` | Mutation | `organization:manageAttributes` | |
+| `createCustomAttribute` | Mutation | `organization:manage` | |
+| `updateCustomAttribute` | Mutation | `organization:manage` | |
+| `deleteCustomAttribute` | Mutation | `organization:manage` | |
 
 ## Organization
 
 | Operation | Type | Required permission(s) | Notes |
 |---|---|---|---|
-| `organization` | Query | `organization:view` | Public profile fields require only `organization:view` (granted implicitly to every member). Sensitive fields like `members` and `billing` require `organization:manage` / `organization:manageBilling` and resolve to `null` with a top-level `FORBIDDEN` error otherwise. |
+| `organization` | Query | `organization:view` | Public profile fields require only `organization:view` (granted implicitly to every member). Sensitive subfields (`members`, `billing`, `customAttributes`) require `organization:manage` and resolve to `null` with a top-level `FORBIDDEN` error otherwise. |
 | `createOrganization` | Mutation | *authenticated only* | Caller becomes the org's first owner; no ABAC permission since the org doesn't exist yet. |
 | `updateOrganization` | Mutation | `organization:manage` | |
 | `setOrganizationLogo` | Mutation | `organization:manage` | |

@@ -50,9 +50,11 @@ Conditions are evaluated AND within a policy and OR across policies on the
 same group. A policy with no conditions is a wildcard — it matches any
 resource of each action's entity. Deny policies win over allow policies. A
 policy can list actions across different entities (for example
-`project:view` together with `instance:deploy`); conditions whose attributes
-do not apply to a given entity simply never match for it. See
-`docs/guides/abac.md` for the full evaluation model.
+`project:view` together with `instance:deploy`); for each action, condition
+keys whose registered attribute scope is unreachable for that action's
+entity are skipped, and a policy whose conditions all skip for a given
+action is a wildcard match for that action. See `docs/guides/abac.md` for
+the full evaluation model.
 
 
 ```graphql

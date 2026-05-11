@@ -47,6 +47,7 @@ Create a new OCI repository in your organization's catalog. Repositories must ex
 
 ```graphql
 input CreateOciRepoInput {
+  artifactType: OciArtifactType!
   attributes: Map
   id: String!
 }
@@ -56,6 +57,10 @@ input CreateOciRepoInput {
 
 
 ### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateOciRepoInput.<b>artifactType</b></code>](#artifact-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciArtifactType!</b></code>](/api/graphql/types/enums/oci-artifact-type.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#artifact-type\} 
+OCI artifact type stored in this repository. Today only `BUNDLE` is accepted; additional types will be added as Massdriver expands the catalog.
+
 
 #### [<code style={{ fontWeight: 'normal' }}>CreateOciRepoInput.<b>attributes</b></code>](#attributes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#attributes\} 
 Key-value attributes for this repository. Used by ABAC policies for fine-grained access control. Reserved `md-*` keys are rejected. Must conform to the organization's custom attributes for the repo scope.

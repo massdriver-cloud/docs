@@ -1,0 +1,115 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: orphan-instance
+title: orphanInstance
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+<Badge class="badge badge--secondary badge--primary" text="form schema"/>
+
+
+
+Reset an instance back to `INITIALIZED`, clearing every Terraform/OpenTofu
+state lock and aborting any in-flight or queued deployments. Optionally
+deletes the remote IaC state files.
+
+Use this break-glass operation when a deployment is permanently stuck and
+cannot be recovered through normal retry. State locks are always cleared.
+Active `RUNNING`, `PENDING`, and `APPROVED` deployments are bulk-aborted
+so a late worker callback cannot walk the instance status back to
+`PROVISIONED`. Pass `deleteState: true` to also remove the
+Terraform/OpenTofu state files — this is **irreversible** and the next
+deployment will provision from scratch, potentially duplicating any
+resources that the prior state was tracking.
+
+```graphql
+mutation {
+  orphanInstance(
+    organizationId: "my-org"
+    id: "my-database"
+    input: { deleteState: false }
+  ) {
+    result { id status }
+    successful
+  }
+}
+```
+
+
+
+
+```graphql
+orphanInstance(
+  organizationId: ID!
+  id: ID!
+  input: OrphanInstanceInput!
+): InstancePayload
+```
+
+
+
+
+
+### Form Schema
+
+This mutation supports dynamic form generation using JSON Schema.
+
+- [JSON Schema](https://api.massdriver.cloud/graphql/v2/inputs/orphanInstance.json)
+- [UI Schema](https://api.massdriver.cloud/graphql/v2/inputs/orphanInstance.ui.json)
+
+<SchemaForm
+  schemaUrl="https://api.massdriver.cloud/graphql/v2/inputs/orphanInstance.json"
+  uiSchemaUrl="https://api.massdriver.cloud/graphql/v2/inputs/orphanInstance.ui.json"
+  name="orphanInstance"
+/>
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>orphanInstance.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>orphanInstance.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+The instance to orphan.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>orphanInstance.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OrphanInstanceInput!</b></code>](/api/graphql/types/inputs/orphan-instance-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Reset an instance to INITIALIZED, clearing all of its Terraform/OpenTofu state locks. Optionally also deletes the remote IaC state files.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>InstancePayload</b></code>](/api/graphql/types/objects/instance-payload.mdx) <Badge class="badge badge--secondary " text="object"/>

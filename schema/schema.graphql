@@ -942,7 +942,7 @@ type RootQueryType {
 
   ```
   [
-    "Can create environments with identifiers [dev, staging, prod].",
+    "Can create environments where system:md-environment is [dev, staging, prod].",
     "Can create and update any project."
   ]
   ```
@@ -2490,6 +2490,44 @@ type RootMutationType {
   ): InstanceSecretPayload
 
   """
+  Reset an instance back to `INITIALIZED`, clearing every Terraform/OpenTofu
+  state lock and aborting any in-flight or queued deployments. Optionally
+  deletes the remote IaC state files.
+
+  Use this break-glass operation when a deployment is permanently stuck and
+  cannot be recovered through normal retry. State locks are always cleared.
+  Active `RUNNING`, `PENDING`, and `APPROVED` deployments are bulk-aborted
+  so a late worker callback cannot walk the instance status back to
+  `PROVISIONED`. Pass `deleteState: true` to also remove the
+  Terraform/OpenTofu state files — this is **irreversible** and the next
+  deployment will provision from scratch, potentially duplicating any
+  resources that the prior state was tracking.
+
+  ```graphql
+  mutation {
+    orphanInstance(
+      organizationId: "my-org"
+      id: "my-database"
+      input: { deleteState: false }
+    ) {
+      result { id status }
+      successful
+    }
+  }
+  ```
+  """
+  orphanInstance(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The instance to orphan."
+    id: ID!
+
+    "Reset an instance to INITIALIZED, clearing all of its Terraform\/OpenTofu state locks. Optionally also deletes the remote IaC state files."
+    input: OrphanInstanceInput!
+  ): InstancePayload @inputs(name: "orphanInstance", schema: "\/graphql\/v2\/inputs\/orphanInstance.json", ui: "\/graphql\/v2\/inputs\/orphanInstance.ui.json")
+
+  """
   Create a new deployment for an instance.
 
   Saves the provided `params` as the instance's configuration, then initiates the
@@ -2527,6 +2565,41 @@ type RootMutationType {
     "Deploy an instance with configuration parameters. Params are validated against the bundle's params schema, cached on the instance, and snapshotted into the deployment."
     input: CreateDeploymentInput!
   ): DeploymentPayload @inputs(name: "createDeployment", schema: "\/graphql\/v2\/inputs\/createDeployment.json", ui: "\/graphql\/v2\/inputs\/createDeployment.ui.json")
+
+  """
+  Run a fresh `PLAN` against an existing deployment's params.
+
+  The source deployment's params are copied (without `md_metadata`) onto a new
+  deployment with action `PLAN`, which runs as a dry-run preview. Nothing on
+  the source deployment, the instance's saved configuration, or any other
+  deployment is mutated. The plan's `message` is synthesized from the source
+  so the preview is traceable back to what it was run against.
+
+  The source can be in any status — useful for previewing a proposal before
+  approving, replaying a completed deployment, or scoping out a rollback
+  against an older snapshot. Authorization is checked with `instance:plan` on
+  the source's instance.
+
+  ```graphql
+  mutation {
+    planDeployment(
+      organizationId: "my-org"
+      id: "550e8400-e29b-41d4-a716-446655440000"
+    ) {
+      result { id status action }
+      successful
+      messages { field message }
+    }
+  }
+  ```
+  """
+  planDeployment(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The deployment whose params should be planned."
+    id: UUID!
+  ): DeploymentPayload
 
   """
   Propose a deployment for human review.
@@ -2598,6 +2671,27 @@ type RootMutationType {
   ): DeploymentPayload
 
   """
+  Cancel a queued or running deployment.
+
+  Transitions a `PENDING`, `APPROVED`, or `RUNNING` deployment to `ABORTED`.
+  The instance's infrastructure state is **not** changed — a running deployment
+  aborted mid-flight leaves any partial changes the provisioner had applied
+  in place. The deployment queue advances so the next waiting deployment can
+  run.
+
+  Aborting a deployment in any other status (`COMPLETED`, `FAILED`, `REJECTED`,
+  `ABORTED`, or `PROPOSED`) returns a validation error. To discard a `PROPOSED`
+  deployment, use `rejectDeployment`.
+  """
+  abortDeployment(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The deployment's unique identifier."
+    id: UUID!
+  ): DeploymentPayload
+
+  """
   Attach an ABAC policy to a group.
 
   Group policies control what users and service accounts who are members of
@@ -2653,7 +2747,8 @@ type RootMutationType {
   Monitoring, Alertmanager) back to this alarm — it must be unique within
   the instance.
 
-  Requires `environment:update` on the alarm's environment.
+  Requires `environment:update` on the alarm's environment, or the
+  deployment subject that owns the underlying instance.
   """
   createInstanceAlarm(
     "Your organization's unique identifier."
@@ -2671,7 +2766,8 @@ type RootMutationType {
 
   Omit a field from the input to leave it unchanged.
 
-  Requires `environment:update` on the alarm's environment.
+  Requires `environment:update` on the alarm's environment, or the
+  deployment subject that owns the underlying instance.
   """
   updateInstanceAlarm(
     "Your organization's unique identifier."
@@ -2690,7 +2786,8 @@ type RootMutationType {
   Removes the alarm and any recorded state transitions. The underlying cloud
   provider alarm is unaffected.
 
-  Requires `environment:update` on the alarm's environment.
+  Requires `environment:update` on the alarm's environment, or the
+  deployment subject that owns the underlying instance.
   """
   deleteInstanceAlarm(
     "Your organization's unique identifier."
@@ -2744,7 +2841,7 @@ type RootMutationType {
   """
   Share an OCI repo with recipient projects matching `recipientConditions`.
 
-  The caller must have `repo:update` on the source repo. Grants are immutable —
+  The caller must have `repo:grant` on the source repo. Grants are immutable —
   to change `action` or `recipientConditions`, delete and re-create.
   """
   createRepoGrant(
@@ -2754,14 +2851,14 @@ type RootMutationType {
     "The repository name (e.g., `aws-aurora-postgres`)."
     repoId: ID!
 
-    "Share an OCI repo with recipient projects matching attribute conditions. The caller must have `repo:update` on the source repo."
+    "Share an OCI repo with recipient projects matching attribute conditions. The caller must have `repo:grant` on the source repo."
     input: CreateRepoGrantInput!
   ): GrantPayload @inputs(name: "createRepoGrant", schema: "\/graphql\/v2\/inputs\/createRepoGrant.json", ui: "\/graphql\/v2\/inputs\/createRepoGrant.ui.json")
 
   """
   Share a resource with recipient environments matching `recipientConditions`.
 
-  The caller must have `resource:update` on the source resource. Grants are
+  The caller must have `resource:grant` on the source resource. Grants are
   immutable — to change `action` or `recipientConditions`, delete and re-create.
   """
   createResourceGrant(
@@ -2771,13 +2868,13 @@ type RootMutationType {
     "The resource's unique identifier."
     resourceId: ID!
 
-    "Share a resource with recipient environments matching attribute conditions. The caller must have `resource:update` on the source resource."
+    "Share a resource with recipient environments matching attribute conditions. The caller must have `resource:grant` on the source resource."
     input: CreateResourceGrantInput!
   ): GrantPayload @inputs(name: "createResourceGrant", schema: "\/graphql\/v2\/inputs\/createResourceGrant.json", ui: "\/graphql\/v2\/inputs\/createResourceGrant.ui.json")
 
   """
-  Delete a grant by its id. The caller must have `repo:update` on the grant's
-  source repo (for repo grants) or `resource:update` on its source resource
+  Delete a grant by its id. The caller must have `repo:grant` on the grant's
+  source repo (for repo grants) or `resource:grant` on its source resource
   (for resource grants).
   """
   deleteGrant(
@@ -3144,8 +3241,8 @@ union DeploymentEventsPayload = DeploymentEvent
 
 """
 The thing a grant is sharing — exactly one of an OCI repo or a resource. The
-caller authoring the grant must have `repo:update` (for repo grants) or
-`resource:update` (for resource grants) on this source.
+caller authoring the grant must have `repo:grant` (for repo grants) or
+`resource:grant` (for resource grants) on this source.
 """
 union GrantSource = OciRepo | Resource
 
@@ -3192,7 +3289,7 @@ type GrantsPage {
   items: [Grant]
 }
 
-"Share an OCI repo with recipient projects matching attribute conditions. The caller must have `repo:update` on the source repo."
+"Share an OCI repo with recipient projects matching attribute conditions. The caller must have `repo:grant` on the source repo."
 input CreateRepoGrantInput {
   "The action being granted on the repo. Currently the only grantable repo action is `repo:pull` — repo visibility is inferred from any granted action, and publishing is not a sharing concern."
   action: String!
@@ -3201,7 +3298,7 @@ input CreateRepoGrantInput {
   recipientConditions: Conditions!
 }
 
-"Share a resource with recipient environments matching attribute conditions. The caller must have `resource:update` on the source resource."
+"Share a resource with recipient environments matching attribute conditions. The caller must have `resource:grant` on the source resource."
 input CreateResourceGrantInput {
   "The action being granted on the resource. Currently the only grantable resource action is `resource:export` — resource visibility is inferred from any granted action."
   action: String!
@@ -3279,9 +3376,11 @@ Conditions are evaluated AND within a policy and OR across policies on the
 same group. A policy with no conditions is a wildcard — it matches any
 resource of each action's entity. Deny policies win over allow policies. A
 policy can list actions across different entities (for example
-`project:view` together with `instance:deploy`); conditions whose attributes
-do not apply to a given entity simply never match for it. See
-`docs/guides/abac.md` for the full evaluation model.
+`project:view` together with `instance:deploy`); for each action, condition
+keys whose registered attribute scope is unreachable for that action's
+entity are skipped, and a policy whose conditions all skip for a given
+action is a wildcard match for that action. See `docs/guides/abac.md` for
+the full evaluation model.
 """
 type Policy {
   "Unique identifier for this policy."
@@ -3533,6 +3632,21 @@ type Resource {
   """
   payload: Map
 
+  """
+  Key-value attributes assigned directly to this resource, used by ABAC
+  policies. Reserved keys starting with `md-` are auto-injected by the system
+  and excluded from this map — see `effectiveAttributes` for the merged view.
+  """
+  attributes: Map!
+
+  """
+  The full set of attributes that ABAC policy evaluation sees for this
+  resource — its own attributes plus user attributes cascaded from the
+  instance chain (project, environment, component, instance) and the
+  resource type, plus auto-injected `md-*` system attributes.
+  """
+  effectiveAttributes: Map!
+
   "When this resource was created (UTC)."
   createdAt: DateTime!
 
@@ -3764,6 +3878,14 @@ type ResourceType {
   type does not provide instructions.
   """
   instructions: [ImportInstruction!]!
+
+  """
+  The auto-injected `md-*` system attributes for this resource type
+  (today: `md-id`). Resource types do not yet carry user-settable
+  attributes; user attributes will arrive when resource types move to
+  OCI-hosted distribution.
+  """
+  effectiveAttributes: Map!
 
   "Timestamp when this resource type was created (UTC)."
   createdAt: DateTime!
@@ -4631,10 +4753,11 @@ type Server {
 """
 The resource level where a custom attribute applies.
 
-Attributes set at hierarchy scopes (`PROJECT`, `ENVIRONMENT`, `COMPONENT`, `INSTANCE`) cascade
-downward — an attribute set at `PROJECT` is inherited by all environments and instances in
-that project. `REPO`-scoped attributes apply to OCI repositories; the bundle name is propagated
-to components, instances, deployments, and resources via the `md-repo` system attribute.
+Attributes set at hierarchy scopes (`PROJECT`, `ENVIRONMENT`, `COMPONENT`) cascade
+downward — an attribute set at `PROJECT` is inherited by all environments, instances,
+deployments, and resources in that project. `REPO`-scoped attributes apply to OCI
+repositories; the bundle name is propagated to components, instances, deployments,
+and resources via the `md-repo` system attribute.
 """
 enum AttributeScope {
   "Attribute is set on individual projects."
@@ -4645,9 +4768,6 @@ enum AttributeScope {
 
   "Attribute is set on blueprint components (design-time)."
   COMPONENT
-
-  "Attribute is set on deployed instances (run-time)."
-  INSTANCE
 
   "Attribute is set on individual OCI repositories (bundles)."
   REPO
@@ -4682,7 +4802,7 @@ input CreateCustomAttributeInput {
   "Whether this attribute must be set when creating a resource at the specified scope."
   required: Boolean
 
-  "The resource level where this attribute is set. Hierarchy scopes (PROJECT, ENVIRONMENT, COMPONENT, INSTANCE) cascade values downward. REPO scope applies to OCI repositories; the bundle name propagates to derived components, instances, deployments, and resources via the md-repo system attribute."
+  "The resource level where this attribute is set. Hierarchy scopes (PROJECT, ENVIRONMENT, COMPONENT) cascade values downward to instances, deployments, and resources. REPO scope applies to OCI repositories; the bundle name propagates to derived components, instances, deployments, and resources via the md-repo system attribute."
   scope: AttributeScope!
 
   "The closed set of values this attribute may take. Must contain at least one entry, no duplicates, and may not contain the literal \"*\" (reserved for a future \"any value\" semantic)."
@@ -6110,10 +6230,13 @@ stateDiagram-v2
   APPROVED --> RUNNING: "Execution starts"
   RUNNING --> COMPLETED: "Success"
   RUNNING --> FAILED: "Error"
+  PENDING --> ABORTED: "abortDeployment"
+  APPROVED --> ABORTED: "abortDeployment"
+  RUNNING --> ABORTED: "abortDeployment"
 ```
 
-Once a deployment reaches a terminal state (`COMPLETED`, `FAILED`, or
-`REJECTED`), it cannot transition again.
+Once a deployment reaches a terminal state (`COMPLETED`, `FAILED`,
+`REJECTED`, or `ABORTED`), it cannot transition again.
 """
 enum DeploymentStatus {
   "A proposed deployment awaiting human approval. Proposed deployments are not scheduled and do not block the queue."
@@ -6136,6 +6259,9 @@ enum DeploymentStatus {
 
   "The deployment encountered an error. Check deployment logs for details."
   FAILED
+
+  "An operator aborted the deployment via `abortDeployment`. Terminal. The instance's infrastructure state is left as it was at the moment of abort."
+  ABORTED
 }
 
 """
@@ -6209,6 +6335,12 @@ input DeploymentsFilter {
 
   "Return only deployments with the specified action type(s)."
   action: DeploymentActionFilter
+
+  "Return only deployments of instances on the named bundle (e.g., `aws-rds`). Matches every version published to the repo."
+  ociRepoName: OciRepoNameFilter
+
+  "Return only deployments stamped with a specific bundle version (`name@version`) or release channel (`name@~1`, `name@latest`). Each deployment carries the version it ran, so this surfaces the audit log of deploys of that exact release — even after the underlying instance has moved on."
+  bundleId: BundleIdFilter
 }
 
 """
@@ -6263,6 +6395,22 @@ type Deployment {
 
   "The instance that this deployment operates on."
   instance: Instance
+
+  """
+  The full attribute map the authorization system evaluates policies against for
+  this deployment — the parent instance's effective attributes (project >
+  environment > component cascade) with the deployment's own `md-id` overlaid.
+
+  System attributes always present on a deployment:
+  - `md-id` — the deployment's UUID
+  - `md-project` — the project's identifier
+  - `md-environment` — the environment's local identifier
+  - `md-component` — the component's local identifier
+  - `md-instance` — the instance's identifier
+  - `md-repo` — the bundle's repo name
+  - `md-bundle` — `"{bundle}@{version}"` of the resolved release
+  """
+  effectiveAttributes: Map!
 
   """
   All log batches emitted for this deployment so far, ordered oldest-first.
@@ -6567,8 +6715,11 @@ input InstanceAlarmsFilter {
   "Return only alarms for the specified instance(s)."
   instanceId: IdFilter
 
-  "Return only alarms on instances of the given bundle (e.g., `aws-rds`)."
+  "Return only alarms on instances of the given bundle (e.g., `aws-rds`). Matches every version published to the repo."
   ociRepoName: OciRepoNameFilter
+
+  "Return only alarms on instances pinned to a specific bundle version (`name@version`) or release channel (`name@~1`, `name@latest`). Use `ociRepoName` instead to match every version of a bundle."
+  bundleId: BundleIdFilter
 }
 
 "Sorting options for the instance alarms list. Specify a field and direction."
@@ -6688,8 +6839,11 @@ input InstancesFilter {
   "Match by lifecycle status (e.g., `PROVISIONED`, `FAILED`)."
   status: InstanceStatusFilter
 
-  "Match by the OCI repository name of the underlying bundle."
+  "Match by the OCI repository name of the underlying bundle. Returns every version published to the repo."
   ociRepoName: OciRepoNameFilter
+
+  "Match by a specific bundle version (`name@version`) or release channel (`name@~1`, `name@latest`). Use `ociRepoName` instead to match every version of a bundle."
+  bundleId: BundleIdFilter
 
   "Filter by configuration parameter values. Each entry targets a specific param field; multiple entries are combined with AND."
   paramDimension: [ParamDimensionFilter!]
@@ -6752,6 +6906,12 @@ input CopyInstanceInput {
 
   "Optional overrides that are deep-merged onto the source params before writing to the destination. Useful for tweaking environment-specific values (e.g., instance sizes)."
   overrides: Map
+}
+
+"Reset an instance to INITIALIZED, clearing all of its Terraform\/OpenTofu state locks. Optionally also deletes the remote IaC state files."
+input OrphanInstanceInput {
+  "When true, permanently deletes the instance's Terraform\/OpenTofu state files. The next deployment will provision from scratch. Cannot be undone."
+  deleteState: Boolean
 }
 
 """
@@ -7404,8 +7564,14 @@ type Environment {
   "Whether this environment can be safely deleted. Check `constraints` for blocking conditions."
   deletable: Deletable!
 
-  "The realized infrastructure blueprint showing deployed instances and their connections in this environment."
-  blueprint: EnvironmentBlueprint
+  "Infrastructure deployed in this environment."
+  instances: [Instance!]!
+
+  "Runtime wiring between deployed instances in this environment."
+  connections: [Connection!]!
+
+  "The realized infrastructure for this environment showing deployed instances and their connections."
+  blueprint: EnvironmentBlueprint @deprecated(reason: "Use the top-level `instances` and `connections` fields on `Environment` instead.")
 
   """
   Paginated list of default resources for this environment.
@@ -7672,8 +7838,14 @@ type Project {
     cursor: Cursor
   ): EnvironmentsPage
 
-  "The infrastructure blueprint defining this project's components and their connections."
-  blueprint: Blueprint
+  "Components that make up the project's infrastructure architecture."
+  components: [Component!]!
+
+  "Links between components that wire one component's output to another's input."
+  links: [Link!]!
+
+  "The architectural design of components and links for this project."
+  blueprint: Blueprint @deprecated(reason: "Use the top-level `components` and `links` fields on `Project` instead.")
 }
 
 type ProjectsPage {
@@ -7954,6 +8126,14 @@ type Bundle {
   "Timestamp when this bundle version was last modified (UTC)."
   updatedAt: DateTime!
 
+  """
+  The full set of attributes that ABAC policy evaluation sees for this
+  bundle version — the auto-injected `md-*` system attributes (today:
+  `md-id`, `md-repo`, `md-bundle`). Bundle versions are immutable
+  snapshots and do not carry user attributes of their own.
+  """
+  effectiveAttributes: Map!
+
   "OCI repository name for this bundle (e.g., `aws-aurora-postgres`). Equivalent to `name`."
   repo: String!
 
@@ -7975,6 +8155,17 @@ Repository names are unique within an organization and follow a lowercase
 kebab-case convention (e.g., `aws-aurora-postgres`, `kubernetes-cluster`).
 """
 scalar OciRepoName
+
+"""
+The kind of artifact stored in an OCI repository.
+
+Each value maps to a concrete [OCI artifact type](https://github.com/opencontainers/image-spec/blob/main/manifest.md#guidelines-for-artifact-usage)
+media string written to the manifest. Today only `BUNDLE` is supported; additional types will be added as the catalog expands.
+"""
+enum OciArtifactType {
+  "Massdriver bundle (`application\/vnd.massdriver.bundle.v1+json`)."
+  BUNDLE
+}
 
 """
 Fields available for ordering the OCI repositories list.
@@ -8013,6 +8204,9 @@ enum OciFilesSortField {
 
 "Create a new OCI repository in your organization's catalog. Repositories must exist before any version can be published to them."
 input CreateOciRepoInput {
+  "OCI artifact type stored in this repository. Today only `BUNDLE` is accepted; additional types will be added as Massdriver expands the catalog."
+  artifactType: OciArtifactType!
+
   "Key-value attributes for this repository. Used by ABAC policies for fine-grained access control. Reserved `md-*` keys are rejected. Must conform to the organization's custom attributes for the repo scope."
   attributes: Map
 
@@ -8629,6 +8823,43 @@ input OciRepoNameFilter {
 }
 
 """
+Filter by a specific bundle version using the `name@version` composite identifier.
+
+Values use the same `BundleId` scalar accepted by the `bundle` query, so any of
+these forms work:
+
+| Form | Example | Resolves to |
+|------|---------|-------------|
+| Exact semver | `aws-aurora-postgres@1.2.3` | That exact published release |
+| Tilde channel | `aws-aurora-postgres@~1.2` | Latest patch in `1.2.x` (stable) |
+| Tilde + dev | `aws-aurora-postgres@~1+dev` | Latest in `1.x.x` including dev builds |
+| Latest | `aws-aurora-postgres@latest` | Newest stable release |
+| Latest + dev | `aws-aurora-postgres@latest+dev` | Newest release including dev builds |
+
+Channels and exact versions both resolve to a concrete `bundle_release_id` at
+query time; the result includes only records pinned to that release. To match
+every version of a bundle, use `ociRepoName` instead.
+
+Returns an empty page (not an error) when the value resolves to no published
+release in your organization.
+
+```graphql
+# Instances of postgres v1.2.3 specifically
+{ "bundleId": { "eq": "aws-aurora-postgres@1.2.3" } }
+
+# Instances on the latest 1.x.x stable release
+{ "bundleId": { "eq": "aws-aurora-postgres@~1" } }
+```
+"""
+input BundleIdFilter {
+  "Return only results pinned to the bundle release this value resolves to."
+  eq: BundleId
+
+  "Return results pinned to any of the bundle releases these values resolve to."
+  in: [BundleId!]
+}
+
+"""
 Filter by a datetime field.
 
 All operators within a single filter are combined with **AND**, which makes it
@@ -8809,7 +9040,7 @@ scalar Conditions
 "An RFC 4122 UUID, formatted as a 36-character lowercase hex string with hyphens (e.g., `550e8400-e29b-41d4-a716-446655440000`)."
 scalar UUID
 
-"A JSON object (key-value map) encoded as a string. Accepts only `{}` objects — arrays, strings, numbers, booleans, and `null` are rejected. Pass values as a JSON-encoded string, e.g. `{\"key\": \"value\"}`. Used for dynamic configuration data like integration configs, parameter overrides, and schemas."
+"A JSON object (key-value map) encoded as a string. Accepts only `{}` objects — arrays, strings, numbers, and booleans are rejected. Pass values as a JSON-encoded string, e.g. `{\"key\": \"value\"}`. Used for dynamic configuration data like integration configs, parameter overrides, and schemas."
 scalar Map
 
 type ValidationOption {

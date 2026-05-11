@@ -1,0 +1,100 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: bundle-id-filter
+title: BundleIdFilter
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Filter by a specific bundle version using the `name@version` composite identifier.
+
+Values use the same `BundleId` scalar accepted by the `bundle` query, so any of
+these forms work:
+
+| Form | Example | Resolves to |
+|------|---------|-------------|
+| Exact semver | `aws-aurora-postgres@1.2.3` | That exact published release |
+| Tilde channel | `aws-aurora-postgres@~1.2` | Latest patch in `1.2.x` (stable) |
+| Tilde + dev | `aws-aurora-postgres@~1+dev` | Latest in `1.x.x` including dev builds |
+| Latest | `aws-aurora-postgres@latest` | Newest stable release |
+| Latest + dev | `aws-aurora-postgres@latest+dev` | Newest release including dev builds |
+
+Channels and exact versions both resolve to a concrete `bundle_release_id` at
+query time; the result includes only records pinned to that release. To match
+every version of a bundle, use `ociRepoName` instead.
+
+Returns an empty page (not an error) when the value resolves to no published
+release in your organization.
+
+```graphql
+# Instances of postgres v1.2.3 specifically
+{ "bundleId": { "eq": "aws-aurora-postgres@1.2.3" } }
+
+# Instances on the latest 1.x.x stable release
+{ "bundleId": { "eq": "aws-aurora-postgres@~1" } }
+```
+
+
+```graphql
+input BundleIdFilter {
+  eq: BundleId
+  in: [BundleId!]
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>BundleIdFilter.<b>eq</b></code>](#eq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BundleId</b></code>](/api/graphql/types/scalars/bundle-id.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#eq\} 
+Return only results pinned to the bundle release this value resolves to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundleIdFilter.<b>in</b></code>](#in)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[BundleId!]</b></code>](/api/graphql/types/scalars/bundle-id.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#in\} 
+Return results pinned to any of the bundle releases these values resolve to.
+
+
+
+
+
+
+### Member Of
+
+[`DeploymentsFilter`](/api/graphql/types/inputs/deployments-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`InstanceAlarmsFilter`](/api/graphql/types/inputs/instance-alarms-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`InstancesFilter`](/api/graphql/types/inputs/instances-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

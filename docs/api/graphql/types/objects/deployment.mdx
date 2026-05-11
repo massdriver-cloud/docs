@@ -66,6 +66,7 @@ type Deployment {
   elapsedTime: Int!
   deployedBy: String
   instance: Instance
+  effectiveAttributes: Map!
   logs: [DeploymentLog!]!
 }
 ```
@@ -125,6 +126,21 @@ The name of the user or service account that initiated this deployment. Null if 
 
 #### [<code style={{ fontWeight: 'normal' }}>Deployment.<b>instance</b></code>](#instance)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Instance</b></code>](/api/graphql/types/objects/instance.mdx) <Badge class="badge badge--secondary " text="object"/> \{#instance\} 
 The instance that this deployment operates on.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Deployment.<b>effectiveAttributes</b></code>](#effective-attributes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#effective-attributes\} 
+The full attribute map the authorization system evaluates policies against for
+this deployment — the parent instance's effective attributes (project &#x003E;
+environment &#x003E; component cascade) with the deployment's own `md-id` overlaid.
+
+System attributes always present on a deployment:
+- `md-id` — the deployment's UUID
+- `md-project` — the project's identifier
+- `md-environment` — the environment's local identifier
+- `md-component` — the component's local identifier
+- `md-instance` — the instance's identifier
+- `md-repo` — the bundle's repo name
+- `md-bundle` — `"{bundle}@{version}"` of the resolved release
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Deployment.<b>logs</b></code>](#logs)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[DeploymentLog!]!</b></code>](/api/graphql/types/objects/deployment-log.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#logs\} 

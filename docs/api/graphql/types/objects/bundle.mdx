@@ -79,6 +79,7 @@ type Bundle {
   changelog: String
   createdAt: DateTime!
   updatedAt: DateTime!
+  effectiveAttributes: Map!
   repo: String!
   dependencies: [BundleDependency!]!
   resources: [BundleResource!]!
@@ -136,6 +137,13 @@ Timestamp when this bundle version was first published (UTC).
 
 #### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
 Timestamp when this bundle version was last modified (UTC).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>effectiveAttributes</b></code>](#effective-attributes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#effective-attributes\} 
+The full set of attributes that ABAC policy evaluation sees for this
+bundle version — the auto-injected `md-*` system attributes (today:
+`md-id`, `md-repo`, `md-bundle`). Bundle versions are immutable
+snapshots and do not carry user attributes of their own.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>repo</b></code>](#repo)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#repo\} 

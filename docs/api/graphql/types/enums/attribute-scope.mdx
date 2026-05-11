@@ -44,10 +44,11 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 The resource level where a custom attribute applies.
 
-Attributes set at hierarchy scopes (`PROJECT`, `ENVIRONMENT`, `COMPONENT`, `INSTANCE`) cascade
-downward — an attribute set at `PROJECT` is inherited by all environments and instances in
-that project. `REPO`-scoped attributes apply to OCI repositories; the bundle name is propagated
-to components, instances, deployments, and resources via the `md-repo` system attribute.
+Attributes set at hierarchy scopes (`PROJECT`, `ENVIRONMENT`, `COMPONENT`) cascade
+downward — an attribute set at `PROJECT` is inherited by all environments, instances,
+deployments, and resources in that project. `REPO`-scoped attributes apply to OCI
+repositories; the bundle name is propagated to components, instances, deployments,
+and resources via the `md-repo` system attribute.
 
 
 ```graphql
@@ -55,7 +56,6 @@ enum AttributeScope {
   PROJECT
   ENVIRONMENT
   COMPONENT
-  INSTANCE
   REPO
 }
 ```
@@ -75,10 +75,6 @@ Attribute is set on individual environments.
 
 #### [<code style={{ fontWeight: 'normal' }}>AttributeScope.<b>COMPONENT</b></code>](#component) \{#component\} 
 Attribute is set on blueprint components (design-time).
-
-
-#### [<code style={{ fontWeight: 'normal' }}>AttributeScope.<b>INSTANCE</b></code>](#instance) \{#instance\} 
-Attribute is set on deployed instances (run-time).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AttributeScope.<b>REPO</b></code>](#repo) \{#repo\} 
