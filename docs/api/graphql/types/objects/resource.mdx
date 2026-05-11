@@ -67,6 +67,8 @@ type Resource {
   instance: Instance
   formats: [String!]!
   payload: Map
+  attributes: Map!
+  effectiveAttributes: Map!
   createdAt: DateTime!
   updatedAt: DateTime!
   connections(
@@ -140,6 +142,19 @@ rendered content.
 The resource's structured payload. Fields marked `$md.sensitive` in the resource type's
 schema are masked as `[SENSITIVE]`. Use `exportResource` to retrieve an unmasked copy —
 that operation is recorded in the audit log.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Resource.<b>attributes</b></code>](#attributes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#attributes\} 
+Key-value attributes assigned directly to this resource, used by ABAC
+policies. Reserved keys starting with `md-` are auto-injected by the system
+and excluded from this map — see `effectiveAttributes` for the merged view.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Resource.<b>effectiveAttributes</b></code>](#effective-attributes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#effective-attributes\} 
+The full set of attributes that ABAC policy evaluation sees for this
+resource — its own attributes plus user attributes cascaded from the
+instance chain (project, environment, component, instance) and the
+resource type, plus auto-injected `md-*` system attributes.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Resource.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 

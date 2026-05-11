@@ -43,8 +43,8 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 The thing a grant is sharing — exactly one of an OCI repo or a resource. The
-caller authoring the grant must have `repo:update` (for repo grants) or
-`resource:update` (for resource grants) on this source.
+caller authoring the grant must have `repo:grant` (for repo grants) or
+`resource:grant` (for resource grants) on this source.
 
 
 ```graphql

@@ -58,10 +58,13 @@ stateDiagram-v2
   APPROVED --> RUNNING: "Execution starts"
   RUNNING --> COMPLETED: "Success"
   RUNNING --> FAILED: "Error"
+  PENDING --> ABORTED: "abortDeployment"
+  APPROVED --> ABORTED: "abortDeployment"
+  RUNNING --> ABORTED: "abortDeployment"
 ```
 
-Once a deployment reaches a terminal state (`COMPLETED`, `FAILED`, or
-`REJECTED`), it cannot transition again.
+Once a deployment reaches a terminal state (`COMPLETED`, `FAILED`,
+`REJECTED`, or `ABORTED`), it cannot transition again.
 
 
 ```graphql
@@ -73,6 +76,7 @@ enum DeploymentStatus {
   RUNNING
   COMPLETED
   FAILED
+  ABORTED
 }
 ```
 
@@ -107,6 +111,10 @@ All infrastructure changes were applied successfully.
 
 #### [<code style={{ fontWeight: 'normal' }}>DeploymentStatus.<b>FAILED</b></code>](#failed) \{#failed\} 
 The deployment encountered an error. Check deployment logs for details.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentStatus.<b>ABORTED</b></code>](#aborted) \{#aborted\} 
+An operator aborted the deployment via `abortDeployment`. Terminal. The instance's infrastructure state is left as it was at the moment of abort.
 
 
 

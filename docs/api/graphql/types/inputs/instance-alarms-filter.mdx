@@ -54,6 +54,7 @@ input InstanceAlarmsFilter {
   componentId: IdFilter
   instanceId: IdFilter
   ociRepoName: OciRepoNameFilter
+  bundleId: BundleIdFilter
 }
 ```
 
@@ -79,7 +80,11 @@ Return only alarms for the specified instance(s).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>InstanceAlarmsFilter.<b>ociRepoName</b></code>](#oci-repo-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoNameFilter</b></code>](/api/graphql/types/inputs/oci-repo-name-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#oci-repo-name\} 
-Return only alarms on instances of the given bundle (e.g., `aws-rds`).
+Return only alarms on instances of the given bundle (e.g., `aws-rds`). Matches every version published to the repo.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InstanceAlarmsFilter.<b>bundleId</b></code>](#bundle-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BundleIdFilter</b></code>](/api/graphql/types/inputs/bundle-id-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#bundle-id\} 
+Return only alarms on instances pinned to a specific bundle version (`name@version`) or release channel (`name@~1`, `name@latest`). Use `ociRepoName` instead to match every version of a bundle.
 
 
 

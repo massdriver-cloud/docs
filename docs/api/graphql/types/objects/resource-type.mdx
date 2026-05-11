@@ -64,6 +64,7 @@ type ResourceType {
   schema: Map!
   uiSchema: Map!
   instructions: [ImportInstruction!]!
+  effectiveAttributes: Map!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -114,6 +115,13 @@ Step-by-step import instructions, typically one entry per workflow (CLI, console
 Each entry is rendered as its own tab or section so users can pick the workflow they
 prefer when importing an existing resource. Returns an empty list when the resource
 type does not provide instructions.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ResourceType.<b>effectiveAttributes</b></code>](#effective-attributes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#effective-attributes\} 
+The auto-injected `md-*` system attributes for this resource type
+(today: `md-id`). Resource types do not yet carry user-settable
+attributes; user attributes will arrive when resource types move to
+OCI-hosted distribution.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ResourceType.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 

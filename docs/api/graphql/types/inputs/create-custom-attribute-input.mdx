@@ -68,7 +68,7 @@ Whether this attribute must be set when creating a resource at the specified sco
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CreateCustomAttributeInput.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AttributeScope!</b></code>](/api/graphql/types/enums/attribute-scope.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#scope\} 
-The resource level where this attribute is set. Hierarchy scopes (PROJECT, ENVIRONMENT, COMPONENT, INSTANCE) cascade values downward. REPO scope applies to OCI repositories; the bundle name propagates to derived components, instances, deployments, and resources via the md-repo system attribute.
+The resource level where this attribute is set. Hierarchy scopes (PROJECT, ENVIRONMENT, COMPONENT) cascade values downward to instances, deployments, and resources. REPO scope applies to OCI repositories; the bundle name propagates to derived components, instances, deployments, and resources via the md-repo system attribute.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CreateCustomAttributeInput.<b>values</b></code>](#values)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#values\} 

@@ -54,6 +54,7 @@ input InstancesFilter {
   environmentId: IdFilter
   status: InstanceStatusFilter
   ociRepoName: OciRepoNameFilter
+  bundleId: BundleIdFilter
   paramDimension: [ParamDimensionFilter!]
 }
 ```
@@ -76,7 +77,11 @@ Match by lifecycle status (e.g., `PROVISIONED`, `FAILED`).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>InstancesFilter.<b>ociRepoName</b></code>](#oci-repo-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoNameFilter</b></code>](/api/graphql/types/inputs/oci-repo-name-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#oci-repo-name\} 
-Match by the OCI repository name of the underlying bundle.
+Match by the OCI repository name of the underlying bundle. Returns every version published to the repo.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InstancesFilter.<b>bundleId</b></code>](#bundle-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BundleIdFilter</b></code>](/api/graphql/types/inputs/bundle-id-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#bundle-id\} 
+Match by a specific bundle version (`name@version`) or release channel (`name@~1`, `name@latest`). Use `ociRepoName` instead to match every version of a bundle.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>InstancesFilter.<b>paramDimension</b></code>](#param-dimension)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ParamDimensionFilter!]</b></code>](/api/graphql/types/inputs/param-dimension-filter.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#param-dimension\} 

@@ -76,7 +76,9 @@ type Project {
     sort: EnvironmentsSort
     cursor: Cursor
   ): EnvironmentsPage
-  blueprint: Blueprint
+  components: [Component!]!
+  links: [Link!]!
+  blueprint: Blueprint @deprecated
 }
 ```
 
@@ -136,9 +138,29 @@ How to sort results. Defaults to alphabetical by name.
 Cursor from a previous page to fetch the next set of results.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Project.<b>blueprint</b></code>](#blueprint)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Blueprint</b></code>](/api/graphql/types/objects/blueprint.mdx) <Badge class="badge badge--secondary " text="object"/> \{#blueprint\} 
-The infrastructure blueprint defining this project's components and their connections.
+#### [<code style={{ fontWeight: 'normal' }}>Project.<b>components</b></code>](#components)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Component!]!</b></code>](/api/graphql/types/objects/component.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#components\} 
+Components that make up the project's infrastructure architecture.
 
+
+#### [<code style={{ fontWeight: 'normal' }}>Project.<b>links</b></code>](#links)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Link!]!</b></code>](/api/graphql/types/objects/link.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#links\} 
+Links between components that wire one component's output to another's input.
+
+
+ 
+
+<Details dataOpen="Hide deprecated" dataClose="Show deprecated">
+
+#### [<code style={{ fontWeight: 'normal' }}>Project.<b>blueprint</b></code>](#blueprint)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Blueprint</b></code>](/api/graphql/types/objects/blueprint.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="object"/> \{#blueprint\} 
+:::warning[DEPRECATED]
+
+Use the top-level `components` and `links` fields on `Project` instead.
+
+:::
+
+The architectural design of components and links for this project.
+
+
+</Details>
 
 
 

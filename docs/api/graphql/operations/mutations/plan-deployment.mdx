@@ -1,0 +1,94 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: plan-deployment
+title: planDeployment
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Run a fresh `PLAN` against an existing deployment's params.
+
+The source deployment's params are copied (without `md_metadata`) onto a new
+deployment with action `PLAN`, which runs as a dry-run preview. Nothing on
+the source deployment, the instance's saved configuration, or any other
+deployment is mutated. The plan's `message` is synthesized from the source
+so the preview is traceable back to what it was run against.
+
+The source can be in any status — useful for previewing a proposal before
+approving, replaying a completed deployment, or scoping out a rollback
+against an older snapshot. Authorization is checked with `instance:plan` on
+the source's instance.
+
+```graphql
+mutation {
+  planDeployment(
+    organizationId: "my-org"
+    id: "550e8400-e29b-41d4-a716-446655440000"
+  ) {
+    result { id status action }
+    successful
+    messages { field message }
+  }
+}
+```
+
+
+```graphql
+planDeployment(
+  organizationId: ID!
+  id: UUID!
+): DeploymentPayload
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>planDeployment.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>planDeployment.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UUID!</b></code>](/api/graphql/types/scalars/uuid.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+The deployment whose params should be planned.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>DeploymentPayload</b></code>](/api/graphql/types/objects/deployment-payload.mdx) <Badge class="badge badge--secondary " text="object"/>

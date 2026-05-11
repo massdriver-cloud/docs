@@ -68,7 +68,9 @@ type Environment {
   project: Project
   cost: CostSummary!
   deletable: Deletable!
-  blueprint: EnvironmentBlueprint
+  instances: [Instance!]!
+  connections: [Connection!]!
+  blueprint: EnvironmentBlueprint @deprecated
   defaults(
     cursor: Cursor
   ): EnvironmentDefaultsPage
@@ -127,8 +129,12 @@ Aggregated cloud-provider cost metrics for all instances in this environment.
 Whether this environment can be safely deleted. Check `constraints` for blocking conditions.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>blueprint</b></code>](#blueprint)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EnvironmentBlueprint</b></code>](/api/graphql/types/objects/environment-blueprint.mdx) <Badge class="badge badge--secondary " text="object"/> \{#blueprint\} 
-The realized infrastructure blueprint showing deployed instances and their connections in this environment.
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>instances</b></code>](#instances)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Instance!]!</b></code>](/api/graphql/types/objects/instance.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#instances\} 
+Infrastructure deployed in this environment.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>connections</b></code>](#connections)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Connection!]!</b></code>](/api/graphql/types/objects/connection.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#connections\} 
+Runtime wiring between deployed instances in this environment.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Environment.<b>defaults</b></code>](#defaults)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EnvironmentDefaultsPage</b></code>](/api/graphql/types/objects/environment-defaults-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#defaults\} 
@@ -140,6 +146,22 @@ per resource type is allowed.
 ##### [<code style={{ fontWeight: 'normal' }}>Environment.defaults.<b>cursor</b></code>](#environment-defaults-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#environment-defaults-cursor\} 
 Cursor from a previous page to fetch the next set of results.
 
+
+ 
+
+<Details dataOpen="Hide deprecated" dataClose="Show deprecated">
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>blueprint</b></code>](#blueprint)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EnvironmentBlueprint</b></code>](/api/graphql/types/objects/environment-blueprint.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="object"/> \{#blueprint\} 
+:::warning[DEPRECATED]
+
+Use the top-level `instances` and `connections` fields on `Environment` instead.
+
+:::
+
+The realized infrastructure for this environment showing deployed instances and their connections.
+
+
+</Details>
 
 
 

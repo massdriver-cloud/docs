@@ -47,7 +47,8 @@ Delete an alarm registration.
 Removes the alarm and any recorded state transitions. The underlying cloud
 provider alarm is unaffected.
 
-Requires `environment:update` on the alarm's environment.
+Requires `environment:update` on the alarm's environment, or the
+deployment subject that owns the underlying instance.
 
 
 ```graphql
