@@ -5,20 +5,17 @@ title: Deployments
 sidebar_label: Deployments
 ---
 
-When you change the configuration of a piece of infrastructure in Massdriver and ship it, the system creates a **deployment** — a single, queued attempt to make the running infrastructure match the configuration you saved. Deployments are immutable records: they capture exactly what was tried, with what params, when, and what happened.
+A **deployment** is a queued attempt to make running infrastructure match an [instance's](/concepts/components-instances-deployments#instances) saved configuration. Deployments are immutable records: they capture what was tried, with what params, when, and what happened.
 
-This page walks through how params get from your hands onto the queue, how the queue drains, and what each deployment status means.
+This page covers how params reach the queue, how the queue drains, and what each deployment status means.
 
-![deployments](./img/deployments.gif)
+![Deployments](./img/deployments.gif)
 
 ## Instances and deployments
 
-Massdriver tracks two things separately:
+An instance has a `params` field that holds its current configuration. A deployment carries a frozen snapshot of `instance.params` from the moment it was created, plus the bundle version to run.
 
-- **The instance** — a deployed piece of infrastructure in an environment (a database, a Kubernetes cluster, a Lambda function). It has a `params` field that holds its current configuration.
-- **A deployment** — a queued change against that instance. It carries a frozen snapshot of `instance.params` from the moment it was created, plus the bundle version to run.
-
-Edit the instance and you've changed what the next deployment will use. Create a deployment and you've pinned a copy of the current config and asked the system to apply it.
+> Editing an instance changes what the next deployment will use. Creating a deployment pins a copy of the current configuration and asks the system to apply it.
 
 ```mermaid
 flowchart LR
@@ -26,15 +23,13 @@ flowchart LR
     D --> A[Apply against<br/>real infrastructure]
 ```
 
-> **Coming from Terraform?** `instance.params` is like your `terraform.tfvars`. A deployment is one `terraform apply` against a pinned plan. Real cloud resources are like your `tfstate`.
+## Two ways to deploy a change
 
-## Two ways to advance the configuration
-
-Massdriver gives you two ways to ship a change. The difference is **when `instance.params` is updated** and **who has to sign off** before the apply runs.
+Massdriver supports two ways to deploy a change to an instance. The difference is **when `instance.params` is updated** and **whether human approval is required** before the apply runs.
 
 ### Direct — `createDeployment`
 
-`instance.params` is overwritten immediately, and the deployment goes straight into the queue at `PENDING`.
+`instance.params` is overwritten immediately and the deployment enters the queue at `PENDING`.
 
 ```mermaid
 flowchart LR
@@ -42,11 +37,11 @@ flowchart LR
     B --> C[Deployment PENDING] --> D[RUNNING] --> E[COMPLETED]
 ```
 
-Use when you have authority to ship directly.
+Use this when the change does not require review.
 
 ### Propose-and-approve — `proposeDeployment` + `approveDeployment`
 
-The proposed params live only on the deployment record while it sits in `PROPOSED`. `instance.params` is untouched. On approval, the snapshot is copied into `instance.params` and the deployment joins the queue. On rejection, neither moves.
+The proposed params live only on the deployment record while it sits in `PROPOSED`. `instance.params` is untouched. On approval, the snapshot is copied into `instance.params` and the deployment enters the queue at `APPROVED`. On rejection, neither moves.
 
 ```mermaid
 flowchart LR
@@ -55,13 +50,13 @@ flowchart LR
     B -->|rejectDeployment| G[REJECTED]
 ```
 
-Use when a change needs another set of eyes — production environments, tagged resources requiring elevated approval, propose/on-call-approve workflows.
+Use this when a change requires review before applying — for example, production environments or tagged resources requiring elevated approval.
 
-`PLAN` deployments aren't part of this flow; a plan is already a dry-run, so there's nothing to gate.
+> `PLAN` deployments are not part of the propose-and-approve flow. A plan is a non-destructive preview, so it does not require approval.
 
 ## The lifecycle
 
-Once a deployment is created, it walks through a state machine. Direct pushes enter at `PENDING`; proposals enter at `PROPOSED`.
+A deployment walks through a state machine after creation. Direct pushes enter at `PENDING`; proposals enter at `PROPOSED`.
 
 ```mermaid
 stateDiagram-v2
@@ -80,20 +75,20 @@ stateDiagram-v2
 
 | Status | Meaning |
 |---|---|
-| `PROPOSED` | Awaiting human approval. Doesn't hold a queue slot. |
+| `PROPOSED` | Awaiting human approval. Does not hold a queue slot. |
 | `REJECTED` | Proposal denied. Terminal. |
 | `APPROVED` | Proposal accepted. `instance.params` advanced. Queued. |
 | `PENDING` | Queued, waiting its turn. |
-| `RUNNING` | The provisioner is applying changes right now. |
+| `RUNNING` | The provisioner is applying changes. |
 | `COMPLETED` | Apply succeeded. Infrastructure matches the snapshot. |
-| `FAILED` | Apply errored. See [What happens when a deployment fails](#what-happens-when-a-deployment-fails) below. |
+| `FAILED` | Apply errored. See [What happens when a deployment fails](#what-happens-when-a-deployment-fails). |
 | `ABORTED` | Operator cancelled. |
 
 `COMPLETED`, `FAILED`, `REJECTED`, and `ABORTED` are terminal. To try again, create a new deployment.
 
 ## The queue
 
-Every instance has its own queue. **Only one deployment per instance can be `RUNNING` at a time.**
+Every instance has its own queue. Only one deployment per instance can be `RUNNING` at a time.
 
 ```mermaid
 flowchart TB
@@ -104,94 +99,89 @@ flowchart TB
         A1[APPROVED]
         P2[PENDING]
     end
-    PR[PROPOSED<br/>deployments] -. don't hold slots .-> Q
+    PR[PROPOSED<br/>deployments] -. do not hold slots .-> Q
     PR -.->|approveDeployment| A1
     R -->|finishes| N[Worker picks next]
 ```
 
-- **`PROPOSED` is outside the queue.** Open proposals don't block direct-push work. Approval is what puts a proposal in line.
-- **`APPROVED` and `PENDING` drain together** in creation order. Approval gives no priority.
-- **Per-instance.** Two instances in the same environment deploy independently.
-- **No rebasing of queued items.** Each queued deployment carries the snapshot it captured at enqueue, even if earlier items in the queue change the infrastructure.
-- **`PLAN` takes a slot.** A plan is still a real deployment record.
+- `PROPOSED` deployments are outside the queue. Open proposals do not block direct-push work. Approval moves a proposal into the queue.
+- `APPROVED` and `PENDING` drain together in creation order. Approval gives no priority.
+- The queue is per-instance. Two instances in the same environment deploy independently.
+- Queued deployments are not rebased. Each queued deployment carries the snapshot it captured at enqueue, even if earlier items in the queue change the infrastructure.
+- `PLAN` deployments take a queue slot. A plan is a real deployment record.
 
 ## What gets snapshotted
 
-When a deployment is created, Massdriver freezes everything it needs for a deterministic apply.
-
-**Snapshotted into the deployment:**
+When a deployment is created, the following are frozen into the deployment record:
 
 - `params` — the instance's configuration values
-- `connection_params` — resolved connection wire-up (see [Connections](/concepts/connections))
+- `connection_params` — the resolved [connections](/concepts/connections)
 - `version` — the bundle release to run
-- `md_metadata` — system metadata (instance name, tags, the deployment's id for observability)
+- `md_metadata` — system metadata (instance name, tags, deployment id)
 
-**Looked up live at run time:**
+The following are looked up at run time, not snapshotted:
 
-- **Secrets** — encrypted at rest, fetched fresh on dispatch. Rotating a secret takes effect on the *next* deployment, without re-queuing.
+- **Secrets** — encrypted at rest and fetched fresh on dispatch. Rotating a secret takes effect on the next deployment without re-queuing.
 - **Bundle release contents** — the snapshot pins the version string; the bundle artifact is pulled from the registry at run time. Bundle releases are immutable once published, so the result is still deterministic.
 
-You can audit any past deployment via its `params` field, or compare two deployments side-by-side with the deployment comparison view.
+Past deployments can be audited via the `params` field. Two deployments can be compared side-by-side with the deployment comparison view.
 
-![deployment comparison](./img/deployments-comparison.gif)
+![Deployment Comparison](./img/deployments-comparison.gif)
 
 ## What happens when a deployment fails
 
-The apply step is non-transactional, same as `terraform apply`. The provisioner makes a series of API calls to one or more cloud providers, and any of those can fail partway through. There's no way to atomically roll back a half-provisioned RDS instance + half-attached IAM role + half-uploaded S3 bucket across three providers' APIs.
+The apply step is non-transactional. The provisioner makes a series of API calls across one or more cloud providers, and any of those calls can fail partway through. Cloud APIs do not support atomic rollback across providers.
 
 When a `RUNNING` deployment transitions to `FAILED`:
 
-- **`instance.params` has already moved.** It reflects what you asked for.
-- **Infrastructure is in whatever shape the provisioner reached** before the error.
-- **There is no rollback mutation.** Same reason `terraform apply` doesn't have `--undo`.
+- `instance.params` has already moved to reflect the requested configuration.
+- Real infrastructure is in whatever state the provisioner reached before the error.
+- There is no rollback mutation.
 
-To recover, edit `instance.params` to something that can reconcile cleanly and deploy again. To revert, write the previous params back to `instance.params` and create a new deployment — analogous to reverting a commit and re-applying.
+To recover, edit `instance.params` to a configuration that can reconcile cleanly and create a new deployment. To revert, write the previous params back to `instance.params` and create a new deployment.
 
-`ABORTED` is the same shape: it stops further work but doesn't unwind work already done.
+`ABORTED` behaves the same way: it stops further work but does not unwind work already done.
 
-## Things that surprise people
+## Common behaviors to know
 
-- **Editing instance params after queueing doesn't affect the queued deployment.** Only the next one. To pick up your edit on a queued deployment, abort it and create a new one.
-- **A failed deployment doesn't roll anything back.** `instance.params` advanced; real infrastructure is partial.
-- **`PROPOSED` doesn't move `instance.params`.** Only `approveDeployment` writes the proposed snapshot back to the instance.
-- **`PROPOSED` deployments don't hold queue slots.** Stacking proposals doesn't block anything.
-- **The queue is strictly per-instance.** Long deployments on one instance don't slow down others.
-- **`PLAN` is a real deployment.** It takes a slot and produces a record.
-- **`ABORTED` is not "undo."** It stops further work; it doesn't unwind.
+- Editing `instance.params` after a deployment has been queued does not affect that queued deployment. The edit only affects deployments created afterward. To pick up an edit on an already-queued deployment, abort it and create a new one.
+- A failed deployment does not roll anything back. `instance.params` has advanced; real infrastructure is partial.
+- `PROPOSED` does not move `instance.params`. Only `approveDeployment` writes the proposed snapshot to the instance.
+- `PROPOSED` deployments do not hold queue slots. Open proposals do not block direct-push work.
+- The queue is strictly per-instance. Long deployments on one instance do not slow others down.
+- `PLAN` is a real deployment. It takes a queue slot and produces a record.
+- `ABORTED` is not undo. It stops further work but does not unwind work already done.
 
 ## Compared to a merge queue
 
-If you've used a merge queue with apply-before-merge semantics (GitHub merge queue, Bors, Aviator), you'll notice the shapes are similar — a per-target queue, snapshotted entries, an optional review step — but the failure semantics are reversed:
+Massdriver's deployment queue resembles a merge queue with apply-before-merge semantics (GitHub merge queue, Bors, Aviator) in shape — a per-target queue, snapshotted entries, an optional review step — but the failure semantics are reversed.
 
 | | Merge queue with apply-before-merge | Massdriver deployment |
 |---|---|---|
 | What runs first | The check ("apply"). Main only advances if the check passes. | Desired state advances. The apply runs against it. |
 | Failed entry | Main is unchanged. The PR drops out of the queue. | `instance.params` has already moved. Real infrastructure is in a partial state. |
-| Recovery | None needed — nothing changed. | Edit params and deploy again, or write previous params back and deploy. |
-| Why it works | Git is transactional. The "world" only changes at merge. | Cloud APIs aren't transactional. The "world" changes as the apply runs. |
+| Recovery | None needed — nothing changed. | Edit params and create a new deployment. |
+| Why it works | Git is transactional. The "world" only changes at merge. | Cloud APIs are not transactional. The "world" changes as the apply runs. |
 
-**The honest answer to "why doesn't Massdriver work like a merge queue":** because apply-before-merge isn't possible for infrastructure.
+Apply-before-merge is not possible for infrastructure. A merge queue can speculatively integrate and test PRs before merging because tests run against a sandboxed copy of the world (a CI runner) and merging is atomic. Infrastructure provisioning has neither property:
 
-A merge queue can speculatively integrate and test PRs before merging because tests run against a sandbox version of the world (a CI runner) and merging is atomic. Infrastructure has neither property:
+- **There is no sandbox.** The apply is the change. A plan is approximate — many failures (quota limits, IAM evaluation, race conditions with sibling resources, provider bugs) only surface at apply time.
+- **There is no atomic merge.** An apply makes a series of API calls across one or more cloud providers. Each call commits to the world the moment it returns 200. There is no way to undo the half that succeeded if the second half fails.
+- **Applies are slow.** Provisioning an RDS instance or an EKS cluster can take 10–40 minutes. Speculatively integrating a queue of these in parallel is not practical the way it is for CI builds.
 
-- **There's no sandbox.** The apply *is* the change. `terraform plan` is approximate — plenty of failures (quota limits, IAM evaluation, race conditions with sibling resources, provider bugs) only show up at apply time. You can't validate an apply without doing the apply.
-- **There's no atomic merge.** An apply makes a series of API calls across one or more cloud providers. Each call commits to the world the moment it returns 200. There's no way to "uncommit" the half that succeeded if the second half fails.
-- **Applies are slow.** Provisioning an RDS instance or an EKS cluster takes 10–40 minutes. Speculatively integrating a queue of these in parallel isn't realistic the way it is for CI builds.
-
-The merge-queue model is the right tool for code: code changes are reversible, tests are fast and deterministic, and main is transactional. Massdriver's model is the right tool for infrastructure: changes are partially reversible at best, the apply is the only honest test, and the cloud is not transactional.
-
-The trade-off vs. a merge queue: you don't get automatic, clean rollback on failure. What you get in its place is an immutable audit record of every reconcile attempt, per-instance serialization, deterministic snapshots, an optional propose-and-approve gate, and a fast recovery path — fix params, deploy again.
+The trade-off compared to a merge queue: there is no automatic, clean rollback on failure. In its place, Massdriver provides an immutable audit record of every reconcile attempt, per-instance serialization, deterministic snapshots, an optional propose-and-approve gate, and a recovery path — edit params and create a new deployment.
 
 ## API quick reference
 
 | Mutation | Effect on `instance.params` | Deployment status |
 |---|---|---|
-| `createDeployment` | **Overwritten immediately** with the supplied params | `PENDING` |
-| `proposeDeployment` | **Not touched** — params live only on the deployment | `PROPOSED` |
-| `approveDeployment` | **Overwritten** with the proposal's snapshot | `PROPOSED` → `APPROVED` |
+| `createDeployment` | Overwritten immediately with the supplied params | `PENDING` |
+| `proposeDeployment` | Not touched — params live only on the deployment | `PROPOSED` |
+| `approveDeployment` | Overwritten with the proposal's snapshot | `PROPOSED` → `APPROVED` |
 | `rejectDeployment` | Not touched | `PROPOSED` → `REJECTED` |
 | `abortDeployment` | Not touched | `PENDING` / `APPROVED` / `RUNNING` → `ABORTED` |
 
-## See also
+## Related Documentation
 
+- [Components, Instances & Deployments](/concepts/components-instances-deployments) — how deployments fit into the overall lifecycle.
 - [Connections](/concepts/connections) — what `connection_params` resolves from.
