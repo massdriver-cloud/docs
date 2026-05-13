@@ -81,18 +81,19 @@ The following environment variables are injected into the container and provide 
 
 | Variable                          | Description                                                                    |
 |-----------------------------------|--------------------------------------------------------------------------------|
-| `MASSDRIVER_BUNDLE_ID`            | Globally unique identifier for the bundle being deployed.                      |
+| `MASSDRIVER_BUNDLE_ID`            | (Deprecated) Globally unique identifier for the bundle being deployed.                      |
 | `MASSDRIVER_BUNDLE_NAME`          | The name of the bundle being deployed.                                         |
 | `MASSDRIVER_BUNDLE_TYPE`          | (Deprecated) The type of the bundle (`application` or `infrastructure`).       |
 | `MASSDRIVER_BUNDLE_VERSION`       | The version of the bundle being deployed.                                      |
 | `MASSDRIVER_DEPLOYMENT_ACTION`    | Action being executed: `plan`, `provision`, or `decommission`.                 |
 | `MASSDRIVER_DEPLOYMENT_ID`        | Unique identifier for the deployment operation.                                |
-| `MASSDRIVER_MANIFEST_ID`          | Identifier for the component (legacy variable name; component was previously called manifest). |
+| `MASSDRIVER_INSTANCE_ID`          | Unique identifier for the instance being deployed (`api-prod-db`)                                |
+| `MASSDRIVER_MANIFEST_ID`          | (Deprecated) Identifier for the component (legacy variable name; component was previously called manifest). |
 | `MASSDRIVER_ORGANIZATION_ID`      | Identifier for the organization executing the deployment.                      |
-| `MASSDRIVER_PACKAGE_ID`           | Unique identifier for the instance associated with this deployment (legacy variable name). |
-| `MASSDRIVER_PACKAGE_NAME`         | The human-readable name of the instance, e.g. `ecomm-prod-api-0000` (legacy variable name). |
+| `MASSDRIVER_PACKAGE_ID`           | (Deprecated) Unique identifier for the instance associated with this deployment (legacy variable name). |
+| `MASSDRIVER_PACKAGE_NAME`         | (Deprecated) The human-readable name of the instance, e.g. `ecomm-prod-api-0000` (legacy variable name). |
 | `MASSDRIVER_STEP_PATH`            | Path of the current step in the bundle deployment process.                     |
-| `MASSDRIVER_TARGET_MODE`          | Deployment mode (`standard` or `preview`); legacy variable name preserved for backwards compatibility. |
+| `MASSDRIVER_TARGET_MODE`          | (Deprecated) Deployment mode (`standard` or `preview`); legacy variable name preserved for backwards compatibility. |
 | `MASSDRIVER_TOKEN`                | Authentication token for accessing Massdriver APIs or services.                |
 | `MASSDRIVER_URL`                  | Base URL for interacting with Massdriver services.                             |
 
