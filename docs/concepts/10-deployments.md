@@ -92,7 +92,7 @@ Every instance has its own queue. Only one deployment per instance can be `RUNNI
 
 ```mermaid
 flowchart TB
-    subgraph Q[Instance queue — drains in creation order]
+    subgraph Q ["Instance queue — drains in creation order"]
         direction LR
         R[RUNNING]
         P1[PENDING]

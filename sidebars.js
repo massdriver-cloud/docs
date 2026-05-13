@@ -107,6 +107,7 @@ module.exports = {
         "concepts/concepts-resources-and-types",
         "concepts/concepts-projects-and-environments",
         "concepts/concepts-components-instances-deployments",
+        "concepts/concepts-deployments",
         "concepts/concepts-connections",
         "concepts/concepts-organizations",
       ],
