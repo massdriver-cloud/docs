@@ -27,12 +27,17 @@ baseEnvironment: production
 Run the converge:
 
 ```shell
-mass environment preview pr-123 -f preview.yaml
+mass environment preview pr123 -f preview.yaml
 ```
 
-That produces an environment with the identifier `demo-pr-123`, forked from
+That produces an environment with the identifier `demo-pr123`, forked from
 `demo-production`, with every instance seeded from the parent and a deployment
 in flight.
+
+> **Environment identifiers** must match `^[a-z0-9]{1,20}$` — lowercase
+> alphanumeric only, no dashes, up to 20 chars. The full stored identifier is
+> `<project>-<env>` (e.g. `demo-pr123`), where the dashes are *segment
+> separators*, not part of the env identifier itself.
 
 ## What the converge does
 
@@ -210,14 +215,16 @@ jobs:
       - uses: massdriver-cloud/actions/setup@v5
 
       # Converge on every push (open, reopen, synchronize).
+      # Note: env identifiers can't contain dashes, so the PR number runs
+      # straight up against the prefix — `pr42`, not `pr-42`.
       - name: Converge preview env
         if: github.event.action != 'closed'
-        run: mass environment preview "pr-${GITHUB_PR}" -f preview.yaml
+        run: mass environment preview "pr${GITHUB_PR}" -f preview.yaml
 
       # Tear down on close/merge.
       - name: Decommission preview env
         if: github.event.action == 'closed'
-        run: mass environment delete "demo-pr-${GITHUB_PR}"
+        run: mass environment delete "demo-pr${GITHUB_PR}"
 ```
 
 For other CI systems, the pattern is the same: export the relevant env
