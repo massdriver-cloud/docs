@@ -134,9 +134,9 @@ mutation ImportVpc($organizationId: ID!, $resourceTypeId: ID!, $input: CreateRes
 ### cURL
 
 ```bash title="cURL"
-curl 'https://api.massdriver.cloud/api/v1' \
+curl 'https://api.massdriver.cloud/api/v2' \
   -H 'Content-Type: application/json' \
-  -H 'Authorization: Basic <BASE64(org_slug:service_account_secret)>' \
+  -H 'Authorization: Bearer md_xxxxxxxxxxxxxxxxxxxxxxxx' \
   --data @- <<'JSON'
 {
   "query": "mutation ImportVpc($organizationId: ID!, $resourceTypeId: ID!, $input: CreateResourceInput!) { createResource(organizationId: $organizationId, resourceTypeId: $resourceTypeId, input: $input) { successful messages { field message } result { id name origin } } }",

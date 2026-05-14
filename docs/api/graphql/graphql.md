@@ -12,31 +12,31 @@ Welcome to the Massdriver GraphQL API documentation. The API offers a consistent
 
 To use the Massdriver GraphQL API, you'll need to:
 
-1. Authenticate with a service account key (see below)
+1. Authenticate with an access token (see below)
 2. Send requests to the GraphQL endpoint
 3. Use the queries and mutations documented below
 
 ## API Endpoint
 
-The GraphQL API is available at: `https://api.massdriver.cloud/api/v1`
-
-The endpoint path retains `v1` for backwards compatibility — there is one current API and one set of docs.
+The GraphQL API is available at: `https://api.massdriver.cloud/api/v2`
 
 ## Authentication
 
-All API requests require authentication using a **service account key**. Create a service account and obtain a key. [Learn more about service accounts.](/platform-operations/security/service-accounts)
-
-**Authorization header format:**
+All API requests require an `Authorization` header. The recommended scheme is **Bearer authentication with an access token** issued to a service account or user.
 
 ```
-Authorization: Basic BASE64ENCODED(org_slug:service_account.secret)
+Authorization: Bearer md_xxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
-Replace `org_slug` and `service_account.secret` with your actual organization slug and service account secret.
+Access tokens are minted in the Massdriver console. [Learn more about service accounts.](/platform-operations/security/service-accounts)
 
-## GraphQL Playground
+See the [authentication guide](/api/graphql/guides/authentication) for additional schemes (Basic auth for Terraform/OpenTofu state, OAuth session tokens) and client examples.
 
-You can explore and test the API using the [GraphQL Playground](https://api.massdriver.cloud/api/v1/graphiql). The playground uses your logged-in user session and does **not** require a service account key.
+## API Workbench
+
+Explore and run queries interactively against your organization from the **API Workbench** in the Massdriver console — it's the bottom icon in the left sidebar. The workbench uses your active console session, so no token is required.
+
+![API Workbench in the Massdriver console](./img/api-workbench.png)
 
 ## Authorization
 
