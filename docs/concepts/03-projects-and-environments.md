@@ -15,7 +15,7 @@ All environments in the same project will always have the same diagram, but scal
 
 This allows for:
 
-* Running cost-efficient staging or preview environments that have architectural parity with production
+* Running cost-efficient staging or [preview environments](/applications/preview_environments/overview) that have architectural parity with production
 * Managing applications and infrastructure in isolated tenant environments
 * Replicating infrastructure and applications between regions
 
@@ -42,3 +42,4 @@ It can be difficult to figure the differences in configuration between two diffe
 
 - [Getting Started](/getting-started/overview) - Deploy your first infrastructure
 - [Components, Instances & Deployments](/concepts/components-instances-deployments) - The deployment lifecycle
+- [Preview Environments](/applications/preview_environments/overview) - Per-PR clones of an existing environment

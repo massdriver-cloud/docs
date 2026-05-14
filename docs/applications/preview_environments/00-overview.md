@@ -4,39 +4,173 @@ title: Overview
 
 # Preview Environments
 
-Massdriver's Preview Environments enable you to replicate entire projects, allowing you to spin up temporary environments that include all Infrastructure-as-Code (IaC) modules on your canvas. This means you can test networks, compute resources, applications, databases, queues, model builds, and more. Anything you can define using tools like Terraform, OpenTofu, or Helm, Massdriver can reproduce.
+A **preview environment** is a temporary clone of an existing environment —
+typically `production` or `staging` — that gets stood up for a branch, PR, or
+spike, then torn down when the work merges. Every instance on the project's
+canvas comes along: networks, clusters, databases, queues, apps. Anything that
+deploys in the source environment deploys in the preview.
 
-## Overview
+The CLI command `mass environment preview` converges a preview environment from
+a single YAML config. Re-running it is safe — every step is idempotent — so the
+same command works for "create on PR open" and "update on every push".
 
-Preview Environments are essential for validating changes in a production-like setting before merging code. By creating temporary environments that mirror your production infrastructure, you can catch issues early, ensure compatibility, and streamline your development workflow.
+## Quickstart
 
-## Walkthrough
-
-### Basic Setup
-
-First, initialize your preview configuration using the Massdriver CLI:
-
-```shell
-mass project list
-mass preview init $projectSlug
-```
-
-You'll be prompted to select the credentials you want to use for your preview environment. This generates a `preview.json` configuration file for your project with a set of default parameters for each of the instances in your project. (The JSON key under each instance entry is `packages:` for backwards compatibility — same data, legacy key shape.)
-
-Next, edit the `preview.json` file to set the parameters, remote references, and secrets for your preview environment.
-
-Add the configuration to your repository:
-
-```shell
-git add preview.json
-git commit -m "Add Massdriver configuration"
-git push origin main
-```
-
-Finally, set up your GitHub Actions workflow to manage preview environments:
+A preview environment is described by a YAML file. The minimum looks like:
 
 ```yaml
-name: Preview Environments
+# preview.yaml
+project: demo
+baseEnvironment: production
+```
+
+Run the converge:
+
+```shell
+mass environment preview pr-123 -f preview.yaml
+```
+
+That produces an environment with the identifier `demo-pr-123`, forked from
+`demo-production`, with every instance seeded from the parent and a deployment
+in flight.
+
+## What the converge does
+
+Four steps, all of them safe to repeat:
+
+1. **`forkEnvironment`** — creates a new environment in the project, linked to
+   the parent via its `parent` field. Each instance is seeded with the parent
+   instance's params, version, and release channel.
+2. **`setEnvironmentDefault`** per entry in `environmentDefaults` — pins
+   specific resources as the env's defaults of their type.
+3. **Per-instance overrides** — for each entry under `instances`, applies the
+   declared params (deep-merged via `copyInstance`), version, secrets, and
+   remote references.
+4. **`deployEnvironment`** — schedules a provision wave across every instance
+   in dependency order.
+
+A second run with the same identifier reconverges: params reset to the
+parent's current values, defaults reset, overrides re-apply, deploy re-fires.
+Useful for resetting local edits back to the declared state.
+
+## Config schema
+
+```yaml
+# Required. The project the preview env lives in.
+project: demo
+
+# Required. The local segment of the environment to fork from. The full parent
+# identifier is `<project>-<baseEnvironment>` — `demo-production` here.
+baseEnvironment: production
+
+# Optional. Carry the parent's default resource connections (the canvas-level
+# defaults) into the fork. Default false.
+copyEnvironmentDefaults: true
+
+# Optional. Fan `copyInstance(copySecrets: true)` to every instance during the
+# fork. Useful when the preview env should run with the parent's secret
+# values. Default false.
+copySecrets: false
+
+# Optional. Fan `copyInstance(copyRemoteReferences: true)` to every instance
+# during the fork. Default false.
+copyRemoteReferences: false
+
+# Optional. Environment-scope attributes for ABAC. Required when the org
+# declares attributes at the environment scope (e.g., `region`). Keys and
+# values must be strings.
+attributes:
+  region: us-east-1
+  pr: "${GITHUB_PR}"
+
+# Optional. Pin specific resources as defaults for this env. `resourceType`
+# is documentation for the human reader; the CLI only needs `resourceId` to
+# set the default.
+environmentDefaults:
+  - resourceType: aws-iam-role
+    resourceId: 161aeb95-e1c5-4f8d-803e-ef82087d7ad4
+
+# Optional. Per-instance overrides. Listed instances with no fields just
+# inherit from the fork's seed.
+instances:
+  chatdb:
+    # Version constraint. Append `+dev` to pull from the dev release channel
+    # (e.g. `latest+dev`, `~2.0+dev`).
+    version: "~2.0"
+
+  chatsvc:
+    version: "latest+dev"
+    params:
+      ingress:
+        enabled: true
+        host: chatty-pr-${GITHUB_PR}.example.com
+        path: /
+    secrets:
+      - name: STRIPE_KEY
+        value: ${STRIPE_TEST_KEY}
+
+  awsekscluster:
+    # Override which resource fills a specific connection slot — useful for
+    # pointing the preview env at a shared cluster from another project.
+    remoteReferences:
+      - resourceId: a1b2c3d4-5678-90ab-cdef-1234567890ab
+        field: kubernetes_cluster
+
+  # listed without fields — inherits from the fork
+  sessions:
+```
+
+## Environment-variable expansion
+
+`${VAR}` and `$VAR` references anywhere in the YAML are expanded from the
+process environment before parsing. This is the standard way to pipe CI
+metadata (PR numbers, branch names, commit SHAs) into the config without
+templating the whole file:
+
+```yaml
+attributes:
+  pr: "${GITHUB_PR}"
+
+instances:
+  chatsvc:
+    params:
+      host: chatty-pr-${GITHUB_PR}.example.com
+    secrets:
+      - name: STRIPE_KEY
+        value: ${STRIPE_TEST_KEY}
+```
+
+Undefined variables expand to empty strings.
+
+## Shared infrastructure with remote references
+
+Preview environments don't need their own VPC, cluster, or shared database
+for every PR. Use a remote reference to point a preview instance at a
+resource provisioned in another project:
+
+```yaml
+instances:
+  app:
+    remoteReferences:
+      - resourceId: <vpc-resource-id>
+        field: network
+      - resourceId: <cluster-resource-id>
+        field: kubernetes_cluster
+```
+
+The `field` on each entry is the connection slot on the destination
+instance — keys from the instance's bundle's `connectionsSchema`. The
+override takes priority over any blueprint Link and over environment
+defaults. See [Sharing
+Infrastructure](/guides/sharing-infrastructure) for the broader pattern.
+
+## Using it in CI
+
+A typical GitHub Actions workflow converges on every push and decommissions
+on PR close. The CLI command is the same — wrap it however your CI prefers:
+
+```yaml
+name: Preview Environment
 
 on:
   pull_request:
@@ -46,154 +180,29 @@ jobs:
   preview:
     runs-on: ubuntu-latest
     env:
-      MASSDRIVER_API_KEY: ${{secrets.MASSDRIVER_API_KEY}}
-      MASSDRIVER_ORG_ID: ${{secrets.MASSDRIVER_ORG_ID}}
+      MASSDRIVER_API_KEY: ${{ secrets.MASSDRIVER_API_KEY }}
+      MASSDRIVER_ORG_ID: ${{ secrets.MASSDRIVER_ORG_ID }}
+      GITHUB_PR: ${{ github.event.pull_request.number }}
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - uses: massdriver-cloud/actions/setup@v5
 
-    - name: Install Massdriver CLI
-      uses: massdriver-cloud/actions/setup@v5.1
+      # Converge on every push (open, reopen, synchronize).
+      - name: Converge preview env
+        if: github.event.action != 'closed'
+        run: mass environment preview "pr-${GITHUB_PR}" -f preview.yaml
 
-    # Deploy preview environment when PR is opened/updated
-    - name: Deploy Preview Environment
-      if: github.event.action != 'closed'
-      uses: massdriver-cloud/actions/preview_deploy@v5.1
-
-    # Decommission preview environment when PR is closed/merged
-    - name: Decommission Preview Environment
-      if: github.event.action == 'closed'
-      uses: massdriver-cloud/actions/preview_decommission@v5.1
+      # Tear down on close/merge.
+      - name: Decommission preview env
+        if: github.event.action == 'closed'
+        run: mass environment delete "demo-pr-${GITHUB_PR}"
 ```
 
-### Open a Pull Request to Create a Temporary Environment
+For other CI systems, the pattern is the same: export the relevant env
+vars, then run `mass environment preview <ID>`.
 
-With the setup complete, opening a pull request will trigger the GitHub Actions workflow. Massdriver will read the configuration file and spin up a temporary environment that replicates your project's infrastructure.
+## Reference
 
-## Advanced Features
-
-### Bash Interpolation in Configuration Files
-
-Massdriver's configuration files support bash interpolation of environment variables. This is useful for incorporating dynamic values like pull request numbers into hostnames or resource identifiers.
-
-```js
-{
-  "projectSlug": "your-project-slug",
-  // other project configuration here
-  "packages": {
-    "app": {
-      "params": {
-        "hostname": "preview-${SOME_UNIQUE_ENV_VAR_VALUE}.example.com"
-      }
-    }
-  }
-}
-```  
-
-In the example above, `${{ env.PULL_REQUEST_NUMBER }}` is replaced with the actual pull request number, ensuring each preview environment has a unique hostname.
-
-### Setting Secrets for Applications
-
-You can securely pass secrets to your applications within the configuration file. Massdriver ensures that sensitive information is handled securely throughout the deployment process.
-
-```js
-{
-  "projectSlug": "your-project-slug",
-  // other project configuration here
-  "packages": {
-    "app": {
-      "params": {
-        // your params here
-      },
-      "secrets": [
-        {
-          "name": "FOOBAR",
-          "value": "${SOME_ENV_VAR}"
-        }
-      ]
-    }
-  }
-}
-```        
-
-### Using Remote References for Resource Sharing
-
-Massdriver allows you to use remote references to include only a portion of the project canvas in your preview environments. This feature is detailed in our [Sharing Infrastructure Guide](https://docs.massdriver.cloud/guides/sharing-infrastructure).
-
-#### Sharing Resources Among Preview Environments
-
-By using remote references, you can share resources like Kubernetes clusters among multiple preview environments. This approach minimizes costs and reduces the time required to set up new environments.
-
-- **Cost Efficiency**: Sharing a single staging cluster across preview environments avoids the overhead of provisioning separate clusters for each pull request.
-- **Faster Deployment**: Reusing existing resources speeds up the deployment process, allowing developers to test changes more quickly.
-- **Consistent Environment**: Ensures all preview environments are running in a consistent infrastructure setup.
-
-#### Additional Use Cases
-
-- **Shared Databases**: Connect preview environments to a shared database populated with test data.
-- **Common Networking**: Use a shared virtual network to maintain consistent network policies.
-- **Centralized Monitoring**: Aggregate logs and metrics from all preview environments into a shared monitoring service.
-
-**Example Configuration using remote references for networking and compute from another project:**
-
-```js
-{
-  "projectSlug": "your-project-slug",
-  "credentials": [
-    // your credential references here
-  ],
-  "packages": {
-    "vpc": {
-      "remoteReferences": [
-        {
-          "artifactId": "your-artifact-id",
-          "field": "network"
-        }
-      ]
-    },
-    "cluster": {
-      "remoteReferences": [
-        {
-          "artifactId": "your-artifact-id",
-          "field": "compute"
-        }
-      ]
-    },
-    "rds": {
-      "params": {
-        "engine": "postgresql",
-        "version": "14.3"
-      }
-    },
-    "app": {
-      "params": {
-        "image": "example:${SOME_ENV_VAR}",
-        "hostname": "preview-${SOME_ENV_VAR}.example.com"
-      },
-      "secrets": [
-        {
-          "name": "FOOBAR",
-          "value": "${SOME_ENV_VAR}"
-        }
-      ]
-    }
-  }
-}
-```
-
-
-## CI Integration
-
-Preview environments can be integrated with any CI system. While GitHub integration works out of the box, you can use preview environments with any CI platform by providing a JSON file with the required pull request metadata.
-
-When using the `mass preview deploy` command, pass your CI context file using the `--ci-context` flag:
-
-## Conclusion
-
-Massdriver's Preview Environments provide a powerful way to test and validate changes in a safe, isolated environment. By replicating your entire project infrastructure, you can ensure that code changes behave as expected before they reach production.
-
-Leveraging advanced features like bash interpolation, secrets management, and remote references, you can customize your preview environments to fit your development workflow seamlessly.
-
----
-
-For more information on sharing infrastructure and using remote references, refer to our [Sharing Infrastructure Guide](https://docs.massdriver.cloud/guides/sharing-infrastructure). If you have any questions or need assistance, feel free to reach out to our support team.
+- Full command reference: [`mass environment preview`](/cli/commands/mass_environment_preview).
+- Related: [`mass environment create`](/cli/commands/mass_environment_create),
+  [`mass environment default`](/cli/commands/mass_environment_default).
