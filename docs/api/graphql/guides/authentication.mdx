@@ -6,52 +6,50 @@ sidebar_label: Authentication
 
 # Authentication
 
-The Massdriver GraphQL API uses service account tokens for authentication. All requests must include valid credentials in the `Authorization` header.
+All Massdriver GraphQL API requests must include credentials in the `Authorization` header. The endpoint is:
 
-## Getting a Service Account Token
-
-1. Log in to the [Massdriver Console](https://app.massdriver.cloud)
-2. Navigate to **Organization Settings** → **Service Accounts**
-3. Create a new service account and copy the token
-4. Note your **organization identifier** (slug) from the URL or settings
-
-## Making Authenticated Requests
-
-Use HTTP Basic authentication with your organization identifier as the username and service account token as the password:
-
-```bash
-# Encode credentials: org_identifier:service_account_token
-CREDENTIALS=$(echo -n "your-org-id:your-service-account-token" | base64)
-
-curl -X POST https://api.massdriver.cloud/api/v1 \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Basic $CREDENTIALS" \
-  -d '{"query": "{ viewer { ... on ServiceAccountViewer { name } } }"}'
+```
+https://api.massdriver.cloud/api/v2
 ```
 
-### One-liner
+The server accepts three authentication schemes, dispatched by the header value:
+
+| Scheme | Used for |
+|---|---|
+| `Bearer md_…` | Access tokens (recommended for API clients and CI) |
+| `Bearer mds_…` | OAuth session tokens (issued by `POST /oauth/token`, mainly for first-party UI clients) |
+| `Basic <base64>` | Terraform / OpenTofu state backend, using `organization_identifier:service_account_secret` |
+
+The legacy `x-md-api-key` header still works but is deprecated and will be removed in a future release.
+
+## Access Tokens (Recommended)
+
+Access tokens are issued in the Massdriver console and can be scoped to a user or a service account. They begin with the `md_` prefix and are sent as a Bearer token.
 
 ```bash
-curl -X POST https://api.massdriver.cloud/api/v1 \
+curl -X POST https://api.massdriver.cloud/api/v2 \
   -H "Content-Type: application/json" \
-  -H "Authorization: Basic $(echo -n 'your-org-id:your-token' | base64)" \
-  -d '{"query": "{ server { mode version } }"}'
+  -H "Authorization: Bearer md_xxxxxxxxxxxxxxxxxxxxxxxx" \
+  -d '{"query": "{ viewer { __typename ... on ServiceAccountViewer { name organization { id name } } } }"}'
 ```
+
+To mint a service-account token:
+
+1. Sign in to the [Massdriver Console](https://app.massdriver.cloud)
+2. Open **Organization Settings** → **Service Accounts**
+3. Create a service account and generate an access token
+4. Copy the token (it is shown only once)
 
 ## GraphQL Clients
 
-### JavaScript/TypeScript
+### JavaScript / TypeScript
 
 ```typescript
 import { GraphQLClient } from 'graphql-request';
 
-const orgId = process.env.MASSDRIVER_ORG_ID;
-const token = process.env.MASSDRIVER_API_TOKEN;
-const credentials = Buffer.from(`${orgId}:${token}`).toString('base64');
-
-const client = new GraphQLClient('https://api.massdriver.cloud/api/v1', {
+const client = new GraphQLClient('https://api.massdriver.cloud/api/v2', {
   headers: {
-    Authorization: `Basic ${credentials}`,
+    Authorization: `Bearer ${process.env.MASSDRIVER_ACCESS_TOKEN}`,
   },
 });
 
@@ -61,61 +59,50 @@ const data = await client.request(query, variables);
 ### Python
 
 ```python
+import os
 import requests
-import base64
-
-org_id = "your-org-id"
-token = "your-service-account-token"
-credentials = base64.b64encode(f"{org_id}:{token}".encode()).decode()
 
 headers = {
     "Content-Type": "application/json",
-    "Authorization": f"Basic {credentials}"
+    "Authorization": f"Bearer {os.environ['MASSDRIVER_ACCESS_TOKEN']}",
 }
 
 response = requests.post(
-    "https://api.massdriver.cloud/api/v1",
+    "https://api.massdriver.cloud/api/v2",
     json={"query": query, "variables": variables},
-    headers=headers
+    headers=headers,
 )
 ```
 
-## Error Responses
+## Basic Authentication (Terraform / OpenTofu State)
 
-### Unauthenticated
+Basic authentication is used by the Massdriver Terraform/OpenTofu state backend. The username is the organization's `identifier` (the short, hyphenated handle shown in the console URL); the password is a service account secret.
 
-If credentials are missing or invalid:
+```bash
+CREDENTIALS=$(echo -n "your-org-identifier:your-service-account-secret" | base64)
 
-```json
-{
-  "errors": [{
-    "message": "Authentication required",
-    "code": "UNAUTHENTICATED"
-  }]
-}
+curl -X POST https://api.massdriver.cloud/api/v2 \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Basic $CREDENTIALS" \
+  -d '{"query": "{ viewer { __typename } }"}'
 ```
 
-### Forbidden
+For general-purpose GraphQL access, prefer Bearer access tokens.
 
-If the service account doesn't have permission for the requested resource:
+## Verifying Your Credentials
 
-```json
-{
-  "errors": [{
-    "message": "You do not have permission to view this environment",
-    "code": "FORBIDDEN"
-  }]
-}
-```
-
-## Viewer Query
-
-Use the `viewer` query to verify your authentication and see the current service account:
+Use the `viewer` query to confirm authentication and inspect the active subject:
 
 ```graphql
 query {
   viewer {
+    __typename
+    ... on AccountViewer {
+      id
+      email
+    }
     ... on ServiceAccountViewer {
+      id
       name
       organization {
         id
@@ -126,6 +113,30 @@ query {
 }
 ```
 
-## Deprecated: x-md-api-key Header
+## Error Responses
 
-The `x-md-api-key` header is deprecated and will be removed in a future version. Migrate to Basic authentication as shown above.
+### Unauthenticated
+
+Returned when credentials are missing or invalid.
+
+```json
+{
+  "errors": [{
+    "message": "Authentication required",
+    "extensions": { "code": "UNAUTHENTICATED" }
+  }]
+}
+```
+
+### Forbidden
+
+Returned when the authenticated subject lacks the required ABAC permission for the operation. See the [GraphQL permissions reference](/platform-operations/security/graphql-permissions) for the operation-to-permission mapping.
+
+```json
+{
+  "errors": [{
+    "message": "You do not have permission to view this environment",
+    "extensions": { "code": "FORBIDDEN" }
+  }]
+}
+```
