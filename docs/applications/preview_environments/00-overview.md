@@ -92,6 +92,11 @@ environmentDefaults:
 
 # Optional. Per-instance overrides. Listed instances with no fields just
 # inherit from the fork's seed.
+#
+# `remoteReferences` direction: each entry sits under the *consumer*
+# instance, and `field` names a key in the consumer's `connections_schema`
+# (its input slots). `resourceId` is the producer the slot should point
+# at — see the next section for both supported formats.
 instances:
   chatdb:
     # Version constraint. Append `+dev` to pull from the dev release channel
@@ -108,13 +113,15 @@ instances:
     secrets:
       - name: STRIPE_KEY
         value: ${STRIPE_TEST_KEY}
-
-  awsekscluster:
-    # Override which resource fills a specific connection slot — useful for
-    # pointing the preview env at a shared cluster from another project.
     remoteReferences:
+      # Fill chatsvc's `kubernetes_cluster` connection slot with a shared
+      # cluster from another project (UUID form).
       - resourceId: a1b2c3d4-5678-90ab-cdef-1234567890ab
         field: kubernetes_cluster
+      # Fill chatsvc's `database` slot with the prod database instance's
+      # `hostname` output (`<instance-id>.<field>` form).
+      - resourceId: demo-prod-db.hostname
+        field: database
 
   # listed without fields — inherits from the fork
   sessions:
@@ -145,23 +152,38 @@ Undefined variables expand to empty strings.
 ## Shared infrastructure with remote references
 
 Preview environments don't need their own VPC, cluster, or shared database
-for every PR. Use a remote reference to point a preview instance at a
-resource provisioned in another project:
+for every PR. A **remote reference** is a per-instance override that points
+a connection slot at a resource provisioned in another project (or an
+imported resource).
+
+Direction: the YAML entry sits under the **consumer** — the instance whose
+slot is being filled. `field` is a key in the consumer's
+`connectionsSchema` (its inputs). `resourceId` is the producer.
+
+`resourceId` accepts two formats:
+
+- **Resource UUID** — for imported resources, environment defaults, or any
+  resource you can look up via `mass resource list`.
+- **`<instance-id>.<field>`** — addresses another instance's provisioned
+  output artifact. For example, `demo-prod-db.hostname` resolves to the
+  `hostname` output of the `demo-prod-db` instance. Use this when the
+  producer is itself a Massdriver-managed instance.
 
 ```yaml
 instances:
   app:
     remoteReferences:
-      - resourceId: <vpc-resource-id>
+      # UUID form — point at an imported VPC.
+      - resourceId: 1e9fc8a3-f011-433f-b937-b5e525fd753c
         field: network
-      - resourceId: <cluster-resource-id>
+      # instance.field form — point at the prod cluster instance's output.
+      - resourceId: shared-prod-eks.kubernetes_cluster
         field: kubernetes_cluster
 ```
 
-The `field` on each entry is the connection slot on the destination
-instance — keys from the instance's bundle's `connectionsSchema`. The
-override takes priority over any blueprint Link and over environment
-defaults. See [Sharing
+The override takes priority over any blueprint Link wired into the same
+slot and over environment defaults. Removing the reference reverts the
+slot to the Link (or default). See [Sharing
 Infrastructure](/guides/sharing-infrastructure) for the broader pattern.
 
 ## Using it in CI
