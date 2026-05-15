@@ -108,6 +108,6 @@ promotes](/workflows/promote).
 
 ## Reference
 
-- CLI command: [`mass environment fork`](/cli/commands/mass_environment_fork).
+- CLI command: [`mass environment fork`](/cli/commands/mass_environment) — see the `fork` subcommand.
 - API mutation: `forkEnvironment` in the V2 schema.
 - Concepts: [Projects & Environments](/concepts/projects-and-environments).

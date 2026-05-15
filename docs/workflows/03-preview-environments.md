@@ -167,7 +167,7 @@ Same APIs. Same outcomes. Same idempotency guarantees.
 
 ## Reference
 
-- CLI command: [`mass environment preview`](/cli/commands/mass_environment_preview).
+- CLI command: [`mass environment preview`](/cli/commands/mass_environment) — see the `preview` subcommand.
 - Full schema reference: [Applications → Preview
   Environments](/applications/preview_environments/overview).
 - Primitives this composes: [`fork`](/workflows/fork-environment),
