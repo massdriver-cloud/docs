@@ -64,7 +64,7 @@ preview.yaml` for the bundled flow, or drive the primitives directly:
 ```bash
 mass environment fork ecomm-production pr42 --copy-environment-defaults
 mass environment default ecomm-pr42 <shared-vpc-resource-id>
-mass instance copy ecomm-production-db ecomm-pr42-db --copy-secrets
+mass instance copy ecomm-production-db --to ecomm-pr42-db --copy-secrets
 mass environment deploy ecomm-pr42
 ```
 

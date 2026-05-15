@@ -159,7 +159,7 @@ directly:
 ```bash
 mass environment fork ecomm-production pr42 --copy-environment-defaults --copy-secrets
 mass environment default ecomm-pr42 <shared-vpc-resource-id>
-mass instance promote ecomm-staging-app ecomm-pr42-app -m "Promote staging to preview"
+mass instance promote ecomm-staging-app --to ecomm-pr42-app -m "Promote staging to preview"
 mass environment deploy ecomm-pr42
 ```
 

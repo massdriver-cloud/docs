@@ -18,7 +18,7 @@ The command is `mass instance copy` — aliased `promote` for the common
 case:
 
 ```bash
-mass instance promote ecomm-staging-db ecomm-production-db
+mass instance promote ecomm-staging-db --to ecomm-production-db
 ```
 
 ## What gets promoted
@@ -48,11 +48,11 @@ Opt-in extras:
 ```bash
 # 1. Promote staging's DB config to production. A plan deployment is
 #    created on `ecomm-production-db` so the team can review the diff.
-mass instance promote ecomm-staging-db ecomm-production-db \
+mass instance promote ecomm-staging-db --to ecomm-production-db \
   -m "Promote DB schema migration"
 
 # 2. Production scales bigger than staging — apply an override on the way.
-mass instance promote ecomm-staging-db ecomm-production-db \
+mass instance promote ecomm-staging-db --to ecomm-production-db \
   --overrides ./prod-db.yaml \
   -m "Promote with prod scaling"
 
@@ -79,8 +79,8 @@ Wire `mass instance promote` into your release pipeline:
 - name: Promote staging configs to production
   if: github.ref == 'refs/heads/main'
   run: |
-    mass instance promote ecomm-staging-db   ecomm-production-db   -m "Auto-promote from main"
-    mass instance promote ecomm-staging-app  ecomm-production-app  -m "Auto-promote from main"
+    mass instance promote ecomm-staging-db  --to ecomm-production-db  -m "Auto-promote from main"
+    mass instance promote ecomm-staging-app --to ecomm-production-app -m "Auto-promote from main"
 ```
 
 Because each `promote` ends in a *plan* deployment on the destination —
@@ -92,8 +92,8 @@ Pair it with `mass instance deploy` once approval lands.
 The same primitive works for any source → destination of the same
 component:
 
-- Region rollouts: `mass instance promote api-prod-uswest-db api-prod-useast-db`
-- Per-tenant updates: `mass instance promote api-template-cache api-acme-cache`
+- Region rollouts: `mass instance promote api-prod-uswest-db --to api-prod-useast-db`
+- Per-tenant updates: `mass instance promote api-template-cache --to api-acme-cache`
 - Disaster recovery rehearsals: promote prod into a parallel env and
   deploy from there.
 
