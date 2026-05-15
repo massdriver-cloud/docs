@@ -232,6 +232,6 @@ vars, then run `mass environment preview <ID>`.
 
 ## Reference
 
-- Full command reference: [`mass environment preview`](/cli/commands/mass_environment_preview).
+- Full command reference: [`mass environment preview`](/cli/commands/mass_environment) — see the `preview` subcommand.
 - Related: [`mass environment create`](/cli/commands/mass_environment_create),
   [`mass environment default`](/cli/commands/mass_environment_default).
