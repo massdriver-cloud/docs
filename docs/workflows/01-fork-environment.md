@@ -21,7 +21,7 @@ staging, stage a major version migration in isolation.
 
 One API call, all four steps happen inside the same transaction:
 
-1. Creates the new `Target` (environment) row, linked to its parent.
+1. Creates the new environment, linked to its parent.
 2. Initializes one instance per component in the project's blueprint.
 3. Seeds every instance's `params` from the parent's matching instance
    (filtered through the bundle's `$md.copyable` annotations).
@@ -87,10 +87,10 @@ immutable.
 
 ## What's not copied
 
-Out of the box, a fork only copies what `copy_package` semantics define
-as copyable: params (minus bundle-marked non-copyable fields), version,
-and release channel. Secrets and remote references stay opt-in via the
-two flags. If you need finer control — different secrets per instance,
+Out of the box, a fork only copies what `copyInstance` does for a single
+instance: params (minus bundle-marked non-copyable fields), version, and
+release channel. Secrets and remote references stay opt-in via the two
+flags. If you need finer control — different secrets per instance,
 specific remote references — combine `fork` with [per-instance
 promotes](/workflows/promote).
 

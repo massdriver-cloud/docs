@@ -67,10 +67,9 @@ case where the config has already been validated in staging.
 ## Components must match
 
 Source and destination have to be instances of the same component (same
-bundle behind them). The API rejects mismatched copies with
-`{:error, :different_manifests}`; the CLI surfaces it as a clear error.
-This is what keeps "promote" sane — you can't accidentally write a
-Postgres config into a Redis instance.
+bundle behind them). The API rejects mismatched copies with a clear
+error; the CLI surfaces it. This is what keeps "promote" sane — you
+can't accidentally write a Postgres config into a Redis instance.
 
 ## Promote as a CI pattern
 
