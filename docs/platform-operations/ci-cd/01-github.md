@@ -178,3 +178,11 @@ Then your image tag path would be `.runtime.image.tag`.
 * If your `massdriver.yaml` file is in a subdirectory, you can update the `build-directory` to point to that directory. For example, if your `massdriver.yaml` file is in the `./app/massdriver` directory, you can set the `build-directory` to `./app/massdriver`.
 
 View the Massdriver GitHub Actions on the [GitHub Marketplace](https://github.com/marketplace/actions/massdriver-actions).
+
+## Per-PR Preview Environments
+
+If your team uses pull-request preview environments — short-lived clones of
+production or staging that stand up on PR open and tear down on merge — wire a
+GitHub Actions job around [`mass environment preview`](/applications/preview_environments/overview).
+A single YAML config drives fork, environment defaults, per-instance
+overrides, and deploy in one idempotent command.
