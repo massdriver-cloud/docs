@@ -41,20 +41,17 @@ Opt-in extras:
 - `--overrides <path>` — JSON or YAML file of param overrides
   deep-merged on top of the source params before writing. The natural
   way to tweak instance size or replica count between envs.
-- `--message` — attached to the plan deployment. Think commit message.
 
 ## The flow
 
 ```bash
 # 1. Promote staging's DB config to production. A plan deployment is
 #    created on `ecomm-production-db` so the team can review the diff.
-mass instance promote ecomm-staging-db --to ecomm-production-db \
-  -m "Promote DB schema migration"
+mass instance promote ecomm-staging-db --to ecomm-production-db
 
 # 2. Production scales bigger than staging — apply an override on the way.
 mass instance promote ecomm-staging-db --to ecomm-production-db \
-  --overrides ./prod-db.yaml \
-  -m "Promote with prod scaling"
+  --overrides ./prod-db.yaml
 
 # 3. Once the plan deployment looks good, ship it.
 mass instance deploy ecomm-production-db
@@ -79,8 +76,8 @@ Wire `mass instance promote` into your release pipeline:
 - name: Promote staging configs to production
   if: github.ref == 'refs/heads/main'
   run: |
-    mass instance promote ecomm-staging-db  --to ecomm-production-db  -m "Auto-promote from main"
-    mass instance promote ecomm-staging-app --to ecomm-production-app -m "Auto-promote from main"
+    mass instance promote ecomm-staging-db  --to ecomm-production-db
+    mass instance promote ecomm-staging-app --to ecomm-production-app
 ```
 
 Because each `promote` ends in a *plan* deployment on the destination —
