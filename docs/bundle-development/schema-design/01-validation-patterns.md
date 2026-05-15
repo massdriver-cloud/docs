@@ -313,3 +313,4 @@ grn:
 - [Massdriver Annotations](./massdriver-annotations) - `$md.*` extensions for immutability, dynamic enums, and more
 - [Bundle YAML Specification](/bundle-development/bundle-yaml-spec) - Complete bundle reference
 - [JSON Schema Specification](https://json-schema.org/specification.html) - Official JSON Schema docs
+- [Using RJSF uiSchema to customize UI fields](https://react-jsonschema-form.readthedocs.io/en/docs/api-reference/uiSchema/)
