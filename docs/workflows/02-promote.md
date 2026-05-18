@@ -21,22 +21,22 @@ case:
 mass instance promote ecomm-staging-db --to ecomm-production-db
 ```
 
-![Promoting an instance config from the CLI](./img/promote-cli.png)
+![Promoting an instance config from the CLI](/img/screenshots/promote-cli.png)
 
 Concretely: the source instance — here, a PostgreSQL instance in a PR
 preview env running `latest+dev` with tuned params — is the validated
 config you want to ship:
 
-![Source instance config in the preview env](./img/promote-source-config.png)
+![Source instance config in the preview env](/img/screenshots/promote-source-config.png)
 
 The destination — production — still has the older `v0.0.0` config:
 
-![Production instance before promote](./img/promote-production-before.png)
+![Production instance before promote](/img/screenshots/promote-production-before.png)
 
 After `mass instance promote`, the destination is staged with the new
 config and version, ready for a deploy:
 
-![Production instance after promote](./img/promote-production-after.png)
+![Production instance after promote](/img/screenshots/promote-production-after.png)
 
 ## What gets promoted
 

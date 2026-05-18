@@ -71,12 +71,12 @@ mass environment fork ecomm-staging alicedev
 mass environment fork ecomm-production staging --copy-environment-defaults
 ```
 
-![Forking an environment from the CLI](./img/fork-cli.png)
+![Forking an environment from the CLI](/img/screenshots/fork-cli.png)
 
 The new env shows up immediately alongside its siblings in the project's
 environment list:
 
-![New fork in the environment list](./img/fork-environment-list.png)
+![New fork in the environment list](/img/screenshots/fork-environment-list.png)
 
 ## Re-fork resets the fork
 
