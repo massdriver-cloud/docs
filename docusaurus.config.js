@@ -12,8 +12,8 @@ const inputsDirective = {
 };
 
 module.exports = {
-  title: 'Massdriver Docs',
-  tagline: 'The Future of Platform Engineering',
+  title: 'Massdriver v2.2',
+  tagline: 'The internal developer platform for the AI-Native era',
   url: 'https://docs.massdriver.cloud',
   baseUrl: '/',
   favicon: 'img/favicon.ico',
