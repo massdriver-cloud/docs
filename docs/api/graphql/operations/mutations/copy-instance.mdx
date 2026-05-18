@@ -46,9 +46,9 @@ Copy configuration from one instance to another.
 
 Both instances must be built from the same component. Source params (minus any
 fields the bundle marks non-copyable) are written to the destination, deep-merged
-with any `overrides`. A plan deployment is then created on the destination so the
-caller can review the changes before applying them. `copySecrets` and
-`copyRemoteReferences` opt in to additional state transfer.
+with any `overrides`. `copySecrets` and `copyRemoteReferences` opt in to additional
+state transfer. Deployment is a separate action — call `createDeployment` on the
+destination when you're ready to apply.
 
 ```graphql
 mutation {
@@ -56,7 +56,7 @@ mutation {
     organizationId: "my-org"
     sourceId: "ecomm-prod-db"
     destinationId: "ecomm-staging-db"
-    input: { overrides: { size: "small" }, copySecrets: true, message: "Promote prod config" }
+    input: { overrides: { size: "small" }, copySecrets: true }
   ) {
     result { id params }
     successful
@@ -108,7 +108,7 @@ The instance to copy configuration into. Must be built from the same component a
 
 
 #### [<code style={{ fontWeight: 'normal' }}>copyInstance.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CopyInstanceInput!</b></code>](/api/graphql/types/inputs/copy-instance-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
-Copy configuration from one instance to another. The source and destination must be instances of the same component. Source params (minus any fields marked non-copyable in the bundle) are written to the destination, then a plan deployment is created on the destination so the changes can be reviewed before applying.
+Copy configuration from one instance to another. The source and destination must be instances of the same component. Source params (minus any fields marked non-copyable in the bundle) are written to the destination. Deployment is a separate action — call `createDeployment` on the destination when you're ready to apply.
 
 
 ### Type

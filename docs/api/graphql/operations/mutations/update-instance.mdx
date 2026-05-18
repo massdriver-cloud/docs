@@ -42,18 +42,23 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Update an instance's version constraint or release strategy.
+Update an instance's version constraint.
 
-Changes are staged and take effect on the **next** deployment. The
-`resolvedVersion` field will reflect the new constraint immediately,
-while `deployedVersion` remains unchanged until a deploy runs.
+`version` is a `VersionConstraint` scalar: a pinned semver
+(e.g., `1.2.3`) or a release channel name as listed by
+`ociRepo.releaseChannels` (e.g., `latest`, `~1.2`, `~1.2+dev`).
+See the `VersionConstraint` scalar for the full grammar.
+
+Changes are staged and take effect on the **next** deployment.
+`resolvedVersion` reflects the new constraint immediately;
+`deployedVersion` stays put until a deploy runs.
 
 ```graphql
 mutation {
   updateInstance(
     organizationId: "my-org"
     id: "my-database"
-    input: { version: "~2.0", releaseStrategy: stable }
+    input: { version: "~2.0" }
   ) {
     result { id resolvedVersion }
     successful
@@ -100,7 +105,7 @@ The instance ID to update.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>updateInstance.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UpdateInstanceInput!</b></code>](/api/graphql/types/inputs/update-instance-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
-Update an instance's version constraint or release strategy. Changes take effect on the next deployment.
+Update an instance's version. Changes take effect on the next deployment.
 
 
 ### Type

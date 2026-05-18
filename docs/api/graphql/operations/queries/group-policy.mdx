@@ -1,0 +1,89 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: group-policy
+title: groupPolicy
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Fetch a single ABAC group policy by its unique identifier.
+
+Returns `null` with a `NOT_FOUND` error if the policy does not exist in
+your organization. Use this when you already know the policy's id — for
+example, when the terraform provider needs to read a policy it previously
+created. To browse policies attached to a group, query the nested
+`Group.policies` field instead.
+
+
+```graphql
+groupPolicy(
+  organizationId: ID!
+  id: UUID!
+): Policy
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>groupPolicy.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>groupPolicy.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UUID!</b></code>](/api/graphql/types/scalars/uuid.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+The policy's unique identifier.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Policy</b></code>](/api/graphql/types/objects/policy.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A single ABAC group policy: an effect (`ALLOW`/`DENY`), one or more actions,
+optional attribute conditions, and the group whose members the policy
+applies to.
+
+Conditions are evaluated AND within a policy and OR across policies on the
+same group. A policy with no conditions is a wildcard — it matches any
+resource of each action's entity. Deny policies win over allow policies. A
+policy can list actions across different entities (for example
+`project:view` together with `instance:deploy`); for each action, condition
+keys whose registered attribute scope is unreachable for that action's
+entity are skipped, and a policy whose conditions all skip for a given
+action is a wildcard match for that action. See `docs/guides/abac.md` for
+the full evaluation model.

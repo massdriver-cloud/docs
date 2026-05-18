@@ -42,13 +42,13 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Update an instance's version constraint or release strategy. Changes take effect on the next deployment.
+Update an instance's version. Changes take effect on the next deployment.
 
 
 ```graphql
 input UpdateInstanceInput {
   releaseStrategy: ReleaseStrategy
-  version: String
+  version: VersionConstraint!
 }
 ```
 
@@ -58,11 +58,11 @@ input UpdateInstanceInput {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>UpdateInstanceInput.<b>releaseStrategy</b></code>](#release-strategy)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ReleaseStrategy</b></code>](/api/graphql/types/enums/release-strategy.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#release-strategy\} 
-Whether to use stable or development releases
+Deprecated. Add `+dev` to `version` instead (e.g., `latest+dev`).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>UpdateInstanceInput.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#version\} 
-Version constraint for the bundle (e.g., '~1.0', '1.2.3', 'latest'). Resolved against available releases.
+#### [<code style={{ fontWeight: 'normal' }}>UpdateInstanceInput.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>VersionConstraint!</b></code>](/api/graphql/types/scalars/version-constraint.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version\} 
+Bundle version to deploy. Accepts a pinned tag (`1.2.3`), a release channel (`latest`, `~1.2`), or a release channel with `+dev` to include pre-release builds (`latest+dev`, `~1.2+dev`).
 
 
 

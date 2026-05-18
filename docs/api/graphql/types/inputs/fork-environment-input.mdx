@@ -42,13 +42,16 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Attributes for the new environment. The fork references the parent via `parentId`, starts with blank instances, and does not copy any instance-level configuration. Use `copyInstance` per-instance if you want to seed configuration from the parent.
+Attributes for the new environment. The fork references the parent via `parentId` and seeds each package from the parent's params. Re-forking against the same parent re-runs the seed — params and version reset to the parent's current values, and the `copy*` flags re-apply — so the mutation behaves as a desired-state converge (use it to reset local edits, or to backfill secrets and remote references that a prior call didn't request). Re-forking with a different parent is rejected; a fork's parent is immutable.
 
 
 ```graphql
 input ForkEnvironmentInput {
   attributes: Map
   copyEnvironmentDefaults: Boolean
+  copyRemoteReferences: Boolean
+  copySecrets: Boolean
+  decommissionProtection: Boolean
   description: String
   id: String!
   name: String!
@@ -65,7 +68,19 @@ Key-value attributes for this environment. Keys and values must be strings. Must
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ForkEnvironmentInput.<b>copyEnvironmentDefaults</b></code>](#copy-environment-defaults)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#copy-environment-defaults\} 
-When true, copies the parent environment's default resource connections into the fork. Instance-level configuration is never copied — use `copyInstance` to seed instance params.
+When true, copies the parent environment's default resource connections into the fork.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ForkEnvironmentInput.<b>copyRemoteReferences</b></code>](#copy-remote-references)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#copy-remote-references\} 
+When true, copies every package's remote resource references from the parent into the fork. Applies the same behavior as `copyInstance(copyRemoteReferences: true)` to every package in one call. Defaults to false.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ForkEnvironmentInput.<b>copySecrets</b></code>](#copy-secrets)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#copy-secrets\} 
+When true, copies every package's secret values from the parent into the fork. Applies the same behavior as `copyInstance(copySecrets: true)` to every package in one call. Defaults to false.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ForkEnvironmentInput.<b>decommissionProtection</b></code>](#decommission-protection)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#decommission-protection\} 
+When true, blocks `decommissionEnvironment` and any per-instance deployment with `action: DECOMMISSION` against this environment. Disable it via `updateEnvironment` before tearing down. Defaults to false.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ForkEnvironmentInput.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
