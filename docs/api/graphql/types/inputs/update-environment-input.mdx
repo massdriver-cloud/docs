@@ -48,6 +48,7 @@ Update an existing environment's name and description. The ID cannot be changed 
 ```graphql
 input UpdateEnvironmentInput {
   attributes: Map
+  decommissionProtection: Boolean
   description: String
   name: String
 }
@@ -60,6 +61,10 @@ input UpdateEnvironmentInput {
 
 #### [<code style={{ fontWeight: 'normal' }}>UpdateEnvironmentInput.<b>attributes</b></code>](#attributes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#attributes\} 
 Key-value attributes for this environment. Keys and values must be strings. Must conform to the organization's custom attributes for the environment scope.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateEnvironmentInput.<b>decommissionProtection</b></code>](#decommission-protection)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#decommission-protection\} 
+When true, blocks `decommissionEnvironment` and any per-instance deployment with `action: DECOMMISSION` against this environment. Toggle it off here before tearing down.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>UpdateEnvironmentInput.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 

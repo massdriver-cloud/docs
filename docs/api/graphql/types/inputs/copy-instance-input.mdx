@@ -42,14 +42,13 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Copy configuration from one instance to another. The source and destination must be instances of the same component. Source params (minus any fields marked non-copyable in the bundle) are written to the destination, then a plan deployment is created on the destination so the changes can be reviewed before applying.
+Copy configuration from one instance to another. The source and destination must be instances of the same component. Source params (minus any fields marked non-copyable in the bundle) are written to the destination. Deployment is a separate action — call `createDeployment` on the destination when you're ready to apply.
 
 
 ```graphql
 input CopyInstanceInput {
   copyRemoteReferences: Boolean
   copySecrets: Boolean
-  message: String
   overrides: Map
 }
 ```
@@ -65,10 +64,6 @@ When true, copies remote resource references from the source instance to the des
 
 #### [<code style={{ fontWeight: 'normal' }}>CopyInstanceInput.<b>copySecrets</b></code>](#copy-secrets)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#copy-secrets\} 
 When true, copies secret values from the source instance to the destination. Defaults to false.
-
-
-#### [<code style={{ fontWeight: 'normal' }}>CopyInstanceInput.<b>message</b></code>](#message)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#message\} 
-An optional message attached to the plan deployment created on the destination, similar to a commit message.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CopyInstanceInput.<b>overrides</b></code>](#overrides)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#overrides\} 

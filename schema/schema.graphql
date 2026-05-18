@@ -865,6 +865,23 @@ type RootQueryType {
   ): AccessTokensPage
 
   """
+  Fetch a single ABAC group policy by its unique identifier.
+
+  Returns `null` with a `NOT_FOUND` error if the policy does not exist in
+  your organization. Use this when you already know the policy's id — for
+  example, when the terraform provider needs to read a policy it previously
+  created. To browse policies attached to a group, query the nested
+  `Group.policies` field instead.
+  """
+  groupPolicy(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The policy's unique identifier."
+    id: UUID!
+  ): Policy
+
+  """
   Return the complete catalog of ABAC actions available in Massdriver.
 
   Actions are the building blocks of policies. Each action has an id in
@@ -1469,10 +1486,15 @@ type RootMutationType {
 
   The new environment is linked to the parent via its `parent` field. Instances
   are initialized from the project's components and seeded with the parent's
-  instance `params`. Secrets and remote references are not copied — use
-  `copyInstance` per instance to carry those over as well. Pass
+  instance `params`. By default, secrets and remote references are not copied
+  — set `copySecrets` / `copyRemoteReferences` to fan the equivalent
+  `copyInstance` behavior across every package in one call. Pass
   `copyEnvironmentDefaults: true` to also copy the parent's default resource
   connections.
+
+  Re-calling `forkEnvironment` with the same parent + `id` is a no-op that
+  returns the existing environment. Re-calling with the same `id` but a
+  different `parentId` is rejected — a fork's parent is immutable.
   """
   forkEnvironment(
     "Your organization's unique identifier."
@@ -1481,9 +1503,41 @@ type RootMutationType {
     "The identifier of the environment to fork from."
     parentId: ID!
 
-    "Attributes for the new environment. The fork references the parent via `parentId`, starts with blank instances, and does not copy any instance-level configuration. Use `copyInstance` per-instance if you want to seed configuration from the parent."
+    "Attributes for the new environment. The fork references the parent via `parentId` and seeds each package from the parent's params. Re-forking against the same parent re-runs the seed — params and version reset to the parent's current values, and the `copy*` flags re-apply — so the mutation behaves as a desired-state converge (use it to reset local edits, or to backfill secrets and remote references that a prior call didn't request). Re-forking with a different parent is rejected; a fork's parent is immutable."
     input: ForkEnvironmentInput!
   ): EnvironmentPayload @inputs(name: "forkEnvironment", schema: "\/graphql\/v2\/inputs\/forkEnvironment.json", ui: "\/graphql\/v2\/inputs\/forkEnvironment.ui.json")
+
+  """
+  Deploy every instance in an environment, in dependency order.
+
+  Cancels any in-flight environment deployment for this environment and
+  schedules a fresh provision wave. The mutation returns as soon as the
+  pending deployment is enqueued; the actual infrastructure changes happen
+  asynchronously.
+  """
+  deployEnvironment(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The identifier of the environment to deploy."
+    id: ID!
+  ): EnvironmentPayload
+
+  """
+  Decommission every instance in an environment, in reverse dependency order.
+
+  Tears down all provisioned infrastructure but leaves the environment shell in
+  place so it can be redeployed. Call `deleteEnvironment` afterwards to remove
+  the empty environment. The mutation returns as soon as the pending
+  decommission is enqueued; the actual teardown happens asynchronously.
+  """
+  decommissionEnvironment(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The identifier of the environment to decommission."
+    id: ID!
+  ): EnvironmentPayload
 
   """
   Delete an environment permanently.
@@ -2387,18 +2441,23 @@ type RootMutationType {
   ): ResourceTypePayload @deprecated(reason: "Transitional shim from V0 `deleteArtifactDefinition` during the migration to OCI-hosted resource types. Prefer the OCI-native publishing flow; this mutation may be removed without notice.")
 
   """
-  Update an instance's version constraint or release strategy.
+  Update an instance's version constraint.
 
-  Changes are staged and take effect on the **next** deployment. The
-  `resolvedVersion` field will reflect the new constraint immediately,
-  while `deployedVersion` remains unchanged until a deploy runs.
+  `version` is a `VersionConstraint` scalar: a pinned semver
+  (e.g., `1.2.3`) or a release channel name as listed by
+  `ociRepo.releaseChannels` (e.g., `latest`, `~1.2`, `~1.2+dev`).
+  See the `VersionConstraint` scalar for the full grammar.
+
+  Changes are staged and take effect on the **next** deployment.
+  `resolvedVersion` reflects the new constraint immediately;
+  `deployedVersion` stays put until a deploy runs.
 
   ```graphql
   mutation {
     updateInstance(
       organizationId: "my-org"
       id: "my-database"
-      input: { version: "~2.0", releaseStrategy: stable }
+      input: { version: "~2.0" }
     ) {
       result { id resolvedVersion }
       successful
@@ -2413,7 +2472,7 @@ type RootMutationType {
     "The instance ID to update."
     id: ID!
 
-    "Update an instance's version constraint or release strategy. Changes take effect on the next deployment."
+    "Update an instance's version. Changes take effect on the next deployment."
     input: UpdateInstanceInput!
   ): InstancePayload @inputs(name: "updateInstance", schema: "\/graphql\/v2\/inputs\/updateInstance.json", ui: "\/graphql\/v2\/inputs\/updateInstance.ui.json")
 
@@ -2422,9 +2481,9 @@ type RootMutationType {
 
   Both instances must be built from the same component. Source params (minus any
   fields the bundle marks non-copyable) are written to the destination, deep-merged
-  with any `overrides`. A plan deployment is then created on the destination so the
-  caller can review the changes before applying them. `copySecrets` and
-  `copyRemoteReferences` opt in to additional state transfer.
+  with any `overrides`. `copySecrets` and `copyRemoteReferences` opt in to additional
+  state transfer. Deployment is a separate action — call `createDeployment` on the
+  destination when you're ready to apply.
 
   ```graphql
   mutation {
@@ -2432,7 +2491,7 @@ type RootMutationType {
       organizationId: "my-org"
       sourceId: "ecomm-prod-db"
       destinationId: "ecomm-staging-db"
-      input: { overrides: { size: "small" }, copySecrets: true, message: "Promote prod config" }
+      input: { overrides: { size: "small" }, copySecrets: true }
     ) {
       result { id params }
       successful
@@ -2450,7 +2509,7 @@ type RootMutationType {
     "The instance to copy configuration into. Must be built from the same component as the source."
     destinationId: ID!
 
-    "Copy configuration from one instance to another. The source and destination must be instances of the same component. Source params (minus any fields marked non-copyable in the bundle) are written to the destination, then a plan deployment is created on the destination so the changes can be reviewed before applying."
+    "Copy configuration from one instance to another. The source and destination must be instances of the same component. Source params (minus any fields marked non-copyable in the bundle) are written to the destination. Deployment is a separate action — call `createDeployment` on the destination when you're ready to apply."
     input: CopyInstanceInput!
   ): InstancePayload @inputs(name: "copyInstance", schema: "\/graphql\/v2\/inputs\/copyInstance.json", ui: "\/graphql\/v2\/inputs\/copyInstance.ui.json")
 
@@ -6875,13 +6934,13 @@ input ParamDimensionsSort {
   order: SortOrder!
 }
 
-"Update an instance's version constraint or release strategy. Changes take effect on the next deployment."
+"Update an instance's version. Changes take effect on the next deployment."
 input UpdateInstanceInput {
-  "Whether to use stable or development releases"
+  "Deprecated. Add `+dev` to `version` instead (e.g., `latest+dev`)."
   releaseStrategy: ReleaseStrategy
 
-  "Version constraint for the bundle (e.g., '~1.0', '1.2.3', 'latest'). Resolved against available releases."
-  version: String
+  "Bundle version to deploy. Accepts a pinned tag (`1.2.3`), a release channel (`latest`, `~1.2`), or a release channel with `+dev` to include pre-release builds (`latest+dev`, `~1.2+dev`)."
+  version: VersionConstraint!
 }
 
 "Create or update a secret on an instance. The secret value is encrypted at rest and never returned in API responses."
@@ -6893,16 +6952,13 @@ input SetInstanceSecretInput {
   value: String!
 }
 
-"Copy configuration from one instance to another. The source and destination must be instances of the same component. Source params (minus any fields marked non-copyable in the bundle) are written to the destination, then a plan deployment is created on the destination so the changes can be reviewed before applying."
+"Copy configuration from one instance to another. The source and destination must be instances of the same component. Source params (minus any fields marked non-copyable in the bundle) are written to the destination. Deployment is a separate action — call `createDeployment` on the destination when you're ready to apply."
 input CopyInstanceInput {
   "When true, copies remote resource references from the source instance to the destination. Defaults to false."
   copyRemoteReferences: Boolean
 
   "When true, copies secret values from the source instance to the destination. Defaults to false."
   copySecrets: Boolean
-
-  "An optional message attached to the plan deployment created on the destination, similar to a commit message."
-  message: String
 
   "Optional overrides that are deep-merged onto the source params before writing to the destination. Useful for tweaking environment-specific values (e.g., instance sizes)."
   overrides: Map
@@ -7109,7 +7165,7 @@ or check `availableUpgrade` for newer matching releases.
 type Instance {
   id: ID!
 
-  "Human-readable display name for the instance."
+  "Name of the instance."
   name: String!
 
   "Current lifecycle state of the instance."
@@ -7190,10 +7246,10 @@ type Instance {
   """
   effectiveAttributes: Map!
 
-  "Version constraint that controls which bundle releases are eligible. Supports semver constraints like `~1.0`, exact versions like `1.2.3`, or `latest`."
-  version: String!
+  "The version constraint controlling which bundle releases are eligible for deployment. Accepts any value accepted by the `VersionConstraint` scalar: a pinned semver (e.g., `1.2.3`) or a release channel name as listed by `ociRepo.releaseChannels` (e.g., `latest`, `~1.2`, `~1.2+dev`). Round-trips: the value returned here is valid input for the next `updateInstance` mutation."
+  version: VersionConstraint!
 
-  "Whether to include development (pre-release) builds when resolving the version constraint."
+  "Deprecated. Derived from `version`: `:development` when `version` is a development release channel, otherwise `:stable`. Will be removed."
   releaseStrategy: ReleaseStrategy!
 
   "When this instance was created (UTC)."
@@ -7471,6 +7527,9 @@ input CreateEnvironmentInput {
   "Key-value attributes for this environment. Keys and values must be strings. Must conform to the organization's custom attributes for the environment scope."
   attributes: Map
 
+  "When true, blocks `decommissionEnvironment` and any per-instance deployment with `action: DECOMMISSION` against this environment. Disable it via `updateEnvironment` before tearing down. Defaults to false."
+  decommissionProtection: Boolean
+
   "An optional description of the environment's purpose"
   description: String
 
@@ -7486,6 +7545,9 @@ input UpdateEnvironmentInput {
   "Key-value attributes for this environment. Keys and values must be strings. Must conform to the organization's custom attributes for the environment scope."
   attributes: Map
 
+  "When true, blocks `decommissionEnvironment` and any per-instance deployment with `action: DECOMMISSION` against this environment. Toggle it off here before tearing down."
+  decommissionProtection: Boolean
+
   "An optional description of the environment's purpose"
   description: String
 
@@ -7493,13 +7555,22 @@ input UpdateEnvironmentInput {
   name: String
 }
 
-"Attributes for the new environment. The fork references the parent via `parentId`, starts with blank instances, and does not copy any instance-level configuration. Use `copyInstance` per-instance if you want to seed configuration from the parent."
+"Attributes for the new environment. The fork references the parent via `parentId` and seeds each package from the parent's params. Re-forking against the same parent re-runs the seed — params and version reset to the parent's current values, and the `copy*` flags re-apply — so the mutation behaves as a desired-state converge (use it to reset local edits, or to backfill secrets and remote references that a prior call didn't request). Re-forking with a different parent is rejected; a fork's parent is immutable."
 input ForkEnvironmentInput {
   "Key-value attributes for this environment. Keys and values must be strings. Must conform to the organization's custom attributes for the environment scope."
   attributes: Map
 
-  "When true, copies the parent environment's default resource connections into the fork. Instance-level configuration is never copied — use `copyInstance` to seed instance params."
+  "When true, copies the parent environment's default resource connections into the fork."
   copyEnvironmentDefaults: Boolean
+
+  "When true, copies every package's remote resource references from the parent into the fork. Applies the same behavior as `copyInstance(copyRemoteReferences: true)` to every package in one call. Defaults to false."
+  copyRemoteReferences: Boolean
+
+  "When true, copies every package's secret values from the parent into the fork. Applies the same behavior as `copyInstance(copySecrets: true)` to every package in one call. Defaults to false."
+  copySecrets: Boolean
+
+  "When true, blocks `decommissionEnvironment` and any per-instance deployment with `action: DECOMMISSION` against this environment. Disable it via `updateEnvironment` before tearing down. Defaults to false."
+  decommissionProtection: Boolean
 
   "An optional description of the forked environment's purpose"
   description: String
@@ -7536,6 +7607,9 @@ type Environment {
 
   "Key-value attributes assigned directly to this environment. Attributes cascade to instances. Must conform to your organization's custom attributes for the `ENVIRONMENT` scope."
   attributes: Map!
+
+  "When true, blocks `decommissionEnvironment` and any per-instance deployment with `action: DECOMMISSION` against this environment. Disable it via `updateEnvironment` before tearing down. Defaults to false."
+  decommissionProtection: Boolean!
 
   """
   The full attribute map the authorization system evaluates policies against for

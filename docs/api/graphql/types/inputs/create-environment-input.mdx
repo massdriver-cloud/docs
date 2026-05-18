@@ -48,6 +48,7 @@ Create a new environment. Environments are isolated deployment contexts like pro
 ```graphql
 input CreateEnvironmentInput {
   attributes: Map
+  decommissionProtection: Boolean
   description: String
   id: String!
   name: String!
@@ -61,6 +62,10 @@ input CreateEnvironmentInput {
 
 #### [<code style={{ fontWeight: 'normal' }}>CreateEnvironmentInput.<b>attributes</b></code>](#attributes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#attributes\} 
 Key-value attributes for this environment. Keys and values must be strings. Must conform to the organization's custom attributes for the environment scope.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateEnvironmentInput.<b>decommissionProtection</b></code>](#decommission-protection)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#decommission-protection\} 
+When true, blocks `decommissionEnvironment` and any per-instance deployment with `action: DECOMMISSION` against this environment. Disable it via `updateEnvironment` before tearing down. Defaults to false.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CreateEnvironmentInput.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 

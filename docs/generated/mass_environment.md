@@ -1,0 +1,34 @@
+---
+id: mass_environment.md
+slug: /cli/commands/mass_environment
+title: Mass Environment
+sidebar_label: Mass Environment
+---
+## mass environment
+
+Environment management
+
+### Synopsis
+
+# Manage Environments
+
+[Environments](https://docs.massdriver.cloud/concepts/environments) are the workspaces that bundles will be deployed to.
+
+Environments can be modeled by application stage (production, staging, development), by region (prod-usw, prod-eu), and even ephemerally per developer (alice-dev, bob-dev).
+
+
+### Options
+
+```
+  -h, --help   help for environment
+```
+
+### SEE ALSO
+
+* [mass](/cli/commands/mass)	 - Massdriver Cloud CLI
+* [mass environment create](/cli/commands/mass_environment_create)	 - Create an environment
+* [mass environment default](/cli/commands/mass_environment_default)	 - Set an environment default connection
+* [mass environment export](/cli/commands/mass_environment_export)	 - Export an environment from Massdriver
+* [mass environment get](/cli/commands/mass_environment_get)	 - Get an environment from Massdriver
+* [mass environment list](/cli/commands/mass_environment_list)	 - List environments
+* [mass environment update](/cli/commands/mass_environment_update)	 - Update an environment's name, description, or attributes

@@ -46,10 +46,15 @@ Create a new environment by forking an existing one.
 
 The new environment is linked to the parent via its `parent` field. Instances
 are initialized from the project's components and seeded with the parent's
-instance `params`. Secrets and remote references are not copied — use
-`copyInstance` per instance to carry those over as well. Pass
+instance `params`. By default, secrets and remote references are not copied
+— set `copySecrets` / `copyRemoteReferences` to fan the equivalent
+`copyInstance` behavior across every package in one call. Pass
 `copyEnvironmentDefaults: true` to also copy the parent's default resource
 connections.
+
+Re-calling `forkEnvironment` with the same parent + `id` is a no-op that
+returns the existing environment. Re-calling with the same `id` but a
+different `parentId` is rejected — a fork's parent is immutable.
 
 
 
@@ -90,7 +95,7 @@ The identifier of the environment to fork from.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>forkEnvironment.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ForkEnvironmentInput!</b></code>](/api/graphql/types/inputs/fork-environment-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
-Attributes for the new environment. The fork references the parent via `parentId`, starts with blank instances, and does not copy any instance-level configuration. Use `copyInstance` per-instance if you want to seed configuration from the parent.
+Attributes for the new environment. The fork references the parent via `parentId` and seeds each package from the parent's params. Re-forking against the same parent re-runs the seed — params and version reset to the parent's current values, and the `copy*` flags re-apply — so the mutation behaves as a desired-state converge (use it to reset local edits, or to backfill secrets and remote references that a prior call didn't request). Re-forking with a different parent is rejected; a fork's parent is immutable.
 
 
 ### Type
