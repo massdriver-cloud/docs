@@ -91,7 +91,9 @@ Now that you've published your bundle, its available to deploy into Massdriver o
 1. Look for your **getting-started** bundle in the sidebar under "Your Bundles"
 2. Drag the bundle from the sidebar onto the canvas
 
-![Drag bundle onto canvas](img/drag_bundle.gif)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/add-component.webm" type="video/webm" />
+</video>
 
 3. Give your bundle instance a meaningful name (like "My First Bundle")
 
@@ -133,7 +135,9 @@ Refer to the [JSON Schema documentation](https://json-schema.org/understanding-j
 1. After configuring your parameters, click the **Deploy** button
 2. Massdriver will open a side terminal showing the deployment logs
 
-![Deploy bundle](img/deploy_bundle.gif)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/deploy-instance.webm" type="video/webm" />
+</video>
 
 4. Watch the deployment progress in real-time through the platform
 

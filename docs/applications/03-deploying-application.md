@@ -27,11 +27,15 @@ Navigate to [Organization > Credentials](https://app.massdriver.cloud/organizati
 
 Next navigate to [projects](https://app.massdriver.cloud/projects) and create a new project named `Example`. A [project](/concepts/projects-and-environments) is a parity boundary and used to replicate infrastructure and applications between _environments_ like application environments (staging, production) and/or regions (us-west-1, us-west-2, or prod us west 2).
 
-![Create Project](./create-project.gif).
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/create-project.webm" type="video/webm" />
+</video>
 
 Add an [environment](/concepts/projects-and-environments) named `Staging`.
 
-![Create Environment](./create-environment.gif)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/create-environment.webm" type="video/webm" />
+</video>
 
 Attach the credential you created in the `Create environment` screen.
 

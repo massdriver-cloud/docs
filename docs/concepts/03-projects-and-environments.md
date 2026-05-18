@@ -9,7 +9,9 @@ sidebar_label: Projects & Environments
 
 Projects are the _blueprints_ of infrastructure and application architectures in Massdriver. A project acts as the parity boundary for deploying your architecture against multiple environments.
 
-![Projects](./img/projects.png)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/create-project.webm" type="video/webm" />
+</video>
 
 All environments in the same project will always have the same diagram, but scale and authentication can be customized per environment.
 
@@ -28,7 +30,9 @@ Environments can be modeled by:
 - **Region**: prod-usw, prod-eu
 - **Developer**: alice-dev, bob-dev (ephemeral)
 
-![Environments](./img/targets.gif)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/create-environment.webm" type="video/webm" />
+</video>
 
 Massdriver separates authentication and scale from the parity that is enforced by a project. This allows environments to share the same "architecture" for staging and production, but have different scale for cost-saving purposes.
 

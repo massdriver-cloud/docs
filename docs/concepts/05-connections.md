@@ -13,7 +13,9 @@ A dotted line indicates that a [resource](/concepts/resources-and-types) _has no
 
 A solid line indicates that a [resource](/concepts/resources-and-types) _has_ been provisioned for the connection.
 
-![Connections](./img/connections.png)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/connecting-dependencies.webm" type="video/webm" />
+</video>
 
 ## Dynamic Configuration from Connections
 
