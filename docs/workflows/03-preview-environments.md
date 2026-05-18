@@ -143,10 +143,15 @@ jobs:
         if: github.event.action != 'closed'
         run: mass environment preview "pr${GITHUB_PR}" -f preview.yaml
 
-      # Tear down on close / merge.
+      # Tear down on close / merge. `decommission` runs the per-instance
+      # teardowns in reverse dependency order; `--follow` blocks until
+      # every instance is gone so the subsequent `delete` (which
+      # requires an empty environment) succeeds.
       - name: Decommission preview env
         if: github.event.action == 'closed'
-        run: mass environment delete "demo-pr${GITHUB_PR}"
+        run: |
+          mass environment decommission "demo-pr${GITHUB_PR}" --follow
+          mass environment delete "demo-pr${GITHUB_PR}"
 ```
 
 ## When to drop down to primitives
@@ -161,6 +166,10 @@ mass environment fork ecomm-production pr42 --copy-environment-defaults --copy-s
 mass environment default ecomm-pr42 <shared-vpc-resource-id>
 mass instance promote ecomm-staging-app --to ecomm-pr42-app
 mass environment deploy ecomm-pr42
+
+# When the PR merges:
+mass environment decommission ecomm-pr42 --follow
+mass environment delete ecomm-pr42
 ```
 
 Same APIs. Same outcomes. Same idempotency guarantees.
@@ -172,4 +181,4 @@ Same APIs. Same outcomes. Same idempotency guarantees.
   Environments](/applications/preview_environments/overview).
 - Primitives this composes: [`fork`](/workflows/fork-environment),
   [`promote`](/workflows/promote), `setEnvironmentDefault`,
-  `deployEnvironment`.
+  `deployEnvironment`, `decommissionEnvironment`.

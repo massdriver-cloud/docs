@@ -20,10 +20,10 @@ Three pieces make that possible:
   identifiers, ACLs, attributes, version history, and an audit log.
   Forking an environment is an API call, not a copy-paste exercise.
 - **Automations that already know your graph.** `forkEnvironment`,
-  `copyInstance`, `deployEnvironment`, `setEnvironmentDefault`, and
-  related mutations are idempotent by construction. The workflows in
-  this section compose them — no glue scripts, no "what-order-do-I-run-
-  these-in."
+  `copyInstance`, `deployEnvironment`, `decommissionEnvironment`,
+  `setEnvironmentDefault`, and related mutations are idempotent by
+  construction. The workflows in this section compose them — no glue
+  scripts, no "what-order-do-I-run-these-in."
 - **IaC as the plugin model.** Your Terraform, OpenTofu, Helm, and
   Bicep bundles tell Massdriver what a "database," "cluster," or
   "queue" is. Publish a bundle, and every workflow — fork, promote,
@@ -55,8 +55,9 @@ Every primitive is idempotent at the API layer. `forkEnvironment`
 re-fires its seed against an existing fork. `setEnvironmentDefault` is
 an upsert. `copyInstance` deep-merges and stages a plan.
 `deployEnvironment` cancels in-flight rollouts and replaces them.
-Re-running the same command converges; CI doesn't need to checkpoint
-state.
+`decommissionEnvironment` does the same in reverse — cancel the
+current wave, fan a teardown across every instance. Re-running the
+same command converges; CI doesn't need to checkpoint state.
 
 Composability follows from that. Use `mass environment preview <ID> -f
 preview.yaml` for the bundled flow, or drive the primitives directly:
