@@ -78,13 +78,6 @@ environment list:
 
 ![New fork in the environment list](./img/fork-environment-list.png)
 
-The same operation is available in the UI when you need a one-off rather
-than a scripted run:
-
-<video controls loop muted playsInline width="100%">
-  <source src="/img/screenshots/create-environment.webm" type="video/webm" />
-</video>
-
 ## Re-fork resets the fork
 
 `forkEnvironment` is a **converge**, not a one-shot create. Re-running it

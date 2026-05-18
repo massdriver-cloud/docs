@@ -18,13 +18,6 @@ mass environment preview pr42 -f preview.yaml
 
 ![Running mass environment preview with --follow](./img/preview-cli.png)
 
-Behind the scenes, every preview deploy is the same per-instance deploy
-flow the UI uses:
-
-<video controls loop muted playsInline width="100%">
-  <source src="/img/screenshots/deploy-instance.webm" type="video/webm" />
-</video>
-
 This is the four primitives — `forkEnvironment`,
 `setEnvironmentDefault`, `copyInstance`, `deployEnvironment` — composed
 behind a single declarative config. Every step is idempotent, so the

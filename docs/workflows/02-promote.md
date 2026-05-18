@@ -38,12 +38,6 @@ config and version, ready for a deploy:
 
 ![Production instance after promote](./img/promote-production-after.png)
 
-The same flow in the UI — propose the change, review the diff, deploy:
-
-<video controls loop muted playsInline width="100%">
-  <source src="/img/screenshots/proposing-changes.webm" type="video/webm" />
-</video>
-
 ## What gets promoted
 
 By default: the source's `params` (minus any field the bundle marks
