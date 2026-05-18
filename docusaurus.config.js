@@ -12,7 +12,7 @@ const inputsDirective = {
 };
 
 module.exports = {
-  title: 'Massdriver v2.2',
+  title: 'Massdriver Docs',
   tagline: 'The internal developer platform for the AI-Native era',
   url: 'https://docs.massdriver.cloud',
   baseUrl: '/',
@@ -42,7 +42,7 @@ module.exports = {
     navbar: {
       title: '',
       logo: {
-        alt: 'Massdriver',
+        alt: 'Massdriver v2.2',
         src: 'img/logo-black.svg',
         srcDark: 'img/logo-white.svg',
         height: '28px'
