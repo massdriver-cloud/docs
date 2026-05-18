@@ -16,6 +16,8 @@ lifecycle is one line:
 mass environment preview pr42 -f preview.yaml
 ```
 
+![Running mass environment preview with --follow](./img/preview-cli.png)
+
 This is the four primitives — `forkEnvironment`,
 `setEnvironmentDefault`, `copyInstance`, `deployEnvironment` — composed
 behind a single declarative config. Every step is idempotent, so the

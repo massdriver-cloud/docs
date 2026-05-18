@@ -15,7 +15,9 @@ For example: You may add the `aws-elasticache-redis` bundle to a project for mul
 
 In the example below, an **SNS Topic** is added to the project for tracking _created orders_ in an e-commerce application.
 
-![Components](./img/manifests.gif)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/add-component.webm" type="video/webm" />
+</video>
 
 ## Instances
 
@@ -45,7 +47,9 @@ Deployments are a record of provisioning or decommissioning infrastructure or ap
 
 Massdriver keeps a record of every deployment, whether provisioning or decommissioning infrastructure or applications.
 
-![Deployments](./img/deployments.gif)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/deploy-instance.webm" type="video/webm" />
+</video>
 
 ### Deployment Comparison
 

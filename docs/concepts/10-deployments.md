@@ -9,7 +9,9 @@ A **deployment** is a queued attempt to make running infrastructure match an [in
 
 This page covers how params reach the queue, how the queue drains, and what each deployment status means.
 
-![Deployments](./img/deployments.gif)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/deploy-instance.webm" type="video/webm" />
+</video>
 
 ## Instances and deployments
 
