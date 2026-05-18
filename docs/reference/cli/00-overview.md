@@ -78,7 +78,9 @@ To find your organization slug, hover over your organization name logo in the to
 3. Give the service account a name
 4. Click the 'clipboard' icon.
 
-![](/img/service-accounts.png)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/create-service-account.webm" type="video/webm" />
+</video>
 
 ### Configuration Sources
 

@@ -16,7 +16,9 @@ To create a service account:
 3. Give the service account a name
 4. Click the 'clipboard' icon.
 
-![](./service-accounts.png)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/create-service-account.webm" type="video/webm" />
+</video>
 
 You'll need to export your key to the following environment variable:
 
