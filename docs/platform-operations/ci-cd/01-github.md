@@ -9,6 +9,12 @@ sidebar_label: GitHub Action
 
 This guide will walk you through the process of setting up a GitHub Action to build, push, and deploy app changes to your chosen cloud container repository.
 
+:::tip Source and ready-to-fork workflows
+
+The actions are open source at [`massdriver-cloud/actions`](https://github.com/massdriver-cloud/actions). Drop-in starter workflows for bundle publishing, image build + deploy, and GitOps-style deploys live in [`example_workflows/`](https://github.com/massdriver-cloud/actions/tree/main/example_workflows).
+
+:::
+
 :::note
 
 Before getting started, you'll need:
@@ -177,7 +183,7 @@ Then your image tag path would be `.runtime.image.tag`.
 * If your `Dockerfile` is in a subdirectory, you can update the `build-context` to point to that directory. For example, if your `Dockerfile` is in the `./app` directory, you can set the `build-context` to `./app`.
 * If your `massdriver.yaml` file is in a subdirectory, you can update the `build-directory` to point to that directory. For example, if your `massdriver.yaml` file is in the `./app/massdriver` directory, you can set the `build-directory` to `./app/massdriver`.
 
-View the Massdriver GitHub Actions on the [GitHub Marketplace](https://github.com/marketplace/actions/massdriver-actions).
+View the Massdriver GitHub Actions on the [GitHub Marketplace](https://github.com/marketplace/actions/massdriver-actions), browse the source at [`massdriver-cloud/actions`](https://github.com/massdriver-cloud/actions), or copy a starter from [`example_workflows/`](https://github.com/massdriver-cloud/actions/tree/main/example_workflows).
 
 ## Per-PR Preview Environments
 
