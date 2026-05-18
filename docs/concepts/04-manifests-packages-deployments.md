@@ -27,7 +27,7 @@ An **instance** (previously called a "package") is a component as it exists in a
 
 In Massdriver, naming conventions for cloud resources are managed for you. The instance's identifier can be seen by clicking on the component and selecting the `Details` tab. The `ID` will be the naming prefix for all resources created when this instance is deployed.
 
-![Instances](./img/packages.png)
+![Instance details panel](/img/screenshots/instance-details.png)
 
 ### Instance Alarms
 
