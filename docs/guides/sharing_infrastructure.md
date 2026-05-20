@@ -228,11 +228,11 @@ Network peering is an advanced scenario that is in the future of many tech orgs.
 
 To peer networks using remote reference, we suggest making a "Peering" project separate from your Shared Infrastructure project. This additional project will let you create remote references to environments that are in the same project, i.e.: your shared infrastructure project.
 
-Add two VPC bundles to the canvas and a peering bundle.
+From the Bundles panel, add two `aws-vpc` components and one `aws-vpc-peering-connection` component to the canvas, then connect each VPC to the peering bundle. Each VPC's region/CIDR is configured from its own **Config** tab — the peering bundle handles the route tables once both VPCs are provisioned.
 
-Here I will peer our US VPC to our EU VPC.
-
-![Peering VPCs in Massdriver](./sharing_infrastructure/vpc-peering.gif)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/peering-connection.webm" type="video/webm" />
+</video>
 
 ## Advanced Scenarios
 
