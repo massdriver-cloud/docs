@@ -197,7 +197,11 @@ In this scenario we would add a Kubernetes cluster to our application project.
 
 In production, we'd deploy a cluster owned by the ECommerce Team. In preview environments we could "replace" the Kubernetes box on our diagram with the Kubernetes cluster shared from the Shared Infrastructure project.
 
-![Setting a Remote Reference](./sharing_infrastructure/package-set-remote-reference.gif)
+Click the instance with the unfulfilled dependency, open its **Dependencies** tab, and pick the shared resource from the **Use a remote reference** dropdown — every resource of the right type available to the org appears in the list:
+
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/set-remote-reference.webm" type="video/webm" />
+</video>
 
 **Example 2:**
 
