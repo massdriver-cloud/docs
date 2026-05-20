@@ -72,7 +72,7 @@ You can now click configure and set your values. You can set any values here tha
 
 Once your application has been configured and connected, it can also be deployed from our CLI.
 
-The `deploy` command takes the instance identifier — the slug that prefixes every cloud resource the instance creates. You can find it on the instance's **Overview** tab under **Identifiers → Instance ID** (e.g. `inventory-staging-database` in the screenshot below).
+The `deploy` command takes the **instance identifier** — the prefix Massdriver applies to every cloud resource the instance creates. You can find it on the instance's **Overview** tab under **Identifiers → Instance ID** (e.g. `inventory-staging-database` in the screenshot below).
 
 ![Instance details panel](/img/screenshots/instance-details.png)
 
@@ -84,7 +84,7 @@ export MASSDRIVER_API_KEY=BAR
 mass deploy example-staging-phoenixchat
 ```
 
-Your Organization ID is the slug right after `/orgs/` in the URL of **every** Massdriver page — so any tab you have open already shows it. For example, `https://app.massdriver.cloud/orgs/sandbox/projects` belongs to the `sandbox` org.
+Your Organization ID is the path segment right after `/orgs/` in the URL of **every** Massdriver page — so any tab you have open already shows it. For example, `https://app.massdriver.cloud/orgs/sandbox/projects` belongs to the `sandbox` org.
 
 <video controls loop muted playsInline width="100%">
   <source src="/img/screenshots/org-id.webm" type="video/webm" />
