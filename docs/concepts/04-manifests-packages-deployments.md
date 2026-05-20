@@ -57,9 +57,11 @@ Massdriver keeps a record of every deployment, whether provisioning or decommiss
 
 ### Deployment Comparison
 
-Massdriver makes it easy to view the difference in configuration between deployments. It's a great way to provide information to auditors, or to debug issues related to a recent deployment.
+From an instance's **History** tab, pick any two deployments and Massdriver shows the parameter and version diff side-by-side. Toggle **Hide identical** to focus on what changed, search for a specific path, and pull receipts for an auditor or a debugging session in one view.
 
-![Deployment Comparison](./img/deployments-comparison.gif)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/compare-deployments.webm" type="video/webm" />
+</video>
 
 ## The Lifecycle
 
