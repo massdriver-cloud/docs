@@ -67,7 +67,7 @@ An optional third configuration is:
 
 #### Find your organization ID
 
-Your organization slug is the path segment right after `/orgs/` in the URL on **every** Massdriver page — pull it from any open tab. For example, `https://app.massdriver.cloud/orgs/sandbox/projects` belongs to the `sandbox` org.
+Your organization ID is the path segment right after `/orgs/` in the URL on **every** Massdriver page — pull it from any open tab. For example, `https://app.massdriver.cloud/orgs/sandbox/projects` belongs to the `sandbox` org.
 
 <video controls loop muted playsInline width="100%">
   <source src="/img/screenshots/org-id.webm" type="video/webm" />
