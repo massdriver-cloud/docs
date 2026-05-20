@@ -82,11 +82,11 @@ This tutorial uses:
 * [SOC2 / HIPAA compliant AWS VPC](https://massdriver.cloud/marketplace/aws-vpc) bundle 
 * [SOC2 / HIPAA compliant AWS EKS Cluster](https://www.massdriver.cloud/marketplace/aws-eks-cluster) bundle
 
-Open the **Bundle Catalog**:
+Open the **Bundles** panel from the canvas toolbar, search for the bundles you want, and click each one to add a component to the project. The add-component dialog asks for a friendly **Component Name** and a short **Component ID** — the ID becomes the first segment of every instance identifier (e.g. component ID `vpc` in the `staging` environment yields the instance `staging-vpc`).
 
-![Bundle button](./sharing_infrastructure/bundle-bar-button.gif)
-
-Then drag both bundles from the bundle sidebar onto your project canvas.
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/search-bundles.webm" type="video/webm" />
+</video>
 
 From here you could click the "+" button to add a production environment, an EU environment, or however your team chooses to managed and isolate infrastructure.
 
