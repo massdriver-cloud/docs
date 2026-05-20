@@ -58,7 +58,9 @@ Name: Shared Infra
 Abbreviation: si
 ```
 
-![Create Project](/img/ui/project-create.png)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/create-project.webm" type="video/webm" />
+</video>
 
 Create a staging environment for staging, QA, or preview environments workloads to use.
 
@@ -69,7 +71,9 @@ Name: Staging
 Abbreviation: staging
 ```
 
-![Create Environment](/img/ui/environment-create-staging.png)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/create-environment.webm" type="video/webm" />
+</video>
 
 Next we will add an AWS VPC and an EKS Cluster and provision both. These resources can be shared with other projects. Teams will be able to use and deploy to them, but not configure or manage these resources.
 
@@ -103,7 +107,9 @@ Name: ECommerce API
 Abbreviation: ecomm
 ```
 
-![Create Ecomm Environment](/img/ui/project-create-ecomm.png)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/create-project.webm" type="video/webm" />
+</video>
 
 Next, we'll create the a staging environment for the E-commerce Team's workloads.
 
@@ -114,7 +120,9 @@ Name: Staging
 Abbreviation: staging
 ```
 
-![Create Environment](/img/ui/environment-create-staging.png)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/create-environment.webm" type="video/webm" />
+</video>
 
 Here you will need to add some cloud resources and an app. This tutorial uses:
 
