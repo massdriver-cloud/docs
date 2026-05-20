@@ -219,11 +219,13 @@ At this point the application bundle can be published to the Massdriver bundle m
 mass bundle publish
 ```
 
-You should see a success message. Upon visiting a project canvas in Massdriver, your `k8s-phoenix-chat-example` should be visible in the bundle bar prefixed with your organization name.
+You should see a success message. On any project canvas, open the **Bundles** panel and search for the bundle name — `k8s-phoenix-chat-example` — and it'll be in the results.
 
-Add Kubernetes and Postgres to your canvas, connect, and [deploy](/applications/deploy)!
+Click the bundle to add it to the project. Give the component a friendly **Component Name** (e.g. `Checkout Service`) and a short **Component ID** (the first segment of every instance identifier the bundle creates). Connect it to the Kubernetes cluster and PostgreSQL instances it depends on, configure the **Config** tab, and click **Provision** — or follow [Deploy](/applications/deploy) for the full walk-through.
 
-![Published Application](./published-application.gif)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/bundle-new-deploy-new-application.webm" type="video/webm" />
+</video>
 
 If you would like to automatically publish your application bundle in CI/CD, see the [GitHub Actions guide](/platform-operations/ci-cd/github-action).
 
