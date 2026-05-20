@@ -160,17 +160,19 @@ The resource is a "default" for the environment and is _not_ shown on the canvas
 
 In our ECommerce Project we'll set up two environment defaults.
 
-**Set the Environment's Network**
+Open the **Environment Defaults** flag at the top of the canvas, click the pencil, and pick a **Resource Type** — then choose the specific resource to use as the default for that type.
 
-Click the cloud icon on the top bar and select your network.
+**Set the environment's Network**
 
-![](./sharing_infrastructure/environment-set-default-network.gif)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/set-env-default-network.webm" type="video/webm" />
+</video>
 
-**Set the Kubernetes Cluster to use for all apps in this project:**
+**Set the Kubernetes Cluster to use for all apps in this project**
 
-Click the Kubernetes logo and select your cluster.
-
-![](./sharing_infrastructure/environment-kubernetes-environment-default.gif)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/set-env-default-kubernetes.webm" type="video/webm" />
+</video>
 
 :::note
 By default only VPCs, Kubernetes clusters, and cloud credentials can be environment defaults. Other resource types can be configured as defaults (i.e.: spark clusters).
