@@ -69,7 +69,7 @@ An optional third configuration is:
 
 To find your organization slug, hover over your organization name logo in the top left corner of the Massdriver UI and click the copy button next to your organization slug.
 
-![Finding your Org ID](../applications/org-id.png)
+![Finding your Org ID](../../applications/org-id.png)
 
 #### Creating a Service Account
 
