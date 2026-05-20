@@ -67,9 +67,11 @@ An optional third configuration is:
 
 #### Find your organization ID
 
-To find your organization slug, hover over your organization name logo in the top left corner of the Massdriver UI and click the copy button next to your organization slug.
+Your organization slug is the path segment right after `/orgs/` in the URL on **every** Massdriver page — pull it from any open tab. For example, `https://app.massdriver.cloud/orgs/sandbox/projects` belongs to the `sandbox` org.
 
-![Finding your Org ID](../../applications/org-id.png)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/org-id.webm" type="video/webm" />
+</video>
 
 #### Creating a Service Account
 

@@ -80,6 +80,8 @@ export MASSDRIVER_API_KEY=BAR
 mass deploy example-staging-phoenixchat
 ```
 
-Your Organization ID can be found by hovering over your org name in the sidebar:
+Your Organization ID is the slug right after `/orgs/` in the URL of **every** Massdriver page — so any tab you have open already shows it. For example, `https://app.massdriver.cloud/orgs/sandbox/projects` belongs to the `sandbox` org.
 
-![Organization ID](./org-id.png)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/org-id.webm" type="video/webm" />
+</video>
