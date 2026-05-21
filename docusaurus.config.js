@@ -71,10 +71,6 @@ module.exports = {
               href: 'https://stackoverflow.com/questions/tagged/massdriver'
             },
             {
-              href: 'https://roadmap.massdriver.cloud/',
-              label: 'Roadmap'
-            },
-            {
               label: 'Twitter',
               href: 'https://twitter.com/massdriver'
             },
