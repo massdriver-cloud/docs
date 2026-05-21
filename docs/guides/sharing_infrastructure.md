@@ -58,7 +58,9 @@ Name: Shared Infra
 Abbreviation: si
 ```
 
-![Create Project](/img/ui/project-create.png)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/create-project.webm" type="video/webm" />
+</video>
 
 Create a staging environment for staging, QA, or preview environments workloads to use.
 
@@ -69,7 +71,9 @@ Name: Staging
 Abbreviation: staging
 ```
 
-![Create Environment](/img/ui/environment-create-staging.png)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/create-environment.webm" type="video/webm" />
+</video>
 
 Next we will add an AWS VPC and an EKS Cluster and provision both. These resources can be shared with other projects. Teams will be able to use and deploy to them, but not configure or manage these resources.
 
@@ -78,11 +82,11 @@ This tutorial uses:
 * [SOC2 / HIPAA compliant AWS VPC](https://massdriver.cloud/marketplace/aws-vpc) bundle 
 * [SOC2 / HIPAA compliant AWS EKS Cluster](https://www.massdriver.cloud/marketplace/aws-eks-cluster) bundle
 
-Open the **Bundle Catalog**:
+Open the **Bundles** panel from the canvas toolbar, search for the bundles you want, and click each one to add a component to the project. The add-component dialog asks for a friendly **Component Name** and a short **Component ID** — the ID becomes the first segment of every instance identifier (e.g. component ID `vpc` in the `staging` environment yields the instance `staging-vpc`).
 
-![Bundle button](./sharing_infrastructure/bundle-bar-button.gif)
-
-Then drag both bundles from the bundle sidebar onto your project canvas.
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/search-bundles.webm" type="video/webm" />
+</video>
 
 From here you could click the "+" button to add a production environment, an EU environment, or however your team chooses to managed and isolate infrastructure.
 
@@ -103,7 +107,9 @@ Name: ECommerce API
 Abbreviation: ecomm
 ```
 
-![Create Ecomm Environment](/img/ui/project-create-ecomm.png)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/create-project.webm" type="video/webm" />
+</video>
 
 Next, we'll create the a staging environment for the E-commerce Team's workloads.
 
@@ -114,7 +120,9 @@ Name: Staging
 Abbreviation: staging
 ```
 
-![Create Environment](/img/ui/environment-create-staging.png)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/create-environment.webm" type="video/webm" />
+</video>
 
 Here you will need to add some cloud resources and an app. This tutorial uses:
 
@@ -152,17 +160,19 @@ The resource is a "default" for the environment and is _not_ shown on the canvas
 
 In our ECommerce Project we'll set up two environment defaults.
 
-**Set the Environment's Network**
+Open the **Environment Defaults** flag at the top of the canvas, click the pencil, and pick a **Resource Type** — then choose the specific resource to use as the default for that type.
 
-Click the cloud icon on the top bar and select your network.
+**Set the environment's Network**
 
-![](./sharing_infrastructure/environment-set-default-network.gif)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/set-env-default-network.webm" type="video/webm" />
+</video>
 
-**Set the Kubernetes Cluster to use for all apps in this project:**
+**Set the Kubernetes Cluster to use for all apps in this project**
 
-Click the Kubernetes logo and select your cluster.
-
-![](./sharing_infrastructure/environment-kubernetes-environment-default.gif)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/set-env-default-kubernetes.webm" type="video/webm" />
+</video>
 
 :::note
 By default only VPCs, Kubernetes clusters, and cloud credentials can be environment defaults. Other resource types can be configured as defaults (i.e.: spark clusters).
@@ -187,7 +197,11 @@ In this scenario we would add a Kubernetes cluster to our application project.
 
 In production, we'd deploy a cluster owned by the ECommerce Team. In preview environments we could "replace" the Kubernetes box on our diagram with the Kubernetes cluster shared from the Shared Infrastructure project.
 
-![Setting a Remote Reference](./sharing_infrastructure/package-set-remote-reference.gif)
+Click the instance with the unfulfilled dependency, open its **Dependencies** tab, and pick the shared resource from the **Use a remote reference** dropdown — every resource of the right type available to the org appears in the list:
+
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/set-remote-reference.webm" type="video/webm" />
+</video>
 
 **Example 2:**
 
@@ -214,11 +228,11 @@ Network peering is an advanced scenario that is in the future of many tech orgs.
 
 To peer networks using remote reference, we suggest making a "Peering" project separate from your Shared Infrastructure project. This additional project will let you create remote references to environments that are in the same project, i.e.: your shared infrastructure project.
 
-Add two VPC bundles to the canvas and a peering bundle.
+From the Bundles panel, add two `aws-vpc` components and one `aws-vpc-peering-connection` component to the canvas, then connect each VPC to the peering bundle. Each VPC's region/CIDR is configured from its own **Config** tab — the peering bundle handles the route tables once both VPCs are provisioned.
 
-Here I will peer our US VPC to our EU VPC.
-
-![Peering VPCs in Massdriver](./sharing_infrastructure/vpc-peering.gif)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/peering-connection.webm" type="video/webm" />
+</video>
 
 ## Advanced Scenarios
 

@@ -27,3 +27,6 @@ REORGANIZATION_PLAN.md
 blog-draft-*.md
 package-lock.json
 .claude/
+
+# Raw screen recordings — only the converted .webm should be committed
+static/img/screenshots/*.mov

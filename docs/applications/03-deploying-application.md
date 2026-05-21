@@ -21,9 +21,13 @@ To finish this guide you will need:
 
 Log into [Massdriver](https://app.massdriver.cloud/login).
 
-Navigate to [Organization > Credentials](https://app.massdriver.cloud/organization/credentials) and click **Create AWS credential** and follow the instructions on the screen.
+Credentials in Massdriver are just **resources** — the same primitive as a database, a bucket, or a VPC. Cloud-provider auth is added to the platform by publishing a resource type for that cloud's auth primitive: an `aws-iam-role` bundle enables AWS, an Azure service-principal bundle enables Azure, and so on. Anything you can model as a resource you can also **import**.
 
-![Add AWS Credential](./add-credential.gif)
+Open **Resources** in the sidebar, click **Import Resource**, and pick the resource type you want (`AWS IAM Role` in this guide). The right side of the import dialog walks through creating the role on the cloud side via AWS CLI, AWS Console, or a CloudFormation one-click — paste the resulting role ARN back into the form and click **Import Resource**.
+
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/importing-resources.webm" type="video/webm" />
+</video>
 
 Next navigate to [projects](https://app.massdriver.cloud/projects) and create a new project named `Example`. A [project](/concepts/projects-and-environments) is a parity boundary and used to replicate infrastructure and applications between _environments_ like application environments (staging, production) and/or regions (us-west-1, us-west-2, or prod us west 2).
 
@@ -61,16 +65,16 @@ In this example you could use `aws-rds-postgres`, `aws-aurora-serverless-postgre
 
 :::
 
-Once all of your infrastructure has booted up, you can add and connect your application: `YOUR_ORG_PREFIX/k8s-phoenix-chat-example`.
+Once all of your infrastructure has booted up, you can add and connect your application: `k8s-phoenix-chat-example`.
 
 You can now click configure and set your values. You can set any values here that makes sense for your application. A publicly hosted docker repository can be used: `massdriver/cloud/phoenix-chat-example`.
 
 
 Once your application has been configured and connected, it can also be deployed from our CLI.
 
-The `deploy` command expects the instance identifier in the format of `foo-bar-baz`. If you followed the above example it will be `example-staging-phoenixchat`. If you can't remember the identifier, mouse over its human-friendly name in the UI and it will be displayed.
+The `deploy` command takes the **instance identifier** — the prefix Massdriver applies to every cloud resource the instance creates. You can find it on the instance's **Overview** tab under **Identifiers → Instance ID** (e.g. `inventory-staging-database` in the screenshot below).
 
-![Instance Name](./package-name.png)
+![Instance details panel](/img/screenshots/instance-details.png)
 
 `mass deploy` can be added to your CI/CD pipeline to trigger deployments to your Kubernetes cluster.
 
@@ -80,6 +84,8 @@ export MASSDRIVER_API_KEY=BAR
 mass deploy example-staging-phoenixchat
 ```
 
-Your Organization ID can be found by hovering over your org name in the sidebar:
+Your Organization ID is the path segment right after `/orgs/` in the URL of **every** Massdriver page — so any tab you have open already shows it. For example, `https://app.massdriver.cloud/orgs/sandbox/projects` belongs to the `sandbox` org.
 
-![Organization ID](./org-id.png)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/org-id.webm" type="video/webm" />
+</video>

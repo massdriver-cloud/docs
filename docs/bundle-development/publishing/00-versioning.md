@@ -174,7 +174,11 @@ mass bundle publish -d
 
 #### Version Selection Interface
 
-![Instance version configuration panel](img/package-version-configuration.png)
+Click an instance on the canvas and open **Edit Version**. The picker offers two tabs: **Release Channels** (auto-generated tilde patterns like `~0`, `~0.1`, plus `latest`) and **Versions** (exact published semver). Toggle **Show development releases** to include `-dev.TIMESTAMP` builds. Saving triggers a deploy with the new version.
+
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/instance-version-management.webm" type="video/webm" />
+</video>
 
 In the instance configuration panel, developers can set the version constraint:
 

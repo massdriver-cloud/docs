@@ -232,9 +232,11 @@ To confirm that your custom resource type is working as expected for your bundle
 
 Massdriver lets you fully customize the onboarding experience for cloud credentials and other resource types. You can define onboarding instructions, UI labels, and icons directly in your resource type using the `$md` and `$md.ui` fields. This enables you to provide clear, step-by-step guidance for your users when they add new credentials.
 
-For example, the onboarding screen for cloud credentials (see below) is driven by the `ui.instructions` array in your resource type. Each instruction can include a label and content, allowing you to walk users through complex setup steps with clarity.
+For example, the onboarding panel that appears on the right side of the **Import Resource** dialog (shown below for the `aws-iam-role` type) is rendered straight from its `ui.instructions` array. Each instruction has a `label` and `content` field, so you can walk users through CLI commands, console clicks, or a one-click flow — whichever combination makes sense for the resource.
 
-![Cloud Credentials Onboarding](../../static/img/ui/credentials-page.png)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/importing-resources.webm" type="video/webm" />
+</video>
 
 **Relevant schema fields:**
 - `$md.label`: Sets the display name for your resource type in the UI.
@@ -251,9 +253,11 @@ Currently, icons (as data URLs) and `instructions.content` (as base64-encoded ma
 
 Massdriver environments support "environment default" resources—things like credentials, networks, or DNS zones that are commonly shared across multiple bundles. You can control which resource types are eligible to be set as environment defaults by specifying the `ui.environmentDefaultGroup` field in your resource type.
 
-When you set this field, your resource type will appear in the environment overlay, allowing users to assign a default resource for that group (e.g., default network, default credentials) without having to connect it individually to every bundle. This streamlines environment setup and reduces visual clutter in complex diagrams.
+When you set this field, your resource type appears as a selectable **Resource Type** in the **Environment Defaults** dialog, letting users pin a default for that type without wiring it into every bundle. The recording below shows the dialog in action — setting a Kubernetes Cluster default for an environment.
 
-![Environment Defaults Overlay](../../static/img/ui/environment-defaults.png)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/set-env-default-kubernetes.webm" type="video/webm" />
+</video>
 
 **Relevant schema fields:**
 - `$md.ui.environmentDefaultGroup`: Adds your resource type to the "environment default" overlay under the specified group (e.g., `networking`, `authentication`, `dns`). This is what makes a resource type eligible to be set as a default in an environment.

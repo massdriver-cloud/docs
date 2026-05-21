@@ -38,9 +38,11 @@ Massdriver separates authentication and scale from the parity that is enforced b
 
 ## Environment Comparison
 
-It can be difficult to figure the differences in configuration between two different environments. Massdriver Environments support a visual comparison, quickly highlighting the difference between staging and production, US West and the EU, or any combination of environments.
+Open any environment, hit **Compare**, and pick two environments in the same project to see the diff across every component. Filter to a single component, toggle **Hide identical** to focus on what changed, or search for a specific path. Quick way to answer "what's different about staging vs production" or "what's missing in this PR env" without grepping params by hand.
 
-![Environment Comparison](./img/targets-comparison.gif)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/compare-environments.webm" type="video/webm" />
+</video>
 
 ## Related Documentation
 

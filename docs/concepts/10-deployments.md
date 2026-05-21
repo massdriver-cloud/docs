@@ -126,9 +126,11 @@ The following are looked up at run time, not snapshotted:
 - **Secrets** — encrypted at rest and fetched fresh on dispatch. Rotating a secret takes effect on the next deployment without re-queuing.
 - **Bundle release contents** — the snapshot pins the version string; the bundle artifact is pulled from the registry at run time. Bundle releases are immutable once published, so the result is still deterministic.
 
-Past deployments can be audited via the `params` field. Two deployments can be compared side-by-side with the deployment comparison view.
+Past deployments can be audited via the `params` field. Two deployments can be compared side-by-side from an instance's **History** tab — pick any two, and Massdriver renders the diff with a **Hide identical** toggle and a path search.
 
-![Deployment Comparison](./img/deployments-comparison.gif)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/compare-deployments.webm" type="video/webm" />
+</video>
 
 ## What happens when a deployment fails
 

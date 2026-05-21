@@ -36,7 +36,7 @@ See the [authentication guide](/api/graphql/guides/authentication) for additiona
 
 Explore and run queries interactively against your organization from the **API Workbench** in the Massdriver console — it's the bottom icon in the left sidebar. The workbench uses your active console session, so no token is required.
 
-![API Workbench in the Massdriver console](./img/api-workbench.png)
+![API Workbench in the Massdriver console](/img/screenshots/api-workbench.png)
 
 ## Authorization
 

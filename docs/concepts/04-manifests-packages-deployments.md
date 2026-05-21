@@ -31,15 +31,19 @@ In Massdriver, naming conventions for cloud resources are managed for you. The i
 
 ### Instance Alarms
 
-Instances can integrate monitors and alarms into Massdriver's notification system. In the example below, a number of CloudWatch alarms are visible for Aurora Postgres.
+Instances surface alarms in the **Monitor** tab of the instance pane. Click any component on the canvas, open **Monitor**, and Massdriver lists the alarms wired up for that instance. See [Monitoring & Alarms](/platform-operations/monitoring-and-alarms) for how to declare them.
 
-![Instance Alarms](./img/packages-alarms.gif)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/instance-alarms.webm" type="video/webm" />
+</video>
 
 ### Instance Resources
 
-Cloud resources created by the instance are tracked within Massdriver. Below is a view of the resources created by the [AWS EKS Cluster](https://github.com/massdriver-cloud/aws-eks-cluster) bundle.
+Every cloud resource an instance creates is tracked on the instance itself. Click an instance, open the **Resources** tab, and Massdriver shows the resource entries the provisioner produced — along with the ABAC tags attached to each. Drill into a single resource to see its individual properties (hostname, port, username, etc.), copy any value to your clipboard, or pull the URL straight from the panel.
 
-![Instance Resources](./img/packages-resources.gif)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/instance-resources.webm" type="video/webm" />
+</video>
 
 ## Deployments
 
@@ -53,9 +57,11 @@ Massdriver keeps a record of every deployment, whether provisioning or decommiss
 
 ### Deployment Comparison
 
-Massdriver makes it easy to view the difference in configuration between deployments. It's a great way to provide information to auditors, or to debug issues related to a recent deployment.
+From an instance's **History** tab, pick any two deployments and Massdriver shows the parameter and version diff side-by-side. Toggle **Hide identical** to focus on what changed, search for a specific path, and pull receipts for an auditor or a debugging session in one view.
 
-![Deployment Comparison](./img/deployments-comparison.gif)
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/compare-deployments.webm" type="video/webm" />
+</video>
 
 ## The Lifecycle
 

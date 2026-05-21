@@ -158,9 +158,9 @@ stages:
 ### Where can I find my secrets, project, environment, and component names?
 
 * [Secrets & vars](#set-secrets-and-vars)
-* `Project`, `environment`, and `component` names are found in the instance identifier shown in the Massdriver UI:
+* `Project`, `environment`, and `component` names are the three segments of the instance identifier shown on the instance's **Overview** tab — for example `inventory-staging-database` decomposes into project `inventory`, environment `staging`, component `database`:
 
-![Slug Name](slug.png)
+![Instance details panel](/img/screenshots/instance-details.png)
 
 ### Where can I find my image tag path?
 
