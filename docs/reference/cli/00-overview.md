@@ -75,7 +75,7 @@ Your organization ID is the path segment right after `/orgs/` in the URL on **ev
 
 #### Creating a Service Account
 
-1. Visit the [Service Accounts page](https://app.massdriver.cloud/service-accounts)
+1. Open the [Service Accounts page](https://app.massdriver.cloud/orgs?destination=/settings/service-accounts) in your org's settings.
 2. Click 'Add Service Account'
 3. Give the service account a name
 4. Click the 'clipboard' icon.

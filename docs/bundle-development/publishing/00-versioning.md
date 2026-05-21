@@ -76,7 +76,11 @@ mass bundle publish --development
 
 This approach lets you stand up multiple real-world examples of your infrastructure changes before committing to a final release, ensuring your bundles work correctly across different cloud environments and configurations.
 
-![Bundle instances showing version information](img/bundle-version-browser.png)
+Open the bundle's repository page (**Repositories** → click the bundle) to see every instance and deployment that uses it. The **Instances** tab lists every instance using any version of the bundle — filter by a specific version to see exactly who picks up a development release. The **Deployments** tab shows the deployment log across the org, filterable by status (running, completed, failed, proposed, etc.) so you can audit how a release is rolling out.
+
+<video controls loop muted playsInline width="100%">
+  <source src="/img/screenshots/repo-bundle-version-instances-deployments.webm" type="video/webm" />
+</video>
 
 ## Release Channels
 
