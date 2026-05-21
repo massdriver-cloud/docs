@@ -11,7 +11,7 @@ Organizations are the top-level entity in Massdriver. They are the primary way t
 
 Members are added through groups — every user belongs to one or more groups, and the group's policies determine what they can do.
 
-1. Open **Organization Settings** and select the **Groups** tab.
+1. Open the [**Groups**](https://app.massdriver.cloud/orgs?destination=/settings/groups) tab in your org's settings.
 2. Click the group you want to add the user to (e.g., `Developers`, `Organization Admin`).
 3. In the **Members** section, click **Add member**.
 4. Enter the user's email address and click **Add member** in the modal.

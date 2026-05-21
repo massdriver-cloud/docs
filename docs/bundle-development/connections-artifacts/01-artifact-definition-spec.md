@@ -69,19 +69,6 @@ ui:
   # only see it as an environment default.
   connectionOrientation: link
 
-  # environmentDefaultGroup (optional)
-  # Makes this resource type available as an environment default under the
-  # specified group. Environment defaults are shared resources (credentials,
-  # networks, DNS zones) that can be automatically connected to bundles.
-  #
-  # Common groups:
-  #   - "credentials" (special): Appears on the credentials page and enables
-  #                              Massdriver to fetch credentials for workflows
-  #   - "networking": Network-related defaults (VPCs, subnets)
-  #   - "dns": DNS zones and records
-  #   - Any custom name that makes sense for your organization
-  environmentDefaultGroup: credentials
-
   # instructions (optional)
   # Onboarding instructions shown to users when they create resources of this
   # type. Each instruction becomes a step in the onboarding wizard.
@@ -316,7 +303,6 @@ icon: https://cdn.example.com/postgres-icon.svg
 
 ui:
   connectionOrientation: link
-  environmentDefaultGroup: databases
   instructions:
     - label: Overview
       path: ./instructions/overview.md
@@ -469,7 +455,6 @@ connections:
 | `label` | Yes | Display name in UI |
 | `icon` | No | URL to icon image |
 | `ui.connectionOrientation` | No | `"link"` or `"environmentDefault"` |
-| `ui.environmentDefaultGroup` | No | Group name for environment defaults |
 | `ui.instructions` | No | Array of onboarding steps |
 | `ui.instructions[].label` | Yes | Step title |
 | `ui.instructions[].path` | Yes | Path to markdown file |

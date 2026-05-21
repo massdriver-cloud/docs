@@ -22,7 +22,7 @@ You declare **custom attributes** at the organization level to establish your at
 
 ## Custom Attributes
 
-Custom attributes define what structural attribute keys exist in your organization, where they are set, and what values are valid.
+Custom attributes define what structural attribute keys exist in your organization, where they are set, and what values are valid. Manage them on the [**Attributes**](https://app.massdriver.cloud/orgs?destination=/settings/attributes) tab in your org's settings.
 
 ### Fields
 
@@ -201,7 +201,7 @@ The action determines what kind of entity the policy applies to — `project:vie
 
 ### Principals
 
-Policies are attached to **groups**. Group membership determines who the policy applies to; the policy's `action` and `conditions` determine what they can do and against which entities.
+Policies are attached to **groups**. Group membership determines who the policy applies to; the policy's `action` and `conditions` determine what they can do and against which entities. Manage groups, policies, and members on the [**Groups**](https://app.massdriver.cloud/orgs?destination=/settings/groups) tab in your org's settings.
 
 For per-repo or per-resource sharing — making a specific OCI repo or resource visible to other projects / environments — see [Grants](#grants) below.
 

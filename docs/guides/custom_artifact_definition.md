@@ -251,20 +251,13 @@ Currently, icons (as data URLs) and `instructions.content` (as base64-encoded ma
 
 ### Customizing the Resource Types that can be defaulted in an Environment
 
-Massdriver environments support "environment default" resources—things like credentials, networks, or DNS zones that are commonly shared across multiple bundles. You can control which resource types are eligible to be set as environment defaults by specifying the `ui.environmentDefaultGroup` field in your resource type.
-
-When you set this field, your resource type appears as a selectable **Resource Type** in the **Environment Defaults** dialog, letting users pin a default for that type without wiring it into every bundle. The recording below shows the dialog in action — setting a Kubernetes Cluster default for an environment.
+Massdriver environments support "environment default" resources—things like credentials, networks, or DNS zones that are commonly shared across multiple bundles. Any resource type appears as a selectable **Resource Type** in the **Environment Defaults** dialog, letting users pin a default for that type without wiring it into every bundle. The recording below shows the dialog in action — setting a Kubernetes Cluster default for an environment.
 
 <video controls loop muted playsInline width="100%">
   <source src="/img/screenshots/set-env-default-kubernetes.webm" type="video/webm" />
 </video>
 
 **Relevant schema fields:**
-- `$md.ui.environmentDefaultGroup`: Adds your resource type to the "environment default" overlay under the specified group (e.g., `networking`, `authentication`, `dns`). This is what makes a resource type eligible to be set as a default in an environment.
-
-> **Note:** There is a special 'magic' environment default group called `credentials`. Assigning your resource type to this group will make it appear on the credentials page and enables Massdriver to fetch credentials for use in your workflows. Besides that you can use any `environmentDefaultGroup` name that makes sense for your team.
-
-See a real-world example of adding an environment default in the [aws-vpc resource type](https://github.com/massdriver-cloud/artifact-definitions/blob/main/definitions/artifacts/aws-vpc.json#L6).
 
 - `$md.ui.connectionOrientation`: Controls how resources of this type appear on the canvas. If set to `"link"`, users can draw lines to connect bundles to the resource. If set to `"environmentDefault"`, the resource is only shown as a default and not as a connectable box. These options are independently controllable, so you can allow both defaulting and explicit connections if desired. For example, SREs might want to draw lines to a shared Kubernetes cluster, while end developers only see it as a default and don't interact with it directly.
 
@@ -276,7 +269,6 @@ See a real-world example of adding an environment default in the [aws-vpc resour
     "label": "My Cloud Credential",
     "icon": "https://example.com/my-icon.svg",
     "ui": {
-      "environmentDefaultGroup": "authentication",
       "connectionOrientation": "environmentDefault",
       "instructions": [
         {
