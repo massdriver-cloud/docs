@@ -212,8 +212,8 @@ For per-repo or per-resource sharing — making a specific OCI repo or resource 
 - **Partial matches never accumulate** — you cannot combine conditions from different policies
 - **Deny wins** — if any deny policy matches, access is denied regardless of allow policies
 - **Implicit deny** — if no policy matches, access is denied
-- **Built-in admin group is privileged by policy, not by code** — the built-in `organization.admin` group carries one seeded `allow` policy per catalog action with `conditions: nil`, so its members satisfy every check through the normal evaluation path. No bypass, no special case in the engine. Policies on the built-in admin and viewer groups cannot be created, updated, deleted, or renamed — their policy set is fixed.
-- **`organization:manage` is a one-level umbrella** — a policy whose `actions` includes `organization:manage` satisfies any `organization:manage*` sub-action query. Author a single allow policy on a custom group to grant full org-level administrative authority without putting members in the built-in admin group. The umbrella does not widen any other namespace, and holding a single sub-action does **not** imply the umbrella.
+- **Built-in admin group has full access** — the built-in `organization.admin` group grants its members access to every action in the org. The built-in admin and viewer groups are fixed — you can't author policies on them, rename them, or delete them. Use a custom group for everything else.
+- **`organization:manage` is a one-level umbrella** — a policy whose `actions` includes `organization:manage` satisfies any `organization:manage*` sub-action query. Author it once on a custom group to grant full org-level administrative access without putting people in the built-in admin group. The umbrella does not widen any other namespace, and holding a single sub-action does **not** imply the umbrella.
 - **Empty conditions are invalid** — use `*` for wildcard
 
 ### Multi-Action Policies and Scope Filtering
@@ -276,7 +276,6 @@ Use this table to avoid relying on `md-id` wildcards (`md-id: [api-prod-*]`). Sy
 | group           | `md-id`                                                          | (none — groups are principals, not scoped entities) |
 | repo            | `md-id`, `md-repo`                                               | `:repo`                                        |
 | resource_type   | `md-id`                                                          | (none today)                                   |
-| organization    | `md-id`                                                          | (none — no `:organization` custom-attribute scope) |
 
 **Cascade**: a custom attribute registered at scope `:project` is reachable on every descendant — environment, component, instance, resource — because the project's value flows down. Setting `team: payments` at the project level means every instance in that project carries `team=payments` for policy matching, even though the value isn't physically stored on each instance row.
 
@@ -886,7 +885,7 @@ Because permissions are attribute-based rather than ID-based, authorization surv
 
 ## Built-in Administration
 
-The organization owner account always bypasses access control checks. The built-in `organization.admin` group is privileged by data, not by code — it carries one seeded `allow` policy per catalog action with `conditions: nil`, so its members satisfy every check through the normal evaluation path. Policies on the built-in admin and viewer groups cannot be created, updated, deleted, or renamed. Use sparingly — limit membership to the small number of people who own the account itself.
+The organization owner account always bypasses access control checks. The built-in `organization.admin` group has full access to everything in the org. The built-in admin and viewer groups are fixed — you can't author policies on them, rename them, or delete them. Use a custom group for everything else, and limit admin membership to the small number of people who own the account itself.
 
 ## Related
 
