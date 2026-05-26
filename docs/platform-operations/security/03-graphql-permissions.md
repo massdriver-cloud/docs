@@ -18,6 +18,8 @@ This page maps every operation in the Massdriver GraphQL API to the [ABAC permis
 
 If you're building a least-privilege policy, scan the table for the operations the principal needs and assemble the union of required permissions. List queries (`projects`, `instances`, `resources`, etc.) are visibility-filtered: a caller only sees what their group policies and grants make visible — there's no explicit list permission to grant.
 
+`organization:manage` is a one-level umbrella: a single policy granting `organization:manage` on a custom group satisfies any `organization:manageServiceAccounts`, `organization:manageGroups`, `organization:manageBilling`, `organization:manageIntegrations`, `organization:manageCustomAttributes`, `organization:manageResourceTypes`, or `organization:manageProfile` query below. Grant the umbrella when you want full org-level administrative authority on a custom group; grant a single sub-action when you want to scope authority to one capability.
+
 ---
 
 ## Project
@@ -110,8 +112,8 @@ Deployments are an action *on* an instance — `createDeployment`, `planDeployme
 |---|---|---|---|
 | `resourceTypes` | Query | *no explicit gate* | Available to any authenticated member. |
 | `resourceType` | Query | *no explicit gate* | |
-| `publishResourceType` | Mutation | `organization:manage` | Deprecated bridge from V0 `publishArtifactDefinition`. Dedicated resource type permissions are coming when resource types move to OCI-hosted distribution. |
-| `deleteResourceType` | Mutation | `organization:manage` | Deprecated bridge from V0 `deleteArtifactDefinition`. Dedicated resource type permissions are coming when resource types move to OCI-hosted distribution. |
+| `publishResourceType` | Mutation | `organization:manageResourceTypes` | Covered by the `organization:manage` umbrella. Deprecated bridge from V0 `publishArtifactDefinition`. |
+| `deleteResourceType` | Mutation | `organization:manageResourceTypes` | Covered by the `organization:manage` umbrella. Deprecated bridge from V0 `deleteArtifactDefinition`. |
 
 ## OCI Repo / Bundle
 
@@ -141,7 +143,7 @@ There is no `updateGrant` — grants are immutable; delete and re-create to chan
 |---|---|---|---|
 | `groups` | Query | *visibility-filtered* | |
 | `group` | Query | `group:view` | |
-| `createGroup` | Mutation | `organization:manage` | Org-level: only managers can create groups. |
+| `createGroup` | Mutation | `organization:manageGroups` | Covered by the `organization:manage` umbrella. Editing an existing group's membership or policies is gated separately by `group:manage` on that group. |
 | `updateGroup` | Mutation | `group:manage` | |
 | `deleteGroup` | Mutation | `group:manage` | |
 | `addAccountToGroup` | Mutation | `group:manage` | |
@@ -158,7 +160,7 @@ There is no `updateGrant` — grants are immutable; delete and re-create to chan
 | `policyActions` | Query | *no explicit gate* | Catalog of available actions. |
 | `evaluatePolicy` | Query | *no explicit gate* | Evaluation runs against the caller's own effective permissions. |
 | `evaluatePolicies` | Query | *no explicit gate* | Batched form of `evaluatePolicy`. |
-| `explainPolicy` | Query | `organization:view` | Renders a policy spec (same shape as `createGroupPolicy` input) as plain-English sentences. Does not require the policy to exist. |
+| `explainPolicy` | Query | *no explicit gate* | Renders a policy spec (same shape as `createGroupPolicy` input) as plain-English sentences. Open to every org member; does not require the policy to exist. |
 | `createGroupPolicy` | Mutation | `group:manage` | Policies attach to groups. |
 | `updatePolicy` | Mutation | `group:manage` | |
 | `deletePolicy` | Mutation | `group:manage` | |
@@ -169,57 +171,57 @@ There is no `updateGrant` — grants are immutable; delete and re-create to chan
 |---|---|---|---|
 | `customAttributeSchema` | Query | *no explicit gate* | Schema is org-public. |
 | `customAttributeValues` | Query | *no explicit gate* | |
-| `createCustomAttribute` | Mutation | `organization:manage` | |
-| `updateCustomAttribute` | Mutation | `organization:manage` | |
-| `deleteCustomAttribute` | Mutation | `organization:manage` | |
+| `createCustomAttribute` | Mutation | `organization:manageCustomAttributes` | Covered by the `organization:manage` umbrella. |
+| `updateCustomAttribute` | Mutation | `organization:manageCustomAttributes` | Covered by the `organization:manage` umbrella. |
+| `deleteCustomAttribute` | Mutation | `organization:manageCustomAttributes` | Covered by the `organization:manage` umbrella. |
 
 ## Organization
 
 | Operation | Type | Required permission(s) | Notes |
 |---|---|---|---|
-| `organization` | Query | `organization:view` | Public profile fields require only `organization:view` (granted implicitly to every member). Sensitive subfields (`members`, `billing`, `customAttributes`) require `organization:manage` and resolve to `null` with a top-level `FORBIDDEN` error otherwise. |
+| `organization` | Query | *no explicit gate* | Public profile fields (name, logo, identifier) are open to every org member. Sensitive subfields gate individually: `members` requires `organization:manageProfile`, `billing` requires `organization:manageBilling`, `customAttributes` requires `organization:manageCustomAttributes`. Each resolves to `null` with a top-level `FORBIDDEN` error when the caller lacks the sub-action. All three are covered by the `organization:manage` umbrella. |
 | `createOrganization` | Mutation | *authenticated only* | Caller becomes the org's first owner; no ABAC permission since the org doesn't exist yet. |
-| `updateOrganization` | Mutation | `organization:manage` | |
-| `setOrganizationLogo` | Mutation | `organization:manage` | |
-| `removeOrganizationLogo` | Mutation | `organization:manage` | |
-| `deleteOrganizationMember` | Mutation | `organization:manage` | |
+| `updateOrganization` | Mutation | `organization:manageProfile` | Covered by the `organization:manage` umbrella. |
+| `setOrganizationLogo` | Mutation | `organization:manageProfile` | Covered by the `organization:manage` umbrella. |
+| `removeOrganizationLogo` | Mutation | `organization:manageProfile` | Covered by the `organization:manage` umbrella. |
+| `deleteOrganizationMember` | Mutation | `organization:manageProfile` | Covered by the `organization:manage` umbrella. |
 
 ## Service Account
 
 | Operation | Type | Required permission(s) | Notes |
 |---|---|---|---|
-| `serviceAccounts` | Query | `organization:manage` | Service accounts are only listable by org managers. |
-| `serviceAccount` | Query | `organization:manage` | |
-| `createServiceAccount` | Mutation | `organization:manage` | |
-| `updateServiceAccount` | Mutation | `organization:manage` | |
-| `deleteServiceAccount` | Mutation | `organization:manage` | |
+| `serviceAccounts` | Query | `organization:manageServiceAccounts` | Covered by the `organization:manage` umbrella. |
+| `serviceAccount` | Query | `organization:manageServiceAccounts` | Covered by the `organization:manage` umbrella. |
+| `createServiceAccount` | Mutation | `organization:manageServiceAccounts` | Covered by the `organization:manage` umbrella. |
+| `updateServiceAccount` | Mutation | `organization:manageServiceAccounts` | Covered by the `organization:manage` umbrella. |
+| `deleteServiceAccount` | Mutation | `organization:manageServiceAccounts` | Covered by the `organization:manage` umbrella. |
 
 ## Access Token
 
 | Operation | Type | Required permission(s) | Notes |
 |---|---|---|---|
-| `accessTokens` | Query | `organization:view` | Only your own tokens — admins cannot list other principals' tokens. |
-| `createAccessToken` | Mutation | `organization:view` | Issues a token for the calling subject. |
+| `accessTokens` | Query | *no explicit gate* | Open to every org member; only returns your own tokens — admins cannot list other principals' tokens. |
+| `createAccessToken` | Mutation | *no explicit gate* | Open to every org member; issues a token for the calling subject. |
 | `revokeAccessToken` | Mutation | *owner-only* | Owner-scoped: only the token's owning subject can revoke; admins cannot revoke another user's personal tokens. |
 
 ## Integration
 
 | Operation | Type | Required permission(s) | Notes |
 |---|---|---|---|
-| `integrations` | Query | `organization:view` | |
-| `integration` | Query | `organization:view` | |
+| `integrations` | Query | `organization:manageIntegrations` | Covered by the `organization:manage` umbrella. |
+| `integration` | Query | `organization:manageIntegrations` | Covered by the `organization:manage` umbrella. |
 | `integrationTypes` | Query | *no explicit gate* | |
-| `createIntegration` | Mutation | `organization:manage` | |
-| `enableIntegration` | Mutation | `organization:manage` | |
-| `disableIntegration` | Mutation | `organization:manage` | |
-| `deleteIntegration` | Mutation | `organization:manage` | |
+| `createIntegration` | Mutation | `organization:manageIntegrations` | Covered by the `organization:manage` umbrella. |
+| `enableIntegration` | Mutation | `organization:manageIntegrations` | Covered by the `organization:manage` umbrella. |
+| `disableIntegration` | Mutation | `organization:manageIntegrations` | Covered by the `organization:manage` umbrella. |
+| `deleteIntegration` | Mutation | `organization:manageIntegrations` | Covered by the `organization:manage` umbrella. |
 
 ## Audit Log
 
 | Operation | Type | Required permission(s) | Notes |
 |---|---|---|---|
-| `auditLogs` | Query | `organization:view` | Returns only entries the caller is allowed to see — `organization:manage` widens the result set. |
-| `auditLog` | Query | `organization:view` | |
+| `auditLogs` | Query | *project-scoped rows: no explicit gate; org-level rows: `organization:manage`* | Project-scoped audit rows cascade from `project:view` — a caller sees the entries on every project they can view. Org-level rows (billing, integrations, service accounts, profile changes, etc.) are only included when the caller holds the `organization:manage` umbrella. |
+| `auditLog` | Query | *project-scoped: no explicit gate; org-level: `organization:manage`* | Same split as the list query. Project-scoped entries are reachable through `project:view` on the entry's project; org-level entries require the umbrella. |
 | `auditLogEventTypes` | Query | *no explicit gate* | Catalog query. |
 
 ## Event Catalog
@@ -232,7 +234,7 @@ There is no `updateGrant` — grants are immutable; delete and re-create to chan
 
 | Operation | Type | Required permission(s) | Notes |
 |---|---|---|---|
-| `organizationEvents` | Subscription | `organization:view` | |
+| `organizationEvents` | Subscription | *no explicit gate* | Open to every org member. |
 | `projectEvents` | Subscription | `project:view` | |
 | `environmentEvents` | Subscription | `project:view` | Inherits the surrounding project's view permission. |
 | `instanceEvents` | Subscription | `project:view` | |
@@ -270,7 +272,7 @@ The single-entity counterpart (`project`, `ociRepo`, `resource`) explicitly chec
 
 - **`forbidden` is masked as `not_found`** for read paths that need to obscure existence (e.g., `project`, `environment`). Mutations return an explicit `forbidden` error.
 - **Proposed-attribute checks** apply to `create*` mutations: the resolver synthesizes the would-be entity's effective attributes (cascaded parent attrs + the entity's own `md-id` and local identifier) and checks ABAC against that map. This lets policies gate creation by name (`md-environment: [dev, staging, prod]`).
-- **Org admin bypass** applies everywhere — a member of the `organization:admin` group skips every check on this page.
+- **Built-in admin group satisfies every check by policy.** The built-in `organization.admin` group is seeded with one `allow` policy per catalog action (`conditions: nil`), so its members pass every gate on this page through the normal evaluation path — there is no engine bypass. Policies on the built-in admin and viewer groups are fixed and cannot be created, updated, deleted, or renamed.
 
 ## See also
 

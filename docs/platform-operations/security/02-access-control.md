@@ -212,7 +212,8 @@ For per-repo or per-resource sharing — making a specific OCI repo or resource 
 - **Partial matches never accumulate** — you cannot combine conditions from different policies
 - **Deny wins** — if any deny policy matches, access is denied regardless of allow policies
 - **Implicit deny** — if no policy matches, access is denied
-- **Org admin bypass** — the organization owner account and any group with the `organization:manage` action skip all access control checks
+- **Built-in admin group is privileged by policy, not by code** — the built-in `organization.admin` group carries one seeded `allow` policy per catalog action with `conditions: nil`, so its members satisfy every check through the normal evaluation path. No bypass, no special case in the engine. Policies on the built-in admin and viewer groups cannot be created, updated, deleted, or renamed — their policy set is fixed.
+- **`organization:manage` is a one-level umbrella** — a policy whose `actions` includes `organization:manage` satisfies any `organization:manage*` sub-action query. Author a single allow policy on a custom group to grant full org-level administrative authority without putting members in the built-in admin group. The umbrella does not widen any other namespace, and holding a single sub-action does **not** imply the umbrella.
 - **Empty conditions are invalid** — use `*` for wildcard
 
 ### Multi-Action Policies and Scope Filtering
@@ -275,6 +276,7 @@ Use this table to avoid relying on `md-id` wildcards (`md-id: [api-prod-*]`). Sy
 | group           | `md-id`                                                          | (none — groups are principals, not scoped entities) |
 | repo            | `md-id`, `md-repo`                                               | `:repo`                                        |
 | resource_type   | `md-id`                                                          | (none today)                                   |
+| organization    | `md-id`                                                          | (none — no `:organization` custom-attribute scope) |
 
 **Cascade**: a custom attribute registered at scope `:project` is reachable on every descendant — environment, component, instance, resource — because the project's value flows down. Setting `team: payments` at the project level means every instance in that project carries `team=payments` for policy matching, even though the value isn't physically stored on each instance row.
 
@@ -288,7 +290,7 @@ Use this table to avoid relying on `md-id` wildcards (`md-id: [api-prod-*]`). Sy
 
 ## Permissions
 
-Massdriver defines 34 permissions using an `entity:verb` format.
+Massdriver defines 39 permissions using an `entity:verb` format.
 
 ### Project
 
@@ -353,16 +355,26 @@ Massdriver defines 34 permissions using an `entity:verb` format.
 
 ### Resource Type
 
-Resource types are organization-level catalog metadata. Listing and viewing resource types is gated by `organization:view`. Publishing (`publishResourceType`) and deleting (`deleteResourceType`) require `organization:manage`.
+Resource types are organization-level catalog metadata. Listing and viewing resource types is open to every org member. Publishing (`publishResourceType`) and deleting (`deleteResourceType`) require `organization:manageResourceTypes` (covered by the `organization:manage` umbrella).
 
 Resource types push `md-resource-type` onto every resource produced from them, so policies can target by type (`md-resource-type: [aws-iam-role]`). User-settable resource-type attributes will arrive when resource types move to OCI-hosted distribution.
 
 ### Organization
 
+Organization-level capabilities are split into one umbrella action and seven sub-actions. Authoring a single policy with `organization:manage` covers every sub-action via the engine's umbrella rule; authoring an individual sub-action grants only that capability.
+
 | Permission | Description |
 |---|---|
-| `organization:view` | Load the organization's public profile (name, logo, identifier). Granted implicitly to every member through their group memberships. |
-| `organization:manage` | Update organization-level settings — display name, logo, members, billing (subscription, payment, seats, Stripe customer portal), and the custom attribute schema that governs every project, environment, and resource. Required to view the member roster as a single list. |
+| `organization:manage` | Umbrella. A policy granting `organization:manage` satisfies any of the seven `organization:manage*` sub-actions below. |
+| `organization:manageServiceAccounts` | Create, update, delete, list, and inspect service accounts. |
+| `organization:manageGroups` | Create new groups. Editing an existing group's membership or policies is gated separately by `group:manage` on that group. |
+| `organization:manageBilling` | View and change subscription, payment, seats, and Stripe customer portal. |
+| `organization:manageIntegrations` | Configure, enable, disable, and delete third-party integrations (cost reports, metrics, etc.). |
+| `organization:manageCustomAttributes` | Declare, update, and delete custom attributes — the org-wide schema that governs user-defined attributes on projects, environments, components, and resources. |
+| `organization:manageResourceTypes` | Publish and delete resource types — the org-level catalog of schemas describing each kind of infrastructure output. |
+| `organization:manageProfile` | Update display name and logo, remove members, and view the member roster as a single list. |
+
+Reading the organization's public profile (name, logo, identifier) is open to every org member — no policy required.
 
 ---
 
@@ -874,7 +886,7 @@ Because permissions are attribute-based rather than ID-based, authorization surv
 
 ## Built-in Administration
 
-The organization owner account always bypasses access control checks. The built-in `organization.admin` group also bypasses all access control checks in that organization. Use sparingly — limit to the small number of people who own the account itself.
+The organization owner account always bypasses access control checks. The built-in `organization.admin` group is privileged by data, not by code — it carries one seeded `allow` policy per catalog action with `conditions: nil`, so its members satisfy every check through the normal evaluation path. Policies on the built-in admin and viewer groups cannot be created, updated, deleted, or renamed. Use sparingly — limit membership to the small number of people who own the account itself.
 
 ## Related
 
