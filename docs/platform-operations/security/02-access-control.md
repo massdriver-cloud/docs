@@ -309,8 +309,10 @@ Massdriver defines 39 permissions using an `entity:verb` format.
 |---|---|
 | `environment:create` | Create an environment in a project |
 | `environment:update` | Update environment name, description, and attributes |
-| `environment:delete` | Delete an environment |
+| `environment:delete` | Delete an empty environment — instances must be decommissioned first |
 | `environment:configure` | Set or remove environment-level resource defaults |
+| `environment:deploy` | Deploy every instance in an environment, in dependency order. Re-triggering an in-flight environment deployment cancels and replaces the prior run. |
+| `environment:decommission` | Decommission every instance in an environment, in reverse dependency order. The environment shell is kept so it can be redeployed. |
 
 ### Instance
 
@@ -320,7 +322,7 @@ Massdriver defines 39 permissions using an `entity:verb` format.
 | `instance:deploy` | Deploy infrastructure. Also approves or rejects proposed deployments — anyone who can deploy an instance can decide a proposal for it. |
 | `instance:plan` | Run an infrastructure plan without deploying |
 | `instance:decommission` | Tear down infrastructure |
-| `instance:propose` | Submit a deployment for approval |
+| `instance:propose` | Submit a deployment for approval, including a rollback proposal that returns the instance to a past deployment's exact state. Approving or rejecting the proposal is gated by `instance:deploy` — anyone who can deploy can also decide a proposal. |
 
 ### Group
 
@@ -405,7 +407,7 @@ policies:
 
 ### SRE with Cross-Cutting Production Access
 
-SRE can see all projects and deploy, decommission, or approve proposed deployments anywhere in production. `instance:deploy` covers both running a deployment and deciding a proposal submitted by another team.
+SRE can see all projects and deploy, decommission, propose rollbacks, or approve proposed deployments anywhere in production. `instance:deploy` covers both running a deployment and deciding a proposal — including rollback proposals — submitted by another team. `instance:propose` lets SRE author rollback proposals themselves when paging through an incident.
 
 ```yaml
 group: sre
@@ -415,8 +417,12 @@ policies:
     conditions: "*"
 
   - effect: allow
-    action: [instance:deploy, instance:decommission]
-    conditions: { md-environment: production }
+    action: [instance:deploy, instance:decommission, instance:propose]
+    conditions: { md-environment: [production] }
+
+  - effect: allow
+    action: [environment:deploy, environment:decommission]
+    conditions: { md-environment: [production] }
 ```
 
 ### Read-Only Auditor

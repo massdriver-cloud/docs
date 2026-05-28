@@ -48,6 +48,10 @@ primitives either way.
   Forks the base env, pins environment defaults, applies per-instance
   overrides, and deploys — every step idempotent, so re-running
   converges the env back to the declared state.
+- **[Roll back a deployment](/workflows/rollback)** — return an instance
+  to a past deployment's exact bundle version, params, and connection
+  wiring. The mutation produces a proposal that goes through the same
+  review gate as any other change to production.
 
 ## API and CLI as a framework on the platform you're building
 
