@@ -9,57 +9,53 @@ sidebar_label: Roll Back
 
 A **rollback** returns an instance to the state of a past deployment —
 same bundle version, same params, same connection wiring — as a
-*proposal*. Nothing ships until someone with deploy authority approves
-it, so the rollback follows the same review path as any other change to
-the instance.
+proposal. The proposal goes through the same approval gate as any other
+change to the instance; nothing ships until an approver with deploy
+authority approves it.
 
 Use a rollback when:
 
 - A deploy left an instance in a bad state and you want to return to
   the last known-good run.
-- An upgrade made it through staging but misbehaves under production
-  load and you want to step it back to the prior version with the same
-  params it had then.
+- An upgrade reached production and misbehaves under load, and you
+  want to step it back to the prior version with the params it had
+  then.
 - You're rehearsing an incident response and want to verify the
   rollback path before you need it.
 
 A rollback is not the right tool for "deploy a slightly older bundle
 version." For that, edit the instance's version constraint and run
-`deployInstance`. A rollback specifically reproduces the snapshot of a
+`deployInstance`. A rollback reproduces the snapshot of a specific
 past run.
 
-## What `rollbackDeployment` actually does
+## `rollbackDeployment`
 
 One API call, atomic:
 
-1. Validates the source — it must be a `COMPLETED` `PROVISION`
-   deployment. You cannot roll back to a `FAILED`, `PROPOSED`, or
-   `DECOMMISSION` deployment, and you cannot roll back to a deployment
-   from a different instance.
+1. Validates the source. It must be a `COMPLETED` `PROVISION`
+   deployment on the same instance. `FAILED`, `PROPOSED`, and
+   `DECOMMISSION` deployments are rejected.
 2. Snapshots the source's user params. The `md_metadata` block is
-   refreshed against the current package; everything else is carried
+   regenerated against the current package; the rest is carried
    verbatim.
 3. Snapshots the source's `connection_params` — the resolved IDs of
    the connections the instance was wired to at the time of the source
    run.
-4. Carries the source's bundle release pointer (`bundle_release_id`)
-   and `version` forward.
+4. Carries the source's `bundle_release_id` and `version` forward.
 5. Creates a new `PROPOSED` `PROVISION` deployment with the above and
    records `rollbackOf` pointing at the source.
 
-The result is a regular proposed deployment. It can be approved
-(`approveDeployment`), rejected (`rejectDeployment`), or have a plan
-run against it (`planDeployment`) — the same surface as any other
-proposal.
+The result is a proposed deployment. It accepts `approveDeployment`,
+`rejectDeployment`, and `planDeployment` — the same surface as any
+other proposal.
 
-### On approval
+### Approval
 
-`approveDeployment` on a rollback proposal does one extra thing beyond
-a normal approval: it pins the package's bundle release pointer
-(`bundle_release_id` and `version`) to the source's. The instance ends
-up running the snapshot *and* configured with the snapshot's release as
-its current release, so subsequent edits compose on top of the
-rolled-back state.
+`approveDeployment` on a rollback proposal pins the package's
+`bundle_release_id` and `version` to the source's, in addition to the
+normal apply. After approval, the instance is running the snapshot and
+the package's configured release is the snapshot's release, so
+subsequent edits compose on top of the rolled-back state.
 
 ## The mutation
 
@@ -82,19 +78,19 @@ mutation Rollback($orgId: ID!, $sourceDeploymentId: UUID!) {
 }
 ```
 
-`id` is the **source** — the historical deployment you want to return
-to. The mutation returns the new proposal; pass its `id` to
-`approveDeployment` / `rejectDeployment` / `planDeployment`.
+`id` is the **source** — the historical deployment to return to. The
+mutation returns the new proposal; pass its `id` to
+`approveDeployment`, `rejectDeployment`, or `planDeployment`.
 
 ### Authorization
 
 - Proposing the rollback requires `instance:propose` on the instance —
   the same gate as any other proposal.
 - Approving or rejecting requires `instance:deploy` on the instance.
-  There is no separate "rollback approval" permission.
+  There is no separate rollback-approval permission.
 
-For incident response, granting SREs `instance:propose` +
-`instance:deploy` in production (see the [ABAC SRE
+Granting SREs `instance:propose` and `instance:deploy` in production
+(see the [ABAC SRE
 example](/platform-operations/security/access-control#sre-with-cross-cutting-production-access))
 lets an oncall engineer author and approve a rollback without waiting
 for another team.
@@ -102,8 +98,8 @@ for another team.
 ## The flow
 
 ```graphql
-# 1. Find the deployment you want to return to. The most recent
-#    completed provision is the usual answer.
+# 1. Find the deployment to return to. The most recent completed
+#    provision is the usual answer.
 query LastGoodDeployment($instanceId: ID!) {
   instance(id: $instanceId) {
     deployments(
@@ -127,8 +123,8 @@ mutation {
   }
 }
 
-# 3. (Optional) Run a plan against the proposal to see the diff before
-#    approving. A normal planDeployment — no rollback-specific behavior.
+# 3. Optional. Run a plan against the proposal to see the diff before
+#    approving. Standard planDeployment; no rollback-specific behavior.
 mutation {
   planDeployment(organizationId: "acme", id: "$proposalId") {
     successful
@@ -136,8 +132,8 @@ mutation {
   }
 }
 
-# 4. Approve. This step ships the deployment and pins the package's
-#    release pointer to the source's.
+# 4. Approve. Ships the deployment and pins the package's release
+#    pointer to the source's.
 mutation {
   approveDeployment(organizationId: "acme", id: "$proposalId") {
     successful
@@ -146,63 +142,58 @@ mutation {
 }
 ```
 
-If the rollback turns out to be the wrong call mid-review,
-`rejectDeployment` takes the proposal out of contention. The instance
-never moved, and the audit log captures both the proposal and the
-rejection.
+`rejectDeployment` discards the proposal. The instance is not
+modified; the proposal and rejection both appear in the audit log.
 
-## What does — and doesn't — get snapshotted
+## Snapshot behavior
 
 | Source's value | What ends up on the rollback proposal |
 |---|---|
 | `params` (your config) | Verbatim, minus `md_metadata` |
-| `md_metadata` (platform-injected) | Re-generated from current package state |
+| `md_metadata` (platform-injected) | Regenerated from current package state |
 | `connection_params` (resolved connections) | Verbatim |
 | `version` | Verbatim |
 | `bundle_release_id` (which published bundle) | Verbatim |
 | `release` (release-channel pointer) | Verbatim |
-| `secrets` | Not part of a deployment — the instance's current secrets apply. Rollback doesn't touch them. |
+| `secrets` | Not part of a deployment — the instance's current secrets apply. Rollback does not touch them. |
 
-The asymmetry between `md_metadata` (refreshed) and everything else
-(snapshotted) is deliberate. `md_metadata` describes the platform
-context — org, project, environment, instance identity — and that
-context shouldn't roll back with the config. If the instance has moved
-environments or been renamed since the source run, the metadata
-reflects the current state. Everything you authored rolls back; the
-plumbing stays current.
+`md_metadata` is regenerated because it describes the platform context
+— org, project, environment, instance identity — and that context
+should reflect the current state of the instance, not the source's. If
+the instance has been renamed or moved environments since the source
+run, the regenerated metadata reflects the current location.
 
-## What rollback doesn't do
+## Limits
 
-- **It doesn't move secrets.** Secrets live on the instance, not on
-  deployments. If the failing deploy was caused by a secret change,
-  revert the secret separately.
-- **It doesn't migrate data.** A bundle version that altered a schema
-  on the way up may not have a working migration on the way down.
-  Rollback returns the bundle and params; it does not generate or run
-  reverse migrations.
-- **It doesn't decommission anything.** Resources the failing
-  deployment created that don't exist in the snapshot are removed by
-  the next provision (the rollback's `PROVISION` run reconciles
-  state); resources created outside of Massdriver are not.
-- **It can't skip the approval gate.** Even authors with
-  `instance:deploy` go through `approveDeployment`. The approval step
-  is what creates the audit record.
+- **Secrets are not rolled back.** Secrets live on the instance, not
+  on deployments. If a secret change caused the failure, revert it
+  separately.
+- **Data is not migrated.** A bundle version that altered a schema on
+  the way up may not have a working migration on the way down.
+  Rollback restores the bundle and params; it does not generate or
+  run reverse migrations.
+- **Out-of-band resources are not decommissioned.** Resources the
+  failing deployment created that are absent from the snapshot are
+  removed by the rollback's `PROVISION` run, which reconciles state.
+  Resources created outside Massdriver are not.
+- **The approval gate cannot be skipped.** Authors with
+  `instance:deploy` still go through `approveDeployment`. The
+  approval step is what creates the audit record.
 
-## Why approval pins the release pointer
+## Release-pointer pinning
 
-A normal provision deployment applies a configuration but leaves the
-package's `bundle_release_id` / `version` pointer wherever the user
-left it, so the next edit composes against the latest intent.
+A normal provision deployment applies a configuration without changing
+the package's `bundle_release_id` or `version` pointer. The next edit
+composes against the pointer the user last set.
 
-A rollback rewrites that pointer to the source's. The reasoning: if
-the source's run is the desired state, the instance's configured
-release should reflect that. Otherwise the next deploy would compose
-against the broken release, and the rollback would be a one-shot patch
-instead of a return to a known state.
+A rollback approval rewrites that pointer to the source's. Without the
+rewrite, the next deploy would compose against the release the
+rollback was meant to retreat from, and the rollback would behave as a
+one-shot patch rather than a return to a known state.
 
-For one-shot behavior — deploy this snapshot once, but keep the
-current pinned version — propose the deployment manually with
-`proposeDeployment` rather than `rollbackDeployment`.
+For one-shot behavior — apply this snapshot once, keep the current
+pinned version — use `proposeDeployment` directly instead of
+`rollbackDeployment`.
 
 ## Reference
 
