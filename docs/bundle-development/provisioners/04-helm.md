@@ -19,21 +19,28 @@ The following tools are included in this provisioner:
 
 * [Checkov](https://www.checkov.io/): Included to scan helm charts for common policy and compliance violations.
 
+:::warning
+Checkov only scans **local** charts. Its Helm scanning requires a local chart directory (with a `Chart.yaml`) to template and analyze, so [remote and OCI charts](#local-vs-remote-chart-vs-oci-chart) are not scanned — they are pulled by Helm at provision time and never rendered locally for Checkov to inspect.
+:::
+
 ## Configuration
 
 The following configuration options are available:
 
 | Configuration Option | Type | Default | Description |
 |-|-|-|-|
-| `kubernetes_cluster` | object | `.connections.kubernetes_cluster` | `jq` path to a `kubernetes-cluster` connection for authentication to Kubernetes |
-| `namespace` | string | `"default"` | Kubernetes namespace to install the chart into. Defaults to the `default` namespace |
+| `kubernetes_cluster` | object | `.connections.kubernetes_cluster` | Kubernetes cluster connection providing token authentication. Values set here override those resolved from the connection on a per-field basis. See [Authentication](#authentication). |
+| `kubernetes_cluster.authentication.cluster.server` | string | | Kubernetes API server URL. |
+| `kubernetes_cluster.authentication.cluster.certificate-authority-data` | string | | Base64-encoded cluster certificate authority. |
+| `kubernetes_cluster.authentication.user.token` | string | | Bearer token used to authenticate to the cluster. |
+| `namespace` | string | `"default"` | Kubernetes namespace to install the chart into. Defaults to the `default` namespace. Created automatically if it does not exist. |
 | `release_name` | string | (instance name) | Specifies the release name for the helm chart. Defaults to the Massdriver instance name if not specified. |
 | `.chart.repo` | string | `null` | Specifies the URL of the chart repo (required if using [remote chart](#local-vs-remote-chart-vs-oci-chart)) |
 | `.chart.name` | string | `null` | Specifies the name of the chart from the repo to use (required if using [remote chart](#local-vs-remote-chart-vs-oci-chart)) |
 | `.chart.oci` | string | `null` | Specifies the OCI URI of the chart to use (required if using [OCI chart](#local-vs-remote-chart-vs-oci-chart)) |
 | `.chart.version` | string | `null` | Specifies the chart version to use (optional, only applies to [remote or OCI chart](#local-vs-remote-chart-vs-oci-chart), defaults to latest) |
-| `debug` | boolean | `true` | Enables or disables the `--debug` flag for Helm (verbose output) |
-| `skip_crds` | boolean | `false` | Enables or disables the `--skip_crds` flag for Helm (conditionally installing CRDs) |
+| `debug` | boolean | `false` | Enables or disables the `--debug` flag for Helm (verbose output) |
+| `skip_crds` | boolean | `false` | Enables or disables the `--skip-crds` flag for Helm (conditionally installing CRDs) |
 | `wait` | boolean | `true` | Enables the `--wait` flag for Helm (waits for pods, PVCs, services, etc. to be ready before marking the release as successful)  |
 | `wait_for_jobs` | boolean | `true` | Enables or disables the `--wait-for-jobs` flag for Helm (waits for jobs to complete before marking the release as successful) |
 | `timeout` | integer | 300 | Sets the `--timeout` flag for Helm (how long to wait for release to complete before marking as failed) |
@@ -41,9 +48,44 @@ The following configuration options are available:
 | `checkov.quiet` | boolean | `true` | Only display failed checks if `true` (adds the `--quiet` flag). |
 | `checkov.halt_on_failure` | boolean | `false` | Halt provisioning run and mark deployment as failed on a policy failure (removes the `--soft-fail` flag). |
 
+### Authentication
+
+This provisioner authenticates to Kubernetes using a bearer token. Credentials are read from a `kubernetes_cluster` connection, which is expected to expose token auth under an `authentication` block:
+
+```json
+{
+    "authentication": {
+        "cluster": {
+            "server": "https://my.kubernetes.cluster.com",
+            "certificate-authority-data": "<base64-encoded CA certificate>"
+        },
+        "user": {
+            "token": "<bearer token>"
+        }
+    }
+}
+```
+
+This matches the shape of Massdriver's recommended `kubernetes-cluster` resource type. If your resource type has a different shape — or you want to override a specific value — set it in the `config.kubernetes_cluster` block. Config is applied as a per-field overlay (deep merge) on top of the connection, so you can override a single field while the rest comes from the connection, or supply the entire credential through config. For example, to source the API server from a differently-shaped connection while keeping the token and CA from `kubernetes_cluster`:
+
+```yaml massdriver.yaml
+steps:
+- path: chart
+  provisioner: helm
+  config:
+    kubernetes_cluster:
+      authentication:
+        cluster:
+          server: ".connections.my_other_cluster.some.custom.path.to.server"
+```
+
+:::note
+For backwards compatibility, the connection's `authentication` block is also read from a nested `.data` sub-block, to support the legacy `kubernetes-cluster` resource type. This pattern is deprecated and may be removed in a future release.
+:::
+
 ### Local vs Remote Chart vs OCI Chart
 
-This provisioner supports local, remote and OCI charts. By default the provisioner will assume a local chart exists in the directory specified by the `path` field of the bundle step. However, if **both** `.chart.repo` and `.chart.name` are specified then the provisioner will attempt to use the specified remote chart. Similarly, if `.chart.oci` is set, the provisioner will attempt to use the specified OCI registry to pull the chart. Regarding inputs and resources, provisioner behavior is the same for all charts. If a `values.yaml` file exists in the `path` directory, then it will be used to override the specified default values in the remote chart (as Helm typically does with the `-f/--values` flag).
+This provisioner supports local, remote and OCI charts. By default the provisioner will assume a local chart exists in the directory specified by the `path` field of the bundle step. However, if **both** `.chart.repo` and `.chart.name` are specified then the provisioner will attempt to use the specified remote chart. Similarly, if `.chart.oci` is set, the provisioner will attempt to use the specified OCI registry to pull the chart. Regarding inputs and resources, provisioner behavior is the same for all charts. If a `values.yaml` file exists in the `path` directory, then it will be used to override the specified default values in the remote or OCI chart (as Helm typically does with the `-f/--values` flag).
 
 #### Local Chart Example
 
@@ -192,15 +234,13 @@ With the `database` and `kubernetes_cluster` connection, the `connections.json` 
 ```json connections.json
 {
     "kubernetes_cluster": {
-        "data": {
-            "authentication": {
-                "cluster": {
-                    "certificate-authority-data": "...",
-                    "server": "https://my.kubernetes.cluster.com"
-                },
-                "user": {
-                    "token": "..."
-                }
+        "authentication": {
+            "cluster": {
+                "certificate-authority-data": "...",
+                "server": "https://my.kubernetes.cluster.com"
+            },
+            "user": {
+                "token": "..."
             }
         },
         "specs": {
@@ -210,13 +250,11 @@ With the `database` and `kubernetes_cluster` connection, the `connections.json` 
         }
     },
     "database": {
-        "data": {
-            "authentication": {
-                "hostname": "the.postgres.database",
-                "password": "s3cr3tV@lue",
-                "port": 5432,
-                "username": "admin"
-            }
+        "authentication": {
+            "hostname": "the.postgres.database",
+            "password": "s3cr3tV@lue",
+            "port": 5432,
+            "username": "admin"
         },
         "specs": {
             "rdbms": {
@@ -232,10 +270,10 @@ While this `connections.json` file contains all the necessary data for the postg
 ```jq connections.jq
 {
     "postgres": {
-        "hostname": .database.data.authentication.hostname,
-        "port": .database.data.authentication.port,
-        "user": .database.data.authentication.username,
-        "password": .database.data.authentication.password,
+        "hostname": .database.authentication.hostname,
+        "port": .database.authentication.port,
+        "user": .database.authentication.username,
+        "password": .database.authentication.password,
         "version": .database.specs.version
     }
 }
@@ -264,9 +302,9 @@ The last file to address is the environment variables. The `envs.json` file will
 }
 ```
 
-There are two problems here. First, by default this provisioner will place the envs under a top level `envs` block, while the helm chart is expecting them under `deployment.envs`. Second, most Helm charts expect the environment variables to be an array of objects with `name` and `values` keys, as opposed to a map. So, let's convert our `envs.json` into an array of objects, and move it under a `deployment.envs` path.
+There are two problems here. First, by default this provisioner will place the envs under a top level `envs` block, while the helm chart is expecting them under `deployment.envs`. Second, most Helm charts expect the environment variables to be an array of objects with `name` and `value` keys, as opposed to a map. So, let's convert our `envs.json` into an array of objects, and move it under a `deployment.envs` path.
 
-```jq connections.jq
+```jq envs.jq
 {
     deployment: {
         envs: [to_entries[] | {name: .key, value: .value}]
@@ -276,7 +314,7 @@ There are two problems here. First, by default this provisioner will place the e
 
 This will restructure the data so that the `envs.yaml` file passed to helm will be:
 
-```yaml connections.yaml
+```yaml envs.yaml
 deployment:
   envs:
     - name: "LOG_LEVEL"
@@ -287,7 +325,7 @@ This converts the data in `envs.json` to match the expected field in `values.yam
 
 ## Resources
 
-After every provision, this provider will scan the template directory for files matching the pattern `artifact_<name>.jq` (the file pattern uses the legacy "artifact" name; provisioner contracts are CLI-adjacent and being updated separately). If a file matching this pattern is present, it will be used as a JQ template to render and publish a Massdriver resource. The inputs to the JQ template will be a JSON object with the params, connections, envs, secrets and [helm manifests](https://helm.sh/docs/helm/helm_get_manifest/) as top level fields. Note that the `params`, `connections`, `envs` and `secrets` will contain the original content of `params.json`, `connections.json`, `envs.json` and `secrets.json` without any modifications that may have been applied through `params.jq`, `connections.jq`, `envs.jq` and `secrets.jq`. The `outputs` field will contain the result of `helm get manifest` for the chart after it is installed. Since the output of `helm get manifest` is list of yaml files, the `outputs` block will be a JSON array with each element being a JSON object of an individual kubernetes resource manifest.
+After every provision, this provider will scan the template directory for files matching the pattern `resource_<name>.jq` (or the legacy `artifact_<name>.jq` prefix, still supported for backwards compatibility). If a file matching either pattern is present, it will be used as a JQ template to render and publish a Massdriver resource. The inputs to the JQ template will be a JSON object with the params, connections, envs, secrets and [helm manifests](https://helm.sh/docs/helm/helm_get_manifest/) as top level fields. Note that the `params`, `connections`, `envs` and `secrets` will contain the original content of `params.json`, `connections.json`, `envs.json` and `secrets.json` without any modifications that may have been applied through `params.jq`, `connections.jq`, `envs.jq` and `secrets.jq`. The `outputs` field will contain the result of `helm get manifest` for the chart after it is installed. Since the output of `helm get manifest` is list of yaml files, the `outputs` block will be a JSON array with each element being a JSON object of an individual kubernetes resource manifest.
 
 ```json
 {
@@ -335,7 +373,7 @@ artifacts:
       $ref: api
 ```
 
-Since the resource is named `api_endpoint` a file named `artifact_api_endpoint.jq` would need to be in the template directory and the provisioner would use this file as a JQ template, passing the params, connections and outputs to it. For this example, let's say the helm chart will produce two manifests: a `deployment`, and a `service`. The output of `helm get manifest` would be something like:
+Since the resource is named `api_endpoint` a file named `resource_api_endpoint.jq` would need to be in the template directory and the provisioner would use this file as a JQ template, passing the params, connections and outputs to it. For this example, let's say the helm chart will produce two manifests: a `deployment`, and a `service`. The output of `helm get manifest` would be something like:
 
 ```yaml
 ---
@@ -364,7 +402,7 @@ spec:
           imagePullPolicy: Always
 ```
 
-In this case, the input to the `artifact_api_endpoint.jq` template file would be:
+In this case, the input to the `resource_api_endpoint.jq` template file would be:
 
 ```json
 {
@@ -373,15 +411,13 @@ In this case, the input to the `artifact_api_endpoint.jq` template file would be
     },
     "connections": {
         "kubernetes_cluster": {
-            "data": {
-                "authentication": {
-                    "cluster": {
-                        "certificate-authority-data": "...",
-                        "server": "https://my.kubernetes.cluster.com"
-                    },
-                    "user": {
-                        "token": "..."
-                    }
+            "authentication": {
+                "cluster": {
+                    "certificate-authority-data": "...",
+                    "server": "https://my.kubernetes.cluster.com"
+                },
+                "user": {
+                    "token": "..."
                 }
             },
             "specs": {
@@ -436,16 +472,14 @@ In this case, the input to the `artifact_api_endpoint.jq` template file would be
 }
 ```
 
-We need to build an API resource from these inputs. We'll use Kubernetes built in DNS pattern for services to build the API endpoint from the service name, namespace and port. Thus, the `artifact_api_endpoint.jq` file would be:
+We need to build an API resource from these inputs. We'll use Kubernetes built in DNS pattern for services to build the API endpoint from the service name, namespace and port. Thus, the `resource_api_endpoint.jq` file would be:
 
 ```jq
 {
-    "data": {
-        "api": {
-            "hostname": "\(.outputs[] | select(.kind == "Service" and .apiVersion == "v1") | .metadata.name).\(.params.namespace).svc.cluster.local",
-            "port": (.outputs[] | select(.kind == "Service" and .apiVersion == "v1") | .spec.ports[] | select(.name == "http") | .port),
-            "protocol": "http"
-        }
+    "api": {
+        "hostname": "\(.outputs[] | select(.kind == "Service" and .apiVersion == "v1") | .metadata.name).\(.params.namespace).svc.cluster.local",
+        "port": (.outputs[] | select(.kind == "Service" and .apiVersion == "v1") | .spec.ports[] | select(.name == "http") | .port),
+        "protocol": "http"
     },
     "specs": {
         "api": {
