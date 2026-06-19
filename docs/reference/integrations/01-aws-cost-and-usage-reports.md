@@ -133,6 +133,31 @@ Once enabled, Massdriver:
 
 Data is collected every 24 hours.
 
+## Cost Attribution Modes
+
+Massdriver attributes each cost line item to a package using the `md-package` tag, and picks one of two modes automatically based on the report.
+
+### Resource Groups Tagging API (default)
+
+Massdriver reads each resource's current `md-package` tag from the AWS Resource Groups Tagging API. This works out of the box and needs no billing-account access — it's what the IAM user's `tag:GetResources` permission is for.
+
+### Cost allocation tag column (more accurate)
+
+If you activate `md-package` as a cost allocation tag, AWS adds a `resourceTags/user:md-package` column to the report. Massdriver detects that column and reads the tag straight from each line item, skipping the Tagging API. This is more accurate: it captures values at the time of usage, so deleted and retagged resources are still attributed, along with line items the Tagging API can't return (Reserved Instances, Savings Plans, and other non-resource charges).
+
+Enable it by setting `activate_cost_allocation_tag = true` on the OpenTofu module:
+
+```hcl
+module "massdriver_cur" {
+  source                       = "github.com/massdriver-cloud/integrations//aws-cost-and-usage-reports"
+  activate_cost_allocation_tag = true
+}
+```
+
+:::note
+Activating a cost allocation tag is a billing setting that must be applied in the AWS management (payer) account. It applies going forward only and can take up to 24 hours to appear in reports. Until then — or if you leave it disabled — Massdriver uses the Tagging API.
+:::
+
 ## Troubleshooting
 
 ### Enable fails with "access_denied"
