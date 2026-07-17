@@ -1,0 +1,94 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: scim-provisioning-viewer
+title: ScimProvisioningViewer
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A record of your account being provisioned into an organization via SCIM.
+
+One record exists per organization that provisioned this account through an external
+identity provider (Okta, Azure AD, etc.). The `scimExternalId` is the stable identifier
+the IdP uses for this account; it is `null` if the account was not provisioned through
+SCIM in that organization.
+
+
+```graphql
+type ScimProvisioningViewer {
+  id: ID!
+  scimExternalId: String
+  organization: ProvisioningOrganizationViewer!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ScimProvisioningViewer.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+Unique identifier for this provisioning record.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ScimProvisioningViewer.<b>scimExternalId</b></code>](#scim-external-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#scim-external-id\} 
+The stable identifier assigned by the upstream identity provider, or `null` if unknown.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ScimProvisioningViewer.<b>organization</b></code>](#organization)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ProvisioningOrganizationViewer!</b></code>](/api/graphql/types/objects/provisioning-organization-viewer.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#organization\} 
+The organization this provisioning record belongs to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ScimProvisioningViewer.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When this provisioning record was first created (UTC).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ScimProvisioningViewer.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+When this provisioning record was last touched by the IdP (UTC).
+
+
+
+
+
+
+### Member Of
+
+[`ScimProvisioningsViewerPage`](/api/graphql/types/objects/scim-provisionings-viewer-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

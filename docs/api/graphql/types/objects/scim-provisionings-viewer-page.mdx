@@ -2,8 +2,8 @@
 pagination_next: null
 pagination_prev: null
 hide_table_of_contents: true
-id: access-tokens-page
-title: AccessTokensPage
+id: scim-provisionings-viewer-page
+title: ScimProvisioningsViewerPage
 ---
 
 
@@ -46,9 +46,9 @@ No description
 
 
 ```graphql
-type AccessTokensPage {
+type ScimProvisioningsViewerPage {
   cursor: PaginationCursor!
-  items: [AccessToken]
+  items: [ScimProvisioningViewer]
 }
 ```
 
@@ -57,21 +57,17 @@ type AccessTokensPage {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>AccessTokensPage.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PaginationCursor!</b></code>](/api/graphql/types/objects/pagination-cursor.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#cursor\} 
+#### [<code style={{ fontWeight: 'normal' }}>ScimProvisioningsViewerPage.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PaginationCursor!</b></code>](/api/graphql/types/objects/pagination-cursor.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#cursor\} 
 Pagination cursors for navigating between pages.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AccessTokensPage.<b>items</b></code>](#items)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[AccessToken]</b></code>](/api/graphql/types/objects/access-token.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> \{#items\} 
-A list of type access_token.
+#### [<code style={{ fontWeight: 'normal' }}>ScimProvisioningsViewerPage.<b>items</b></code>](#items)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ScimProvisioningViewer]</b></code>](/api/graphql/types/objects/scim-provisioning-viewer.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> \{#items\} 
+A list of type scim_provisioning_viewer.
 
 
 
 
 
-
-### Returned By
-
-[`accessTokens`](/api/graphql/operations/queries/access-tokens.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
 
 ### Member Of
 

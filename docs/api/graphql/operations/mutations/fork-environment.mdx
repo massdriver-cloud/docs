@@ -95,7 +95,7 @@ The identifier of the environment to fork from.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>forkEnvironment.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ForkEnvironmentInput!</b></code>](/api/graphql/types/inputs/fork-environment-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
-Attributes for the new environment. The fork references the parent via `parentId` and seeds each package from the parent's params. Re-forking against the same parent re-runs the seed — params and version reset to the parent's current values, and the `copy*` flags re-apply — so the mutation behaves as a desired-state converge (use it to reset local edits, or to backfill secrets and remote references that a prior call didn't request). Re-forking with a different parent is rejected; a fork's parent is immutable.
+Create or update a fork of an existing environment.
 
 
 ### Type

@@ -1,0 +1,101 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: attribute-filter
+title: AttributeFilter
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Filter by an effective attribute.
+
+Each filter targets a single attribute `key` and matches against the resource's
+**effective** attributes — its own attributes plus any it inherits from its
+ancestors (project → environment → component → instance). A `team` attribute set
+on a project therefore also matches that project's environments and instances.
+
+Pass a list of attribute filters to require several attributes at once; the
+entries are combined with **AND**. Within a single entry, use `in` to match any
+of several values for that key.
+
+```graphql
+# Resources whose effective "team" attribute is "payments"
+{ "attributes": [{ "key": "team", "eq": "payments" }] }
+
+# Resources whose effective "team" is "payments" AND "tier" is "prod" or "staging"
+{
+  "attributes": [
+    { "key": "team", "eq": "payments" },
+    { "key": "tier", "in": ["prod", "staging"] }
+  ]
+}
+```
+
+
+```graphql
+input AttributeFilter {
+  key: String!
+  eq: String
+  in: [String!]
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AttributeFilter.<b>key</b></code>](#key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#key\} 
+The attribute key to match, e.g. `team` or `cost_center`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AttributeFilter.<b>eq</b></code>](#eq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#eq\} 
+Return only resources whose value for this key exactly equals this string.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AttributeFilter.<b>in</b></code>](#in)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#in\} 
+Return resources whose value for this key matches any string in this list.
+
+
+
+
+
+
+### Member Of
+
+[`EnvironmentsFilter`](/api/graphql/types/inputs/environments-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`InstancesFilter`](/api/graphql/types/inputs/instances-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`ProjectsFilter`](/api/graphql/types/inputs/projects-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

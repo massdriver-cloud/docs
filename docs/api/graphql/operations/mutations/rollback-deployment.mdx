@@ -1,0 +1,94 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: rollback-deployment
+title: rollbackDeployment
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Propose a rollback to a past deployment's exact state.
+
+Takes the **source deployment** — the historical run you want to return
+to — and creates a new `PROPOSED` `PROVISION` deployment that snapshots
+the source's params, connection wiring, bundle version, and release.
+The source must be a `COMPLETED` `PROVISION` deployment.
+
+The rollback proposal can be approved (`approveDeployment`), rejected
+(`rejectDeployment`), or planned (`planDeployment`) like any other
+proposed deployment. **On approval**, the instance is pinned to the
+source deployment's exact bundle version, params, and connection
+snapshot — overriding whatever release is currently configured.
+
+```graphql
+mutation {
+  rollbackDeployment(
+    organizationId: "my-org"
+    id: "550e8400-e29b-41d4-a716-446655440000"
+  ) {
+    result { id status action message }
+    successful
+    messages { field message }
+  }
+}
+```
+
+
+```graphql
+rollbackDeployment(
+  organizationId: ID!
+  id: UUID!
+): DeploymentPayload
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>rollbackDeployment.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>rollbackDeployment.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UUID!</b></code>](/api/graphql/types/scalars/uuid.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+The completed deployment to roll back to.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>DeploymentPayload</b></code>](/api/graphql/types/objects/deployment-payload.mdx) <Badge class="badge badge--secondary " text="object"/>

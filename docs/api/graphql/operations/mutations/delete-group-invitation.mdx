@@ -45,7 +45,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 Revoke a pending invitation.
 
 Removes the invitation so the user can no longer accept it. Has no effect if the invitation
-was already accepted. Requires `organization_admin` permissions.
+was already accepted. Requires the `organization:manageGroups` action.
 
 
 ```graphql

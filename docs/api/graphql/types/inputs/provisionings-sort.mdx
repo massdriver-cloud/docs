@@ -2,8 +2,8 @@
 pagination_next: null
 pagination_prev: null
 hide_table_of_contents: true
-id: bundles-sort-field
-title: BundlesSortField
+id: provisionings-sort
+title: ProvisioningsSort
 ---
 
 
@@ -42,36 +42,24 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Fields available for ordering the bundles list.
-
-When a `search` filter is active and no explicit sort is provided, results are
-ranked by relevance instead of these fields.
+Sorting options for the viewer's SCIM provisionings list.
 
 
 ```graphql
-enum BundlesSortField {
-  NAME
-  CREATED_AT
+input ProvisioningsSort {
+  field: ProvisioningsSortField!
+  order: SortOrder!
 }
 ```
 
 
 
 
-### Values
+### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>BundlesSortField.<b>NAME</b></code>](#name) \{#name\} 
-Alphabetical order by the bundle's OCI repository name (e.g., `aws-aurora-postgres`).
-
-
-#### [<code style={{ fontWeight: 'normal' }}>BundlesSortField.<b>CREATED&#x005F;AT</b></code>](#created-at) \{#created-at\} 
-Chronological order by the date this bundle version was published.
+#### [<code style={{ fontWeight: 'normal' }}>ProvisioningsSort.<b>field</b></code>](#field)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ProvisioningsSortField!</b></code>](/api/graphql/types/enums/provisionings-sort-field.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#field\} 
+The field to sort by.
 
 
-
-
-
-
-### Member Of
-
-[`BundlesSort`](/api/graphql/types/inputs/bundles-sort.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>
+#### [<code style={{ fontWeight: 'normal' }}>ProvisioningsSort.<b>order</b></code>](#order)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SortOrder!</b></code>](/api/graphql/types/enums/sort-order.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#order\} 
+Ascending (`ASC`) or descending (`DESC`).

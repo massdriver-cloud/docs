@@ -59,6 +59,7 @@ query {
 ```graphql
 projects(
   organizationId: ID!
+  filter: ProjectsFilter
   sort: ProjectsSort
   cursor: Cursor
 ): ProjectsPage
@@ -73,8 +74,12 @@ projects(
 Your organization's unique identifier.
 
 
+#### [<code style={{ fontWeight: 'normal' }}>projects.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ProjectsFilter</b></code>](/api/graphql/types/inputs/projects-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#filter\} 
+Optional filters to narrow results.
+
+
 #### [<code style={{ fontWeight: 'normal' }}>projects.<b>sort</b></code>](#sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ProjectsSort</b></code>](/api/graphql/types/inputs/projects-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#sort\} 
-How to sort results. Defaults to name ascending.
+How to sort results. Defaults to name ascending. When a `search` filter is active and no sort is provided, results are ranked by relevance.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>projects.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#cursor\} 

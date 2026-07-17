@@ -56,6 +56,7 @@ input InstancesFilter {
   ociRepoName: OciRepoNameFilter
   bundleId: BundleIdFilter
   paramDimension: [ParamDimensionFilter!]
+  attributes: [AttributeFilter!]
 }
 ```
 
@@ -86,6 +87,10 @@ Match by a specific bundle version (`name@version`) or release channel (`name@~1
 
 #### [<code style={{ fontWeight: 'normal' }}>InstancesFilter.<b>paramDimension</b></code>](#param-dimension)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ParamDimensionFilter!]</b></code>](/api/graphql/types/inputs/param-dimension-filter.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#param-dimension\} 
 Filter by configuration parameter values. Each entry targets a specific param field; multiple entries are combined with AND.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InstancesFilter.<b>attributes</b></code>](#attributes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[AttributeFilter!]</b></code>](/api/graphql/types/inputs/attribute-filter.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#attributes\} 
+Match by effective attributes — the instance's own attributes plus those inherited from its component, environment, and project. Each entry targets one attribute key; multiple entries are combined with AND.
 
 
 

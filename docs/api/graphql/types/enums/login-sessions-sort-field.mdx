@@ -2,8 +2,8 @@
 pagination_next: null
 pagination_prev: null
 hide_table_of_contents: true
-id: remove-organization-logo
-title: removeOrganizationLogo
+id: login-sessions-sort-field
+title: LoginSessionsSortField
 ---
 
 
@@ -42,25 +42,28 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Remove your organization's logo. Returns the deleted logo's metadata, or `null` if none existed.
-Requires the `organization:manageProfile` action.
+Available fields for sorting login sessions.
 
 
 ```graphql
-removeOrganizationLogo(
-  organizationId: ID!
-): LogoOrganizationPayload
+enum LoginSessionsSortField {
+  CREATED_AT
+}
 ```
 
 
 
 
-### Arguments
+### Values
 
-#### [<code style={{ fontWeight: 'normal' }}>removeOrganizationLogo.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
-Your organization's unique identifier.
+#### [<code style={{ fontWeight: 'normal' }}>LoginSessionsSortField.<b>CREATED&#x005F;AT</b></code>](#created-at) \{#created-at\} 
+Sort by when the sign-in occurred (newest or oldest first).
 
 
-### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>LogoOrganizationPayload</b></code>](/api/graphql/types/objects/logo-organization-payload.mdx) <Badge class="badge badge--secondary " text="object"/>
+
+
+
+### Member Of
+
+[`LoginSessionsSort`](/api/graphql/types/inputs/login-sessions-sort.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

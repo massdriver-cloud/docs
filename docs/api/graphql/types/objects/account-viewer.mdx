@@ -74,6 +74,19 @@ type AccountViewer {
     sort: InvitesSort
     cursor: Cursor
   ): InvitesViewerPage
+  loginSessions(
+    sort: LoginSessionsSort
+    cursor: Cursor
+  ): LoginSessionsViewerPage
+  accountTokens(
+    filter: AccessTokensFilter
+    sort: AccessTokensSort
+    cursor: Cursor
+  ): AccessTokensPage
+  provisionings(
+    sort: ProvisioningsSort
+    cursor: Cursor
+  ): ScimProvisioningsViewerPage
 }
 ```
 
@@ -154,6 +167,55 @@ Sort field and direction. Defaults to newest first.
 
 
 ##### [<code style={{ fontWeight: 'normal' }}>AccountViewer.invites.<b>cursor</b></code>](#account-viewer-invites-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#account-viewer-invites-cursor\} 
+Pagination cursor from a previous response to fetch the next page.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>loginSessions</b></code>](#login-sessions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>LoginSessionsViewerPage</b></code>](/api/graphql/types/objects/login-sessions-viewer-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#login-sessions\} 
+Sign-in history for your account across every linked identity.
+
+Use this in the security center to audit recent sessions and spot anything unfamiliar.
+Each record captures the IP address, user agent (if reported), and which OAuth/OIDC
+provider was used. Defaults to newest first.
+##### [<code style={{ fontWeight: 'normal' }}>AccountViewer.loginSessions.<b>sort</b></code>](#account-viewer-login-sessions-sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>LoginSessionsSort</b></code>](/api/graphql/types/inputs/login-sessions-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#account-viewer-login-sessions-sort\} 
+Sort field and direction. Defaults to newest first.
+
+
+##### [<code style={{ fontWeight: 'normal' }}>AccountViewer.loginSessions.<b>cursor</b></code>](#account-viewer-login-sessions-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#account-viewer-login-sessions-cursor\} 
+Pagination cursor from a previous response to fetch the next page.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>accountTokens</b></code>](#account-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AccessTokensPage</b></code>](/api/graphql/types/objects/access-tokens-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#account-tokens\} 
+Personal access tokens you own, across every organization you belong to.
+
+Lists every token issued to your account in every org, regardless of which org context
+you're currently viewing. Use this to audit and revoke tokens from a single security
+center view. The raw token value is only shown on creation and is never returned here.
+
+To create or revoke tokens, use the org-scoped `createAccessToken` / `revokeAccessToken`
+mutations.
+##### [<code style={{ fontWeight: 'normal' }}>AccountViewer.accountTokens.<b>filter</b></code>](#account-viewer-account-tokens-filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AccessTokensFilter</b></code>](/api/graphql/types/inputs/access-tokens-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#account-viewer-account-tokens-filter\} 
+Optional filters to narrow results.
+
+
+##### [<code style={{ fontWeight: 'normal' }}>AccountViewer.accountTokens.<b>sort</b></code>](#account-viewer-account-tokens-sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AccessTokensSort</b></code>](/api/graphql/types/inputs/access-tokens-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#account-viewer-account-tokens-sort\} 
+Sort field and direction. Defaults to newest first.
+
+
+##### [<code style={{ fontWeight: 'normal' }}>AccountViewer.accountTokens.<b>cursor</b></code>](#account-viewer-account-tokens-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#account-viewer-account-tokens-cursor\} 
+Pagination cursor from a previous response to fetch the next page.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>provisionings</b></code>](#provisionings)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ScimProvisioningsViewerPage</b></code>](/api/graphql/types/objects/scim-provisionings-viewer-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#provisionings\} 
+SCIM provisioning records for your account, one per organization that provisioned you.
+
+If your account has been provisioned through SCIM by one or more organizations (via Okta,
+Azure AD, etc.), each provisioning record appears here with the upstream IdP's external
+identifier. Use this to see which organizations are managing your account through SCIM.
+##### [<code style={{ fontWeight: 'normal' }}>AccountViewer.provisionings.<b>sort</b></code>](#account-viewer-provisionings-sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ProvisioningsSort</b></code>](/api/graphql/types/inputs/provisionings-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#account-viewer-provisionings-sort\} 
+Sort field and direction. Defaults to newest first.
+
+
+##### [<code style={{ fontWeight: 'normal' }}>AccountViewer.provisionings.<b>cursor</b></code>](#account-viewer-provisionings-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#account-viewer-provisionings-cursor\} 
 Pagination cursor from a previous response to fetch the next page.
 
 
