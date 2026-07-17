@@ -64,6 +64,7 @@ type AccessToken {
   revokedAt: DateTime
   lastUsedAt: DateTime
   createdAt: DateTime!
+  organization: Organization
 }
 ```
 
@@ -102,6 +103,15 @@ When this token was last used to authenticate an API request, or `null` if never
 
 #### [<code style={{ fontWeight: 'normal' }}>AccessToken.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
 When this token was created (UTC).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccessToken.<b>organization</b></code>](#organization)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Organization</b></code>](/api/graphql/types/objects/organization.mdx) <Badge class="badge badge--secondary " text="object"/> \{#organization\} 
+The organization this token is scoped to, or `null` if the token has been revoked.
+
+Hiding the organization on revoked tokens prevents an ex-member of the org from walking
+`token.organization { name, logo, ... }` after their tokens have been revoked on removal.
+The token row stays visible so the owner can audit revocation history; only the
+organization edge is severed.
 
 
 

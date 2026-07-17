@@ -49,6 +49,7 @@ Filters for narrowing the environments list. All filters are optional and combin
 input EnvironmentsFilter {
   projectId: IdFilter
   id: StringFilter
+  attributes: [AttributeFilter!]
 }
 ```
 
@@ -63,6 +64,10 @@ Filter to environments belonging to a specific project.
 
 #### [<code style={{ fontWeight: 'normal' }}>EnvironmentsFilter.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>StringFilter</b></code>](/api/graphql/types/inputs/string-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#id\} 
 Filter by environment identifier (supports exact match and `in` list).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentsFilter.<b>attributes</b></code>](#attributes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[AttributeFilter!]</b></code>](/api/graphql/types/inputs/attribute-filter.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#attributes\} 
+Match by the environment's effective attributes, including those inherited from its project. Each entry targets one attribute key; multiple entries are combined with AND.
 
 
 

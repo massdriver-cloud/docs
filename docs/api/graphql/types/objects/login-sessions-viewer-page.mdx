@@ -2,8 +2,8 @@
 pagination_next: null
 pagination_prev: null
 hide_table_of_contents: true
-id: bundles-page
-title: BundlesPage
+id: login-sessions-viewer-page
+title: LoginSessionsViewerPage
 ---
 
 
@@ -46,9 +46,9 @@ No description
 
 
 ```graphql
-type BundlesPage {
+type LoginSessionsViewerPage {
   cursor: PaginationCursor!
-  items: [Bundle]
+  items: [LoginSessionViewer]
 }
 ```
 
@@ -57,18 +57,18 @@ type BundlesPage {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>BundlesPage.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PaginationCursor!</b></code>](/api/graphql/types/objects/pagination-cursor.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#cursor\} 
+#### [<code style={{ fontWeight: 'normal' }}>LoginSessionsViewerPage.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PaginationCursor!</b></code>](/api/graphql/types/objects/pagination-cursor.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#cursor\} 
 Pagination cursors for navigating between pages.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>BundlesPage.<b>items</b></code>](#items)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Bundle]</b></code>](/api/graphql/types/objects/bundle.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> \{#items\} 
-A list of type bundle.
+#### [<code style={{ fontWeight: 'normal' }}>LoginSessionsViewerPage.<b>items</b></code>](#items)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[LoginSessionViewer]</b></code>](/api/graphql/types/objects/login-session-viewer.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> \{#items\} 
+A list of type login_session_viewer.
 
 
 
 
 
 
-### Returned By
+### Member Of
 
-[`bundles`](/api/graphql/operations/queries/bundles.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+[`AccountViewer`](/api/graphql/types/objects/account-viewer.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

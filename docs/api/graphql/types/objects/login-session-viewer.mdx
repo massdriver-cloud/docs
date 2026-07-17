@@ -1,0 +1,93 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: login-session-viewer
+title: LoginSessionViewer
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A record of a sign-in to your Massdriver account.
+
+Created each time you authenticate through a linked OAuth or OIDC identity. Use this list
+in the security center to spot unfamiliar IPs or user agents and rotate credentials if
+anything looks wrong.
+
+
+```graphql
+type LoginSessionViewer {
+  id: ID!
+  ipAddress: String!
+  userAgent: String
+  provider: String!
+  createdAt: DateTime!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>LoginSessionViewer.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+Unique identifier for this sign-in record.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>LoginSessionViewer.<b>ipAddress</b></code>](#ip-address)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#ip-address\} 
+The IP address that initiated the sign-in.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>LoginSessionViewer.<b>userAgent</b></code>](#user-agent)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#user-agent\} 
+The browser or client user-agent that initiated the sign-in, if reported.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>LoginSessionViewer.<b>provider</b></code>](#provider)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#provider\} 
+The OAuth/OIDC provider that authenticated this sign-in (e.g., `google`, `github`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>LoginSessionViewer.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When the sign-in occurred (UTC).
+
+
+
+
+
+
+### Member Of
+
+[`LoginSessionsViewerPage`](/api/graphql/types/objects/login-sessions-viewer-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

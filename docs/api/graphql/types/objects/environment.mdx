@@ -67,6 +67,7 @@ type Environment {
   createdAt: DateTime!
   updatedAt: DateTime!
   project: Project
+  parent: Environment
   cost: CostSummary!
   deletable: Deletable!
   instances: [Instance!]!
@@ -126,6 +127,11 @@ When this environment was last modified (UTC).
 The parent project that this environment belongs to.
 
 
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>parent</b></code>](#parent)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Environment</b></code>](/api/graphql/types/objects/environment.mdx) <Badge class="badge badge--secondary " text="object"/> \{#parent\} 
+The environment this one was forked from via `forkEnvironment`, or `null` for
+environments that were created directly. A fork's parent is immutable.
+
+
 #### [<code style={{ fontWeight: 'normal' }}>Environment.<b>cost</b></code>](#cost)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CostSummary!</b></code>](/api/graphql/types/objects/cost-summary.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#cost\} 
 Aggregated cloud-provider cost metrics for all instances in this environment.
 
@@ -178,4 +184,4 @@ The realized infrastructure for this environment showing deployed instances and 
 
 ### Member Of
 
-[`EnvironmentComparison`](/api/graphql/types/objects/environment-comparison.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentDefault`](/api/graphql/types/objects/environment-default.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentEvent`](/api/graphql/types/objects/environment-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentPayload`](/api/graphql/types/objects/environment-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentsPage`](/api/graphql/types/objects/environments-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Instance`](/api/graphql/types/objects/instance.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`Environment`](/api/graphql/types/objects/environment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentComparison`](/api/graphql/types/objects/environment-comparison.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentDefault`](/api/graphql/types/objects/environment-default.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentEvent`](/api/graphql/types/objects/environment-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentPayload`](/api/graphql/types/objects/environment-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentsPage`](/api/graphql/types/objects/environments-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Instance`](/api/graphql/types/objects/instance.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

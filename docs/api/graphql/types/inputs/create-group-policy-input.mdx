@@ -63,7 +63,7 @@ What members of this group can do. Pass one or more action ids in `{entity}:{ver
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CreateGroupPolicyInput.<b>conditions</b></code>](#conditions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Conditions!</b></code>](/api/graphql/types/scalars/conditions.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#conditions\} 
-Restrict the actions to entities whose attributes match every condition. Send the literal `"*"` to apply to all entities of each action's type. Per-key, send `"*"` to match any value or a non-empty list of strings to match a closed set. Within a policy all conditions are AND. Across policies, evaluation is OR.
+Restrict the actions to entities whose attributes match every condition. Within a policy all conditions are AND. Across policies, evaluation is OR.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CreateGroupPolicyInput.<b>effect</b></code>](#effect)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PolicyEffect!</b></code>](/api/graphql/types/enums/policy-effect.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#effect\} 

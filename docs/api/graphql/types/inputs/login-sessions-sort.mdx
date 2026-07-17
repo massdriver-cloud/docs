@@ -2,8 +2,8 @@
 pagination_next: null
 pagination_prev: null
 hide_table_of_contents: true
-id: bundles-sort
-title: BundlesSort
+id: login-sessions-sort
+title: LoginSessionsSort
 ---
 
 
@@ -42,15 +42,12 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Controls the sort order of the bundles list.
-
-When a `search` filter is active and no sort is provided, results are ranked by
-relevance. Providing an explicit sort overrides relevance ranking.
+Sorting options for the viewer's login sessions list.
 
 
 ```graphql
-input BundlesSort {
-  field: BundlesSortField!
+input LoginSessionsSort {
+  field: LoginSessionsSortField!
   order: SortOrder!
 }
 ```
@@ -60,18 +57,9 @@ input BundlesSort {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>BundlesSort.<b>field</b></code>](#field)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BundlesSortField!</b></code>](/api/graphql/types/enums/bundles-sort-field.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#field\} 
-The field to order results by.
+#### [<code style={{ fontWeight: 'normal' }}>LoginSessionsSort.<b>field</b></code>](#field)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>LoginSessionsSortField!</b></code>](/api/graphql/types/enums/login-sessions-sort-field.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#field\} 
+The field to sort by.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>BundlesSort.<b>order</b></code>](#order)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SortOrder!</b></code>](/api/graphql/types/enums/sort-order.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#order\} 
+#### [<code style={{ fontWeight: 'normal' }}>LoginSessionsSort.<b>order</b></code>](#order)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SortOrder!</b></code>](/api/graphql/types/enums/sort-order.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#order\} 
 Ascending (`ASC`) or descending (`DESC`).
-
-
-
-
-
-
-### Member Of
-
-[`bundles`](/api/graphql/operations/queries/bundles.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

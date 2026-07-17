@@ -63,7 +63,7 @@ Replace the policy's full action list. Pass one or more action ids in `{entity}:
 
 
 #### [<code style={{ fontWeight: 'normal' }}>UpdatePolicyInput.<b>conditions</b></code>](#conditions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Conditions</b></code>](/api/graphql/types/scalars/conditions.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#conditions\} 
-Restrict the actions to entities whose attributes match every condition. Pass `"*"` to clear all conditions and make the policy a wildcard. Per-key, send `"*"` to match any value or a non-empty list of strings to match a closed set. Omit the field to leave conditions unchanged.
+Restrict the actions to entities whose attributes match every condition. Omit the field to leave conditions unchanged.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>UpdatePolicyInput.<b>effect</b></code>](#effect)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PolicyEffect</b></code>](/api/graphql/types/enums/policy-effect.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#effect\} 
