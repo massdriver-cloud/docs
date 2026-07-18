@@ -61,7 +61,8 @@ The Massdriver CLI requires configuration to authenticate and interact with your
 
 Specifically, the CLI requires the following configuration values:
 * **Organization ID**: A short string identifying your organization (e.g. acme, not a UUID)
-* **API Key**: A Massdriver Service Account token with appropriate permissions
+* **API Key**: A Massdriver Personal Access Token (or Service Account token) with appropriate permissions
+
 An optional third configuration is:
 * **URL**: Used only for self-hosted environments to point the CLI at a custom Massdriver API endpoint.
 
@@ -73,7 +74,17 @@ Your organization ID is the path segment right after `/orgs/` in the URL on **ev
   <source src="/img/screenshots/org-id.webm" type="video/webm" />
 </video>
 
+#### Creating a Personal Access Token (PAT)
+
+1. Open your [account settings](https://app.massdriver.cloud/account/profile) by clicking your username in the top right
+2. Click [Access tokens](https://app.massdriver.cloud/account/tokens)
+3. Click 'New Token'
+4. Give it a name, permission scope, and expiration and click 'Create token'
+5. Click the 'clipboard' icon
+
 #### Creating a Service Account
+
+For 'machine accounts' that aren't tied to a specific user (such as automations), you can use a service account instead.
 
 1. Open the [Service Accounts page](https://app.massdriver.cloud/orgs?destination=/settings/service-accounts) in your org's settings.
 2. Click 'Add Service Account'
