@@ -101,7 +101,13 @@ module.exports = {
             "platform-operations/self-hosted/self-hosted-oidc",
             "platform-operations/self-hosted/self-hosted-cloud-storage",
             "platform-operations/self-hosted/self-hosted-custom-provisioners",
-            "platform-operations/self-hosted/self-hosted-deleting-repos",
+            {
+              type: "category",
+              label: "Runbooks",
+              items: [
+                "platform-operations/self-hosted/runbooks/self-hosted-runbook-deleting-repos",
+              ],
+            },
           ],
         },
       ],

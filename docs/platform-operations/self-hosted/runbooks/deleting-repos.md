@@ -1,8 +1,8 @@
 ---
-id: self-hosted-deleting-repos
-slug: /platform-operations/self-hosted/deleting-repos
-title: Deleting Bundle Repos
-sidebar_label: Deleting Repos
+id: self-hosted-runbook-deleting-repos
+slug: /platform-operations/self-hosted/runbooks/deleting-repos
+title: "Runbook: Deleting a Repo"
+sidebar_label: Deleting a Repo
 ---
 
 The Massdriver bundle registry is **immutable by design**. Once a bundle version is published to a repo, it cannot be overwritten or deleted through the API, CLI, or UI. Immutability guarantees that what is running in your environments is exactly what was published — a version tag can never silently change out from under a deployed instance.
