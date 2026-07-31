@@ -61,7 +61,7 @@ input OciReposFilter {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>OciReposFilter.<b>artifactType</b></code>](#artifact-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#artifact-type\} 
-Filter by OCI artifact media type. Currently the only supported type is `application/vnd.massdriver.bundle.v1+json`. Passing an unsupported type returns an empty list.
+Filter by OCI artifact media type. Supported types are `application/vnd.massdriver.bundle.v1+json` and `application/vnd.massdriver.resource-type.v1+json`. When omitted, repositories of every artifact type are returned. Passing an unsupported type returns an empty list.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OciReposFilter.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoNameFilter</b></code>](/api/graphql/types/inputs/oci-repo-name-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#name\} 

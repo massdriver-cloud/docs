@@ -45,12 +45,13 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 The kind of artifact stored in an OCI repository.
 
 Each value maps to a concrete [OCI artifact type](https://github.com/opencontainers/image-spec/blob/main/manifest.md#guidelines-for-artifact-usage)
-media string written to the manifest. Today only `BUNDLE` is supported; additional types will be added as the catalog expands.
+media string written to the manifest. Additional types will be added as the catalog expands.
 
 
 ```graphql
 enum OciArtifactType {
   BUNDLE
+  RESOURCE_TYPE
 }
 ```
 
@@ -61,6 +62,10 @@ enum OciArtifactType {
 
 #### [<code style={{ fontWeight: 'normal' }}>OciArtifactType.<b>BUNDLE</b></code>](#bundle) \{#bundle\} 
 Massdriver bundle (`application/vnd.massdriver.bundle.v1+json`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciArtifactType.<b>RESOURCE&#x005F;TYPE</b></code>](#resource-type) \{#resource-type\} 
+Massdriver resource type (`application/vnd.massdriver.resource-type.v1+json`).
 
 
 

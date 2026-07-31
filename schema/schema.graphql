@@ -395,9 +395,10 @@ type RootQueryType {
   """
   List OCI repositories in your organization's bundle catalog.
 
-  Returns a paginated list of repositories. Each repository is the container
-  for all published versions of a bundle. Use `filter` to narrow by name,
-  artifact type, or full-text search.
+  Returns a paginated list of repositories of every artifact type (bundles
+  and resource types). Each repository is the container for all published
+  versions of its artifact. Use `filter` to narrow by name, artifact type,
+  or full-text search.
 
   ```graphql
   query {
@@ -1891,6 +1892,20 @@ type RootMutationType {
     "Update mutable settings on an organization. The identifier is fixed at creation and cannot be changed."
     input: UpdateOrganizationInput!
   ): OrganizationPayload @inputs(name: "updateOrganization", schema: "\/graphql\/v2\/inputs\/updateOrganization.json", ui: "\/graphql\/v2\/inputs\/updateOrganization.ui.json")
+
+  """
+  Change organization-wide behavior settings.
+
+  Only the settings you provide are changed; omitted settings keep their
+  current values. Requires the `organization:manageSettings` action.
+  """
+  updateOrganizationSettings(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "Change organization-wide behavior settings. Only the settings you provide are changed; omitted settings keep their current values."
+    input: UpdateOrganizationSettingsInput!
+  ): OrganizationPayload @inputs(name: "updateOrganizationSettings", schema: "\/graphql\/v2\/inputs\/updateOrganizationSettings.json", ui: "\/graphql\/v2\/inputs\/updateOrganizationSettings.ui.json")
 
   """
   Upload or replace your organization's logo.
@@ -5308,6 +5323,12 @@ input UpdateOrganizationInput {
   name: String!
 }
 
+"Change organization-wide behavior settings. Only the settings you provide are changed; omitted settings keep their current values."
+input UpdateOrganizationSettingsInput {
+  "Access granted to new bundle repositories at creation. NONE keeps each new repository restricted until a grant is authored for it. ALL_PROJECTS automatically creates an org-wide repo:pull grant on each new bundle repository, making its bundles usable by every project. Changing this setting only affects repositories created afterwards."
+  defaultBundleAccess: OrganizationDefaultBundleAccess
+}
+
 """
 Subscription status for an organization.
 
@@ -5339,6 +5360,20 @@ enum OrganizationSubscriptionStatus {
 
   "The most recent payment attempt failed. Update payment details to restore access."
   PAYMENT_FAILED
+}
+
+"""
+Access granted to new bundle repositories at creation.
+
+Changing this setting only affects repositories created afterwards — access
+to existing repositories is managed through their grants.
+"""
+enum OrganizationDefaultBundleAccess {
+  "New bundle repositories are restricted until a grant is authored for them."
+  NONE
+
+  "Every new bundle repository automatically receives an org-wide `repo:pull` grant, making its bundles usable by every project. The grant is a normal grant row: it is listed on the repository and can be revoked with `deleteGrant`."
+  ALL_PROJECTS
 }
 
 "Available fields for sorting organizations."
@@ -5380,9 +5415,9 @@ graph TD
 Members access resources through **group memberships** with role-based permissions.
 Custom attributes defined at the organization level govern attribute metadata across all child resources.
 
-Administrative fields (`billing`, `members`, `customAttributes`) resolve to `null` for
-callers who lack the corresponding ABAC action; in that case a top-level `FORBIDDEN`
-error is added to the response while the rest of the organization still resolves.
+Administrative fields (`billing`, `members`, `customAttributes`, `settings`) resolve to
+`null` for callers who lack the corresponding ABAC action; in that case a top-level
+`FORBIDDEN` error is added to the response while the rest of the organization still resolves.
 """
 type Organization {
   id: ID!
@@ -5460,6 +5495,27 @@ type Organization {
   `subscriptionStatus` field at the top of the type stays visible to every member.
   """
   billing: OrganizationBilling
+
+  """
+  Organization-wide behavior settings.
+
+  Requires the `organization:manageSettings` action. Change settings with the
+  `updateOrganizationSettings` mutation.
+  """
+  settings: OrganizationSettings
+}
+
+"""
+Organization-wide behavior settings.
+
+Settings apply to the whole organization and shape platform behavior — for
+example, the access new bundle repositories receive at creation. Each setting
+has a default, so organizations created before a setting existed read it as
+the default. Change settings with the `updateOrganizationSettings` mutation.
+"""
+type OrganizationSettings {
+  "Access granted to new bundle repositories at creation. Defaults to `NONE` — new repositories are restricted until a grant is authored for them."
+  defaultBundleAccess: OrganizationDefaultBundleAccess!
 }
 
 "Confirmation payload returned after removing a member from the organization."
@@ -8239,7 +8295,7 @@ type BundleDependency {
   "When `true`, this dependency must be connected before the bundle can be deployed."
   required: Boolean!
 
-  "The resource type this dependency accepts. `null` if the resource type has been removed from the catalog."
+  "The resource type this dependency accepts. `null` if the field is not pinned to a resource type — for example, the type has been removed from the catalog."
   resourceType: ResourceType
 }
 
@@ -8258,7 +8314,7 @@ type BundleResource {
   "When `true`, this resource is always produced on a successful deployment."
   required: Boolean!
 
-  "The resource type this output produces. `null` if the resource type has been removed from the catalog."
+  "The resource type this output produces. `null` if the field is not pinned to a resource type — for example, the type has been removed from the catalog."
   resourceType: ResourceType
 }
 
@@ -8364,11 +8420,14 @@ scalar OciRepoName
 The kind of artifact stored in an OCI repository.
 
 Each value maps to a concrete [OCI artifact type](https://github.com/opencontainers/image-spec/blob/main/manifest.md#guidelines-for-artifact-usage)
-media string written to the manifest. Today only `BUNDLE` is supported; additional types will be added as the catalog expands.
+media string written to the manifest. Additional types will be added as the catalog expands.
 """
 enum OciArtifactType {
   "Massdriver bundle (`application\/vnd.massdriver.bundle.v1+json`)."
   BUNDLE
+
+  "Massdriver resource type (`application\/vnd.massdriver.resource-type.v1+json`)."
+  RESOURCE_TYPE
 }
 
 """
@@ -8408,13 +8467,13 @@ enum OciFilesSortField {
 
 "Create a new OCI repository in your organization's catalog. Repositories must exist before any version can be published to them."
 input CreateOciRepoInput {
-  "OCI artifact type stored in this repository. Today only `BUNDLE` is accepted; additional types will be added as Massdriver expands the catalog."
+  "OCI artifact type stored in this repository. `BUNDLE` holds Massdriver bundles; `RESOURCE_TYPE` holds Massdriver resource types."
   artifactType: OciArtifactType!
 
   "Key-value attributes for this repository. Used by ABAC policies for fine-grained access control. Reserved `md-*` keys are rejected. Must conform to the organization's custom attributes for the repo scope."
   attributes: Map
 
-  "Unique repository name within your organization, e.g. `aws-aurora-postgres`. Lowercase letters, numbers, dashes, underscores only. Max 53 characters. Cannot be changed after creation."
+  "Unique repository name within your organization, e.g. `aws-aurora-postgres`. Lowercase letters, numbers, dashes, underscores only. Max 100 characters. Cannot be changed after creation."
   id: String!
 }
 
@@ -8430,7 +8489,7 @@ Filters for narrowing the OCI repositories list.
 All filters are combined with AND logic.
 """
 input OciReposFilter {
-  "Filter by OCI artifact media type. Currently the only supported type is `application\/vnd.massdriver.bundle.v1+json`. Passing an unsupported type returns an empty list."
+  "Filter by OCI artifact media type. Supported types are `application\/vnd.massdriver.bundle.v1+json` and `application\/vnd.massdriver.resource-type.v1+json`. When omitted, repositories of every artifact type are returned. Passing an unsupported type returns an empty list."
   artifactType: String
 
   "Filter repositories by name using exact match, prefix, or set membership."
@@ -8642,8 +8701,8 @@ type OciRepo {
 
   """
   The [OCI artifact type](https://github.com/opencontainers/image-spec/blob/main/manifest.md#guidelines-for-artifact-usage)
-  stored in this repository. Currently always
-  `application/vnd.massdriver.bundle.v1+json`.
+  stored in this repository — `application/vnd.massdriver.bundle.v1+json` or
+  `application/vnd.massdriver.resource-type.v1+json`.
   """
   artifactType: String!
 

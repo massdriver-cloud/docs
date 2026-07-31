@@ -1,0 +1,77 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: organization-default-bundle-access
+title: OrganizationDefaultBundleAccess
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Access granted to new bundle repositories at creation.
+
+Changing this setting only affects repositories created afterwards — access
+to existing repositories is managed through their grants.
+
+
+```graphql
+enum OrganizationDefaultBundleAccess {
+  NONE
+  ALL_PROJECTS
+}
+```
+
+
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationDefaultBundleAccess.<b>NONE</b></code>](#none) \{#none\} 
+New bundle repositories are restricted until a grant is authored for them.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationDefaultBundleAccess.<b>ALL&#x005F;PROJECTS</b></code>](#all-projects) \{#all-projects\} 
+Every new bundle repository automatically receives an org-wide `repo:pull` grant, making its bundles usable by every project. The grant is a normal grant row: it is listed on the repository and can be revoked with `deleteGrant`.
+
+
+
+
+
+
+### Member Of
+
+[`OrganizationSettings`](/api/graphql/types/objects/organization-settings.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`UpdateOrganizationSettingsInput`](/api/graphql/types/inputs/update-organization-settings-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

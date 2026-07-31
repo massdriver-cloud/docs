@@ -62,9 +62,9 @@ graph TD
 Members access resources through **group memberships** with role-based permissions.
 Custom attributes defined at the organization level govern attribute metadata across all child resources.
 
-Administrative fields (`billing`, `members`, `customAttributes`) resolve to `null` for
-callers who lack the corresponding ABAC action; in that case a top-level `FORBIDDEN`
-error is added to the response while the rest of the organization still resolves.
+Administrative fields (`billing`, `members`, `customAttributes`, `settings`) resolve to
+`null` for callers who lack the corresponding ABAC action; in that case a top-level
+`FORBIDDEN` error is added to the response while the rest of the organization still resolves.
 
 
 ```graphql
@@ -85,6 +85,7 @@ type Organization {
     cursor: Cursor
   ): CustomAttributesPage
   billing: OrganizationBilling
+  settings: OrganizationSettings
 }
 ```
 
@@ -166,6 +167,13 @@ Subscription, trial, and upgrade information for this organization.
 
 Requires the `organization:manageBilling` action. The non-sensitive
 `subscriptionStatus` field at the top of the type stays visible to every member.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Organization.<b>settings</b></code>](#settings)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OrganizationSettings</b></code>](/api/graphql/types/objects/organization-settings.mdx) <Badge class="badge badge--secondary " text="object"/> \{#settings\} 
+Organization-wide behavior settings.
+
+Requires the `organization:manageSettings` action. Change settings with the
+`updateOrganizationSettings` mutation.
 
 
 

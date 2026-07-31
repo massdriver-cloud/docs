@@ -1,0 +1,74 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: organization-settings
+title: OrganizationSettings
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Organization-wide behavior settings.
+
+Settings apply to the whole organization and shape platform behavior — for
+example, the access new bundle repositories receive at creation. Each setting
+has a default, so organizations created before a setting existed read it as
+the default. Change settings with the `updateOrganizationSettings` mutation.
+
+
+```graphql
+type OrganizationSettings {
+  defaultBundleAccess: OrganizationDefaultBundleAccess!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationSettings.<b>defaultBundleAccess</b></code>](#default-bundle-access)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OrganizationDefaultBundleAccess!</b></code>](/api/graphql/types/enums/organization-default-bundle-access.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#default-bundle-access\} 
+Access granted to new bundle repositories at creation. Defaults to `NONE` — new repositories are restricted until a grant is authored for them.
+
+
+
+
+
+
+### Member Of
+
+[`Organization`](/api/graphql/types/objects/organization.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
