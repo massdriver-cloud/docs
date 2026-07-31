@@ -362,17 +362,18 @@ Resource types push `md-resource-type` onto every resource produced from them, s
 
 ### Organization
 
-Organization-level capabilities are split into one umbrella action and seven sub-actions. Authoring a single policy with `organization:manage` covers every sub-action via the engine's umbrella rule; authoring an individual sub-action grants only that capability.
+Organization-level capabilities are split into one umbrella action and eight sub-actions. Authoring a single policy with `organization:manage` covers every sub-action via the engine's umbrella rule; authoring an individual sub-action grants only that capability.
 
 | Permission | Description |
 |---|---|
-| `organization:manage` | Umbrella. A policy granting `organization:manage` satisfies any of the seven `organization:manage*` sub-actions below. |
+| `organization:manage` | Umbrella. A policy granting `organization:manage` satisfies any of the eight `organization:manage*` sub-actions below. |
 | `organization:manageServiceAccounts` | Create, update, delete, list, and inspect service accounts. |
 | `organization:manageGroups` | Create new groups. Editing an existing group's membership or policies is gated separately by `group:manage` on that group. |
 | `organization:manageBilling` | View and change subscription, payment, seats, and Stripe customer portal. |
 | `organization:manageIntegrations` | Configure, enable, disable, and delete third-party integrations (cost reports, metrics, etc.). |
 | `organization:manageCustomAttributes` | Declare, update, and delete custom attributes — the org-wide schema that governs user-defined attributes on projects, environments, components, and resources. |
 | `organization:manageResourceTypes` | Publish and delete resource types — the org-level catalog of schemas describing each kind of infrastructure output. |
+| `organization:manageSettings` | View and change organization-wide behavior settings, such as the default access granted to new bundle repositories. |
 | `organization:manageProfile` | Update display name and logo, remove members, and view the member roster as a single list. |
 
 Reading the organization's public profile (name, logo, identifier) is open to every org member — no policy required.

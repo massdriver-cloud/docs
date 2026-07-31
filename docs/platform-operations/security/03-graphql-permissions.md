@@ -18,7 +18,7 @@ This page maps every operation in the Massdriver GraphQL API to the [ABAC permis
 
 If you're building a least-privilege policy, scan the table for the operations the principal needs and assemble the union of required permissions. List queries (`projects`, `instances`, `resources`, etc.) are visibility-filtered: a caller only sees what their group policies and grants make visible — there's no explicit list permission to grant.
 
-`organization:manage` is a one-level umbrella: a single policy granting `organization:manage` on a custom group satisfies any `organization:manageServiceAccounts`, `organization:manageGroups`, `organization:manageBilling`, `organization:manageIntegrations`, `organization:manageCustomAttributes`, `organization:manageResourceTypes`, or `organization:manageProfile` query below. Grant the umbrella when you want full org-level administrative authority on a custom group; grant a single sub-action when you want to scope authority to one capability.
+`organization:manage` is a one-level umbrella: a single policy granting `organization:manage` on a custom group satisfies any `organization:manageServiceAccounts`, `organization:manageGroups`, `organization:manageBilling`, `organization:manageIntegrations`, `organization:manageCustomAttributes`, `organization:manageResourceTypes`, `organization:manageSettings`, or `organization:manageProfile` query below. Grant the umbrella when you want full org-level administrative authority on a custom group; grant a single sub-action when you want to scope authority to one capability.
 
 ---
 
@@ -179,9 +179,10 @@ There is no `updateGrant` — grants are immutable; delete and re-create to chan
 
 | Operation | Type | Required permission(s) | Notes |
 |---|---|---|---|
-| `organization` | Query | *no explicit gate* | Public profile fields (name, logo, identifier) are open to every org member. Sensitive subfields gate individually: `members` requires `organization:manageProfile`, `billing` requires `organization:manageBilling`, `customAttributes` requires `organization:manageCustomAttributes`. Each resolves to `null` with a top-level `FORBIDDEN` error when the caller lacks the sub-action. All three are covered by the `organization:manage` umbrella. |
+| `organization` | Query | *no explicit gate* | Public profile fields (name, logo, identifier) are open to every org member. Sensitive subfields gate individually: `members` requires `organization:manageProfile`, `billing` requires `organization:manageBilling`, `customAttributes` requires `organization:manageCustomAttributes`, `settings` requires `organization:manageSettings`. Each resolves to `null` with a top-level `FORBIDDEN` error when the caller lacks the sub-action. All four are covered by the `organization:manage` umbrella. |
 | `createOrganization` | Mutation | *authenticated only* | Caller becomes the org's first owner; no ABAC permission since the org doesn't exist yet. |
 | `updateOrganization` | Mutation | `organization:manageProfile` | Covered by the `organization:manage` umbrella. |
+| `updateOrganizationSettings` | Mutation | `organization:manageSettings` | Covered by the `organization:manage` umbrella. Settings are partial-update: only the provided settings change. |
 | `setOrganizationLogo` | Mutation | `organization:manageProfile` | Covered by the `organization:manage` umbrella. |
 | `removeOrganizationLogo` | Mutation | `organization:manageProfile` | Covered by the `organization:manage` umbrella. |
 | `deleteOrganizationMember` | Mutation | `organization:manageProfile` | Covered by the `organization:manage` umbrella. |
