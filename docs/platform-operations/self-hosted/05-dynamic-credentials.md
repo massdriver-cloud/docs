@@ -49,7 +49,7 @@ kubectl get serviceaccount -n massdriver -l app.kubernetes.io/component=provisio
 
 :::warning Republish Bundles After Publishing a Resource Type
 
-Bundles burn in their connection schema when they are published, and Massdriver validates every connection against that schema before a deployment runs. Whenever you publish or change a credential resource type, run `mass bundle build` and `mass bundle publish` on the bundles that connect to it.
+Bundles burn in their connection schema when they are published, and Massdriver validates every connection against that schema before a deployment runs. Whenever you change the schema of any resource type, be sure to run `mass bundle build` and `mass bundle publish` on the bundles that connect to it.
 
 :::
 
@@ -107,7 +107,7 @@ aws iam put-role-policy \
     "Statement": [{
       "Effect": "Allow",
       "Action": "sts:AssumeRole",
-      "Resource": "arn:aws:iam::*:role/massdriver-provisioner"
+      "Resource": "*"
     }]
   }'
 ```
@@ -141,14 +141,14 @@ helm upgrade massdriver massdriver/massdriver -n massdriver -f values-custom.yam
 
 ### Step 3: Trust the Provisioner Role from Each Target Account
 
-In every AWS account you deploy into, create a `massdriver-provisioner` role with the permissions Massdriver needs, and give it a trust policy that allows the provisioner role in your platform account to assume it:
+In every AWS account you deploy into, create a `massdriver-deployments` role (or whatever name you choose) with the permissions Massdriver needs, and give it a trust policy that allows the provisioner role in your platform account to assume it:
 
 ```json
 {
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "MassdriverProvisioner",
+      "Sid": "MassdriverDeployments",
       "Effect": "Allow",
       "Principal": {
         "AWS": "arn:aws:iam::111111111111:role/massdriver-provisioner"
@@ -279,19 +279,19 @@ provisioner:
 
 ### Step 3: Allow Impersonation in Each Target Project
 
-Create a service account in the target project with the roles Massdriver needs, then let the provisioner identity in the platform project mint tokens for it:
+Create a `massdriver-deployments` service account (or whatever name you choose) in the target project with the roles Massdriver needs, then let the provisioner identity in the platform project mint tokens for it:
 
 ```bash
 gcloud services enable iamcredentials.googleapis.com --project my-target-project
 
-gcloud iam service-accounts create massdriver-provisioner --project my-target-project
+gcloud iam service-accounts create massdriver-deployments --project my-target-project
 
 gcloud projects add-iam-policy-binding my-target-project \
-  --member "serviceAccount:massdriver-provisioner@my-target-project.iam.gserviceaccount.com" \
+  --member "serviceAccount:massdriver-deployments@my-target-project.iam.gserviceaccount.com" \
   --role roles/owner
 
 gcloud iam service-accounts add-iam-policy-binding \
-  massdriver-provisioner@my-target-project.iam.gserviceaccount.com \
+  massdriver-deployments@my-target-project.iam.gserviceaccount.com \
   --project my-target-project \
   --role roles/iam.serviceAccountTokenCreator \
   --member "serviceAccount:massdriver-provisioner@my-platform-project.iam.gserviceaccount.com"
@@ -375,7 +375,7 @@ kubectl run gcp-identity-check -n massdriver --rm -it --restart=Never \
   --overrides='{"spec":{"serviceAccountName":"massdriver-provisioner"}}' \
   --image=google/cloud-sdk:slim -- \
   gcloud auth print-access-token \
-  --impersonate-service-account=massdriver-provisioner@my-target-project.iam.gserviceaccount.com
+  --impersonate-service-account=massdriver-deployments@my-target-project.iam.gserviceaccount.com
 ```
 
 If the pod's own identity is wrong, `gcloud auth list` in the same pod will show the compute default service account instead of `massdriver-provisioner@my-platform-project.iam.gserviceaccount.com`.
