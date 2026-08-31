@@ -168,41 +168,34 @@ In every AWS account you deploy into, create a `massdriver-deployments` role (or
 
 The credential holds no secret — just the role to assume and the external ID to assume it with:
 
-```json aws-iam-role.json
-{
-  "$schema": "http://json-schema.org/draft-07/schema",
-  "$md": {
-    "name": "aws-iam-role",
-    "label": "AWS IAM Role",
-    "importing": { "group": "authentication" },
-    "ui": {
-      "environmentDefaultGroup": "credentials",
-      "connectionOrientation": "environmentDefault"
-    }
-  },
-  "type": "object",
-  "title": "AWS IAM Role",
-  "description": "AWS IAM role assumed by the Massdriver provisioner",
-  "additionalProperties": false,
-  "required": ["arn"],
-  "properties": {
-    "arn": {
-      "title": "Role ARN",
-      "description": "ARN of the role the provisioner will assume in the target account",
-      "type": "string",
-      "pattern": "^arn:aws:iam::[0-9]{12}:role/.+$"
-    },
-    "external_id": {
-      "title": "External ID",
-      "description": "Value the target role's trust policy requires in the sts:ExternalId condition",
-      "type": "string"
-    }
-  }
-}
+```yaml aws-iam-role/massdriver.yaml
+name: aws-iam-role
+label: AWS IAM Role
+
+ui:
+  connectionOrientation: environmentDefault
+  environmentDefaultGroup: credentials
+
+schema:
+  title: AWS IAM Role
+  description: AWS IAM role assumed by the Massdriver provisioner
+  type: object
+  required:
+    - arn
+  properties:
+    arn:
+      title: Role ARN
+      description: ARN of the role the provisioner will assume in the target account
+      type: string
+      pattern: ^arn:aws:iam::[0-9]{12}:role/.+$
+    external_id:
+      title: External ID
+      description: Value the target role's trust policy requires in the sts:ExternalId condition
+      type: string
 ```
 
 ```bash
-mass resource-type publish aws-iam-role.json
+mass resource-type publish aws-iam-role/massdriver.yaml
 ```
 
 ### Step 5: Use the Credential in Your Bundles
@@ -303,40 +296,35 @@ Impersonation keeps a per-project boundary: the provisioner can only act in proj
 
 The credential holds no secret — just the service account to impersonate and the project it lives in:
 
-```json gcp-service-account.json
-{
-  "$schema": "http://json-schema.org/draft-07/schema",
-  "$md": {
-    "name": "gcp-service-account",
-    "label": "GCP Service Account",
-    "importing": { "group": "authentication" },
-    "ui": {
-      "environmentDefaultGroup": "credentials",
-      "connectionOrientation": "environmentDefault"
-    }
-  },
-  "type": "object",
-  "title": "GCP Service Account",
-  "description": "GCP service account impersonated by the Massdriver provisioner",
-  "additionalProperties": false,
-  "required": ["client_email", "project_id"],
-  "properties": {
-    "client_email": {
-      "title": "Service Account Email",
-      "description": "The service account the provisioner will impersonate",
-      "type": "string"
-    },
-    "project_id": {
-      "title": "Project ID",
-      "description": "The GCP project the service account belongs to",
-      "type": "string"
-    }
-  }
-}
+```yaml gcp-service-account/massdriver.yaml
+name: gcp-service-account
+label: GCP Service Account
+
+ui:
+  connectionOrientation: environmentDefault
+  environmentDefaultGroup: credentials
+
+schema:
+  title: GCP Service Account
+  description: GCP service account impersonated by the Massdriver provisioner
+  type: object
+  required:
+    - client_email
+    - project_id
+  properties:
+    client_email:
+      title: Service Account Email
+      description: The service account the provisioner will impersonate
+      type: string
+      format: email
+    project_id:
+      title: Project ID
+      description: The GCP project the service account belongs to
+      type: string
 ```
 
 ```bash
-mass resource-type publish gcp-service-account.json
+mass resource-type publish gcp-service-account/massdriver.yaml
 ```
 
 ### Step 5: Use the Credential in Your Bundles
@@ -438,44 +426,41 @@ For multiple subscriptions you can either give one identity a role assignment in
 
 The credential holds no secret — just the managed identity to authenticate as and the subscription it can reach:
 
-```json azure-service-principal.json
-{
-  "$schema": "http://json-schema.org/draft-07/schema",
-  "$md": {
-    "name": "azure-service-principal",
-    "label": "Azure Service Principal",
-    "importing": { "group": "authentication" },
-    "ui": {
-      "environmentDefaultGroup": "credentials",
-      "connectionOrientation": "environmentDefault"
-    }
-  },
-  "type": "object",
-  "title": "Azure Service Principal",
-  "description": "Azure managed identity used by the Massdriver provisioner",
-  "additionalProperties": false,
-  "required": ["client_id", "tenant_id", "subscription_id"],
-  "properties": {
-    "client_id": {
-      "title": "Client ID",
-      "description": "Client ID of the managed identity federated with the provisioner service account",
-      "type": "string"
-    },
-    "tenant_id": {
-      "title": "Tenant ID",
-      "type": "string"
-    },
-    "subscription_id": {
-      "title": "Subscription ID",
-      "description": "The subscription the identity has a role assignment in",
-      "type": "string"
-    }
-  }
-}
+```yaml azure-service-principal/massdriver.yaml
+name: azure-service-principal
+label: Azure Service Principal
+
+ui:
+  connectionOrientation: environmentDefault
+  environmentDefaultGroup: credentials
+
+schema:
+  title: Azure Service Principal
+  description: Azure managed identity used by the Massdriver provisioner
+  type: object
+  required:
+    - client_id
+    - tenant_id
+    - subscription_id
+  properties:
+    client_id:
+      title: Client ID
+      description: Client ID of the managed identity federated with the provisioner service account
+      type: string
+      format: uuid
+    tenant_id:
+      title: Tenant ID
+      type: string
+      format: uuid
+    subscription_id:
+      title: Subscription ID
+      description: The subscription the identity has a role assignment in
+      type: string
+      format: uuid
 ```
 
 ```bash
-mass resource-type publish azure-service-principal.json
+mass resource-type publish azure-service-principal/massdriver.yaml
 ```
 
 ### Step 5: Use the Credential in Your Bundles
