@@ -16,7 +16,7 @@ Before diving into each pattern, here's the quick reference:
 | Traditional Module Pattern | Massdriver Pattern | What Happens to the Module |
 |---|---|---|
 | **Naming / tagging utilities** | Eliminated by [`md_metadata`](/getting-started/using-bundle-metadata) | Delete it |
-| **Shared child modules** (IAM, secrets, firewall) | Child modules in your catalog under `modules/` | Move it |
+| **Shared child modules** (IAM, secrets, firewall) | Child modules referenced by git source | Keep it, reference it via git |
 | **Decorator modules** (diagnostics, extensions) | Child modules baked into bundles or standalone bundles with connections | Move or promote it |
 | **Meta / org config** (Entra, DNS, SSO, Policy) | Full standalone bundles | Promote it |
 
@@ -73,7 +73,7 @@ For the full reference on `md_metadata` fields, see [Using Bundle Deployment Met
 
 ## Pattern 2: Shared Child Modules
 
-**These stay as modules, but move into your catalog.**
+**These stay as modules, referenced by git source.**
 
 Child modules are the building blocks you call from inside other modules. Common examples include:
 
@@ -84,9 +84,25 @@ Child modules are the building blocks you call from inside other modules. Common
 
 These modules don't need to become bundles because they don't represent independently deployable infrastructure. They're implementation details of a bundle.
 
-### Where to put them
+### Why local paths don't work
 
-Store shared child modules in your [massdriver-catalog](https://github.com/massdriver-cloud/massdriver-catalog) repository under a `modules/` directory, organized by IaC tool:
+When you publish a bundle with the [Massdriver CLI](https://github.com/massdriver-cloud/mass), **only the bundle directory and its subdirectories are packaged**. A relative module source that reaches outside the bundle directory — for example, `source = "../../../modules/opentofu/azure-role-assignment"` — points to files that won't exist in the published bundle, and the deployment will fail when the provisioner tries to resolve the module.
+
+### Reference modules with git sources
+
+Instead, reference shared child modules with a [git source](https://opentofu.org/docs/language/modules/sources/#generic-git-repository) and a pinned `ref`:
+
+```hcl
+module "role_assignment" {
+  source = "git::https://github.com/your-org/your-modules.git//path/to/module?ref=v1.2.0"
+
+  ...
+}
+```
+
+At deploy time the provisioner clones the module from git, so nothing outside the bundle directory needs to be packaged. Every bundle references the same module, and pinning a `ref` (a tag or commit SHA) gives you explicit, per-bundle version control — you can roll a module change out to bundles one at a time.
+
+The modules can live in a dedicated modules repository, or even in the same repository as your bundles — a common layout keeps them alongside bundles in your catalog:
 
 ```
 massdriver-catalog/
@@ -110,47 +126,29 @@ massdriver-catalog/
         └── ...
 ```
 
-Any bundle in the catalog can reference these modules using relative paths:
+Even when a module lives in the same repository as the bundle that calls it, reference it via git — not a relative path:
 
 ```hcl
-module "role_assignment" {
-  source = "../../../modules/opentofu/azure-role-assignment"
-
-  principal_id = azurerm_user_assigned_identity.main.principal_id
-  role_name    = "Storage Blob Data Reader"
-  scope        = azurerm_storage_account.main.id
+module "diagnostics" {
+  source = "git::https://github.com/your-org/massdriver-catalog.git//modules/opentofu/azure-diagnostic-settings?ref=v2.0.1"
+  # ...
 }
 ```
 
-:::caution Referencing external modules requires access
+### Private module repositories
 
-If your child modules are sourced from a **private** Git repository (e.g., `git::https://github.com/your-org/terraform-modules.git//some-module`), the default Massdriver provisioners won't have access to clone them. You have two options:
-
-1. **Make the module repository public** — simplest if the modules don't contain sensitive information.
-2. **Use a [custom provisioner](/platform-operations/self-hosted/custom-provisioners)** that has credentials to your Git host. You can inject secrets from your connections into the provisioner's `config` block using jq queries:
+If your modules live in a **private** git repository, the [Terraform](/bundle-development/provisioners/terraform) and [OpenTofu](/bundle-development/provisioners/opentofu) provisioners support SSH authentication through the `ssh.private_key` configuration option. Values in the `config` block are [jq queries](/bundle-development/provisioners/overview) evaluated against the bundle's `params` and `connections`, so you can source the key from either:
 
 ```yaml title="massdriver.yaml"
 steps:
   - path: src
-    provisioner: custom-opentofu:1.x
+    provisioner: opentofu
     config:
-      git:
-        token: .connections.landing_zone.git_read_token
+      ssh:
+        private_key: .connections.landing_zone.git_ssh_key
 ```
 
-This makes the token available to the provisioner at deploy time, allowing it to authenticate and clone private module sources. Any value from `params` or `connections` can be injected this way — for example, a Snyk token for policy scanning:
-
-```yaml
-    config:
-      snyk:
-        api_token: .connections.landing_zone.snyk_cfg_object
-      git:
-        token: .connections.landing_zone.git_read_token
-```
-
-Custom provisioners are available in [self-hosted Massdriver installations](/platform-operations/self-hosted/custom-provisioners).
-
-:::
+When `ssh.private_key` is set, the provisioner configures SSH authentication and automatically rewrites HTTPS git URLs to use SSH — so your `git::https://...` module sources work against private repositories without modification.
 
 ### How connections supercharge child modules
 
@@ -171,7 +169,7 @@ Inside the bundle, a shared child module processes that connection:
 
 ```hcl
 module "postgres_access" {
-  source = "../../../modules/opentofu/azure-postgres-artifact"
+  source = "git::https://github.com/your-org/massdriver-catalog.git//modules/opentofu/azure-postgres-artifact?ref=v1.4.0"
 
   # The connection resource provides everything needed
   postgres_artifact = var.database
@@ -209,7 +207,7 @@ resource "azurerm_storage_account" "main" {
 }
 
 module "diagnostics" {
-  source = "../../../modules/opentofu/azure-diagnostic-settings"
+  source = "git::https://github.com/your-org/massdriver-catalog.git//modules/opentofu/azure-diagnostic-settings?ref=v2.0.1"
 
   target_resource_id         = azurerm_storage_account.main.id
   log_analytics_workspace_id = var.log_analytics.data.infrastructure.workspace_id
