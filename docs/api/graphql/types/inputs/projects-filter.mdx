@@ -48,6 +48,7 @@ Filters for narrowing the projects list. All filters are optional and combine wi
 ```graphql
 input ProjectsFilter {
   name: StringFilter
+  createdAt: DatetimeFilter
   search: String
   attributes: [AttributeFilter!]
 }
@@ -60,6 +61,10 @@ input ProjectsFilter {
 
 #### [<code style={{ fontWeight: 'normal' }}>ProjectsFilter.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>StringFilter</b></code>](/api/graphql/types/inputs/string-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#name\} 
 Match by the project's exact display name (`eq`) or a set of names (`in`). For partial or approximate matching, use `search` instead.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ProjectsFilter.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DatetimeFilter</b></code>](/api/graphql/types/inputs/datetime-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#created-at\} 
+Match by when the project was created. Combine `gte` and `lte` to select a date range.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ProjectsFilter.<b>search</b></code>](#search)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#search\} 

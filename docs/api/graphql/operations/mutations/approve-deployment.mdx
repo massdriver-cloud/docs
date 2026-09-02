@@ -49,6 +49,11 @@ as soon as nothing else is running on the instance. Approval is only valid
 for deployments in `PROPOSED` status; any other status returns a validation
 error.
 
+When the instance's environment has `separationOfDuty` enabled, the account
+or service account named in `deployedBy` cannot approve its own proposal —
+a second reviewer has to call this mutation. Use `rejectDeployment` to
+withdraw your own proposal.
+
 
 ```graphql
 approveDeployment(

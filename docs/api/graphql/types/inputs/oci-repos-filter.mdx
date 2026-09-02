@@ -51,6 +51,8 @@ All filters are combined with AND logic.
 input OciReposFilter {
   artifactType: String
   name: OciRepoNameFilter
+  createdAt: DatetimeFilter
+  attributes: [AttributeFilter!]
   search: String
 }
 ```
@@ -61,11 +63,19 @@ input OciReposFilter {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>OciReposFilter.<b>artifactType</b></code>](#artifact-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#artifact-type\} 
-Filter by OCI artifact media type. Currently the only supported type is `application/vnd.massdriver.bundle.v1+json`. Passing an unsupported type returns an empty list.
+Filter by OCI artifact media type. Supported types are `application/vnd.massdriver.bundle.v1+json` and `application/vnd.massdriver.resource-type.v1+json`. When omitted, repositories of every artifact type are returned. Passing an unsupported type returns an empty list.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OciReposFilter.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoNameFilter</b></code>](/api/graphql/types/inputs/oci-repo-name-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#name\} 
 Filter repositories by name using exact match, prefix, or set membership.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciReposFilter.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DatetimeFilter</b></code>](/api/graphql/types/inputs/datetime-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#created-at\} 
+Match by when the repository was created. Combine `gte` and `lte` to select a date range.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciReposFilter.<b>attributes</b></code>](#attributes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[AttributeFilter!]</b></code>](/api/graphql/types/inputs/attribute-filter.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#attributes\} 
+Match by the repository's attributes. Repositories are organization-level, so there is no inheritance — only attributes set on the repository itself match, plus `md-repo` and `md-id`, which both resolve to the repository name. Each entry targets one attribute key; multiple entries are combined with AND.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OciReposFilter.<b>search</b></code>](#search)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#search\} 

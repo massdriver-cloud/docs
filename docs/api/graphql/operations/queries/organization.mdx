@@ -94,6 +94,6 @@ graph TD
 Members access resources through **group memberships** with role-based permissions.
 Custom attributes defined at the organization level govern attribute metadata across all child resources.
 
-Administrative fields (`billing`, `members`, `customAttributes`) resolve to `null` for
-callers who lack the corresponding ABAC action; in that case a top-level `FORBIDDEN`
-error is added to the response while the rest of the organization still resolves.
+Administrative fields (`billing`, `members`, `customAttributes`, `settings`) resolve to
+`null` for callers who lack the corresponding ABAC action; in that case a top-level
+`FORBIDDEN` error is added to the response while the rest of the organization still resolves.

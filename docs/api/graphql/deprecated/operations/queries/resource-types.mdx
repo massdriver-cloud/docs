@@ -42,6 +42,12 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
+:::warning[DEPRECATED]
+
+Version-blind: returns only the current (0.0.0) version of each resource type. Use the versioned resourceType(id: "identifier@version") query for version-aware reads as resource types move to the repo/version model.
+
+:::
+
 List resource types available to your organization.
 
 Returns both public resource types provided by Massdriver and any private
@@ -69,7 +75,7 @@ resourceTypes(
   filter: ResourceTypesFilter
   sort: ResourceTypesSort
   cursor: Cursor
-): ResourceTypesPage
+): ResourceTypesPage @deprecated
 ```
 
 

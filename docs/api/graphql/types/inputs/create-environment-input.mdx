@@ -52,6 +52,7 @@ input CreateEnvironmentInput {
   description: String
   id: String!
   name: String!
+  separationOfDuty: Boolean
 }
 ```
 
@@ -78,6 +79,10 @@ A short, memorable identifier for looking up this environment in the API and CLI
 
 #### [<code style={{ fontWeight: 'normal' }}>CreateEnvironmentInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
 A human-readable name for the environment
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateEnvironmentInput.<b>separationOfDuty</b></code>](#separation-of-duty)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#separation-of-duty\} 
+When true, `approveDeployment` rejects any approval from the account or service account that proposed the deployment — a proposal in this environment has to be approved by a second reviewer. Proposers can still reject their own proposals with `rejectDeployment`. Defaults to false.
 
 
 

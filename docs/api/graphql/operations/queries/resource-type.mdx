@@ -42,15 +42,28 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Fetch a single resource type by its identifier.
+Fetch a single resource type by its composite identifier.
 
-Returns `null` with a `NOT_FOUND` error if the resource type does not exist
-or is not accessible to your organization.
+The `id` accepts an `identifier@version` string where the version portion can
+be an exact semver, a release channel, or omitted entirely:
+
+| Input | Resolves to |
+|-------|-------------|
+| `aws-iam-role@1.2.3` | Exact version `1.2.3` |
+| `aws-iam-role@~1.2` | Latest patch in `1.2.x` |
+| `aws-iam-role@~1` | Latest minor in `1.x.x` |
+| `aws-iam-role@latest` | Newest stable release |
+| `aws-iam-role@latest+dev` | Newest release including dev builds |
+| `aws-iam-role` | Shorthand for `latest` (falls back to `latest+dev` if no stable exists) |
+
+Returns `null` with a `NOT_FOUND` error if no matching version exists or the
+resource type is not accessible to your organization.
 
 ```graphql
 query {
-  resourceType(organizationId: "your-org-id", id: "aws-iam-role") {
+  resourceType(organizationId: "your-org-id", id: "aws-iam-role@~1") {
     id
+    version
     name
     connectionOrientation
     icon
@@ -62,7 +75,7 @@ query {
 ```graphql
 resourceType(
   organizationId: ID!
-  id: ID!
+  id: ResourceTypeId!
 ): ResourceType
 ```
 
@@ -75,8 +88,8 @@ resourceType(
 Your organization's unique identifier.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>resourceType.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-The resource type identifier (e.g., `aws-iam-role`).
+#### [<code style={{ fontWeight: 'normal' }}>resourceType.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ResourceTypeId!</b></code>](/api/graphql/types/scalars/resource-type-id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+Resource type identifier in `identifier@version` format. The version can be an exact semver, a release channel, or omitted to resolve `latest`.
 
 
 ### Type

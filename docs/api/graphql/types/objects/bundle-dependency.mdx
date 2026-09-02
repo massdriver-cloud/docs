@@ -57,6 +57,7 @@ type's connection orientation is `ENVIRONMENT_DEFAULT`.
 type BundleDependency {
   name: String!
   required: Boolean!
+  versionConstraint: String!
   resourceType: ResourceType
 }
 ```
@@ -74,8 +75,15 @@ Handle name for this dependency slot (e.g., `aws_authentication`, `vpc`).
 When `true`, this dependency must be connected before the bundle can be deployed.
 
 
+#### [<code style={{ fontWeight: 'normal' }}>BundleDependency.<b>versionConstraint</b></code>](#version-constraint)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version-constraint\} 
+The version range this slot accepts, as declared in the bundle — an exact
+version (`1.2.3`), a tilde range (`~1`, `~1.2`), or a channel (`latest`,
+`latest+dev`). Bundles published before versioned dependencies report the
+current version of the type they point at.
+
+
 #### [<code style={{ fontWeight: 'normal' }}>BundleDependency.<b>resourceType</b></code>](#resource-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ResourceType</b></code>](/api/graphql/types/objects/resource-type.mdx) <Badge class="badge badge--secondary " text="object"/> \{#resource-type\} 
-The resource type this dependency accepts. `null` if the resource type has been removed from the catalog.
+The resource type this dependency accepts, resolved to the newest version its `versionConstraint` accepts. `null` if no published version of the type satisfies the range, or the field is not pinned to a resource type at all.
 
 
 

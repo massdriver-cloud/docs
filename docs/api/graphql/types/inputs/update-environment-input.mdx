@@ -51,6 +51,7 @@ input UpdateEnvironmentInput {
   decommissionProtection: Boolean
   description: String
   name: String
+  separationOfDuty: Boolean
 }
 ```
 
@@ -73,6 +74,10 @@ An optional description of the environment's purpose
 
 #### [<code style={{ fontWeight: 'normal' }}>UpdateEnvironmentInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
 A human-readable name for the environment
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateEnvironmentInput.<b>separationOfDuty</b></code>](#separation-of-duty)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#separation-of-duty\} 
+When true, `approveDeployment` rejects any approval from the account or service account that proposed the deployment — a proposal in this environment has to be approved by a second reviewer. Proposers can still reject their own proposals with `rejectDeployment`.
 
 
 

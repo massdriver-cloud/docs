@@ -63,6 +63,7 @@ type Environment {
   description: String
   attributes: Map!
   decommissionProtection: Boolean!
+  separationOfDuty: Boolean!
   effectiveAttributes: Map!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -72,7 +73,9 @@ type Environment {
   deletable: Deletable!
   instances: [Instance!]!
   connections: [Connection!]!
+  links: [Link!]!
   blueprint: EnvironmentBlueprint @deprecated
+  unfulfilledDependencies: [UnfulfilledDependency!]!
   defaults(
     cursor: Cursor
   ): EnvironmentDefaultsPage
@@ -102,6 +105,10 @@ Key-value attributes assigned directly to this environment. Attributes cascade t
 
 #### [<code style={{ fontWeight: 'normal' }}>Environment.<b>decommissionProtection</b></code>](#decommission-protection)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#decommission-protection\} 
 When true, blocks `decommissionEnvironment` and any per-instance deployment with `action: DECOMMISSION` against this environment. Disable it via `updateEnvironment` before tearing down. Defaults to false.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>separationOfDuty</b></code>](#separation-of-duty)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#separation-of-duty\} 
+When true, `approveDeployment` rejects any approval from the account or service account that proposed the deployment — a proposal in this environment has to be approved by a second reviewer. Proposers can still reject their own proposals with `rejectDeployment`. Defaults to false.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Environment.<b>effectiveAttributes</b></code>](#effective-attributes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#effective-attributes\} 
@@ -146,6 +153,30 @@ Infrastructure deployed in this environment.
 
 #### [<code style={{ fontWeight: 'normal' }}>Environment.<b>connections</b></code>](#connections)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Connection!]!</b></code>](/api/graphql/types/objects/connection.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#connections\} 
 Runtime wiring between deployed instances in this environment.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>links</b></code>](#links)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Link!]!</b></code>](/api/graphql/types/objects/link.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#links\} 
+The links in effect in this environment given the versions its instances
+actually run.
+
+Where a project's `links` list every link in the architecture, this is the
+subset that applies to this environment: a component can run different
+versions in different environments, and a link applies only where the
+versions at both ends fall inside its version range. A link split across
+versions (`~0.2` in staging, `~0.3` in production) appears here as the single
+row whose range matches the versions deployed in this environment. A link
+whose source or destination has no instance here does not appear.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>unfulfilledDependencies</b></code>](#unfulfilled-dependencies)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[UnfulfilledDependency!]!</b></code>](/api/graphql/types/objects/unfulfilled-dependency.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#unfulfilled-dependencies\} 
+Required dependency inputs across this environment's instances that nothing
+fills — no blueprint link, no per-instance remote reference, and no
+environment default of the matching resource type.
+
+Each entry is one input a deploy would block on. Clear it by wiring a
+resource into the slot (a link or a remote reference) or by setting an
+environment default of the listed resource type. Optional inputs are never
+included. The list is sorted by instance identifier, then input name.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Environment.<b>defaults</b></code>](#defaults)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EnvironmentDefaultsPage</b></code>](/api/graphql/types/objects/environment-defaults-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#defaults\} 

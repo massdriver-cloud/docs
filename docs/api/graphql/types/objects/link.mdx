@@ -58,6 +58,8 @@ type Link {
   id: ID!
   fromField: String!
   toField: String!
+  fromVersionConstraint: String
+  toVersionConstraint: String
   createdAt: DateTime!
   updatedAt: DateTime!
   fromComponent: Component
@@ -82,6 +84,14 @@ The output field name on the source component (e.g., `authentication`).
 The input field name on the destination component (e.g., `database`).
 
 
+#### [<code style={{ fontWeight: 'normal' }}>Link.<b>fromVersionConstraint</b></code>](#from-version-constraint)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#from-version-constraint\} 
+The version range of the source component this link routes from, as a tilde constraint (`~1` covers 1.x, `~0.4` covers 0.4.x). Null when the range has not been determined.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Link.<b>toVersionConstraint</b></code>](#to-version-constraint)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#to-version-constraint\} 
+The version range of the destination component this link routes to, as a tilde constraint (`~1` covers 1.x, `~0.4` covers 0.4.x). Null when the range has not been determined.
+
+
 #### [<code style={{ fontWeight: 'normal' }}>Link.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
 When this link was created (UTC).
 
@@ -104,4 +114,4 @@ The destination component that consumes the input.
 
 ### Member Of
 
-[`Connection`](/api/graphql/types/objects/connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`LinkEvent`](/api/graphql/types/objects/link-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`LinkPayload`](/api/graphql/types/objects/link-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`LinksPage`](/api/graphql/types/objects/links-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Project`](/api/graphql/types/objects/project.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`Connection`](/api/graphql/types/objects/connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Environment`](/api/graphql/types/objects/environment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`LinkEvent`](/api/graphql/types/objects/link-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`LinkPayload`](/api/graphql/types/objects/link-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`LinksPage`](/api/graphql/types/objects/links-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Project`](/api/graphql/types/objects/project.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

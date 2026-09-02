@@ -1,0 +1,89 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: update-organization-settings
+title: updateOrganizationSettings
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+<Badge class="badge badge--secondary badge--primary" text="form schema"/>
+
+
+
+Change organization-wide behavior settings.
+
+Only the settings you provide are changed; omitted settings keep their
+current values. Requires the `organization:manageSettings` action.
+
+
+
+
+```graphql
+updateOrganizationSettings(
+  organizationId: ID!
+  input: UpdateOrganizationSettingsInput!
+): OrganizationPayload
+```
+
+
+
+
+
+### Form Schema
+
+This mutation supports dynamic form generation using JSON Schema.
+
+- [JSON Schema](https://api.massdriver.cloud/graphql/v2/inputs/updateOrganizationSettings.json)
+- [UI Schema](https://api.massdriver.cloud/graphql/v2/inputs/updateOrganizationSettings.ui.json)
+
+<SchemaForm
+  schemaUrl="https://api.massdriver.cloud/graphql/v2/inputs/updateOrganizationSettings.json"
+  uiSchemaUrl="https://api.massdriver.cloud/graphql/v2/inputs/updateOrganizationSettings.ui.json"
+  name="updateOrganizationSettings"
+/>
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>updateOrganizationSettings.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>updateOrganizationSettings.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UpdateOrganizationSettingsInput!</b></code>](/api/graphql/types/inputs/update-organization-settings-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Change organization-wide behavior settings. Only the settings you provide are changed; omitted settings keep their current values.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>OrganizationPayload</b></code>](/api/graphql/types/objects/organization-payload.mdx) <Badge class="badge badge--secondary " text="object"/>

@@ -54,6 +54,7 @@ application bundles can connect to.
 type BundleResource {
   name: String!
   required: Boolean!
+  versionConstraint: String!
   resourceType: ResourceType
 }
 ```
@@ -71,8 +72,15 @@ Handle name for this resource output (e.g., `database`, `cluster`).
 When `true`, this resource is always produced on a successful deployment.
 
 
+#### [<code style={{ fontWeight: 'normal' }}>BundleResource.<b>versionConstraint</b></code>](#version-constraint)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version-constraint\} 
+The version range this output declares, as declared in the bundle — an exact
+version (`1.2.3`), a tilde range (`~1`, `~1.2`), or a channel (`latest`,
+`latest+dev`). Bundles published before versioned dependencies report the
+current version of the type they point at.
+
+
 #### [<code style={{ fontWeight: 'normal' }}>BundleResource.<b>resourceType</b></code>](#resource-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ResourceType</b></code>](/api/graphql/types/objects/resource-type.mdx) <Badge class="badge badge--secondary " text="object"/> \{#resource-type\} 
-The resource type this output produces. `null` if the resource type has been removed from the catalog.
+The resource type this output produces, resolved to the newest version its `versionConstraint` accepts. `null` if no published version of the type satisfies the range, or the field is not pinned to a resource type at all.
 
 
 
