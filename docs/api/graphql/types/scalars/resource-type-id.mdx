@@ -1,0 +1,81 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: resource-type-id
+title: ResourceTypeId
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A composite resource type identifier in **`identifier@version`** format.
+
+This scalar uniquely identifies a resource type by combining its kebab-case
+identifier with a version specifier. As an **output** the version portion is
+always a fully resolved semver string:
+
+    aws-iam-role@1.2.3
+    aws-iam-role@0.0.0
+
+As an **input** (e.g., in the `resourceType` query), you can use any of the
+following formats and the server will resolve to the best matching published
+version:
+
+| Format | Example | Resolves to |
+|--------|---------|-------------|
+| Bare identifier | `aws-iam-role` | Latest stable (or latest dev if no stable exists) |
+| Exact version | `aws-iam-role@1.2.3` | That exact version |
+| Major channel | `aws-iam-role@~1` | Latest `1.x.x` stable |
+| Minor channel | `aws-iam-role@~1.2` | Latest `1.2.x` stable |
+| Latest stable | `aws-iam-role@latest` | Newest stable release |
+| Latest + dev | `aws-iam-role@latest+dev` | Newest release including dev builds |
+
+
+```graphql
+scalar ResourceTypeId
+```
+
+
+
+
+
+
+
+
+### Member Of
+
+[`resourceType`](/api/graphql/operations/queries/resource-type.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`ResourceType`](/api/graphql/types/objects/resource-type.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

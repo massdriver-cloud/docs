@@ -1,0 +1,69 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: update-organization-settings-input
+title: UpdateOrganizationSettingsInput
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Change organization-wide behavior settings. Only the settings you provide are changed; omitted settings keep their current values.
+
+
+```graphql
+input UpdateOrganizationSettingsInput {
+  defaultBundleAccess: OrganizationDefaultBundleAccess
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateOrganizationSettingsInput.<b>defaultBundleAccess</b></code>](#default-bundle-access)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OrganizationDefaultBundleAccess</b></code>](/api/graphql/types/enums/organization-default-bundle-access.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#default-bundle-access\} 
+Access granted to new bundle repositories at creation. NONE keeps each new repository restricted until a grant is authored for it. ALL_PROJECTS automatically creates an org-wide repo:pull grant on each new bundle repository, making its bundles usable by every project. Changing this setting only affects repositories created afterwards.
+
+
+
+
+
+
+### Member Of
+
+[`updateOrganizationSettings`](/api/graphql/operations/mutations/update-organization-settings.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

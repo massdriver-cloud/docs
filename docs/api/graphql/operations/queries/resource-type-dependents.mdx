@@ -1,0 +1,107 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: resource-type-dependents
+title: resourceTypeDependents
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+List the instances in an environment that depend on a resource type.
+
+Returns one entry per (instance, dependency field) pair: an instance whose
+bundle declares a dependency slot referencing the resource type, plus the
+field name that receives it. Use this to see what a resource type is used by
+before changing or removing it.
+
+The `resourceTypeId` accepts a bare identifier (`aws-vpc`) or a versioned one
+(`aws-vpc@latest`, `aws-vpc@1.0.0`). The version portion is accepted for a
+stable contract but is not yet used to match: bundles reference resource
+types without a version, so matching is resolved at the type level (the
+type's current `0.0.0` document). Version-specific matching becomes possible
+once bundles carry versioned resource-type references.
+
+```graphql
+query {
+  resourceTypeDependents(
+    organizationId: "your-org-id"
+    environmentId: "ecomm-production"
+    resourceTypeId: "aws-vpc"
+  ) {
+    instance { id name }
+    field
+    resourceType { id name }
+  }
+}
+```
+
+
+```graphql
+resourceTypeDependents(
+  organizationId: ID!
+  environmentId: ID!
+  resourceTypeId: ID!
+): [ResourceTypeDependent!]!
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>resourceTypeDependents.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>resourceTypeDependents.<b>environmentId</b></code>](#environment-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#environment-id\} 
+The environment (identifier) to look for dependents in.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>resourceTypeDependents.<b>resourceTypeId</b></code>](#resource-type-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#resource-type-id\} 
+The resource type identifier (e.g., `aws-vpc`). A `@<version>` suffix (e.g., `aws-vpc@1.0.0`) is accepted but matching resolves at the type level.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ResourceTypeDependent</b></code>](/api/graphql/types/objects/resource-type-dependent.mdx) <Badge class="badge badge--secondary " text="object"/> 
+An instance that depends on a resource type, paired with the dependency field
+on its bundle that receives it.
+
+An instance appears once per dependency field that references the resource
+type, so a bundle that depends on the same type through two fields yields two
+entries for that instance.

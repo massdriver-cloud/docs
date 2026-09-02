@@ -44,9 +44,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 An access token with the raw token value included.
 
-This type is only returned by the `createAccessToken` mutation. The `token` field contains
-the full credential needed for API authentication and **cannot be retrieved again** after
-this response. Store it securely before navigating away.
+This type is only returned by token-creating mutations (`createPersonalAccessToken` and
+`createServiceAccountAccessToken`). The `token` field contains the full credential needed
+for API authentication and **cannot be retrieved again** after this response. Store it
+securely before navigating away.
 
 
 ```graphql

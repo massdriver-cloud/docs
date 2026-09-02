@@ -50,6 +50,8 @@ All filters are combined with AND logic. Omit a filter to skip that criterion.
 ```graphql
 input ResourcesFilter {
   origin: ResourceOriginFilter
+  createdAt: DatetimeFilter
+  attributes: [AttributeFilter!]
   resourceType: StringFilter
   environmentId: IdFilter
   search: String
@@ -65,8 +67,16 @@ input ResourcesFilter {
 Return only resources with the specified origin (IMPORTED or PROVISIONED).
 
 
+#### [<code style={{ fontWeight: 'normal' }}>ResourcesFilter.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DatetimeFilter</b></code>](/api/graphql/types/inputs/datetime-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#created-at\} 
+Match by when the resource was created. Combine `gte` and `lte` to select a date range.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ResourcesFilter.<b>attributes</b></code>](#attributes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[AttributeFilter!]</b></code>](/api/graphql/types/inputs/attribute-filter.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#attributes\} 
+Match by the resource's effective attributes. A provisioned resource matches attributes set anywhere on its instance chain (project, environment, component, instance) as well as `md-resource-type` and `md-id`. An imported resource has no instance chain, so only `md-resource-type` and `md-id` can match it. Each entry targets one attribute key; multiple entries are combined with AND.
+
+
 #### [<code style={{ fontWeight: 'normal' }}>ResourcesFilter.<b>resourceType</b></code>](#resource-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>StringFilter</b></code>](/api/graphql/types/inputs/string-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#resource-type\} 
-Return only resources of the given resource type, matched by the type's identifier (e.g., `aws-iam-role`, `kubernetes-cluster`).
+Return only resources of the given resource type, matched by the type's identifier (e.g., `aws-iam-role`, `kubernetes-cluster`). Append `@<version>` for an exact published version (`aws-iam-role@1.2.3`), or a tilde range to match every resource whose version is in it (`aws-iam-role@~1` matches all `1.x`, `aws-iam-role@~1.2` matches all `1.2.x`). A bare identifier matches the type's `0.0.0` document. Unlike the single-item `resourceType(id:)` query, a range here matches all versions in range rather than resolving to the newest.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ResourcesFilter.<b>environmentId</b></code>](#environment-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IdFilter</b></code>](/api/graphql/types/inputs/id-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#environment-id\} 

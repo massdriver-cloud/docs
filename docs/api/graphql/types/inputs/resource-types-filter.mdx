@@ -47,7 +47,7 @@ Filters for narrowing the resource types list.
 
 ```graphql
 input ResourceTypesFilter {
-  id: StringFilter
+  id: IdFilter
   search: String
 }
 ```
@@ -57,8 +57,8 @@ input ResourceTypesFilter {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>ResourceTypesFilter.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>StringFilter</b></code>](/api/graphql/types/inputs/string-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#id\} 
-Filter by resource type identifier (e.g., `aws-iam-role`, `kubernetes-cluster`).
+#### [<code style={{ fontWeight: 'normal' }}>ResourceTypesFilter.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IdFilter</b></code>](/api/graphql/types/inputs/id-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#id\} 
+Filter by resource type identifier (e.g., `aws-iam-role`, `kubernetes-cluster`). Append `@<version>` (e.g., `aws-iam-role@1.2.3`) to match a specific published version; a bare identifier matches the type's `0.0.0` document.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ResourceTypesFilter.<b>search</b></code>](#search)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#search\} 
@@ -71,4 +71,4 @@ Full-text search across the resource type's display name and identifier (e.g., `
 
 ### Member Of
 
-[`resourceTypes`](/api/graphql/operations/queries/resource-types.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+[`resourceTypes`](/api/graphql/deprecated/operations/queries/resource-types.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

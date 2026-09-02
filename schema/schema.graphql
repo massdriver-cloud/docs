@@ -395,9 +395,10 @@ type RootQueryType {
   """
   List OCI repositories in your organization's bundle catalog.
 
-  Returns a paginated list of repositories. Each repository is the container
-  for all published versions of a bundle. Use `filter` to narrow by name,
-  artifact type, or full-text search.
+  Returns a paginated list of repositories of every artifact type (bundles
+  and resource types). Each repository is the container for all published
+  versions of its artifact. Use `filter` to narrow by name, artifact type,
+  or full-text search.
 
   ```graphql
   query {
@@ -716,18 +717,31 @@ type RootQueryType {
 
     "Cursor from a previous page's `cursor.next` or `cursor.previous`."
     cursor: Cursor
-  ): ResourceTypesPage
+  ): ResourceTypesPage @deprecated(reason: "Version-blind: returns only the current (0.0.0) version of each resource type. Use the versioned resourceType(id: \"identifier@version\") query for version-aware reads as resource types move to the repo\/version model.")
 
   """
-  Fetch a single resource type by its identifier.
+  Fetch a single resource type by its composite identifier.
 
-  Returns `null` with a `NOT_FOUND` error if the resource type does not exist
-  or is not accessible to your organization.
+  The `id` accepts an `identifier@version` string where the version portion can
+  be an exact semver, a release channel, or omitted entirely:
+
+  | Input | Resolves to |
+  |-------|-------------|
+  | `aws-iam-role@1.2.3` | Exact version `1.2.3` |
+  | `aws-iam-role@~1.2` | Latest patch in `1.2.x` |
+  | `aws-iam-role@~1` | Latest minor in `1.x.x` |
+  | `aws-iam-role@latest` | Newest stable release |
+  | `aws-iam-role@latest+dev` | Newest release including dev builds |
+  | `aws-iam-role` | Shorthand for `latest` (falls back to `latest+dev` if no stable exists) |
+
+  Returns `null` with a `NOT_FOUND` error if no matching version exists or the
+  resource type is not accessible to your organization.
 
   ```graphql
   query {
-    resourceType(organizationId: "your-org-id", id: "aws-iam-role") {
+    resourceType(organizationId: "your-org-id", id: "aws-iam-role@~1") {
       id
+      version
       name
       connectionOrientation
       icon
@@ -739,9 +753,49 @@ type RootQueryType {
     "Your organization's unique identifier."
     organizationId: ID!
 
-    "The resource type identifier (e.g., `aws-iam-role`)."
-    id: ID!
+    "Resource type identifier in `identifier@version` format. The version can be an exact semver, a release channel, or omitted to resolve `latest`."
+    id: ResourceTypeId!
   ): ResourceType
+
+  """
+  List the instances in an environment that depend on a resource type.
+
+  Returns one entry per (instance, dependency field) pair: an instance whose
+  bundle declares a dependency slot referencing the resource type, plus the
+  field name that receives it. Use this to see what a resource type is used by
+  before changing or removing it.
+
+  The `resourceTypeId` accepts a bare identifier (`aws-vpc`) or a versioned one
+  (`aws-vpc@latest`, `aws-vpc@1.0.0`). The version portion is accepted for a
+  stable contract but is not yet used to match: bundles reference resource
+  types without a version, so matching is resolved at the type level (the
+  type's current `0.0.0` document). Version-specific matching becomes possible
+  once bundles carry versioned resource-type references.
+
+  ```graphql
+  query {
+    resourceTypeDependents(
+      organizationId: "your-org-id"
+      environmentId: "ecomm-production"
+      resourceTypeId: "aws-vpc"
+    ) {
+      instance { id name }
+      field
+      resourceType { id name }
+    }
+  }
+  ```
+  """
+  resourceTypeDependents(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The environment (identifier) to look for dependents in."
+    environmentId: ID!
+
+    "The resource type identifier (e.g., `aws-vpc`). A `@<version>` suffix (e.g., `aws-vpc@1.0.0`) is accepted but matching resolves at the type level."
+    resourceTypeId: ID!
+  ): [ResourceTypeDependent!]!
 
   """
   List all resources in your organization.
@@ -1893,6 +1947,20 @@ type RootMutationType {
   ): OrganizationPayload @inputs(name: "updateOrganization", schema: "\/graphql\/v2\/inputs\/updateOrganization.json", ui: "\/graphql\/v2\/inputs\/updateOrganization.ui.json")
 
   """
+  Change organization-wide behavior settings.
+
+  Only the settings you provide are changed; omitted settings keep their
+  current values. Requires the `organization:manageSettings` action.
+  """
+  updateOrganizationSettings(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "Change organization-wide behavior settings. Only the settings you provide are changed; omitted settings keep their current values."
+    input: UpdateOrganizationSettingsInput!
+  ): OrganizationPayload @inputs(name: "updateOrganizationSettings", schema: "\/graphql\/v2\/inputs\/updateOrganizationSettings.json", ui: "\/graphql\/v2\/inputs\/updateOrganizationSettings.ui.json")
+
+  """
   Upload or replace your organization's logo.
 
   Accepts PNG, JPG, GIF, or WebP images up to 1 MB. If a logo already exists,
@@ -2019,10 +2087,11 @@ type RootMutationType {
   ): IntegrationPayload
 
   """
-  Create a scoped, time-limited access token for the authenticated identity.
+  Create a scoped, time-limited personal access token for the authenticated account.
 
-  Accounts create personal access tokens for themselves; service accounts create tokens for
-  their own identity.
+  Only human accounts can call this mutation — service accounts should use
+  `createServiceAccountAccessToken` instead. Expiration is capped at 1 year
+  (525,600 minutes).
 
   The `token` field in the response contains the full bearer token value — **it is only
   shown once**. Store it securely before navigating away. If you lose it, revoke the
@@ -2034,9 +2103,9 @@ type RootMutationType {
 
   ```graphql
   mutation {
-    createAccessToken(
+    createPersonalAccessToken(
       organizationId: "my-org"
-      input: { name: "deploy-token", scopes: ["*"], expiresInMinutes: 30 }
+      input: { name: "local-cli", scopes: ["*"], expiresInMinutes: 43200 }
     ) {
       result {
         id
@@ -2050,13 +2119,54 @@ type RootMutationType {
   }
   ```
   """
-  createAccessToken(
+  createPersonalAccessToken(
     "Your organization's unique identifier."
     organizationId: ID!
 
-    "Create a scoped, time-limited access token for the authenticated identity."
-    input: CreateAccessTokenInput!
-  ): AccessTokenWithValuePayload @inputs(name: "createAccessToken", schema: "\/graphql\/v2\/inputs\/createAccessToken.json", ui: "\/graphql\/v2\/inputs\/createAccessToken.ui.json")
+    "Create a scoped, time-limited personal access token for the authenticated account."
+    input: CreatePersonalAccessTokenInput!
+  ): AccessTokenWithValuePayload @inputs(name: "createPersonalAccessToken", schema: "\/graphql\/v2\/inputs\/createPersonalAccessToken.json", ui: "\/graphql\/v2\/inputs\/createPersonalAccessToken.ui.json")
+
+  """
+  Create a scoped, time-limited access token for the authenticated service account.
+
+  Only service accounts can call this mutation — human accounts should use
+  `createPersonalAccessToken` instead. Expiration is capped at 10 years
+  (5,256,000 minutes).
+
+  The `token` field in the response contains the full bearer token value — **it is only
+  shown once**. Store it securely before navigating away. If you lose it, revoke the
+  token and create a new one.
+
+  Defaults to a 60-minute expiration if `expiresInMinutes` is not specified.
+
+  **Example:**
+
+  ```graphql
+  mutation {
+    createServiceAccountAccessToken(
+      organizationId: "my-org"
+      input: { name: "deploy-token", scopes: ["*"], expiresInMinutes: 525600 }
+    ) {
+      result {
+        id
+        token
+        prefix
+        expiresAt
+      }
+      successful
+      messages { field message }
+    }
+  }
+  ```
+  """
+  createServiceAccountAccessToken(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "Create a scoped, time-limited access token for the authenticated service account."
+    input: CreateServiceAccountAccessTokenInput!
+  ): AccessTokenWithValuePayload @inputs(name: "createServiceAccountAccessToken", schema: "\/graphql\/v2\/inputs\/createServiceAccountAccessToken.json", ui: "\/graphql\/v2\/inputs\/createServiceAccountAccessToken.ui.json")
 
   """
   Revoke an access token.
@@ -2079,7 +2189,7 @@ type RootMutationType {
 
   A default access token is issued in the same request — its raw `token` value is returned
   once on the response and **cannot be retrieved later**. Capture it before navigating away;
-  if it's lost, revoke the token and issue a new one via `createAccessToken`.
+  if it's lost, revoke the token and issue a new one via `createServiceAccountAccessToken`.
 
   The new service account has no permissions until you add it to a group. Requires
   the `organization:manageServiceAccounts` action.
@@ -2279,7 +2389,7 @@ type RootMutationType {
     "Your organization's unique identifier."
     organizationId: ID!
 
-    "The resource type this resource conforms to (e.g., `aws-iam-role`)."
+    "The resource type this resource conforms to (e.g., `aws-iam-role`). Append `@<version>` (e.g., `aws-iam-role@1.2.3`) to conform to a specific published version; a bare identifier means the type's `0.0.0` document."
     resourceTypeId: ID!
 
     "Import a new resource with a name and optional payload conforming to the resource type's schema."
@@ -2398,7 +2508,7 @@ type RootMutationType {
     "Your organization's unique identifier."
     organizationId: ID!
 
-    "The resource type identifier (e.g., `aws-iam-role`)."
+    "The resource type identifier (e.g., `aws-iam-role`). Append `@<version>` (e.g., `aws-iam-role@1.2.3`) to delete a specific published version; a bare identifier deletes the type's `0.0.0` document."
     id: ID!
   ): ResourceTypePayload @deprecated(reason: "Transitional shim from V0 `deleteArtifactDefinition` during the migration to OCI-hosted resource types. Prefer the OCI-native publishing flow; this mutation may be removed without notice.")
 
@@ -2702,6 +2812,11 @@ type RootMutationType {
   as soon as nothing else is running on the instance. Approval is only valid
   for deployments in `PROPOSED` status; any other status returns a validation
   error.
+
+  When the instance's environment has `separationOfDuty` enabled, the account
+  or service account named in `deployedBy` cannot approve its own proposal —
+  a second reviewer has to call this mutation. Use `rejectDeployment` to
+  withdraw your own proposal.
   """
   approveDeployment(
     "Your organization's unique identifier."
@@ -3578,7 +3693,13 @@ input ResourcesFilter {
   "Return only resources with the specified origin (IMPORTED or PROVISIONED)."
   origin: ResourceOriginFilter
 
-  "Return only resources of the given resource type, matched by the type's identifier (e.g., `aws-iam-role`, `kubernetes-cluster`)."
+  "Match by when the resource was created. Combine `gte` and `lte` to select a date range."
+  createdAt: DatetimeFilter
+
+  "Match by the resource's effective attributes. A provisioned resource matches attributes set anywhere on its instance chain (project, environment, component, instance) as well as `md-resource-type` and `md-id`. An imported resource has no instance chain, so only `md-resource-type` and `md-id` can match it. Each entry targets one attribute key; multiple entries are combined with AND."
+  attributes: [AttributeFilter!]
+
+  "Return only resources of the given resource type, matched by the type's identifier (e.g., `aws-iam-role`, `kubernetes-cluster`). Append `@<version>` for an exact published version (`aws-iam-role@1.2.3`), or a tilde range to match every resource whose version is in it (`aws-iam-role@~1` matches all `1.x`, `aws-iam-role@~1.2` matches all `1.2.x`). A bare identifier matches the type's `0.0.0` document. Unlike the single-item `resourceType(id:)` query, a range here matches all versions in range rather than resolving to the newest."
   resourceType: StringFilter
 
   "Return only resources provisioned into the specified environment(s). Imported resources have no environment and are excluded when this filter is set."
@@ -3818,6 +3939,50 @@ type ResourceWithSensitiveValuesPayload {
   result: ResourceWithSensitiveValues
 }
 
+"""
+An instance that depends on a resource type, paired with the dependency field
+on its bundle that receives it.
+
+An instance appears once per dependency field that references the resource
+type, so a bundle that depends on the same type through two fields yields two
+entries for that instance.
+"""
+type ResourceTypeDependent {
+  "The instance whose bundle depends on the resource type."
+  instance: Instance!
+
+  "The dependency field on the instance's bundle that receives this resource type (e.g., `network`)."
+  field: String!
+
+  "The resource type these instances depend on."
+  resourceType: ResourceType!
+}
+
+"""
+A composite resource type identifier in **`identifier@version`** format.
+
+This scalar uniquely identifies a resource type by combining its kebab-case
+identifier with a version specifier. As an **output** the version portion is
+always a fully resolved semver string:
+
+    aws-iam-role@1.2.3
+    aws-iam-role@0.0.0
+
+As an **input** (e.g., in the `resourceType` query), you can use any of the
+following formats and the server will resolve to the best matching published
+version:
+
+| Format | Example | Resolves to |
+|--------|---------|-------------|
+| Bare identifier | `aws-iam-role` | Latest stable (or latest dev if no stable exists) |
+| Exact version | `aws-iam-role@1.2.3` | That exact version |
+| Major channel | `aws-iam-role@~1` | Latest `1.x.x` stable |
+| Minor channel | `aws-iam-role@~1.2` | Latest `1.2.x` stable |
+| Latest stable | `aws-iam-role@latest` | Newest stable release |
+| Latest + dev | `aws-iam-role@latest+dev` | Newest release including dev builds |
+"""
+scalar ResourceTypeId
+
 "Fields available for ordering the resource types list."
 enum ResourceTypesSortField {
   "Alphabetical order by the resource type's display name."
@@ -3844,8 +4009,8 @@ input PublishResourceTypeInput {
 
 "Filters for narrowing the resource types list."
 input ResourceTypesFilter {
-  "Filter by resource type identifier (e.g., `aws-iam-role`, `kubernetes-cluster`)."
-  id: StringFilter
+  "Filter by resource type identifier (e.g., `aws-iam-role`, `kubernetes-cluster`). Append `@<version>` (e.g., `aws-iam-role@1.2.3`) to match a specific published version; a bare identifier matches the type's `0.0.0` document."
+  id: IdFilter
 
   "Full-text search across the resource type's display name and identifier (e.g., `\"iam\"` matches `AWS IAM Role` \/ `aws-iam-role`). Results are ranked by relevance unless you provide an explicit `sort`. For terms longer than 3 characters, identifier-prefix matches are also included. **Note:** pagination cursors returned by search results use offset-based pagination and are not interchangeable with cursors from non-search queries."
   search: String
@@ -3894,11 +4059,14 @@ Resource types include both public types provided by Massdriver (e.g.,
 organization for custom infrastructure.
 """
 type ResourceType {
-  "Unique identifier in kebab-case (e.g., `aws-iam-role`, `kubernetes-cluster`)."
-  id: ID!
+  "Composite identifier in `identifier@version` format (e.g., `aws-iam-role@1.2.3`). Always contains the fully resolved semver version."
+  id: ResourceTypeId!
 
   "Human-readable display name (e.g., \"AWS IAM Role\", \"Kubernetes Cluster\")."
   name: String!
+
+  "Fully resolved semantic version of this resource type (e.g., `1.2.3`)."
+  version: Semver!
 
   "URL to the icon representing this resource type, if available."
   icon: String
@@ -4040,7 +4208,7 @@ type RemoteReferencesPage {
 A non-human identity for programmatic API access.
 
 Service accounts let you integrate CI/CD pipelines, scripts, and external tools with the
-Massdriver API. They authenticate using access tokens — issue one with `createAccessToken`
+Massdriver API. They authenticate using access tokens — issue one with `createServiceAccountAccessToken`
 and pass it as a bearer token on API requests.
 
 **Permissions** — Service accounts have no inherent permissions. Add them to groups to grant
@@ -4050,7 +4218,7 @@ has the same access as a human admin.
 **Lifecycle:**
 1. Create the service account.
 2. Add the service account to one or more groups to grant access.
-3. Issue one or more access tokens for the service account via `createAccessToken`. The raw
+3. Issue one or more access tokens for the service account via `createServiceAccountAccessToken`. The raw
    token value is only shown once at creation — store it securely before navigating away.
 4. Delete the service account when it is no longer needed. This immediately revokes all access,
    including any active access tokens.
@@ -4077,7 +4245,7 @@ A service account returned from `createServiceAccount`, including the raw defaul
 
 The `defaultAccessToken.token` value is the only opportunity to capture the bearer credential
 for this service account — store it securely before navigating away. If lost, revoke the token
-and issue a new one with `createAccessToken`.
+and issue a new one with `createServiceAccountAccessToken`.
 """
 type ServiceAccountWithDefaultAccessToken {
   "Unique identifier for this service account."
@@ -4207,9 +4375,10 @@ input UpdateServiceAccountInput {
 """
 An access token with the raw token value included.
 
-This type is only returned by the `createAccessToken` mutation. The `token` field contains
-the full credential needed for API authentication and **cannot be retrieved again** after
-this response. Store it securely before navigating away.
+This type is only returned by token-creating mutations (`createPersonalAccessToken` and
+`createServiceAccountAccessToken`). The `token` field contains the full credential needed
+for API authentication and **cannot be retrieved again** after this response. Store it
+securely before navigating away.
 """
 type AccessTokenWithValue {
   "Unique identifier for this access token."
@@ -4340,9 +4509,21 @@ input AccessTokensFilter {
   revoked: Boolean
 }
 
-"Create a scoped, time-limited access token for the authenticated identity."
-input CreateAccessTokenInput {
-  "How many minutes until this token expires. Defaults to 60 (1 hour). Maximum ~5,256,000 (10 years)."
+"Create a scoped, time-limited personal access token for the authenticated account."
+input CreatePersonalAccessTokenInput {
+  "How many minutes until this token expires. Defaults to 60 (1 hour). Maximum 525,600 minutes (1 year)."
+  expiresInMinutes: Int
+
+  "A label to identify this token (e.g., 'Local CLI')"
+  name: String!
+
+  "Permission scopes. At least one required. Currently only [\"*\"] (full access) is supported."
+  scopes: [String!]!
+}
+
+"Create a scoped, time-limited access token for the authenticated service account."
+input CreateServiceAccountAccessTokenInput {
+  "How many minutes until this token expires. Defaults to 60 (1 hour). Maximum 5,256,000 minutes (10 years)."
   expiresInMinutes: Int
 
   "A label to identify this token (e.g., 'CI deploy key')"
@@ -4569,7 +4750,7 @@ All filters are combined with **AND**. Omit a filter to skip that constraint.
 """
 input IntegrationsFilter {
   "Filter by integration type identifier (e.g., `\"aws-cost-and-usage-reports\"`)."
-  id: StringFilter
+  id: IdFilter
 
   "Filter by the integration's current lifecycle status."
   status: IntegrationStatusFilter
@@ -5308,6 +5489,12 @@ input UpdateOrganizationInput {
   name: String!
 }
 
+"Change organization-wide behavior settings. Only the settings you provide are changed; omitted settings keep their current values."
+input UpdateOrganizationSettingsInput {
+  "Access granted to new bundle repositories at creation. NONE keeps each new repository restricted until a grant is authored for it. ALL_PROJECTS automatically creates an org-wide repo:pull grant on each new bundle repository, making its bundles usable by every project. Changing this setting only affects repositories created afterwards."
+  defaultBundleAccess: OrganizationDefaultBundleAccess
+}
+
 """
 Subscription status for an organization.
 
@@ -5339,6 +5526,20 @@ enum OrganizationSubscriptionStatus {
 
   "The most recent payment attempt failed. Update payment details to restore access."
   PAYMENT_FAILED
+}
+
+"""
+Access granted to new bundle repositories at creation.
+
+Changing this setting only affects repositories created afterwards — access
+to existing repositories is managed through their grants.
+"""
+enum OrganizationDefaultBundleAccess {
+  "New bundle repositories are restricted until a grant is authored for them."
+  NONE
+
+  "Every new bundle repository automatically receives an org-wide `repo:pull` grant, making its bundles usable by every project. The grant is a normal grant row: it is listed on the repository and can be revoked with `deleteGrant`."
+  ALL_PROJECTS
 }
 
 "Available fields for sorting organizations."
@@ -5380,9 +5581,9 @@ graph TD
 Members access resources through **group memberships** with role-based permissions.
 Custom attributes defined at the organization level govern attribute metadata across all child resources.
 
-Administrative fields (`billing`, `members`, `customAttributes`) resolve to `null` for
-callers who lack the corresponding ABAC action; in that case a top-level `FORBIDDEN`
-error is added to the response while the rest of the organization still resolves.
+Administrative fields (`billing`, `members`, `customAttributes`, `settings`) resolve to
+`null` for callers who lack the corresponding ABAC action; in that case a top-level
+`FORBIDDEN` error is added to the response while the rest of the organization still resolves.
 """
 type Organization {
   id: ID!
@@ -5460,6 +5661,27 @@ type Organization {
   `subscriptionStatus` field at the top of the type stays visible to every member.
   """
   billing: OrganizationBilling
+
+  """
+  Organization-wide behavior settings.
+
+  Requires the `organization:manageSettings` action. Change settings with the
+  `updateOrganizationSettings` mutation.
+  """
+  settings: OrganizationSettings
+}
+
+"""
+Organization-wide behavior settings.
+
+Settings apply to the whole organization and shape platform behavior — for
+example, the access new bundle repositories receive at creation. Each setting
+has a default, so organizations created before a setting existed read it as
+the default. Change settings with the `updateOrganizationSettings` mutation.
+"""
+type OrganizationSettings {
+  "Access granted to new bundle repositories at creation. Defaults to `NONE` — new repositories are restricted until a grant is authored for them."
+  defaultBundleAccess: OrganizationDefaultBundleAccess!
 }
 
 "Confirmation payload returned after removing a member from the organization."
@@ -6007,7 +6229,7 @@ type AccountViewer {
   you're currently viewing. Use this to audit and revoke tokens from a single security
   center view. The raw token value is only shown on creation and is never returned here.
 
-  To create or revoke tokens, use the org-scoped `createAccessToken` / `revokeAccessToken`
+  To create or revoke tokens, use the org-scoped `createPersonalAccessToken` / `revokeAccessToken`
   mutations.
   """
   accountTokens(
@@ -6159,6 +6381,12 @@ type Link {
 
   "The input field name on the destination component (e.g., `database`)."
   toField: String!
+
+  "The version range of the source component this link routes from, as a tilde constraint (`~1` covers 1.x, `~0.4` covers 0.4.x). Null when the range has not been determined."
+  fromVersionConstraint: String
+
+  "The version range of the destination component this link routes to, as a tilde constraint (`~1` covers 1.x, `~0.4` covers 0.4.x). Null when the range has not been determined."
+  toVersionConstraint: String
 
   "When this link was created (UTC)."
   createdAt: DateTime!
@@ -7685,7 +7913,7 @@ input EnvironmentsFilter {
   projectId: IdFilter
 
   "Filter by environment identifier (supports exact match and `in` list)."
-  id: StringFilter
+  id: IdFilter
 
   "Match by the environment's effective attributes, including those inherited from its project. Each entry targets one attribute key; multiple entries are combined with AND."
   attributes: [AttributeFilter!]
@@ -7707,6 +7935,9 @@ input CreateEnvironmentInput {
 
   "A human-readable name for the environment"
   name: String!
+
+  "When true, `approveDeployment` rejects any approval from the account or service account that proposed the deployment — a proposal in this environment has to be approved by a second reviewer. Proposers can still reject their own proposals with `rejectDeployment`. Defaults to false."
+  separationOfDuty: Boolean
 }
 
 "Update an existing environment's name and description. The ID cannot be changed after creation."
@@ -7722,6 +7953,9 @@ input UpdateEnvironmentInput {
 
   "A human-readable name for the environment"
   name: String
+
+  "When true, `approveDeployment` rejects any approval from the account or service account that proposed the deployment — a proposal in this environment has to be approved by a second reviewer. Proposers can still reject their own proposals with `rejectDeployment`."
+  separationOfDuty: Boolean
 }
 
 "Create or update a fork of an existing environment."
@@ -7749,6 +7983,9 @@ input ForkEnvironmentInput {
 
   "A human-readable name for the forked environment"
   name: String!
+
+  "When true, `approveDeployment` rejects any approval from the account or service account that proposed the deployment — a proposal in this environment has to be approved by a second reviewer. Proposers can still reject their own proposals with `rejectDeployment`. Defaults to false."
+  separationOfDuty: Boolean
 }
 
 """
@@ -7779,6 +8016,9 @@ type Environment {
 
   "When true, blocks `decommissionEnvironment` and any per-instance deployment with `action: DECOMMISSION` against this environment. Disable it via `updateEnvironment` before tearing down. Defaults to false."
   decommissionProtection: Boolean!
+
+  "When true, `approveDeployment` rejects any approval from the account or service account that proposed the deployment — a proposal in this environment has to be approved by a second reviewer. Proposers can still reject their own proposals with `rejectDeployment`. Defaults to false."
+  separationOfDuty: Boolean!
 
   """
   The full attribute map the authorization system evaluates policies against for
@@ -7819,8 +8059,34 @@ type Environment {
   "Runtime wiring between deployed instances in this environment."
   connections: [Connection!]!
 
+  """
+  The links in effect in this environment given the versions its instances
+  actually run.
+
+  Where a project's `links` list every link in the architecture, this is the
+  subset that applies to this environment: a component can run different
+  versions in different environments, and a link applies only where the
+  versions at both ends fall inside its version range. A link split across
+  versions (`~0.2` in staging, `~0.3` in production) appears here as the single
+  row whose range matches the versions deployed in this environment. A link
+  whose source or destination has no instance here does not appear.
+  """
+  links: [Link!]!
+
   "The realized infrastructure for this environment showing deployed instances and their connections."
   blueprint: EnvironmentBlueprint @deprecated(reason: "Use the top-level `instances` and `connections` fields on `Environment` instead.")
+
+  """
+  Required dependency inputs across this environment's instances that nothing
+  fills — no blueprint link, no per-instance remote reference, and no
+  environment default of the matching resource type.
+
+  Each entry is one input a deploy would block on. Clear it by wiring a
+  resource into the slot (a link or a remote reference) or by setting an
+  environment default of the listed resource type. Optional inputs are never
+  included. The list is sorted by instance identifier, then input name.
+  """
+  unfulfilledDependencies: [UnfulfilledDependency!]!
 
   """
   Paginated list of default resources for this environment.
@@ -7833,6 +8099,25 @@ type Environment {
     "Cursor from a previous page to fetch the next set of results."
     cursor: Cursor
   ): EnvironmentDefaultsPage
+}
+
+"""
+A required dependency input on an instance that nothing in the environment
+fills.
+
+The instance's bundle marks this input as required, but no blueprint link,
+per-instance remote reference, or environment default provides a resource of
+the expected type. Deploying the instance blocks until the input is connected.
+"""
+type UnfulfilledDependency {
+  "The instance whose bundle requires this input."
+  instance: Instance!
+
+  "The input handle name that needs a resource wired into it (e.g., `database`)."
+  field: String!
+
+  "The resource type this input requires. Wire in a resource of this type to fulfill it."
+  resourceType: ResourceType!
 }
 
 """
@@ -7987,6 +8272,9 @@ input ProjectsSort {
 input ProjectsFilter {
   "Match by the project's exact display name (`eq`) or a set of names (`in`). For partial or approximate matching, use `search` instead."
   name: StringFilter
+
+  "Match by when the project was created. Combine `gte` and `lte` to select a date range."
+  createdAt: DatetimeFilter
 
   "Free-text search across the project's name and description. Matches whole words anywhere in the text, so it is forgiving of partial or out-of-order terms. When `search` is active and no explicit `sort` is provided, results are ranked by relevance."
   search: String
@@ -8239,7 +8527,15 @@ type BundleDependency {
   "When `true`, this dependency must be connected before the bundle can be deployed."
   required: Boolean!
 
-  "The resource type this dependency accepts. `null` if the resource type has been removed from the catalog."
+  """
+  The version range this slot accepts, as declared in the bundle — an exact
+  version (`1.2.3`), a tilde range (`~1`, `~1.2`), or a channel (`latest`,
+  `latest+dev`). Bundles published before versioned dependencies report the
+  current version of the type they point at.
+  """
+  versionConstraint: String!
+
+  "The resource type this dependency accepts, resolved to the newest version its `versionConstraint` accepts. `null` if no published version of the type satisfies the range, or the field is not pinned to a resource type at all."
   resourceType: ResourceType
 }
 
@@ -8258,7 +8554,15 @@ type BundleResource {
   "When `true`, this resource is always produced on a successful deployment."
   required: Boolean!
 
-  "The resource type this output produces. `null` if the resource type has been removed from the catalog."
+  """
+  The version range this output declares, as declared in the bundle — an exact
+  version (`1.2.3`), a tilde range (`~1`, `~1.2`), or a channel (`latest`,
+  `latest+dev`). Bundles published before versioned dependencies report the
+  current version of the type they point at.
+  """
+  versionConstraint: String!
+
+  "The resource type this output produces, resolved to the newest version its `versionConstraint` accepts. `null` if no published version of the type satisfies the range, or the field is not pinned to a resource type at all."
   resourceType: ResourceType
 }
 
@@ -8364,11 +8668,14 @@ scalar OciRepoName
 The kind of artifact stored in an OCI repository.
 
 Each value maps to a concrete [OCI artifact type](https://github.com/opencontainers/image-spec/blob/main/manifest.md#guidelines-for-artifact-usage)
-media string written to the manifest. Today only `BUNDLE` is supported; additional types will be added as the catalog expands.
+media string written to the manifest. Additional types will be added as the catalog expands.
 """
 enum OciArtifactType {
   "Massdriver bundle (`application\/vnd.massdriver.bundle.v1+json`)."
   BUNDLE
+
+  "Massdriver resource type (`application\/vnd.massdriver.resource-type.v1+json`)."
+  RESOURCE_TYPE
 }
 
 """
@@ -8408,13 +8715,13 @@ enum OciFilesSortField {
 
 "Create a new OCI repository in your organization's catalog. Repositories must exist before any version can be published to them."
 input CreateOciRepoInput {
-  "OCI artifact type stored in this repository. Today only `BUNDLE` is accepted; additional types will be added as Massdriver expands the catalog."
+  "OCI artifact type stored in this repository. `BUNDLE` holds Massdriver bundles; `RESOURCE_TYPE` holds Massdriver resource types."
   artifactType: OciArtifactType!
 
   "Key-value attributes for this repository. Used by ABAC policies for fine-grained access control. Reserved `md-*` keys are rejected. Must conform to the organization's custom attributes for the repo scope."
   attributes: Map
 
-  "Unique repository name within your organization, e.g. `aws-aurora-postgres`. Lowercase letters, numbers, dashes, underscores only. Max 53 characters. Cannot be changed after creation."
+  "Unique repository name within your organization, e.g. `aws-aurora-postgres`. Lowercase letters, numbers, dashes, underscores only. Max 100 characters. Cannot be changed after creation."
   id: String!
 }
 
@@ -8430,11 +8737,17 @@ Filters for narrowing the OCI repositories list.
 All filters are combined with AND logic.
 """
 input OciReposFilter {
-  "Filter by OCI artifact media type. Currently the only supported type is `application\/vnd.massdriver.bundle.v1+json`. Passing an unsupported type returns an empty list."
+  "Filter by OCI artifact media type. Supported types are `application\/vnd.massdriver.bundle.v1+json` and `application\/vnd.massdriver.resource-type.v1+json`. When omitted, repositories of every artifact type are returned. Passing an unsupported type returns an empty list."
   artifactType: String
 
   "Filter repositories by name using exact match, prefix, or set membership."
   name: OciRepoNameFilter
+
+  "Match by when the repository was created. Combine `gte` and `lte` to select a date range."
+  createdAt: DatetimeFilter
+
+  "Match by the repository's attributes. Repositories are organization-level, so there is no inheritance — only attributes set on the repository itself match, plus `md-repo` and `md-id`, which both resolve to the repository name. Each entry targets one attribute key; multiple entries are combined with AND."
+  attributes: [AttributeFilter!]
 
   "Full-text search across the repository name, readme, and changelog. Results are ranked by relevance unless you provide an explicit `sort`. For terms longer than 3 characters, name-prefix matches are also included. **Note:** pagination cursors returned by search results use offset-based pagination and are not interchangeable with cursors from non-search queries."
   search: String
@@ -8642,8 +8955,8 @@ type OciRepo {
 
   """
   The [OCI artifact type](https://github.com/opencontainers/image-spec/blob/main/manifest.md#guidelines-for-artifact-usage)
-  stored in this repository. Currently always
-  `application/vnd.massdriver.bundle.v1+json`.
+  stored in this repository — `application/vnd.massdriver.bundle.v1+json` or
+  `application/vnd.massdriver.resource-type.v1+json`.
   """
   artifactType: String!
 

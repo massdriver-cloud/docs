@@ -44,9 +44,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 List OCI repositories in your organization's bundle catalog.
 
-Returns a paginated list of repositories. Each repository is the container
-for all published versions of a bundle. Use `filter` to narrow by name,
-artifact type, or full-text search.
+Returns a paginated list of repositories of every artifact type (bundles
+and resource types). Each repository is the container for all published
+versions of its artifact. Use `filter` to narrow by name, artifact type,
+or full-text search.
 
 ```graphql
 query {

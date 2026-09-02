@@ -57,8 +57,9 @@ organization for custom infrastructure.
 
 ```graphql
 type ResourceType {
-  id: ID!
+  id: ResourceTypeId!
   name: String!
+  version: Semver!
   icon: String
   connectionOrientation: ConnectionOrientation!
   schema: Map!
@@ -75,12 +76,16 @@ type ResourceType {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>ResourceType.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
-Unique identifier in kebab-case (e.g., `aws-iam-role`, `kubernetes-cluster`).
+#### [<code style={{ fontWeight: 'normal' }}>ResourceType.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ResourceTypeId!</b></code>](/api/graphql/types/scalars/resource-type-id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+Composite identifier in `identifier@version` format (e.g., `aws-iam-role@1.2.3`). Always contains the fully resolved semver version.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ResourceType.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
 Human-readable display name (e.g., "AWS IAM Role", "Kubernetes Cluster").
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ResourceType.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Semver!</b></code>](/api/graphql/types/scalars/semver.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version\} 
+Fully resolved semantic version of this resource type (e.g., `1.2.3`).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ResourceType.<b>icon</b></code>](#icon)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#icon\} 
@@ -142,4 +147,4 @@ Timestamp when this resource type was last modified (UTC).
 
 ### Member Of
 
-[`BundleDependency`](/api/graphql/types/objects/bundle-dependency.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`BundleResource`](/api/graphql/types/objects/bundle-resource.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentDefaultResource`](/api/graphql/types/objects/environment-default-resource.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`InstanceDependency`](/api/graphql/types/objects/instance-dependency.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`InstanceResource`](/api/graphql/types/objects/instance-resource.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Resource`](/api/graphql/types/objects/resource.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ResourceTypePayload`](/api/graphql/types/objects/resource-type-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ResourceTypesPage`](/api/graphql/types/objects/resource-types-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ResourceWithSensitiveValues`](/api/graphql/types/objects/resource-with-sensitive-values.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`BundleDependency`](/api/graphql/types/objects/bundle-dependency.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`BundleResource`](/api/graphql/types/objects/bundle-resource.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EnvironmentDefaultResource`](/api/graphql/types/objects/environment-default-resource.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`InstanceDependency`](/api/graphql/types/objects/instance-dependency.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`InstanceResource`](/api/graphql/types/objects/instance-resource.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Resource`](/api/graphql/types/objects/resource.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ResourceTypeDependent`](/api/graphql/types/objects/resource-type-dependent.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ResourceTypePayload`](/api/graphql/types/objects/resource-type-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ResourceTypesPage`](/api/graphql/types/objects/resource-types-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ResourceWithSensitiveValues`](/api/graphql/types/objects/resource-with-sensitive-values.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`UnfulfilledDependency`](/api/graphql/types/objects/unfulfilled-dependency.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
