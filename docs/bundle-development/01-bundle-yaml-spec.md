@@ -99,12 +99,8 @@ steps:
     #
     # JQ expressions start with "." and can reference:
     #   - .params.<field>                    - Bundle parameters
-    #   - .connections.<name>                - Dependency resources
-    #   - .connections.<name>.data.<path>    - Resource data
-    #   - .connections.<name>.specs.<path>   - Resource specs
-    #
-    # Note: dependencies are exposed at runtime under the legacy
-    # `connections` name, so JQ paths use .connections.<name>.
+    #   - .dependencies.<name>               - Dependency resources
+    #   - .dependencies.<name>.<path>        - Dependency resource fields
     config:
       # OpenTofu/Terraform config options:
       #   json: boolean              - Enable JSON output (default: false)
@@ -139,7 +135,7 @@ steps:
       #   region: string              - Azure region
       #   resource_group: string      - Resource group name
       #   delete_resource_group: bool - Delete RG on decommission
-      region: .connections.azure_credentials.specs.region
+      region: .dependencies.azure_credentials.region
       resource_group: '@text "my-resource-group"'
       delete_resource_group: 'true'
 
@@ -299,10 +295,8 @@ params:
 #
 # Each entry maps a dependency name to a resource type reference.
 # Replaces the deprecated `connections` block (see Legacy Format below).
-#
-# Note: at deployment time, dependencies are still exposed to provisioners
-# and JQ expressions under the legacy `connections` name
-# (e.g. .connections.vpc.data.infrastructure.arn).
+# JQ expressions reference dependencies as .dependencies.<name>
+# (e.g. .dependencies.vpc.infrastructure.arn).
 dependencies:
   # VPC dependency - required network infrastructure
   vpc:
@@ -414,16 +408,16 @@ ui:
 app:
   # envs (optional)
   # Map environment variable names to JQ expressions.
-  # Expressions can reference params and dependencies (dependencies are
-  # exposed at runtime under the legacy `connections` name).
+  # Expressions can reference params (.params.<field>) and
+  # dependencies (.dependencies.<name>).
   #
   # Variable names must match: ^[a-zA-Z_][a-zA-Z0-9_]*$
   envs:
     # Extract values from dependencies
-    DATABASE_HOST: .connections.database.data.authentication.hostname
-    DATABASE_PORT: .connections.database.data.authentication.port | tostring
-    DATABASE_NAME: .connections.database.data.authentication.database
-    DATABASE_USER: .connections.database.data.authentication.username
+    DATABASE_HOST: .dependencies.database.authentication.hostname
+    DATABASE_PORT: .dependencies.database.authentication.port | tostring
+    DATABASE_NAME: .dependencies.database.authentication.database
+    DATABASE_USER: .dependencies.database.authentication.username
 
     # Extract values from params
     LOG_LEVEL: .params.log_level
@@ -431,10 +425,10 @@ app:
 
     # Transform and combine values
     DATABASE_URL: >-
-      "postgresql://" + .connections.database.data.authentication.username +
-      "@" + .connections.database.data.authentication.hostname +
-      ":" + (.connections.database.data.authentication.port | tostring) +
-      "/" + .connections.database.data.authentication.database
+      "postgresql://" + .dependencies.database.authentication.username +
+      "@" + .dependencies.database.authentication.hostname +
+      ":" + (.dependencies.database.authentication.port | tostring) +
+      "/" + .dependencies.database.authentication.database
 
     # Static values (use @text for literals)
     APP_NAME: '@text "my-application"'
@@ -647,10 +641,10 @@ resources:
 
 app:
   envs:
-    DATABASE_HOST: .connections.database.data.authentication.hostname
-    DATABASE_PORT: .connections.database.data.authentication.port | tostring
-    DATABASE_NAME: .connections.database.data.authentication.database
-    DATABASE_USER: .connections.database.data.authentication.username
+    DATABASE_HOST: .dependencies.database.authentication.hostname
+    DATABASE_PORT: .dependencies.database.authentication.port | tostring
+    DATABASE_NAME: .dependencies.database.authentication.database
+    DATABASE_USER: .dependencies.database.authentication.username
     PORT: .params.port | tostring
   secrets:
     DATABASE_PASSWORD:
