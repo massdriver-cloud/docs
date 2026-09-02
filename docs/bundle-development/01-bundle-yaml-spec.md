@@ -95,13 +95,12 @@ steps:
 
     # config (optional)
     # Provisioner-specific configuration.
-    # Values can be static or JQ expressions referencing params/connections.
+    # Values can be static or JQ expressions referencing params/dependencies.
     #
     # JQ expressions start with "." and can reference:
     #   - .params.<field>                    - Bundle parameters
-    #   - .connections.<name>                - Connection resources
-    #   - .connections.<name>.data.<path>    - Resource data
-    #   - .connections.<name>.specs.<path>   - Resource specs
+    #   - .dependencies.<name>               - Dependency resources
+    #   - .dependencies.<name>.<path>        - Dependency resource fields
     config:
       # OpenTofu/Terraform config options:
       #   json: boolean              - Enable JSON output (default: false)
@@ -136,7 +135,7 @@ steps:
       #   region: string              - Azure region
       #   resource_group: string      - Resource group name
       #   delete_resource_group: bool - Delete RG on decommission
-      region: .connections.azure_credentials.specs.region
+      region: .dependencies.azure_credentials.region
       resource_group: '@text "my-resource-group"'
       delete_resource_group: 'true'
 
@@ -265,7 +264,9 @@ params:
       default: "15"
 
   # dependencies (optional)
-  # Conditional logic: show fields based on other field values
+  # Conditional logic: show fields based on other field values.
+  # This is the JSON Schema `dependencies` keyword scoped to params —
+  # not the bundle's top-level `dependencies` block below.
   dependencies:
     high_availability:
       oneOf:
@@ -284,107 +285,78 @@ params:
               const: false
 
 # =============================================================================
-# CONNECTIONS (Input Resources)
+# DEPENDENCIES (Input Resources)
 # =============================================================================
 
-# connections (required)
-# JSON Schema defining resources this bundle consumes from other bundles.
-# Connections enable type-safe infrastructure composition.
+# dependencies (optional)
+# Declares the resources this bundle consumes from other bundles.
+# Dependencies enable type-safe infrastructure composition.
+# Most bundles declare at least a cloud credential dependency.
 #
-# Each connection must reference a resource type using $ref.
-connections:
-  # required (optional)
-  # List of connections that must be provided.
-  required:
-    - vpc
-    - credentials
+# Each entry maps a dependency name to a resource type reference.
+# Replaces the deprecated `connections` block (see Legacy Format below).
+# JQ expressions reference dependencies as .dependencies.<name>
+# (e.g. .dependencies.vpc.infrastructure.arn).
+dependencies:
+  # VPC dependency - required network infrastructure
+  vpc:
+    # resource_type (required)
+    # The resource type this dependency accepts, with an optional
+    # version constraint after "@".
+    #
+    # Formats:
+    #   - resource-type-name               - Resource type from your organization
+    #   - resource-type-name@1.2.3         - Exact version
+    #   - resource-type-name@~1            - Any 1.x.x release
+    #   - resource-type-name@~1.2          - Any 1.2.x release
+    #   - resource-type-name@latest        - Latest release
+    #   - other-org/resource-type-name@~1  - Resource type from another organization
+    resource_type: aws-vpc@~1
 
-  # properties (required)
-  # Connection definitions.
-  properties:
-    # VPC connection - required network infrastructure
-    vpc:
-      # $ref (required for connections)
-      # Reference to a resource type.
-      #
-      # Formats:
-      #   - resource-type-name              - Resource type from your organization
-      #   - other-org/resource-type-name    - Resource type from another organization
-      $ref: aws-vpc
-      title: VPC
-      description: The VPC where the database will be deployed
+    # required (required)
+    # Whether this dependency must be connected before the bundle
+    # can be deployed.
+    required: true
 
-    # Cloud credentials connection
-    credentials:
-      $ref: aws-iam-role
-      title: AWS Credentials
-      description: IAM role for provisioning resources
+  # Cloud credentials dependency
+  credentials:
+    resource_type: aws-iam-role@~1
+    required: true
 
-    # Optional connection (not in required list)
-    monitoring:
-      $ref: datadog-agent
-      title: Monitoring
-      description: Optional Datadog agent for metrics
-
-    # Constrained connection - only accepts resources matching additional criteria
-    # You can add `properties` alongside `$ref` to validate resource fields
-    # before allowing the connection.
-    database:
-      $ref: postgresql
-      title: PostgreSQL Database
-      description: Database connection (requires PostgreSQL 16)
-      # Only allow PostgreSQL 16 resources to connect
-      properties:
-        version:
-          const: "16"
-
-    # Another example: constrain by region using enum
-    # regional_cache:
-    #   $ref: redis-cluster
-    #   properties:
-    #     region:
-    #       enum: ["us-east-1", "us-west-2"]
+  # Optional dependency (required: false)
+  monitoring:
+    resource_type: datadog-agent@~2
+    required: false
 
 # =============================================================================
 # RESOURCES (Outputs)
-#
-# The YAML key remains `artifacts:` for backwards compatibility, but
-# semantically this block declares the resources the bundle produces.
 # =============================================================================
 
-# artifacts (required)
-# JSON Schema defining resources this bundle produces. The key name
-# `artifacts` is preserved from the original bundle spec.
-# These outputs can be consumed as connections by other bundles.
-#
-# Each entry must reference a resource type using $ref.
-artifacts:
-  # required (optional)
-  # List of resources that will always be produced.
-  required:
-    - database
+# resources (optional)
+# Declares the resources this bundle produces. These outputs can be
+# consumed as dependencies by other bundles.
+# Replaces the deprecated `artifacts` block (see Legacy Format below).
+resources:
+  database:
+    # resource_type (required)
+    # The resource type and version this bundle produces, in the form
+    # name@version (e.g. postgresql-authentication@1.0.0).
+    resource_type: postgresql-authentication@1.0.0
 
-  # properties (required)
-  # Resource declarations.
-  properties:
-    database:
-      # $ref (required)
-      # Reference to the resource type schema.
-      $ref: postgresql-authentication
-      title: PostgreSQL Database
-      description: Connection details for the provisioned database
+    # required (required)
+    # Whether this resource is always created by the bundle.
+    required: true
 
-    # Additional resource example
-    read_replica:
-      $ref: postgresql-authentication
-      title: Read Replica
-      description: Connection details for read replica (if enabled)
+  # Conditionally-created resource (required: false)
+  read_replica:
+    resource_type: postgresql-authentication@1.0.0
+    required: false
 
 # =============================================================================
 # UI SCHEMA
 # =============================================================================
 
-# ui (optional)
+# ui (required, may be empty: `ui: {}`)
 # Controls how the configuration form renders in the Massdriver UI.
 # Follows React JSON Schema Form (RJSF) UI Schema specification.
 # See: https://react-jsonschema-form.readthedocs.io/en/docs/api-reference/uiSchema/
@@ -429,22 +401,23 @@ ui:
 #
 # The app block is processed by the terraform-massdriver-application module,
 # which parses your massdriver.yaml and provides outputs for secrets,
-# environment variables, connections, and policies.
+# environment variables, dependencies, and policies.
 #
 # Module:   https://github.com/massdriver-cloud/terraform-massdriver-application
 # Registry: https://registry.terraform.io/modules/massdriver-cloud/application/massdriver
 app:
   # envs (optional)
   # Map environment variable names to JQ expressions.
-  # Expressions can reference params and connections.
+  # Expressions can reference params (.params.<field>) and
+  # dependencies (.dependencies.<name>).
   #
   # Variable names must match: ^[a-zA-Z_][a-zA-Z0-9_]*$
   envs:
-    # Extract values from connections
-    DATABASE_HOST: .connections.database.data.authentication.hostname
-    DATABASE_PORT: .connections.database.data.authentication.port | tostring
-    DATABASE_NAME: .connections.database.data.authentication.database
-    DATABASE_USER: .connections.database.data.authentication.username
+    # Extract values from dependencies
+    DATABASE_HOST: .dependencies.database.authentication.hostname
+    DATABASE_PORT: .dependencies.database.authentication.port | tostring
+    DATABASE_NAME: .dependencies.database.authentication.database
+    DATABASE_USER: .dependencies.database.authentication.username
 
     # Extract values from params
     LOG_LEVEL: .params.log_level
@@ -452,10 +425,10 @@ app:
 
     # Transform and combine values
     DATABASE_URL: >-
-      "postgresql://" + .connections.database.data.authentication.username +
-      "@" + .connections.database.data.authentication.hostname +
-      ":" + (.connections.database.data.authentication.port | tostring) +
-      "/" + .connections.database.data.authentication.database
+      "postgresql://" + .dependencies.database.authentication.username +
+      "@" + .dependencies.database.authentication.hostname +
+      ":" + (.dependencies.database.authentication.port | tostring) +
+      "/" + .dependencies.database.authentication.database
 
     # Static values (use @text for literals)
     APP_NAME: '@text "my-application"'
@@ -509,19 +482,17 @@ params:
       title: Bucket Name
       pattern: "^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$"
 
-connections:
-  required:
-    - aws_credentials
-  properties:
-    aws_credentials:
-      $ref: aws-iam-role
+dependencies:
+  aws_credentials:
+    resource_type: aws-iam-role@~1
+    required: true
 
-artifacts:
-  required:
-    - bucket
-  properties:
-    bucket:
-      $ref: aws-s3-bucket
+resources:
+  bucket:
+    resource_type: aws-s3-bucket@1.0.0
+    required: true
+
+ui: {}
 ```
 
 ## Infrastructure Bundle Example
@@ -580,25 +551,18 @@ params:
       title: Multi-AZ
       default: false
 
-connections:
-  required:
-    - vpc
-    - aws_authentication
-  properties:
-    vpc:
-      $ref: aws-vpc
-      title: VPC
-    aws_authentication:
-      $ref: aws-iam-role
-      title: AWS Credentials
+dependencies:
+  vpc:
+    resource_type: aws-vpc@~1
+    required: true
+  aws_authentication:
+    resource_type: aws-iam-role@~1
+    required: true
 
-artifacts:
-  required:
-    - database
-  properties:
-    database:
-      $ref: postgresql-authentication
-      title: PostgreSQL Database
+resources:
+  database:
+    resource_type: postgresql-authentication@1.0.0
+    required: true
 
 ui:
   ui:order:
@@ -662,30 +626,25 @@ params:
       title: Container Port
       default: 8080
 
-connections:
-  required:
-    - kubernetes_cluster
-    - database
-  properties:
-    kubernetes_cluster:
-      $ref: kubernetes-cluster
-      title: Kubernetes Cluster
-    database:
-      $ref: postgresql-authentication
-      title: PostgreSQL Database
+dependencies:
+  kubernetes_cluster:
+    resource_type: kubernetes-cluster@~1
+    required: true
+  database:
+    resource_type: postgresql-authentication@~1
+    required: true
 
-artifacts:
-  properties:
-    service:
-      $ref: kubernetes-service
-      title: Kubernetes Service
+resources:
+  service:
+    resource_type: kubernetes-service@1.0.0
+    required: false
 
 app:
   envs:
-    DATABASE_HOST: .connections.database.data.authentication.hostname
-    DATABASE_PORT: .connections.database.data.authentication.port | tostring
-    DATABASE_NAME: .connections.database.data.authentication.database
-    DATABASE_USER: .connections.database.data.authentication.username
+    DATABASE_HOST: .dependencies.database.authentication.hostname
+    DATABASE_PORT: .dependencies.database.authentication.port | tostring
+    DATABASE_NAME: .dependencies.database.authentication.database
+    DATABASE_USER: .dependencies.database.authentication.username
     PORT: .params.port | tostring
   secrets:
     DATABASE_PASSWORD:
@@ -704,6 +663,34 @@ ui:
     - "*"
 ```
 
+## Legacy Format: `connections` and `artifacts`
+
+Older bundles declare inputs and outputs as JSON Schema blocks named `connections` and `artifacts`:
+
+```yaml
+connections:
+  required:
+    - vpc
+  properties:
+    vpc:
+      $ref: aws-vpc
+
+artifacts:
+  required:
+    - database
+  properties:
+    database:
+      $ref: postgresql-authentication
+```
+
+This format is **deprecated**:
+
+- The CLI prints a deprecation warning when it encounters `connections` or `artifacts` and will ask you to migrate to `dependencies` and `resources`.
+- The legacy format does not support versioned resource types (`name@version`).
+- A bundle cannot mix formats: setting both `connections` and `dependencies`, or both `artifacts` and `resources`, is an error.
+
+To migrate, convert each `properties` entry into a named entry with `resource_type` (adding a version constraint), and convert the `required` list into per-entry `required: true`/`required: false` flags.
+
 ## Field Reference
 
 ### Required Fields
@@ -713,8 +700,7 @@ ui:
 | `name` | `string` | Bundle identifier (3-53 chars, lowercase with hyphens) |
 | `description` | `string` | Human-readable description (10-1024 chars) |
 | `params` | `object` | JSON Schema for user parameters |
-| `connections` | `object` | JSON Schema for input resources |
-| `artifacts` | `object` | JSON Schema for output resources (YAML key kept for backwards compatibility) |
+| `ui` | `object` | RJSF UI schema for form customization (may be empty: `ui: {}`) |
 
 ### Optional Fields
 
@@ -723,8 +709,18 @@ ui:
 | `version` | `string` | `0.0.0` | Semantic version (MAJOR.MINOR.PATCH) |
 | `source_url` | `string` | - | Link to source repository |
 | `steps` | `array` | Single terraform step | Provisioning steps |
-| `ui` | `object` | - | RJSF UI schema for form customization |
+| `dependencies` | `object` | - | Resources this bundle depends on (replaces deprecated `connections`) |
+| `resources` | `object` | - | Resources this bundle produces (replaces deprecated `artifacts`) |
 | `app` | `object` | - | Application configuration (envs, secrets, policies) |
+
+### Dependency and Resource Fields
+
+Each entry in `dependencies` and `resources` is a named object with:
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `resource_type` | `string` | Yes | Resource type reference: `name`, `name@version`, or `org/name@version`. Dependencies accept version constraints (`@1.2.3`, `@~1`, `@~1.2`, `@latest`); resources pin the version they produce. |
+| `required` | `boolean` | Yes | For dependencies: must be connected before deploying. For resources: always created by the bundle. |
 
 ### Step Fields
 
@@ -747,5 +743,5 @@ ui:
 - [Bundles Concept](/concepts/bundles) - Understanding bundles
 - [Provisioners Overview](/bundle-development/provisioners/overview) - Available provisioners
 - [Massdriver Annotations](/bundle-development/schema-design/massdriver-annotations) - `$md.*` extensions
-- [Resource Types](/concepts/resources-and-types) - Connection contracts
+- [Resource Types](/concepts/resources-and-types) - Dependency contracts
 - [Bundle Meta Schema](https://api.massdriver.cloud/json-schemas/bundle.json) - Validation schema
