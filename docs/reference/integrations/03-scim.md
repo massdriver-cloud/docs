@@ -89,6 +89,77 @@ Once configured, your identity provider can automatically:
 - **Create** users in Massdriver when they are assigned in your IdP
 - **Update** user attributes when changes are made in your IdP
 - **Deactivate** users in Massdriver when they are unassigned or deprovisioned in your IdP
+  (see [Deactivation and Seats](#deactivation-and-seats))
+
+## Deactivation and Seats
+
+An active SCIM user holds a **seat** in your Massdriver organization. Massdriver does not
+decide on its own that a seat is free: it follows the `active` attribute your identity
+provider sends on the SCIM user.
+
+- `active: false` removes the user's group memberships in that organization and releases
+  their seat. The account itself is retained, so reactivating restores access.
+- `active: true` claims a seat. If the organization is already at its limit, the request
+  is refused and organization owners are notified. Re-asserting `active: true` for someone
+  who already holds a seat is not refused, since it claims nothing new.
+- A `DELETE` removes the provisioning record and the user's group memberships in that
+  organization.
+
+A pending invitation also holds a seat, and a member your IdP has provisioned but placed in
+no group still holds one. Current usage is available as `billing.seatsUsed` on the API.
+
+### What sets `active` in your identity provider
+
+#### Okta
+
+Okta uses a soft-delete model: rather than sending `DELETE`, it sends a `PATCH` that sets
+`active` to `false`.
+
+```json
+{
+  "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+  "Operations": [{ "op": "replace", "value": { "active": false } }]
+}
+```
+
+Deactivation is triggered when you:
+
+- Unassign the user from the Massdriver application on the **Assignments** tab
+- Remove the user from a group that is assigned to the application
+- Deactivate or deprovision the user in Okta
+
+Reassigning or reactivating the user sends the same `PATCH` with `active` set to `true`.
+
+See [Okta and SCIM Version 2.0](https://developer.okta.com/docs/api/openapi/okta-scim/guides/scim-20).
+
+#### Microsoft Entra ID
+
+Entra sends a disable as an update setting `active` to `false`. Four events trigger it:
+
+- The user is unassigned from the application
+- The user goes out of scope, meaning they no longer pass a scoping filter
+- The user is soft-deleted in Entra, which includes being blocked from sign-in
+- The user is permanently deleted from Entra
+
+Disabling on out-of-scope is the default and can be turned off with
+[skip out-of-scope deletions](https://learn.microsoft.com/en-us/entra/identity/app-provisioning/skip-out-of-scope-deletions).
+If `IsSoftDeleted` appears in your attribute mappings, it is the attribute Entra uses to
+decide whether to send `active = false`.
+
+Thirty days after a user is soft-deleted, Entra permanently deletes them and sends a
+`DELETE` request.
+
+Note that Entra cannot provision a user who is disabled in the directory. The user must be
+active in Entra before they can be provisioned to Massdriver.
+
+See [Deprovisioning in Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity/app-provisioning/how-provisioning-works#deprovisioning).
+
+#### OneLogin and JumpCloud
+
+Both follow the same model: removing the user from the Massdriver application, or from an
+assigned role or user group, deprovisions them and releases the seat. Consult the vendor
+links in [Setup](#step-2-configure-your-identity-provider) for the exact behavior of your
+configuration.
 
 ## Troubleshooting
 
