@@ -85,27 +85,45 @@ Created manually for external resources:
 2. **Structural Matching**: Once provisioned, the actual data is validated against the schema
 3. **Data Injection**: During deployment, resource data is injected into the consuming bundle
 
-## Usage in massdriver.yaml
+## Resource types are versioned
 
-```yaml
-# Bundle consumes a VPC resource
-connections:
-  required:
-    - vpc
-  properties:
-    vpc:
-      $ref: aws-vpc
+A resource type is a published artifact, not a loose schema. It is authored as a `massdriver.yaml`, published to a repository in your organization's catalog, and pinned by version — the same model bundles use.
 
-# Bundle produces a database resource
-artifacts:
-  required:
-    - database
-  properties:
-    database:
-      $ref: postgresql-authentication
+Every resource type has:
+
+- A semantic version and release channels
+- A repository in the OCI catalog, with the same access grants and attribute filters as a bundle repository
+- Immutable published versions. Once a version exists it cannot be overwritten
+
+```bash
+mass resource-type create aws-vpc
+mass resource-type publish ./aws-vpc
+mass resource-type pull aws-vpc@2.1.0
 ```
 
-> The bundle spec keys (`connections`, `artifacts`) retain their original names so existing `massdriver.yaml` files keep building. The bundle spec is moving to `resources` over time.
+Versioning the resource type versions the contract between bundles. Adding a required field to a payload that three bundles consume is a breaking change to all three, and a major version bump is how the platform is told so.
+
+## Usage in massdriver.yaml
+
+A bundle names the resource types it consumes under `dependencies` and the ones it produces under `resources`, each with the versions it accepts:
+
+```yaml
+# What the bundle consumes
+dependencies:
+  vpc:
+    resource_type: aws-vpc@~1
+    required: true
+
+# What the bundle produces
+resources:
+  database:
+    resource_type: postgresql-authentication@1.0.0
+    required: true
+```
+
+A dependency accepts a range and Massdriver resolves it at deploy time. A resource pins the single version it produces. See [Version Resolution](/bundle-development/connections-artifacts/version-resolution).
+
+> `connections` and `artifacts` are the previous names for these blocks. They still work and publish with a warning, but a slot declared that way carries no version range and takes part in no version checks.
 
 ## Best Practices
 
@@ -118,5 +136,6 @@ artifacts:
 
 - [Bundle YAML Specification](/bundle-development/bundle-yaml-spec) - Connection and resource configuration
 - [Resource Type Specification](/bundle-development/connections-artifacts/artifact-definition-spec) - Complete schema reference
+- [Version Resolution](/bundle-development/connections-artifacts/version-resolution) - How a version range picks a resource at deploy time
 - [Resource Types Repository](https://github.com/massdriver-cloud/artifact-definitions) - Standard resource types
 - [Massdriver Annotations](/bundle-development/schema-design/massdriver-annotations) - `$md.sensitive` and other extensions

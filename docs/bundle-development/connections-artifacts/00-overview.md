@@ -9,26 +9,30 @@ Connections and resources enable type-safe composition of infrastructure compone
 
 ## Key concepts
 
-- **Resources** are the outputs a bundle produces (e.g., database connection details, cluster credentials). Bundles declare them under the `artifacts:` key in `massdriver.yaml` — the YAML key retains its original name for backwards compatibility.
-- **Connections** are the inputs a bundle consumes from other bundles' resources.
-- **Resource Types** are the schemas that define the contract between bundles.
+- **Resources** are what a bundle produces for other bundles to consume — database connection details, cluster credentials, network layouts. Bundles declare them under `resources:` in `massdriver.yaml`.
+- **Dependencies** are what a bundle consumes from other bundles' resources. Bundles declare them under `dependencies:` in `massdriver.yaml`.
+- **Connections** are the lines you draw between components. A connection fills a dependency with a resource.
+- **Resource types** are the versioned schemas that define the contract between bundles.
 
 ## How it works
 
 When you connect bundles on the canvas, Massdriver validates that:
-1. The resource's type matches the connection's expected type
-2. The resource data conforms to the resource type schema
-3. Any additional constraints (version, region) are satisfied
 
-This validation happens at design time, preventing incompatible infrastructure from being deployed.
+1. The resource's type matches the type the dependency expects
+2. The resource data conforms to the resource type schema
+3. The bundle versions at each end fall inside the connection's version ranges
+
+The first two checks happen when you draw the connection, so incompatible infrastructure never reaches a deployment. The third is re-checked per environment, so one blueprint can serve environments running different bundle versions.
 
 ## In this section
 
-- **[Resource Type Specification](./artifact-definition-spec)** - Complete reference for defining resource type schemas
+- **[Resource Type Specification](./artifact-definition-spec)** - Authoring, versioning, and publishing a resource type
+- **[Version Resolution](./version-resolution)** - How a version range picks a resource at deploy time
 
 ## Related documentation
 
 - [Concepts: Resources & Resource Types](/concepts/resources-and-types) - Conceptual overview
-- [Bundle YAML: connections](/bundle-development/bundle-yaml-spec#connections) - Connection schema reference
-- [Bundle YAML: artifacts](/bundle-development/bundle-yaml-spec#artifacts) - Resource output reference (YAML key still named `artifacts:`)
+- [Concepts: Connections](/concepts/connections) - Version ranges on a connection
+- [Bundle YAML: dependencies](/bundle-development/bundle-yaml-spec#dependencies) - What a bundle consumes
+- [Bundle YAML: resources](/bundle-development/bundle-yaml-spec#resources) - What a bundle produces
 - [Resource Types Repository](https://github.com/massdriver-cloud/artifact-definitions) - Standard resource types (the GitHub repo URL retains the legacy name)
