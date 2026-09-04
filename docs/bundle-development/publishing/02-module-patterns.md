@@ -7,7 +7,7 @@ sidebar_label: Module Patterns
 
 If your team has an existing library of Terraform or OpenTofu modules — naming utilities, diagnostic configurations, RBAC helpers, VM extensions, and other shared modules — this guide explains how each pattern maps to Massdriver and where your modules should live after migration.
 
-This guide assumes you're familiar with [bundles](/concepts/bundles), [resources](/concepts/resources-and-types), and [connections](/concepts/connections). If you're new to these concepts, start with the [getting started guides](/getting-started/deploying-first-bundle).
+This guide assumes you're familiar with [bundles](/concepts/bundles), [resources](/concepts/resources-and-types), and [dependencies](/concepts/dependencies). If you're new to these concepts, start with the [getting started guides](/getting-started/deploying-first-bundle).
 
 ## The Migration Map
 
@@ -152,7 +152,7 @@ When `ssh.private_key` is set, the provisioner configures SSH authentication and
 
 ### How connections supercharge child modules
 
-The real power of this pattern comes from combining child modules with Massdriver [connections](/concepts/connections). When a bundle declares a connection, it receives the full resource data from another bundle — including infrastructure IDs, IAM policies, authentication details, and network configuration.
+The real power of this pattern comes from combining child modules with Massdriver [connections](/concepts/dependencies). When a bundle declares a connection, it receives the full resource data from another bundle — including infrastructure IDs, IAM policies, authentication details, and network configuration.
 
 Consider a bundle for a VM-based API that needs access to a PostgreSQL database. The database resource includes everything the child module needs:
 
@@ -337,7 +337,7 @@ Now when someone needs to update SSO settings, they configure it through the bun
 
 - [Creating a Bundle from an OpenTofu Module](/guides/bundle-from-opentofu) — Step-by-step conversion of a single module
 - [Bootstrap Your Platform](/guides/bootstrap-platform) — Model your entire platform architecture before implementing
-- [Custom Resource Types](/guides/custom-artifact-definition) — Create the contracts that connect your bundles
+- [Custom Resource Types](/guides/custom-resource-type) — Create the contracts that connect your bundles
 - [Using Bundle Deployment Metadata](/getting-started/using-bundle-metadata) — Full reference for `md_metadata`
 - [Sharing Infrastructure](/guides/sharing-infrastructure) — Environment defaults and remote references
 

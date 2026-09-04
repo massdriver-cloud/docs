@@ -135,7 +135,7 @@ flowchart TB
 When a deployment is created, the following are frozen into the deployment record:
 
 - `params` — the instance's configuration values
-- `connection_params` — the resolved [connections](/concepts/connections)
+- `connection_params` — the resolved [connections](/concepts/dependencies)
 - `version` — the bundle release to run
 - `md_metadata` — system metadata (instance name, tags, deployment id)
 
@@ -206,4 +206,4 @@ The trade-off compared to a merge queue: there is no automatic, clean rollback o
 ## Related Documentation
 
 - [Components, Instances & Deployments](/concepts/components-instances-deployments) — how deployments fit into the overall lifecycle.
-- [Connections](/concepts/connections) — what `connection_params` resolves from.
+- [Connections](/concepts/dependencies) — what `connection_params` resolves from.

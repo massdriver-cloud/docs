@@ -23,11 +23,11 @@ module.exports = {
         },
         {
           type: "category",
-          label: "Connections & Resources",
-          link: { type: "doc", id: "bundle-development/connections-artifacts/connections-artifacts-overview" },
+          label: "Dependencies & Resources",
+          link: { type: "doc", id: "bundle-development/dependencies-resources/dependencies-resources-overview" },
           items: [
-            "bundle-development/connections-artifacts/artifact-definition-spec",
-            "bundle-development/connections-artifacts/version-resolution",
+            "bundle-development/dependencies-resources/resource-type-spec",
+            "bundle-development/dependencies-resources/version-resolution",
           ],
         },
         {
@@ -123,7 +123,7 @@ module.exports = {
         "concepts/concepts-projects-and-environments",
         "concepts/concepts-components-instances-deployments",
         "concepts/concepts-deployments",
-        "concepts/concepts-connections",
+        "concepts/concepts-dependencies",
         "concepts/concepts-organizations",
         "concepts/concepts-organization-settings",
       ],

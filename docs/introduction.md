@@ -13,7 +13,7 @@ Massdriver is an internal developer platform that turns infrastructure-as-code i
 
 **Resources** are the structured outputs each bundle produces — credentials, ARNs, hostnames, etc. — described by **resource types** (JSON Schema contracts). Resource types pass state between infrastructure modules, even across different IaC tools, and enable automatic configuration: binding IAM policies, injecting credentials, connecting services.
 
-**The canvas** lets developers drag bundles, connect them visually, and deploy. Massdriver validates connections using resource type schemas, so developers don't need deep cloud knowledge to assemble working infrastructure.
+**The canvas** lets developers drag bundles, connect them visually, and deploy. Massdriver validates dependencies using resource type schemas, so developers don't need deep cloud knowledge to assemble working infrastructure.
 
 **Ephemeral pipelines** run IaC automatically when developers deploy. No pipeline code to maintain. Massdriver orchestrates the workflow, manages state, and runs compliance checks on every deployment.
 

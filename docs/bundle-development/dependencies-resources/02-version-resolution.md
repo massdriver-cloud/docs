@@ -1,6 +1,6 @@
 ---
 id: version-resolution
-slug: /bundle-development/connections-artifacts/version-resolution
+slug: /bundle-development/dependencies-resources/version-resolution
 title: Version Resolution
 sidebar_label: Version Resolution
 ---
@@ -75,5 +75,5 @@ The two forms are mutually exclusive. Setting both `connections` and `dependenci
 ## Related documentation
 
 - [Bundle YAML: dependencies and resources](/bundle-development/bundle-yaml-spec#dependencies) — full field reference
-- [Connections](/concepts/connections) — version ranges on the blueprint connection itself
-- [Resource Type Spec](/bundle-development/connections-artifacts/artifact-definition-spec) — authoring and publishing a versioned resource type
+- [Connections](/concepts/dependencies) — version ranges on the blueprint connection itself
+- [Resource Type Spec](/bundle-development/dependencies-resources/resource-type-spec) — authoring and publishing a versioned resource type

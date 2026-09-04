@@ -115,7 +115,7 @@ This schema defines exactly what JSON structure bundles must produce and consume
     Publishing a raw JSON schema is deprecated and prints a warning. A raw schema has no
     version of its own, so it cannot take part in resource type versioning. For your own
     resource types, author a `massdriver.yaml` instead — see the
-    [Resource Type Spec](/bundle-development/connections-artifacts/artifact-definition-spec).
+    [Resource Type Spec](/bundle-development/dependencies-resources/resource-type-spec).
     :::
 
 2. You should see output like:

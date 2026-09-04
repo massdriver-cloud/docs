@@ -1,6 +1,6 @@
 ---
-id: artifact-definition-spec
-slug: /bundle-development/connections-artifacts/artifact-definition-spec
+id: resource-type-spec
+slug: /bundle-development/dependencies-resources/resource-type-spec
 title: Resource Type Specification
 sidebar_label: Resource Type Spec
 ---
@@ -303,8 +303,7 @@ schema:
     token:
       title: API Token
       type: string
-      $md:
-        sensitive: true
+      $md.sensitive: true
 ```
 
 ## Complete Example with All Features
@@ -447,7 +446,7 @@ Publishing is immutable. Once a version exists it cannot be overwritten, so anyt
 
 ### Versions and release channels
 
-Resource types use the same version model as bundles: semantic versions, release channels, and per-environment pinning. A bundle names the versions it accepts in its `dependencies` and `resources` blocks, and Massdriver resolves the range at deploy time. See [Version Resolution](/bundle-development/connections-artifacts/version-resolution).
+Resource types use the same version model as bundles: semantic versions, release channels, and per-environment pinning. A bundle names the versions it accepts in its `dependencies` and `resources` blocks, and Massdriver resolves the range at deploy time. See [Version Resolution](/bundle-development/dependencies-resources/version-resolution).
 
 Each resource type also gets a repository in the OCI catalog, with the same access grants and attribute filters as a bundle repository.
 
@@ -490,7 +489,7 @@ resources:
     required: true
 ```
 
-A dependency accepts a range. A resource pins the single version it produces. See [Version Resolution](/bundle-development/connections-artifacts/version-resolution) for the accepted range forms.
+A dependency accepts a range. A resource pins the single version it produces. See [Version Resolution](/bundle-development/dependencies-resources/version-resolution) for the accepted range forms.
 
 ## Field Reference
 
@@ -515,6 +514,6 @@ A dependency accepts a range. A resource pins the single version it produces. Se
 ## See Also
 
 - [Resource Types Concept](/concepts/resources-and-types) - Understanding resource types
-- [Version Resolution](/bundle-development/connections-artifacts/version-resolution) - How a version range picks a resource at deploy time
-- [Custom Resource Type Guide](/guides/custom-artifact-definition) - JSON format and advanced customization
+- [Version Resolution](/bundle-development/dependencies-resources/version-resolution) - How a version range picks a resource at deploy time
+- [Custom Resource Type Guide](/guides/custom-resource-type) - JSON format and advanced customization
 - [Massdriver Annotations](/bundle-development/schema-design/massdriver-annotations) - Special `$md` annotations

@@ -121,7 +121,7 @@ resources:
     required: true
 ```
 
-A dependency accepts a range and Massdriver resolves it at deploy time. A resource pins the single version it produces. See [Version Resolution](/bundle-development/connections-artifacts/version-resolution).
+A dependency accepts a range and Massdriver resolves it at deploy time. A resource pins the single version it produces. See [Version Resolution](/bundle-development/dependencies-resources/version-resolution).
 
 > `connections` and `artifacts` are the previous names for these blocks. They still work and publish with a warning, but a slot declared that way carries no version range and takes part in no version checks.
 
@@ -135,7 +135,7 @@ A dependency accepts a range and Massdriver resolves it at deploy time. A resour
 ## Related Documentation
 
 - [Bundle YAML Specification](/bundle-development/bundle-yaml-spec) - Connection and resource configuration
-- [Resource Type Specification](/bundle-development/connections-artifacts/artifact-definition-spec) - Complete schema reference
-- [Version Resolution](/bundle-development/connections-artifacts/version-resolution) - How a version range picks a resource at deploy time
+- [Resource Type Specification](/bundle-development/dependencies-resources/resource-type-spec) - Complete schema reference
+- [Version Resolution](/bundle-development/dependencies-resources/version-resolution) - How a version range picks a resource at deploy time
 - [Resource Types Repository](https://github.com/massdriver-cloud/artifact-definitions) - Standard resource types
 - [Massdriver Annotations](/bundle-development/schema-design/massdriver-annotations) - `$md.sensitive` and other extensions

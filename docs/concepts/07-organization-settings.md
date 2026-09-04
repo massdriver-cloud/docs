@@ -70,7 +70,7 @@ Liquid **tags** — anything in `{% %}` — are rejected. A template is a compos
 
 A template is validated when you save it, so a broken template never reaches a deployment.
 
-- **The name must be distinct per instance.** The template must include `{{instance.id}}`, or `{{component.id}}` together with an environment atom, or `{{project.id}}` together with an environment atom and `{{instance.local_id}}`. `{{component.suffix}}` alone is not enough, because a component shares its suffix across every environment.
+- **The name should be distinct per instance.** The template should include `{{instance.id}}`, or `{{component.id}}` together with an environment atom, or `{{project.id}}` together with an environment atom and `{{instance.local_id}}`. `{{component.suffix}}` alone is not enough, because a component shares its suffix across every environment.
 - **Every atom must be in the table above.** An atom outside the vocabulary is rejected, and the error names it.
 - **Attributes must be declared.** `{{attrs.<key>}}` is rejected when your organization has not declared `<key>` as a custom attribute.
 - **255 characters maximum.**
