@@ -27,6 +27,7 @@ module.exports = {
           link: { type: "doc", id: "bundle-development/connections-artifacts/connections-artifacts-overview" },
           items: [
             "bundle-development/connections-artifacts/artifact-definition-spec",
+            "bundle-development/connections-artifacts/version-resolution",
           ],
         },
         {
@@ -124,6 +125,7 @@ module.exports = {
         "concepts/concepts-deployments",
         "concepts/concepts-connections",
         "concepts/concepts-organizations",
+        "concepts/concepts-organization-settings",
       ],
     },
     {

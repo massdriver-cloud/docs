@@ -56,6 +56,24 @@ Use this when a change requires review before applying — for example, producti
 
 > `PLAN` deployments are not part of the propose-and-approve flow. A plan is a non-destructive preview, so it does not require approval.
 
+### Separation of duty
+
+An environment can require that a proposal is approved by somebody other than the person who proposed it. Enable **Separation of duty** on the environment, in the environment form or the environments table.
+
+<SeparationOfDuty />
+
+With the setting on, `approveDeployment` is refused when the subject calling it is the same account or service account that called `proposeDeployment`. Approval has to come from a second reviewer.
+
+Rejection is not gated. A proposer can always withdraw their own proposal with `rejectDeployment`, so the control adds a second pair of eyes without stranding a change nobody wants.
+
+The setting is read from the environment at the moment of approval, so turning it on takes effect on proposals that are already open.
+
+The field is `separationOfDuty` on the V2 API, and `separation_of_duty` on the `massdriver_environment` Terraform resource.
+
+:::caution Terraform sends this on every apply
+`separation_of_duty` and `decommission_protection` default to `false` and are sent on every apply. An environment that was protected outside of Terraform is unprotected on the next apply unless the setting is in your configuration.
+:::
+
 ## The lifecycle
 
 A deployment walks through a state machine after creation. Direct pushes enter at `PENDING`; proposals enter at `PROPOSED`.
