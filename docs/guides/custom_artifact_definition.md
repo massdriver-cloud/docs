@@ -171,15 +171,22 @@ By the end of this step, your definition should look something like this:
 
 ### Step 5: Publishing to Massdriver
 
-Got your definition looking sharp? Use the `mass definition publish /path/to/definition.json` command in the CLI to send it out into the world.
+Got your definition looking sharp? Use the `mass resource-type publish /path/to/definition.json` command in the CLI to send it out into the world.
+
+:::note
+Publishing a raw JSON schema is deprecated and prints a warning. A raw schema is stored as the
+resource type's unversioned `0.0.0` document, so it cannot be pinned by version or pulled back
+down. Run `mass resource-type convert` to turn it into a versioned
+[`massdriver.yaml`](/bundle-development/connections-artifacts/artifact-definition-spec).
+:::
 
 ### Step 6: Fetching Your Masterpiece
 
-Once published, snag your resource type with the `mass definition get org/definition-name` command to confirm it's ready for action in your bundles.
+Once published, snag your resource type with the `mass resource-type get org/definition-name` command to confirm it's ready for action in your bundles.
 
 ### Step 7: Using Your Custom Resource Type
 
-Now that your custom resource type is published, you can use it in your bundles. Just reference it in your bundle's `artifacts:` field (the YAML key remains `artifacts:` for backwards compatibility) and structure your `_artifacts.tf` file, and you're good to go.
+Now that your custom resource type is published, you can use it in your bundles. Reference it under your bundle's `resources:` block and structure your `_artifacts.tf` file, and you're good to go.
 
 :::tip Recommended: Omit Organization Prefix
 When referencing resource types from your own organization, you can omit the organization prefix. Massdriver will automatically use your organization's definitions. This keeps your bundle configuration cleaner and more portable.
