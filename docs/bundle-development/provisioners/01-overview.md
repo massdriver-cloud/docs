@@ -89,11 +89,14 @@ The following files are generated and placed at the specified path in the provis
 
 | File Path                       | Description                                     |
 |---------------------------------|-------------------------------------------------|
-| `/massdriver/params.json`       | Parameters from instance configuration          |
-| `/massdriver/connections.json`  | The resources filling the bundle's dependencies |
-| `/massdriver/envs.json`         | Environment variables                           |
-| `/massdriver/secrets.json`      | Secrets (in decrypted form)                     |
-| `/massdriver/config.json`       | Provisioner configuration (from `config` block) |
+| `/massdriver/params.json`        | Parameters from instance configuration          |
+| `/massdriver/dependencies.json`  | The resources filling the bundle's dependencies |
+| `/massdriver/connections.json`   | Deprecated. The same document as `dependencies.json` |
+| `/massdriver/envs.json`          | Environment variables                           |
+| `/massdriver/secrets.json`       | Secrets (in decrypted form)                     |
+| `/massdriver/config.json`        | Provisioner configuration (from `config` block) |
+
+`dependencies.json` and `connections.json` hold the same document. Both are written on every step, so a custom provisioner image can move to the new name whenever it is ready.
 
 For more information about how a provisioner interacts with these files, refer to the provisioner-specific documentation.
 
