@@ -1,6 +1,6 @@
 ---
-id: artifact-definition-spec
-slug: /bundle-development/connections-artifacts/artifact-definition-spec
+id: resource-type-spec
+slug: /bundle-development/dependencies-resources/resource-type-spec
 title: Resource Type Specification
 sidebar_label: Resource Type Spec
 ---
@@ -10,7 +10,7 @@ sidebar_label: Resource Type Spec
 This document outlines the `massdriver.yaml` format for authoring resource types. This format provides a more ergonomic authoring experience compared to writing raw JSON Schema, with support for referencing external files for instructions and export templates.
 
 :::tip When to Use This Format
-Use the `massdriver.yaml` format when creating new resource types. It separates concerns by keeping markdown instructions and Liquid templates in their own files, making definitions easier to read and maintain.
+Use the `massdriver.yaml` format for every resource type. It is the format that supports versioning and publishing to your organization's catalog, and it keeps markdown instructions and Liquid templates in their own files. The raw JSON schema format it replaces is deprecated.
 :::
 
 ## File Structure
@@ -20,6 +20,9 @@ A resource type using this format consists of a directory containing:
 ```
 my-resource-type/
 ├── massdriver.yaml          # Main definition file
+├── README.md                # Published with the artifact
+├── CHANGELOG.md             # Published with the artifact
+├── icon.svg                 # Published with the artifact
 ├── instructions/            # Onboarding instruction markdown files
 │   ├── step1.md
 │   └── step2.md
@@ -39,6 +42,12 @@ my-resource-type/
 # Must be lowercase with hyphens. This becomes part of the resource type's
 # reference path: <org>/<name> (e.g., "acme/aws-rds-postgres")
 name: my-resource-type-name
+
+# version (required to publish)
+# Semantic version of the resource type (MAJOR.MINOR.PATCH).
+# The CLI publishes this as the artifact's tag in your organization's catalog.
+# Publishing is immutable: a version that already exists cannot be republished.
+version: 2.1.0
 
 # label (required)
 # Human-readable display name shown in the Massdriver UI.
@@ -68,6 +77,12 @@ ui:
   # Example: SREs might draw lines to a shared K8s cluster while developers
   # only see it as an environment default.
   connectionOrientation: link
+
+  # environmentDefaultGroup (optional)
+  # Groups this resource type with others in an environment's defaults panel.
+  # The group named "credentials" holds cloud credential types, which the UI
+  # separates from the rest of an environment's defaults.
+  environmentDefaultGroup: credentials
 
   # instructions (optional)
   # Onboarding instructions shown to users when they create resources of this
@@ -288,8 +303,7 @@ schema:
     token:
       title: API Token
       type: string
-      $md:
-        sensitive: true
+      $md.sensitive: true
 ```
 
 ## Complete Example with All Features
@@ -411,50 +425,82 @@ DATABASE_NAME={{ artifact.authentication.database }}
 
 ## Publishing
 
-Publish your resource type using the Massdriver CLI:
+A resource type publishes to your organization's catalog as an OCI artifact, the same way a bundle does.
 
 ```bash
-mass definition publish ./path/to/massdriver.yaml
+# Create the repository in the catalog
+mass resource-type create aws-vpc
+
+# Publish the version in massdriver.yaml
+mass resource-type publish ./aws-vpc
+
+# Pull a published version back down
+mass resource-type pull aws-vpc@2.1.0
 ```
 
-The CLI will:
-1. Read and parse the `massdriver.yaml` file
-2. Inline the content from instruction and export template files
-3. Build the JSON Schema format expected by the API
-4. Validate against the resource type meta-schema
-5. Publish to your organization
+`mass resource-type publish` takes a directory containing a `massdriver.yaml`, or the `massdriver.yaml` itself, and defaults to the current directory.
+
+The published artifact carries the `massdriver.yaml`, the readme, the changelog, the icon, and the instruction and export template files the `massdriver.yaml` references. Nothing else in the directory is included.
+
+Publishing is immutable. Once a version exists it cannot be overwritten, so anything pinned to it keeps resolving to what it resolved to the first time.
+
+### Versions and release channels
+
+Resource types use the same version model as bundles: semantic versions, release channels, and per-environment pinning. A bundle names the versions it accepts in its `dependencies` and `resources` blocks, and Massdriver resolves the range at deploy time. See [Version Resolution](/bundle-development/dependencies-resources/version-resolution).
+
+Each resource type also gets a repository in the OCI catalog, with the same access grants and attribute filters as a bundle repository.
+
+### Referenced files must exist
+
+`ui.instructions[].path` and `exports[].templatePath` point at files rather than carrying their content inline. A path that does not exist, or that resolves outside the resource type's directory, fails the publish. An incomplete artifact is never shipped.
+
+### Publishing a raw JSON schema is deprecated
+
+`mass resource-type publish` still accepts a raw JSON or YAML schema file, the format that predates `massdriver.yaml`, and prints a deprecation warning. That path will be removed in a future release.
+
+A raw schema carries no version of its own. It is stored as the resource type's unversioned `0.0.0` document, cannot take part in versioning, and cannot be pulled back down.
+
+`mass resource-type convert` migrates one:
+
+```bash
+mass resource-type convert ./my-resource-type.json
+```
+
+It writes a `massdriver.yaml` alongside the schema and pulls inlined instruction and export content back out into referenced files. A placeholder `version` is written into the output — set a real version before you publish.
+
+Resource types that existed before this format were migrated in place and keep working.
 
 ## Referencing in Bundles
 
-Once published, reference your resource type in bundle `massdriver.yaml` files:
+Once published, name the resource type and the versions you accept in a bundle's `massdriver.yaml`:
 
 ```yaml
-# In a bundle's massdriver.yaml
-artifacts:
-  required:
-    - database
-  properties:
-    database:
-      # Omit org prefix for definitions in your own organization
-      $ref: postgres-database
-      # Or use fully qualified name: acme/postgres-database
+# What the bundle consumes
+dependencies:
+  database:
+    # Omit the org prefix for resource types in your own organization
+    resource_type: postgres-database@~2
+    required: true
 
-connections:
-  required:
-    - database
-  properties:
-    database:
-      $ref: postgres-database
+# What the bundle produces for other bundles to consume
+resources:
+  database:
+    resource_type: postgres-database@2.1.0
+    required: true
 ```
+
+A dependency accepts a range. A resource pins the single version it produces. See [Version Resolution](/bundle-development/dependencies-resources/version-resolution) for the accepted range forms.
 
 ## Field Reference
 
 | Field | Required | Description |
 |-------|----------|-------------|
 | `name` | Yes | Unique identifier (lowercase, hyphens) |
+| `version` | To publish | Semantic version, published as the artifact's tag |
 | `label` | Yes | Display name in UI |
 | `icon` | No | URL to icon image |
 | `ui.connectionOrientation` | No | `"link"` or `"environmentDefault"` |
+| `ui.environmentDefaultGroup` | No | Groups the type in an environment's defaults panel; `"credentials"` marks cloud credential types |
 | `ui.instructions` | No | Array of onboarding steps |
 | `ui.instructions[].label` | Yes | Step title |
 | `ui.instructions[].path` | Yes | Path to markdown file |
@@ -468,5 +514,6 @@ connections:
 ## See Also
 
 - [Resource Types Concept](/concepts/resources-and-types) - Understanding resource types
-- [Custom Resource Type Guide](/guides/custom-artifact-definition) - JSON format and advanced customization
+- [Version Resolution](/bundle-development/dependencies-resources/version-resolution) - How a version range picks a resource at deploy time
+- [Custom Resource Type Guide](/guides/custom-resource-type) - JSON format and advanced customization
 - [Massdriver Annotations](/bundle-development/schema-design/massdriver-annotations) - Special `$md` annotations

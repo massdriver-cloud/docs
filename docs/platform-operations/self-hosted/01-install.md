@@ -107,6 +107,18 @@ Edit your `values-custom.yaml` file to provide the necessary configuration. Focu
    ```
 
 
+#### Optional Configuration
+
+**Documentation link**
+
+The documentation link in the sidebar points at `https://docs.massdriver.cloud`. Installations that serve their own documentation can point it somewhere else with `MD_DOCS_URL`:
+
+```bash
+MD_DOCS_URL=https://docs.internal.example.com
+```
+
+Leave it unset to keep the default.
+
 :::info Custom Release Name (Optional)
 
 If you plan to use a different release name than `massdriver`, search for `"release name"` in the values file and update the associated values accordingly.

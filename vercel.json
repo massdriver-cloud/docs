@@ -74,6 +74,36 @@
       "source": "/integrations/scim",
       "destination": "/reference/integrations/scim",
       "permanent": true
+    },
+    {
+      "source": "/guides/custom-artifact-definition",
+      "destination": "/guides/custom-resource-type",
+      "permanent": true
+    },
+    {
+      "source": "/bundle-development/connections-artifacts/artifact-definition-spec",
+      "destination": "/bundle-development/dependencies-resources/resource-type-spec",
+      "permanent": true
+    },
+    {
+      "source": "/concepts/connections",
+      "destination": "/concepts/dependencies",
+      "permanent": true
+    },
+    {
+      "source": "/bundle-development/connections-artifacts/overview",
+      "destination": "/bundle-development/dependencies-resources/overview",
+      "permanent": true
+    },
+    {
+      "source": "/bundle-development/connections-artifacts/resource-type-spec",
+      "destination": "/bundle-development/dependencies-resources/resource-type-spec",
+      "permanent": true
+    },
+    {
+      "source": "/bundle-development/connections-artifacts/version-resolution",
+      "destination": "/bundle-development/dependencies-resources/version-resolution",
+      "permanent": true
     }
   ]
 }

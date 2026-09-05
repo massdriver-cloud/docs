@@ -29,7 +29,7 @@ The `steps` block in the `massdriver.yaml` file specifies the steps to execute d
 - **`provisioner`**: **REQUIRED** Specifies the provisioner use (e.g., `terraform`, `opentofu`, `helm`, `bicep`).
 - **`path`**: **REQUIRED** The relative path to the IaC for this step of the bundle.
 - **`skip_on_delete`**: If set to `true`, the step will be skipped during the `decommission` action. This is useful for retaining resources like encryption keys.
-- **`config`**: A block that allows custom configuration for the provisioner. Refer to the provisioner documention for a list of accepted values. Each field within the `config` block must be specified as `jq` formatted queries, using `params` and `connections` as inputs.
+- **`config`**: A block that allows custom configuration for the provisioner. Refer to the provisioner documention for a list of accepted values. Each field within the `config` block must be specified as `jq` formatted queries, run against the deployment context described in [The jq context](#the-jq-context).
 
 ### Example
 
@@ -50,9 +50,31 @@ steps:
     provisioner: bicep
     skip_on_delete: true
     config:
-      region: .connections.foo.specs.region
+      region: .dependencies.foo.specs.region
       resource_group: '@text "foo"'
       delete_resource_group: 'true'
+```
+
+### The jq context
+
+Every `jq` expression in a `config` block, and in the `params.jq`, `connections.jq`, `envs.jq`, and `secrets.jq` templates, runs against the same object:
+
+| Key | Holds |
+|-----|-------|
+| `.params` | The instance's parameters, plus `md_metadata` |
+| `.dependencies` | The resources filling the bundle's dependency slots, keyed by slot name |
+| `.resources` | The resources the bundle produces, keyed by slot name |
+| `.id` | The instance identifier |
+
+`.connections` and `.artifacts` are deprecated aliases for `.dependencies` and `.resources`. They hold the same data and still work, so existing bundles keep running, but new expressions should use the current names.
+
+```yaml
+config:
+  # Preferred
+  region: .dependencies.azure_credentials.specs.region
+
+  # Deprecated alias, same value
+  region: .connections.azure_credentials.specs.region
 ```
 
 ---
@@ -67,11 +89,14 @@ The following files are generated and placed at the specified path in the provis
 
 | File Path                       | Description                                     |
 |---------------------------------|-------------------------------------------------|
-| `/massdriver/params.json`       | Parameters from instance configuration          |
-| `/massdriver/connections.json`  | Connection artifacts                            |
-| `/massdriver/envs.json`         | Environment variables                           |
-| `/massdriver/secrets.json`      | Secrets (in decrypted form)                     |
-| `/massdriver/config.json`       | Provisioner configuration (from `config` block) |
+| `/massdriver/params.json`        | Parameters from instance configuration          |
+| `/massdriver/dependencies.json`  | The resources filling the bundle's dependencies |
+| `/massdriver/connections.json`   | Deprecated. The same document as `dependencies.json` |
+| `/massdriver/envs.json`          | Environment variables                           |
+| `/massdriver/secrets.json`       | Secrets (in decrypted form)                     |
+| `/massdriver/config.json`        | Provisioner configuration (from `config` block) |
+
+`dependencies.json` and `connections.json` hold the same document. Both are written on every step, so a custom provisioner image can move to the new name whenever it is ready.
 
 For more information about how a provisioner interacts with these files, refer to the provisioner-specific documentation.
 

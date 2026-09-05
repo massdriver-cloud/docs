@@ -108,8 +108,15 @@ This schema defines exactly what JSON structure bundles must produce and consume
 1. From your getting-started repository root, run:
 
     ```bash
-    mass definition publish -f artifact-definitions/getting-started.json
+    mass resource-type publish artifact-definitions/getting-started.json
     ```
+
+    :::note
+    Publishing a raw JSON schema is deprecated and prints a warning. A raw schema has no
+    version of its own, so it cannot take part in resource type versioning. For your own
+    resource types, author a `massdriver.yaml` instead — see the
+    [Resource Type Spec](/bundle-development/dependencies-resources/resource-type-spec).
+    :::
 
 2. You should see output like:
 

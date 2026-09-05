@@ -101,6 +101,10 @@ steps:
     #   - .params.<field>                    - Bundle parameters
     #   - .dependencies.<name>               - Dependency resources
     #   - .dependencies.<name>.<path>        - Dependency resource fields
+    #   - .resources.<name>                  - Resources this bundle produces
+    #
+    # .connections and .artifacts are deprecated aliases for .dependencies
+    # and .resources. They hold the same data and still work.
     config:
       # OpenTofu/Terraform config options:
       #   json: boolean              - Enable JSON output (default: false)

@@ -98,8 +98,10 @@ connections:
   properties: {}
 {% endif %}
 
-# Resources - declare the outputs your bundle produces.
-# The YAML key remains `artifacts:` for backwards compatibility.
+# Resources - declare what your bundle produces for other bundles to consume.
+# `connections:` and `artifacts:` are the legacy keys, still accepted with a
+# deprecation warning. New templates should emit `dependencies:` and
+# `resources:`, which carry a resource type version.
 artifacts:
   properties: {}
 

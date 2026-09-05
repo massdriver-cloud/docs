@@ -202,7 +202,8 @@ There is no `updateGrant` — grants are immutable; delete and re-create to chan
 | Operation | Type | Required permission(s) | Notes |
 |---|---|---|---|
 | `accessTokens` | Query | *no explicit gate* | Open to every org member; only returns your own tokens — admins cannot list other principals' tokens. |
-| `createAccessToken` | Mutation | *no explicit gate* | Open to every org member; issues a token for the calling subject. |
+| `createPersonalAccessToken` | Mutation | *no explicit gate* | Open to every org member; issues a token for the calling account. Human accounts only. Expiry capped at 1 year. |
+| `createServiceAccountAccessToken` | Mutation | *no explicit gate* | Issues a token for the calling service account. Service accounts only. Expiry capped at 10 years. |
 | `revokeAccessToken` | Mutation | *owner-only* | Owner-scoped: only the token's owning subject can revoke; admins cannot revoke another user's personal tokens. |
 
 ## Integration
