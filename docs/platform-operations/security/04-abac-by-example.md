@@ -84,7 +84,7 @@ The domain team template. `lending-eng` is identical with `DOMAIN: [lending]`:
 group: payments-eng
 policies:
   - effect: allow
-    action: [project:view, project:update, project:design]
+    action: [project:view, project:create, project:update, project:design]
     conditions: { DOMAIN: [payments] }
 
   - effect: allow
