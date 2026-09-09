@@ -16,7 +16,7 @@ Read the [Access Control](/platform-operations/security/access-control) guide fi
 Every trace below is these six rules applied to a concrete entity.
 
 1. **Attributes cascade down.** A custom attribute is declared once, at exactly one scope: `project`, `environment`, `component`, or `repo`. Project values flow to every environment, component, instance, and resource beneath. Lower levels cannot override.
-2. **Identifiers are attributes.** Every entity carries system attributes: `md-project`, `md-environment`, `md-component`, `md-repo`, `md-instance`, `md-bundle`, `md-resource-type`, and `md-id`. Because `md-environment` is the environment's slug, a policy on it is also a naming rule. Slugs match `[a-z0-9]{1,20}`, so no hyphens.
+2. **Identifiers are attributes.** Every entity carries system attributes: `md-project`, `md-environment`, `md-component`, `md-repo`, `md-instance`, `md-bundle`, `md-resource-type`, and `md-id`. Because `md-environment` is the environment's identifier, a policy on it is also a naming rule. Identifiers match `[a-z0-9]{1,20}`, so no hyphens.
 3. **Policies face the target, grants face the recipient.** A group policy says "my members may do action X on entities matching C." A grant on a repo or resource says "this thing is usable by projects or environments matching C." Same condition syntax, opposite direction.
 4. **AND inside, OR across, deny wins.** Every condition in one policy must match. Any single fully matching policy is enough. Partial matches from two policies never combine. One matching deny beats every allow. No match at all is a deny.
 5. **Unreachable conditions drop.** A condition on an attribute the action's entity can never carry is removed before matching. An allow left with no conditions becomes a wildcard. A deny left with no conditions is discarded. A deny left with *some* conditions fires on everything the remaining ones match, which is wider than you wrote. All three are silent.
@@ -640,7 +640,7 @@ Note what ABAC does and does not do for the GPU rule. Attributes cannot count an
 | `GPU_TIER` | project | yes | `none`, `l4`, `h100` | The hardware class finance has approved for this project. Defaults to `none`, raised by finance. |
 | `RESIDENCY` | environment | yes | `us`, `eu` | Where this environment's data lives. Gates which shared resources it may reference. |
 | `PURPOSE` | component | yes | `training`, `serving`, `data`, `api`, `web`, `worker`, `storage` | Specialist routing. ML platform owns training and serving; inference SRE owns serving in prod. |
-| `HARDWARE` | repo | yes | `cpu`, `gpu-l4`, `gpu-h100` | What a bundle provisions. Attribute values are free text, so hyphens are fine here; only entity slugs are restricted. |
+| `HARDWARE` | repo | yes | `cpu`, `gpu-l4`, `gpu-h100` | What a bundle provisions. Attribute values are free text, so hyphens are fine here; only entity identifiers are restricted. |
 
 ### Groups and policies
 
@@ -958,7 +958,7 @@ Work through these in order. Each question maps to a scope, and the scope decide
 5. **Who published this bundle and what did it pass?** Repo scope: `PUBLISHER`, `CERTIFIED`, `HARDWARE`. These reach only repo actions. To reason about a bundle from an instance, use `md-repo` or `md-bundle`.
 6. **What must never happen, regardless of who asks?** Write it as a deny on the broadest group it should bind, and keep the exempt people out of that group. Check that every condition is reachable for every action listed, or the deny may vanish or widen.
 7. **What is shared, and with whom?** Those are grants. Write recipient conditions against the attributes from steps 2 and 3, and new projects will pick them up on creation.
-8. **What must the names be?** Put the allowed set on `md-environment`, `md-project`, or `md-component` in every create policy. Slugs are lowercase alphanumerics, twenty characters or fewer.
+8. **What must the names be?** Put the allowed set on `md-environment`, `md-project`, or `md-component` in every create policy. Identifiers are lowercase alphanumerics, twenty characters or fewer.
 
 :::tip Two habits that prevent most incidents
 Before saving a multi-action policy, read the reach table for each action. Before saving a create or update policy, list the required attributes at that scope and confirm each one is either constrained in the policy or safe to leave wide open for that group.
