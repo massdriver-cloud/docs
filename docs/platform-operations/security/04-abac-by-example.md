@@ -7,7 +7,7 @@ sidebar_label: ABAC by Example
 
 # ABAC by Example
 
-This guide walks three fictional organizations through Massdriver's [access control](/platform-operations/security/access-control) model end to end: the attributes each one declares, the groups and policies they write, the grants they publish, and a week of concrete access decisions traced step by step. Each organization has a different shape, and each one leans on a different corner of the same evaluation rules.
+This guide walks three fictional organizations through Massdriver's [access control](/platform-operations/security/access-control) model end to end: the attributes each one declares, the groups and policies they write, the grants they publish, and a week of concrete access decisions traced step by step. The three organizations have different structures and use different parts of the same evaluation rules.
 
 Read the [Access Control](/platform-operations/security/access-control) guide first for the reference material. This page assumes you know what a custom attribute, a policy, and a grant are.
 
@@ -37,7 +37,7 @@ Reach, by entity:
 
 ## Persona 1: Ledgerline, a payments and lending fintech
 
-A card issuer and small-business lender. They live inside PCI DSS, get audited by a QSA every year, and have been burned once by an engineer pasting a production database URL into a support ticket.
+A card issuer and small-business lender. They are subject to PCI DSS, are audited by a QSA every year, and once had an engineer paste a production database URL into a support ticket.
 
 | | |
 |---|---|
@@ -102,7 +102,7 @@ policies:
     conditions: { DOMAIN: [payments], md-environment: [dev, staging] }
 
   - effect: allow
-    action: [instance:plan, instance:propose]  # prod: you may look and you may ask
+    action: [instance:plan, instance:propose]  # prod: plan and propose only     
     conditions: { DOMAIN: [payments], md-environment: [prod] }
 
   - effect: allow
@@ -118,7 +118,7 @@ policies:
     conditions: { CERTIFIED: [pci, general] }  # repo-scoped key; only reachable on repo actions
 ```
 
-The second pair of hands:
+The approvers:
 
 ```yaml
 group: payments-leads
@@ -151,7 +151,7 @@ policies:
 ```
 
 ```yaml
-group: dba-guild                               # authority over a kind of thing, not a place
+group: dba-guild                               # scoped by component type, not by project
 policies:
   - effect: allow
     action: project:view
@@ -188,7 +188,7 @@ policies:
       md-environment: [prod]                   # drops for project:delete; deny still binds via PCI
 ```
 
-The deny lives on the group whose members it should bind. Deny beats allow across all of a person's groups, so the custodians are deliberately kept out of `engineers`. Put denies on groups, not people, and know exactly which groups.
+The deny lives on the group whose members it should bind. Deny beats allow across all of a person's groups, so the custodians are deliberately kept out of `engineers`. When writing a deny, decide which groups it should bind and check that nobody who needs an exemption is a member of them.
 
 ```yaml
 group: qsa-auditors                            # time-boxed external group
@@ -244,7 +244,7 @@ Policies decide who can *see* a bundle. Grants decide which projects can *attach
   recipient_conditions: { PCI: ["true"], md-environment: [prod] }
 ```
 
-Read the second grant carefully. A general-purpose Redis bundle is pullable by any project whose `PCI` is `false`. A PCI project does not match, so the canvas refuses to attach it, even for an engineer whose policies let them see it in the catalog. The hardening review is enforced at the moment of use.
+Read the second grant carefully. A general-purpose Redis bundle is pullable by any project whose `PCI` is `false`. A PCI project does not match, so the canvas refuses to attach it, even for an engineer whose policies let them see it in the catalog. The hardening review is enforced when the bundle is attached.
 
 ### A week at Ledgerline
 
@@ -336,7 +336,7 @@ The moment the project exists:
 | `ci-deployer` | non-prod deploys, prod proposals | wildcard view, `md-environment` |
 | `sre-otters` | as soon as an environment is tagged `SRE_POD = otters` | environment attribute |
 
-**Zero grants written.** The project inherited its operators, approvers, and auditors from the attributes it was born with.
+**Zero grants written.** The project inherited its operators, approvers, and auditors from the attributes set at creation.
 
 #### Friday, end of quarter: on-call rotation
 
@@ -370,7 +370,7 @@ Thirty-five engineers running infrastructure for forty clients out of one Massdr
 
 ### Vocabulary
 
-Halyard's world has two axes that most companies collapse into one. `CLIENT` is the tenant, the legal boundary. `POD` is Halyard's internal delivery team, which changes when they rebalance workload. Contractors and client staff key off `CLIENT`; Halyard's own engineers key off `POD`. Neither group's policies need editing when the other axis moves.
+Halyard separates two things most companies model as a single team attribute. `CLIENT` is the tenant, the legal boundary. `POD` is Halyard's internal delivery team, which changes when they rebalance workload. Contractors and client staff key off `CLIENT`; Halyard's own engineers key off `POD`. Changing one does not require editing policies that reference the other.
 
 | Key | Scope | Required | Values | What it encodes |
 |---|---|---|---|---|
@@ -421,7 +421,7 @@ policies:
     conditions: "*"                            # staff may SEE every bundle. USE is gated by grants.
 ```
 
-Halyard's engineers can browse every client's bundles, because seeing a bundle is not the leak. Attaching Bluefin's bundle to Cobalt's project is the leak, and that is a grant check. Splitting view from use keeps the catalog useful for staff while tenancy stays airtight.
+Halyard's engineers can browse every client's bundles, because seeing a bundle is not the leak. Attaching Bluefin's bundle to Cobalt's project is the leak, and that is a grant check. Splitting view from use keeps the catalog browsable for staff without allowing bundles to cross tenants.
 
 ```yaml
 group: contractor-acme
@@ -466,7 +466,7 @@ policies:
     conditions: { PUBLISHER: [halyard, bluefin] }
 ```
 
-The `ENGAGEMENT` condition is the whole trick. Bluefin's engineers hold deploy rights only while the project says `comanaged`. If the contract changes, Halyard edits the project, not the group.
+The `ENGAGEMENT` condition does the work here. Bluefin's engineers hold deploy rights only while the project says `comanaged`. If the contract changes, Halyard edits the project, not the group.
 
 ```yaml
 group: client-acme-viewers                     # a managed client watching their own estate
@@ -618,7 +618,7 @@ Halyard's first draft of the pod policy used `conditions: { CLIENT: "*" }` for `
 
 ## Persona 3: Tessellate, an AI research and inference company
 
-Ninety people training vision and language models and serving them to enterprise customers, some of whom are in the EU. Research is fast and messy by design. GPU spend is the biggest line on the P&L. One bad bundle release once deleted a checkpoint bucket.
+Ninety people training vision and language models and serving them to enterprise customers, some of whom are in the EU. Research projects are created and torn down frequently. GPU spend is the biggest line on the P&L. One bad bundle release once deleted a checkpoint bucket.
 
 | | |
 |---|---|
@@ -734,10 +734,10 @@ policies:
     conditions: { HARDWARE: [gpu-l4, gpu-h100] }   # may pull GPU bundles; whether a PROJECT may use one is a grant
 ```
 
-Rule 6 bites twice here. Constraining `GPU_TIER` on `project:create` is not enough: an unconstrained `project:update` would let a researcher raise their own tier after the fact. So the update allow constrains it to `none` as well. The consequence is that a project finance has approved no longer matches the researcher's update policy, and metadata edits on approved projects go through `finance-ops` or platform. Tessellate took that trade knowingly.
+Rule 6 applies twice here. Constraining `GPU_TIER` on `project:create` is not enough: an unconstrained `project:update` would let a researcher raise their own tier after the fact. So the update allow constrains it to `none` as well. The consequence is that a project finance has approved no longer matches the researcher's update policy, and metadata edits on approved projects go through `finance-ops` or platform. Tessellate accepted that tradeoff.
 
 ```yaml
-group: ml-platform                             # the kind of thing, not the place
+group: ml-platform                             # scoped by component type, not by project
 policies:
   - effect: allow
     action: project:view
@@ -792,7 +792,7 @@ policies:
 ```
 
 ```yaml
-group: finance-ops                             # the approval lever
+group: finance-ops                             # sets GPU_TIER
 policies:
   - effect: allow
     action: project:view
@@ -906,9 +906,9 @@ The `training-scheduler` service account fires two deploys in `saliency-exp`.
 | Instance | `PURPOSE` | Result | Why |
 |---|---|---|---|
 | `saliency-exp-trainer` | `training` | **match** | research, training, exp. All three conditions hold. |
-| `saliency-exp-checkpoints` | `storage` | miss | The scheduler cannot touch the bucket, by design. |
+| `saliency-exp-checkpoints` | `storage` | miss | The scheduler has no policy covering storage components. |
 
-A service account's blast radius is a component classification, not a list of instance IDs someone has to maintain.
+What a service account can touch is defined by a component classification, not a list of instance IDs someone has to maintain.
 
 #### Friday: data residency
 
@@ -923,18 +923,18 @@ Kai (`inference-sre`) sets a remote reference from `chat-prod-api` to the EU dat
 The same person, the same resource, two environments. Data residency is a property of where the reference lands, and the grant reads it.
 
 :::warning The deny that did the wrong thing
-Tessellate's first attempt to keep GPUs out of scratch environments was `deny instance:deploy where HARDWARE: [gpu-h100], md-environment: [scratch]`. `HARDWARE` is repo-scoped; repo attributes never cascade to instances. That condition dropped, `md-environment: [scratch]` remained, and the deny fired on every deploy in every scratch environment, GPU or not. Research ground to a halt for an afternoon.
+Tessellate's first attempt to keep GPUs out of scratch environments was `deny instance:deploy where HARDWARE: [gpu-h100], md-environment: [scratch]`. `HARDWARE` is repo-scoped; repo attributes never cascade to instances. That condition dropped, `md-environment: [scratch]` remained, and the deny fired on every deploy in every scratch environment, GPU or not. No research deploys succeeded until the policy was fixed.
 
 The working version keys on the system attribute that does reach instances: `deny instance:deploy where md-repo: [gcp-gke-gpu-pool, gcp-gke-l4-pool], md-environment: [scratch]`.
 
-The storage deny in the `engineering` group has the same shape. On `environment:decommission`, `PURPOSE` drops and the deny blocks decommissioning any production environment. Tessellate decided that is what they wanted, but they decided it after reading the reach table, not before.
+The storage deny in the `engineering` group has the same shape. On `environment:decommission`, `PURPOSE` drops and the deny blocks decommissioning any production environment. Tessellate kept that behavior intentionally, after checking it against the reach table.
 :::
 
 ---
 
 ## Side by side
 
-Each organization leaned on different corners of the same six rules. The attribute count barely matters; what differs is which axis of the business each attribute names.
+Each organization used different parts of the same six rules. The number of attributes matters less than which part of the business each attribute names.
 
 | Question | Ledgerline | Halyard | Tessellate |
 |---|---|---|---|
