@@ -19,10 +19,10 @@ Every trace below is these six rules applied to a concrete entity.
 2. **Identifiers are attributes.** Every entity carries system attributes: `md-project`, `md-environment`, `md-component`, `md-repo`, `md-instance`, `md-bundle`, `md-resource-type`, and `md-id`. Because `md-environment` is the environment's identifier, a policy on it is also a naming rule. Identifiers match `[a-z0-9]{1,20}`, so no hyphens.
 3. **Policies face the target, grants face the recipient.** A group policy says "my members may do action X on entities matching C." A grant on a repo or resource says "this thing is usable by projects or environments matching C." Same condition syntax, opposite direction.
 4. **AND inside, OR across, deny wins.** Every condition in one policy must match. Any single fully matching policy is enough. Partial matches from two policies never combine. One matching deny beats every allow. No match at all is a deny.
-5. **Unreachable conditions drop.** A condition on an attribute the action's entity can never carry is removed before matching. An allow left with no conditions becomes a wildcard. A deny left with no conditions is discarded. A deny left with *some* conditions fires on everything the remaining ones match, which is wider than you wrote. All three are silent.
-6. **Policy narrows the form.** The org declares which values a key may take. A user's `create` or `update` policies narrow the dropdown to the intersection. A key a policy does not mention stays wide open for that user.
+5. **Conditions must be reachable.** Only reference attributes the action's entity can carry. A `project:view` policy can use project-scoped attributes; an `instance:deploy` policy can use project, environment, and component attributes. Repo attributes are only usable on repo actions. The table below lists what each entity can carry.
+6. **Policies constrain the attribute values a user can assign.** The organization declares the valid values for each attribute. A `create` or `update` policy further restricts which of those values its group members can assign; the API rejects anything outside that set, and the UI only offers what the policy permits. This is what makes attributes trustworthy as inputs to other policies: `PCI: true` on a project means someone whose policy allowed `PCI: true` put it there. If a policy does not mention an attribute, members can assign any valid value.
 
-Reach, by entity:
+What each entity can carry:
 
 | Action's entity | Reachable system attributes | Reachable custom attribute scopes |
 |---|---|---|
@@ -185,7 +185,7 @@ policies:
     action: [instance:decommission, environment:decommission, project:delete]
     conditions:
       PCI: ["true"]
-      md-environment: [prod]                   # drops for project:delete; deny still binds via PCI
+      md-environment: [prod]
 ```
 
 The deny lives on the group whose members it should bind. Deny beats allow across all of a person's groups, so the custodians are deliberately kept out of `engineers`. When writing a deny, decide which groups it should bind and check that nobody who needs an exemption is a member of them.
@@ -324,7 +324,7 @@ md-project:  cardvault
 
 #### Thursday: a new project
 
-Priya creates `disputes` for chargeback handling. Her `project:create` policy constrains `DOMAIN`, so the form offers a single value, `payments`. `PCI` is unconstrained for her, so she chooses.
+Priya creates `disputes` for chargeback handling. Her `project:create` policy constrains `DOMAIN` to `payments`, so that is the only value she can assign. Her policy does not mention `PCI`, so she can set it to either value.
 
 The moment the project exists:
 
@@ -348,10 +348,6 @@ Platform flips `SRE_POD` from `koalas` to `otters` on fourteen production enviro
 | `sre-koalas` | Loses them. No group membership changed. No policy edited. |
 
 On-call rotation is fourteen attribute writes, which is also exactly the audit trail the QSA asks for.
-
-:::warning The mistake Ledgerline made in week one
-Their first draft of the auditor policy was `allow [project:view, resource:view] where DATA_CLASS: [cardholder]`. `DATA_CLASS` is component-scoped and is not reachable on a project. For `project:view` the condition dropped and the policy became a wildcard: the auditors could see every project in the org. The fix was to key project visibility on `PCI` (project scope) and reserve `DATA_CLASS` for instance and resource actions. When a policy mixes scopes, check the reach table for every action listed.
-:::
 
 ---
 
@@ -610,8 +606,8 @@ Acme moves from pod1 to pod3. Three project updates set `POD = pod3`.
 
 Internal reorganizations and client relationships are independent attributes, so one changes without disturbing the other.
 
-:::warning Per-key wildcard is not whole-policy wildcard
-Halyard's first draft of the pod policy used `conditions: { CLIENT: "*" }` for `project:view`, meaning "any client." It works for tenant projects, but it requires the key to be present, so `halyardops` and other internal projects that had `CLIENT` unset were invisible to staff. They made `CLIENT` required and added a `halyard` value for internal projects. Use the whole-field `"*"` when you mean "everything"; use `{ key: "*" }` only when "has this key at all" is the actual rule.
+:::info Two kinds of wildcard
+`conditions: "*"` matches every entity of the action's type. `conditions: { CLIENT: "*" }` matches entities that have `CLIENT` set to any value, and does not match entities where it is unset. Halyard makes `CLIENT` required and gives internal projects the value `halyard`, so every project has a value and either wildcard works. Use `"*"` when you mean everything; use `{ key: "*" }` when the rule is that the attribute must be present.
 :::
 
 ---
@@ -671,17 +667,15 @@ policies:
     conditions:
       PROJECT_KIND: [product]
       md-environment: [dev, staging, prod]
-      RESIDENCY: [us]                          # the RESIDENCY dropdown shows only "us" to this group
+      RESIDENCY: [us]                          # this group can only assign RESIDENCY: us
 
   - effect: deny
     action: instance:deploy
     conditions: { md-bundle: [gcp-gke-gpu-pool@2.3.0] }   # the release that deleted the bucket. Pinned by @version.
 
   - effect: deny
-    action: [instance:decommission, environment:decommission]
-    conditions:
-      PURPOSE: [storage]
-      md-environment: [prod]                   # PURPOSE drops for environment:*; that half denies ALL prod env decommissions. See below.
+    action: instance:decommission
+    conditions: { PURPOSE: [storage], md-environment: [prod] }   # nobody tears down production storage
 
   - effect: deny
     action: [instance:configure, instance:deploy, instance:decommission]
@@ -707,7 +701,7 @@ policies:
     conditions:
       PROJECT_KIND: [research]
       TEAM: [vision]
-      GPU_TIER: [none]                         # on update too, or the tier dropdown is wide open
+      GPU_TIER: [none]                         # on update too, so the tier can only be raised by finance
 
   - effect: allow
     action: environment:create
@@ -734,7 +728,7 @@ policies:
     conditions: { HARDWARE: [gpu-l4, gpu-h100] }   # may pull GPU bundles; whether a PROJECT may use one is a grant
 ```
 
-Rule 6 applies twice here. Constraining `GPU_TIER` on `project:create` is not enough: an unconstrained `project:update` would let a researcher raise their own tier after the fact. So the update allow constrains it to `none` as well. The consequence is that a project finance has approved no longer matches the researcher's update policy, and metadata edits on approved projects go through `finance-ops` or platform. Tessellate accepted that tradeoff.
+`GPU_TIER` is constrained to `none` on both `project:create` and `project:update`, so only `finance-ops` can raise it. Once finance has approved a project, it no longer matches the researcher's update policy, and metadata edits on approved projects go through `finance-ops` or platform. Tessellate accepted that tradeoff.
 
 ```yaml
 group: ml-platform                             # scoped by component type, not by project
@@ -800,7 +794,7 @@ policies:
 
   - effect: allow
     action: project:update
-    conditions: { GPU_TIER: [none, l4, h100] } # they can set any tier; other keys stay wildcard for them
+    conditions: { GPU_TIER: [none, l4, h100] } # any tier; other attributes are unrestricted for this group
 ```
 
 ```yaml
@@ -853,15 +847,15 @@ GPU grants are authored by `ml-platform`; residency grants by `eu-ops`.
 
 #### Monday: a researcher creates a project
 
-Wen (`vision-research`) creates a project called `saliency`. The form, narrowed by Wen's `project:create` policy:
+Wen (`vision-research`) creates a project called `saliency`. Wen's `project:create` policy limits what can be assigned:
 
-| Field | Options offered |
+| Attribute | Values Wen can assign |
 |---|---|
 | `PROJECT_KIND` | `research` |
 | `TEAM` | `vision` |
 | `GPU_TIER` | `none` |
 
-Every dropdown had one option. Wen never saw a value they were not allowed to pick. From here, Wen can create environments named `scratch` or `exp` with `RESIDENCY = us`, the training scheduler will pick up any `PURPOSE = training` instance in `exp`, and `ml-platform` already has authority over every training component Wen adds.
+Every attribute had exactly one permitted value. Wen could not have created a project with any other combination. From here, Wen can create environments named `scratch` or `exp` with `RESIDENCY = us`, the training scheduler will pick up any `PURPOSE = training` instance in `exp`, and `ml-platform` already has authority over every training component Wen adds.
 
 #### Tuesday: the H100 bundle
 
@@ -922,14 +916,6 @@ Kai (`inference-sre`) sets a remote reference from `chat-prod-api` to the EU dat
 
 The same person, the same resource, two environments. Data residency is a property of where the reference lands, and the grant reads it.
 
-:::warning The deny that did the wrong thing
-Tessellate's first attempt to keep GPUs out of scratch environments was `deny instance:deploy where HARDWARE: [gpu-h100], md-environment: [scratch]`. `HARDWARE` is repo-scoped; repo attributes never cascade to instances. That condition dropped, `md-environment: [scratch]` remained, and the deny fired on every deploy in every scratch environment, GPU or not. No research deploys succeeded until the policy was fixed.
-
-The working version keys on the system attribute that does reach instances: `deny instance:deploy where md-repo: [gcp-gke-gpu-pool, gcp-gke-l4-pool], md-environment: [scratch]`.
-
-The storage deny in the `engineering` group has the same shape. On `environment:decommission`, `PURPOSE` drops and the deny blocks decommissioning any production environment. Tessellate kept that behavior intentionally, after checking it against the reach table.
-:::
-
 ---
 
 ## Side by side
@@ -955,13 +941,15 @@ Work through these in order. Each question maps to a scope, and the scope decide
 2. **What contract, tier, or regulatory regime is the project under?** Project scope again: `PCI`, `ENGAGEMENT`, `SLA_TIER`, `GPU_TIER`. These are your capability gates and your grant recipients. Make them required, default them conservative, and decide who holds the `project:update` that changes them.
 3. **What is true of a place but not the whole project?** Environment scope: `RESIDENCY`, `SRE_POD`, anything that rotates or differs between prod and staging.
 4. **What kind of thing is it, and what data does it touch?** Component scope: `PURPOSE`, `DATA_CLASS`. These power specialist teams and the denies that must follow a component into every environment.
-5. **Who published this bundle and what did it pass?** Repo scope: `PUBLISHER`, `CERTIFIED`, `HARDWARE`. These reach only repo actions. To reason about a bundle from an instance, use `md-repo` or `md-bundle`.
-6. **What must never happen, regardless of who asks?** Write it as a deny on the broadest group it should bind, and keep the exempt people out of that group. Check that every condition is reachable for every action listed, or the deny may vanish or widen.
+5. **Who published this bundle and what did it pass?** Repo scope: `PUBLISHER`, `CERTIFIED`, `HARDWARE`. These are only usable on repo actions. To target a bundle from an instance policy, use `md-repo` or `md-bundle`.
+6. **What must never happen, regardless of who asks?** Write it as a deny on the broadest group it should bind, and keep the exempt people out of that group. Only use attributes the action's entity can carry.
 7. **What is shared, and with whom?** Those are grants. Write recipient conditions against the attributes from steps 2 and 3, and new projects will pick them up on creation.
 8. **What must the names be?** Put the allowed set on `md-environment`, `md-project`, or `md-component` in every create policy. Identifiers are lowercase alphanumerics, twenty characters or fewer.
 
-:::tip Two habits that prevent most incidents
-Before saving a multi-action policy, read the reach table for each action. Before saving a create or update policy, list the required attributes at that scope and confirm each one is either constrained in the policy or safe to leave wide open for that group.
+:::tip Authoring checklist
+- For a policy that lists several actions, use only attributes that every listed action can carry (see the table at the top of this page).
+- For a `create` or `update` policy, go through each attribute at that scope and decide whether the group may assign any value or only specific ones. Constrain the ones that other policies and grants depend on.
+- Put denies on the group whose members they should bind, and keep exempt principals out of that group.
 :::
 
 ## Related
