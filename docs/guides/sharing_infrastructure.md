@@ -152,6 +152,10 @@ Before we can deploy our app and database, we need a network and compute to run 
 
 Massdriver supports sharing resources through two mechanisms: _environment defaults_ or _remote references_
 
+:::note
+A resource must have a [resource grant](/guides/share-resources) covering the consuming environment before it can be used as an environment default or remote reference.
+:::
+
 ### Using Environment Defaults
 
 Environment defaults use the shared resources, with no option for configuration in a particular environment. 
@@ -197,7 +201,7 @@ In this scenario we would add a Kubernetes cluster to our application project.
 
 In production, we'd deploy a cluster owned by the ECommerce Team. In preview environments we could "replace" the Kubernetes box on our diagram with the Kubernetes cluster shared from the Shared Infrastructure project.
 
-Click the instance with the unfulfilled dependency, open its **Dependencies** tab, and pick the shared resource from the **Use a remote reference** dropdown — every resource of the right type available to the org appears in the list:
+Click the instance with the unfulfilled dependency, open its **Dependencies** tab, and pick the shared resource from the **Use a remote reference** dropdown — every resource of the right type [granted to this environment](/guides/share-resources) appears in the list:
 
 <video controls loop muted playsInline width="100%">
   <source src="/img/screenshots/set-remote-reference.webm" type="video/webm" />
