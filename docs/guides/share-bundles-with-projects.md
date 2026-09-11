@@ -22,17 +22,17 @@ To share individual repositories, or to share with a subset of projects, follow 
 ## Prerequisites
 
 * `repo:grant` on the repository (org admins have it; otherwise add it to a [group policy](/platform-operations/security/access-control#policies)).
-* A project-scoped [custom attribute](/platform-operations/security/access-control#custom-attributes) if you want to target projects by tag (e.g. `TEAM`). Skip this to share by project ID or org-wide.
+* A project-scoped [custom attribute](/platform-operations/security/access-control#custom-attributes) if you want to target projects by tag (e.g. `team`). Skip this to share by project ID or org-wide.
 
 ## 1. Tag the recipient projects
 
-Open each project that should receive the bundle, go to its **Settings**, and set the attribute (e.g. `TEAM` = `payments`).
+Open each project that should receive the bundle, go to its **Settings**, and set the attribute (e.g. `team` = `payments`).
 
 <details>
 <summary>Prefer the CLI?</summary>
 
 ```shell
-mass project update ecomm -a TEAM=payments
+mass project update ecomm -a team=payments
 ```
 
 </details>

@@ -12,18 +12,18 @@ Grants match **recipient environments by attribute**. An environment's attribute
 ## Prerequisites
 
 * `resource:grant` on the resource. Provisioned resources carry their project's attributes, so a [group policy](/platform-operations/security/access-control#policies) granting `resource:grant` on a team's projects covers everything they deploy. Org admins have it everywhere.
-* Optionally, a [custom attribute](/platform-operations/security/access-control#custom-attributes) at project or environment scope (e.g. `TEAM`, `pci`) to target recipients by tag.
+* Optionally, a [custom attribute](/platform-operations/security/access-control#custom-attributes) at project or environment scope (e.g. `team`, `pci`) to target recipients by tag.
 
 ## 1. Tag the recipient environments
 
-Open the environment's **Settings** and set the attribute (e.g. `STAGE` = `nonprod`). To cover every environment in a project at once, set the attribute on the project instead.
+Open the environment's **Settings** and set the attribute (e.g. `stage` = `nonprod`). To cover every environment in a project at once, set the attribute on the project instead.
 
 <details>
 <summary>Prefer the CLI?</summary>
 
 ```shell
-mass environment update ecomm-staging -a STAGE=nonprod
-mass project update ecomm -a TEAM=payments
+mass environment update ecomm-staging -a stage=nonprod
+mass project update ecomm -a team=payments
 ```
 
 </details>
