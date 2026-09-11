@@ -26,11 +26,16 @@ To share individual repositories, or to share with a subset of projects, follow 
 
 ## 1. Tag the recipient projects
 
-Set the attribute on each project that should receive the bundle, in the project's settings or with the CLI:
+Open each project that should receive the bundle, go to its **Settings**, and set the attribute (e.g. `TEAM` = `payments`).
+
+<details>
+<summary>Prefer the CLI?</summary>
 
 ```shell
 mass project update ecomm -a TEAM=payments
 ```
+
+</details>
 
 ## 2. Create the grant
 
@@ -46,10 +51,10 @@ Each condition is a **key** and one or more **values**. A project matches when i
 
 | Share with | Key | Values |
 |---|---|---|
-| Projects tagged `TEAM=payments` | `TEAM` | `payments` |
-| Projects tagged `TEAM=payments` or `TEAM=checkout` | `TEAM` | `payments` `checkout` |
+| Projects tagged `team=payments` | `team` | `payments` |
+| Projects tagged `team=payments` or `team=checkout` | `team` | `payments` `checkout` |
 | One specific project | `md-project` | `ecomm` |
-| Any project that has a `TEAM` tag | `TEAM` | `*` |
+| Any project that has a `team` tag | `team` | `*` |
 | Every project in the org | `*` | `*` |
 
 Grants can also be managed through the [GraphQL API](/api/graphql/operations/mutations/create-repo-grant) and the [Terraform provider](https://registry.terraform.io/providers/massdriver-cloud/massdriver/latest). Full matching rules are in [Access Control](/platform-operations/security/access-control#recipient-matching).
