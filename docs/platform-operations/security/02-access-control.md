@@ -896,5 +896,6 @@ The organization owner account always bypasses access control checks. The built-
 
 ## Related
 
+- [ABAC by Example](/platform-operations/security/abac-by-example) — three organizations modeled end to end, with policies, grants, and traced access decisions
 - [GraphQL permissions reference](/platform-operations/security/graphql-permissions) — the permission required by every GraphQL operation
 - [Service Accounts](/platform-operations/security/service-accounts) — non-human principals that authenticate to the API

@@ -90,6 +90,7 @@ module.exports = {
           items: [
             "platform-operations/security/security-service-accounts",
             "platform-operations/security/security-access-control",
+            "platform-operations/security/security-abac-by-example",
             "platform-operations/security/security-graphql-permissions",
           ],
         },
