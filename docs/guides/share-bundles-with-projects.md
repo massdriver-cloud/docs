@@ -39,7 +39,7 @@ mass project update ecomm -a team=payments
 
 ## 2. Create the grant
 
-Open the repository under **Bundles**, go to the **Grants** tab, and click **Add Grant**. Set the action to `repo:pull` and the recipient conditions.
+Find the bundle under **Repositories**, go to the **Permissions** tab, and click **Add Permission**. Set the recipient conditions.
 
 <video controls loop muted playsInline width="100%">
   <source src="/img/screenshots/create-repo-grant.webm" type="video/webm" />
@@ -51,10 +51,10 @@ Each condition is a **key** and one or more **values**. A project matches when i
 
 | Share with | Key | Values |
 |---|---|---|
-| Projects tagged `team=payments` | `team` | `payments` |
-| Projects tagged `team=payments` or `team=checkout` | `team` | `payments` `checkout` |
-| One specific project | `md-project` | `ecomm` |
-| Any project that has a `team` tag | `team` | `*` |
+| Projects with the custom attribute `team` equal to `payments` | `team` | `payments` |
+| Projects with the custom attribute `team` equal to `payments` or `checkout` | `team` | `payments` `checkout` |
+| Only the project with the id `ecomm` | `md-project` | `ecomm` |
+| Any project that has the custom `team` attribute set | `team` | `*` |
 | Every project in the org | `*` | `*` |
 
 Grants can also be managed through the [GraphQL API](/api/graphql/operations/mutations/create-repo-grant) and the [Terraform provider](https://registry.terraform.io/providers/massdriver-cloud/massdriver/latest). Full matching rules are in [Access Control](/platform-operations/security/access-control#recipient-matching).

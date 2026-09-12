@@ -42,10 +42,10 @@ Each condition is a **key** and one or more **values**. An environment matches w
 
 | Share with | Key | Values |
 |---|---|---|
-| Every `staging` environment, in any project | `md-environment` | `staging` |
-| Every environment in one project | `md-project` | `ecomm` |
-| Every environment in projects tagged `team=payments` | `team` | `payments` |
-| Non-prod environments only | `STAGE` | `nonprod` |
+| Every environment with the id `staging` in any project | `md-environment` | `staging` |
+| Every environment in the project with id `ecomm` | `md-project` | `ecomm` |
+| Every environment in projects with the custom attribute `team` equal to `payments` | `team` | `payments` |
+| Every environments with the custom attribute `stage` equal to `nonprod` | `stage` | `nonprod` |
 | Prod and staging in PCI projects (two conditions) | `md-environment`<br/>`pci` | `prod` `staging`<br/>`true` |
 | Every environment in the org | `*` | `*` |
 
