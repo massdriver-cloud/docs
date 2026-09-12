@@ -487,6 +487,8 @@ repo of mine is visible to projects that match these attributes."
 A grant is the inverse direction of a policy: the conditions match the
 **recipient** project / environment, not the entity being acted on.
 
+For step-by-step instructions, see [Share Bundles with Projects](/guides/share-bundles) and [Share Resources with Environments](/guides/share-resources).
+
 ### Structure
 
 | Field | Description |
@@ -899,3 +901,4 @@ The organization owner account always bypasses access control checks. The built-
 - [ABAC by Example](/platform-operations/security/abac-by-example) — three organizations modeled end to end, with policies, grants, and traced access decisions
 - [GraphQL permissions reference](/platform-operations/security/graphql-permissions) — the permission required by every GraphQL operation
 - [Service Accounts](/platform-operations/security/service-accounts) — non-human principals that authenticate to the API
+- [Share Bundles with Projects](/guides/share-bundles) and [Share Resources with Environments](/guides/share-resources) — step-by-step grant guides
