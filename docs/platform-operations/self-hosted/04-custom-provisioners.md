@@ -42,7 +42,7 @@ Integrate with your organization's operational systems:
 
 ## Creating a Custom Provisioner
 
-This section will walk you through the process of creating a simple "noop" provisioner which will simply echo that provision is happening. This will give you a base for creating your own provisioners.
+This section will walk you through the process of creating a simple "echo" provisioner which prints the inputs it receives and reports which action is running. It provisions nothing, and it gives you a base for creating your own provisioners.
 
 :::tip Examples
 
@@ -103,7 +103,7 @@ set -euo pipefail
 # Create bash variables for Massdriver inputs
 workdir="/massdriver"
 params_path="$workdir/params.json"
-connections_path="$workdir/connections.json"
+dependencies_path="$workdir/dependencies.json"
 config_path="$workdir/config.json"
 envs_path="$workdir/envs.json"
 secrets_path="$workdir/secrets.json"
@@ -141,10 +141,10 @@ Build and push your custom provisioner to a container registry accessible by you
 
 ```bash
 # Build the image
-docker build -t your-registry.com/provisioner-noop:v1.0.0 .
+docker build -t your-registry.com/provisioner-echo:v1.0.0 .
 
 # Push to registry
-docker push your-registry.com/provisioner-noop:v1.0.0
+docker push your-registry.com/provisioner-echo:v1.0.0
 ```
 
 ## Using Custom Provisioners in Bundles
@@ -154,7 +154,7 @@ Once your custom provisioner is built and published, use it in your bundle's `ma
 ```yaml
 steps:
   - path: src
-    provisioner: your-registry.com/provisioner-noop:v1.0.0
+    provisioner: your-registry.com/provisioner-echo:v1.0.0
     # config:
     #   foo: .params.foo
 ```
