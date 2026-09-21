@@ -37,7 +37,7 @@ Custom attributes define what structural attribute keys exist in your organizati
 
 Each attribute key is assigned to exactly one level. If `TEAM` is scoped to `project`, only projects can set it. Environments, components, instances, deployments, and resources below that project inherit the value automatically. Lower levels cannot change or override it.
 
-Resource types push `md-resource-type` (a system attribute) onto every resource produced from them, but do not yet carry user-settable custom attributes — that arrives when resource types move to OCI-hosted distribution.
+Resource types are OCI repos: they push `md-resource-type` (a system attribute) onto every resource produced from them, and, like any repo, can carry repo-scoped custom attributes.
 
 Every structural attribute on any entity has a single, unambiguous origin. There is no merge logic and no precedence to debug.
 
@@ -128,9 +128,14 @@ An instance is the intersection of an environment and a component, and a resourc
 | `md-environment` | environment | `prod` | instance, deployment, resource |
 | `md-component` | component | `database` | instance, deployment, resource |
 | `md-repo` | component | `aws-aurora` | instance, deployment, resource |
+| `md-repo-artifact-type` | repo | `resource-type` | nowhere — repo only |
 | `md-instance` | instance | `api-prod-database` | deployment, resource |
 | `md-bundle` | instance | `aws-aurora@1.2.3` | deployment, resource |
-| `md-resource-type` | resource type | `aws-iam-role` | resource (every resource produced from this type) |
+| `md-resource-type` | resource type | `aws-iam-role@0.0.0` | resource (every resource produced from this type) |
+
+`md-repo-artifact-type` is the repo's kind: `bundle` or `resource-type`. It lets a policy target one kind of repo — for example, `repo:view` where `md-repo-artifact-type: [resource-type]`. It is set on the repo and does not cascade.
+
+`md-bundle` and `md-resource-type` are **version-qualified** (`name@version`): a condition value containing `@` pins exactly one version; a bare name matches every version of that name.
 
 `md-id` is always the *entity's own* identifier, never inherited:
 
@@ -335,9 +340,9 @@ Massdriver defines 39 permissions using an `entity:verb` format.
 
 | Permission | Description |
 |---|---|
-| `repo:view` | View bundles and OCI repositories |
-| `repo:pull` | Download bundle contents |
-| `repo:push` | Publish new bundle versions |
+| `repo:view` | View a repository in the catalog and UI — bundle repos and resource-type repos alike |
+| `repo:pull` | Download a repo's contents — a bundle's files, or a resource type a bundle references |
+| `repo:push` | Publish a new version — bundle or resource type |
 | `repo:create` | Create a new (empty) OCI repository |
 | `repo:update` | Modify a repository's user-settable metadata (e.g. attributes) |
 | `repo:grant` | Author or revoke grants sharing this repo with recipient projects. Distinct from `repo:update` (metadata) and `repo:pull` (downloading bundle contents). |
@@ -356,13 +361,17 @@ Massdriver defines 39 permissions using an `entity:verb` format.
 
 ### Resource Type
 
-A resource type is an OCI repo, governed by the same `repo:*` permissions as a bundle repo. `repo:view` on the type's repo controls whether you see the type in the catalog and UI; the default is admin-only, and other members opt in with a `repo:view` policy. This governs the type only — seeing a resource of that type still needs a resource permission (`resource:view`, the project cascade, or a grant).
+A resource type is an OCI repo, governed by the same `repo:*` permissions as a bundle repo. There is no separate `resource_type:*` action set — the repo permissions cover it, and the version rides in the type's identity, so there is no per-version permission.
 
-When a bundle references a resource type, the access check is on the bundle's **publisher**, not its consumers. Publishing a bundle verifies the publisher holds `repo:pull` on every resource type the bundle references; a publish that references a type the publisher cannot pull is rejected and names that type (for example, `no access to postgres-connection@1.2.3`). The check runs once, at publish time.
+**Seeing a type — `repo:view`.** `repo:view` on the type's repo controls whether you see the type in the catalog and UI. The default is admin-only: org owners and admins see every type, and other members opt in with a `repo:view` policy — for example, `repo:view` where `md-repo-artifact-type: [resource-type]` grants view of resource-type repos. This governs the type only; seeing a *resource* of that type still needs a resource permission (`resource:view`, the project cascade, or a grant).
 
-Once the bundle is published, its referenced types travel with it. Anyone who can use the bundle can use those types — a consumer needs no `repo:view` or `repo:pull` on them. The canvas, links, and deployments resolve each type through the reference stored in the published bundle; a consumer is never checked against a resource type directly. They only need access to the bundle, or to the resource itself.
+**Referencing a type from a bundle — vetted at publish, inherited by consumers.** When a bundle declares a dependency or resource of a given type, the access check is on the bundle's **publisher**, not its consumers. Publishing a bundle verifies the publisher holds `repo:pull` on every resource type the bundle references; a publish that references a type the publisher cannot pull is rejected and names it (for example, `no access to postgres-connection@1.2.3`). The check runs once, at publish. After the bundle is published, the referenced types travel with it: anyone who can use the bundle can use those types, with no `repo:view` or `repo:pull` of their own. The canvas, links, and deployments resolve each type through the reference stored in the bundle; a consumer is never checked against a resource type directly.
 
-Publishing (`publishResourceType`) and deleting (`deleteResourceType`) require `organization:manageResourceTypes` (covered by the `organization:manage` umbrella).
+**Publishing a type — `repo:push`.** Publishing a version of a type is `repo:push` on its repo (the OCI publish path); `repo:create` makes the repo the first time. The transitional GraphQL `publishResourceType` / `deleteResourceType` mutations are gated by `organization:manageResourceTypes` and retire with the v1 CLI.
+
+**Targeting resources by type — `md-resource-type`.** Resource types push `md-resource-type` onto every resource produced from them, as `name@version` (e.g. `aws-iam-role@0.0.0`). Policies target by type with a bare name — `md-resource-type: [aws-iam-role]` matches every version — or pin a version with `md-resource-type: [aws-iam-role@0.0.0]`.
+
+Resource-type repos are not shared through grants — grants are a bundle→project mechanism. A resource type's reach is `repo:view` (who sees it) and `repo:pull` (who can reference it from a bundle).
 
 Resource types push `md-resource-type` onto every resource produced from them, so policies can target by type (`md-resource-type: [aws-iam-role]`).
 
@@ -499,7 +508,7 @@ For step-by-step instructions, see [Share Bundles with Projects](/guides/share-b
 
 | Field | Description |
 |---|---|
-| source | Exactly one of `source_bundle_id` (an OCI repo) or `source_artifact_id` (a resource). The thing being shared. |
+| source | Exactly one of `source_repo_id` (an OCI repo) or `source_resource_id` (a resource). The thing being shared. Repo grants share bundle repos; resource-type repos are governed by `repo:view`/`repo:pull`, not grants. |
 | action | The action being granted on the source — e.g., `repo:pull`, `resource:export`. The action's entity must match the source kind. |
 | recipient_conditions | Either the explicit wildcard `"*"` (every recipient in the org) or attribute conditions the recipient project / environment must satisfy. Same shape as policy `conditions`; required on create. |
 
