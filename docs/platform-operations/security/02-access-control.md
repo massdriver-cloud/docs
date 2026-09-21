@@ -356,9 +356,15 @@ Massdriver defines 39 permissions using an `entity:verb` format.
 
 ### Resource Type
 
-Resource types are organization-level catalog metadata. Listing and viewing resource types is open to every org member. Publishing (`publishResourceType`) and deleting (`deleteResourceType`) require `organization:manageResourceTypes` (covered by the `organization:manage` umbrella).
+A resource type is an OCI repo, governed by the same `repo:*` permissions as a bundle repo. `repo:view` on the type's repo controls whether you see the type in the catalog and UI; the default is admin-only, and other members opt in with a `repo:view` policy. This governs the type only — seeing a resource of that type still needs a resource permission (`resource:view`, the project cascade, or a grant).
 
-Resource types push `md-resource-type` onto every resource produced from them, so policies can target by type (`md-resource-type: [aws-iam-role]`). User-settable resource-type attributes will arrive when resource types move to OCI-hosted distribution.
+When a bundle references a resource type, the access check is on the bundle's **publisher**, not its consumers. Publishing a bundle verifies the publisher holds `repo:pull` on every resource type the bundle references; a publish that references a type the publisher cannot pull is rejected and names that type (for example, `no access to postgres-connection@1.2.3`). The check runs once, at publish time.
+
+Once the bundle is published, its referenced types travel with it. Anyone who can use the bundle can use those types — a consumer needs no `repo:view` or `repo:pull` on them. The canvas, links, and deployments resolve each type through the reference stored in the published bundle; a consumer is never checked against a resource type directly. They only need access to the bundle, or to the resource itself.
+
+Publishing (`publishResourceType`) and deleting (`deleteResourceType`) require `organization:manageResourceTypes` (covered by the `organization:manage` umbrella).
+
+Resource types push `md-resource-type` onto every resource produced from them, so policies can target by type (`md-resource-type: [aws-iam-role]`).
 
 ### Organization
 
