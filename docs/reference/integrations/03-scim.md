@@ -93,20 +93,30 @@ Once configured, your identity provider can automatically:
 
 ## Deactivation and Seats
 
-An active SCIM user holds a **seat** in your Massdriver organization. Massdriver does not
-decide on its own that a seat is free: it follows the `active` attribute your identity
-provider sends on the SCIM user.
+A user holds a **seat** in your Massdriver organization while they are a member of one or
+more groups. All access in Massdriver comes from groups, so a user in no group can do
+nothing and holds no seat. You can move seats between people by changing group membership
+in your identity provider.
 
+- Provisioning a user claims no seat. Your IdP can provision every user, and the groups it
+  pushes decide who holds a seat.
+- Adding a user to a group claims a seat if they are in no other group. If the organization
+  has no seats left, the group update is refused and organization owners are notified. An
+  update that adds several users is refused as a whole, so no user is added. Adding a user
+  who is already in another group claims nothing new.
+- Removing a user from their last group releases their seat.
 - `active: false` removes the user's group memberships in that organization and releases
-  their seat. The account itself is retained, so reactivating restores access.
-- `active: true` claims a seat. If the organization is already at its limit, the request
-  is refused and organization owners are notified. Re-asserting `active: true` for someone
-  who already holds a seat is not refused, since it claims nothing new.
+  their seat. The account itself is retained. `active: true` restores no groups, so it
+  claims no seat. Access comes back when your IdP pushes the user into a group.
 - A `DELETE` removes the provisioning record and the user's group memberships in that
   organization.
 
-A pending invitation also holds a seat, and a member your IdP has provisioned but placed in
-no group still holds one. Current usage is available as `billing.seatsUsed` on the API.
+A pending invitation also holds a seat. Current usage is available as `billing.seatsUsed` on
+the API.
+
+If your IdP moves a user between groups as two requests (a removal, then an add), the user
+holds no seat between the two requests. When the organization is full, another user can
+take that seat first.
 
 ### What sets `active` in your identity provider
 
