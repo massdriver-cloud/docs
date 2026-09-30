@@ -170,7 +170,7 @@ massdriver:
   ingress:
     tls:
       createSecret: true
-      certificate: |
+      cert: |
         -----BEGIN CERTIFICATE-----
         # Your certificate content
         -----END CERTIFICATE-----
