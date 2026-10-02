@@ -30,8 +30,8 @@ Custom attributes define what structural attribute keys exist in your organizati
 |---|---|
 | key | The attribute name (e.g., `TEAM`, `TIER`, `DOMAIN`). Identifier-like — 1-64 chars, letters/digits/underscore, starting with a letter or underscore. Case-insensitive. |
 | scope | The level where this attribute is set: `project`, `environment`, `component`, or `repo` |
-| required | Whether the attribute must be provided when creating or updating an entity at that scope |
-| values | The closed set of valid values for this attribute. Required, non-empty, all unique. The literal `"*"` is reserved for a future "any value accepted" semantic and rejected today. |
+| required | Whether the attribute must be provided when an entity is created at that scope. Later updates to that entity do not have to repeat it, and marking an attribute required does not backfill entities that already exist. |
+| values | The closed set of valid values for this attribute. Required, non-empty, all unique. You can add a value at any time; removing one is refused while a policy or grant condition would be left matching no value. See [Changing Custom Attributes](/platform-operations/security/changing-custom-attributes). The literal `"*"` is reserved for a future "any value accepted" semantic and rejected today. |
 
 ### Scoping and Cascade
 

@@ -955,5 +955,6 @@ Work through these in order. Each question maps to a scope, and the scope decide
 ## Related
 
 - [Access Control](/platform-operations/security/access-control) — the reference for custom attributes, policies, grants, and evaluation rules
+- [Changing Custom Attributes](/platform-operations/security/changing-custom-attributes) — what happens to policies, grants, and naming conventions when you change an attribute
 - [GraphQL permissions reference](/platform-operations/security/graphql-permissions) — the permission required by every GraphQL operation
 - [Service Accounts](/platform-operations/security/service-accounts) — non-human principals like `ci-deployer` and `training-scheduler`
