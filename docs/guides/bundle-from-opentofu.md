@@ -46,7 +46,7 @@ Be sure to complete the [prerequisites](https://docs.massdriver.cloud/getting-st
     ✔ Path to an existing opentofu-module to generate params from, leave blank to skip: path/to/your/module█
     ```
 
-4. Next you will be prompted to specify any [connections](https://docs.massdriver.cloud/concepts/connections). [Connections](https://docs.massdriver.cloud/concepts/connections) are dependencies your module has on external bundles or inputs. If your module needs to authenticate to AWS, GCP or Azure, be sure to specify the appropriate credential:
+4. Next you will be prompted to specify any [connections](https://docs.massdriver.cloud/concepts/dependencies). [Connections](https://docs.massdriver.cloud/concepts/dependencies) are dependencies your module has on external bundles or inputs. If your module needs to authenticate to AWS, GCP or Azure, be sure to specify the appropriate credential:
 
     | Cloud | Connection                           | Name                      |
     |-------|--------------------------------------|---------------------------|

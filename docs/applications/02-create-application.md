@@ -56,7 +56,7 @@ Application templates are cached locally the first time `mass bundle new` is run
 
 :::
 
-Then, [`connections`](/concepts/connections) (your application dependencies) will need to be selected.
+Then, [`connections`](/concepts/dependencies) (your application dependencies) will need to be selected.
 
 For this example we'll choose [`postgresql-authentication`](https://github.com/massdriver-cloud/artifact-definitions/blob/main/definitions/artifacts/postgresql-authentication.json).
 

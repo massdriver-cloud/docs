@@ -49,7 +49,7 @@ kubectl get serviceaccount -n massdriver -l app.kubernetes.io/component=provisio
 
 :::warning Republish Bundles After Publishing a Resource Type
 
-Bundles burn in their connection schema when they are published, and Massdriver validates every connection against that schema before a deployment runs. Whenever you change the schema of any resource type, be sure to run `mass bundle build` and `mass bundle publish` on the bundles that connect to it.
+Bundles burn in their dependency schema when they are published, and Massdriver validates every dependency against that schema before a deployment runs. Whenever you change the schema of any resource type, be sure to run `mass bundle build` and `mass bundle publish` on the bundles that depend on it.
 
 :::
 
@@ -200,7 +200,7 @@ mass resource-type publish aws-iam-role/massdriver.yaml
 
 ### Step 5: Use the Credential in Your Bundles
 
-Declare the credential as a connection:
+Declare the credential as a dependency:
 
 ```yaml massdriver.yaml
 connections:
@@ -329,7 +329,7 @@ mass resource-type publish gcp-service-account/massdriver.yaml
 
 ### Step 5: Use the Credential in Your Bundles
 
-Declare the credential as a connection:
+Declare the credential as a dependency:
 
 ```yaml massdriver.yaml
 connections:
@@ -465,7 +465,7 @@ mass resource-type publish azure-service-principal/massdriver.yaml
 
 ### Step 5: Use the Credential in Your Bundles
 
-Declare the credential as a connection:
+Declare the credential as a dependency:
 
 ```yaml massdriver.yaml
 connections:
@@ -529,10 +529,10 @@ If `AZURE_FEDERATED_TOKEN_FILE` is unset inside the pod, the webhook did not mut
 | AWS `AccessDenied` on `sts:AssumeRole` | Either the provisioner role lacks `sts:AssumeRole` on the target role, or the target role's trust policy or external ID condition does not match. |
 | GCP `Permission 'iam.serviceAccounts.getAccessToken' denied` | The provisioner service account is missing `roles/iam.serviceAccountTokenCreator` on the target service account, or the IAM Credentials API is not enabled in the target project. |
 | Azure `AZURE_FEDERATED_TOKEN_FILE` not set | The `azure.workload.identity/use: "true"` pod label is not reaching the workflow pods. Check `kubectl get pod -n massdriver POD_NAME -o jsonpath='{.metadata.labels}'`. |
-| Deployment fails validation with a missing required property on a connection | A bundle still carries the old burned-in credential schema. Re-run `mass bundle build` and `mass bundle publish`. |
+| Deployment fails validation with a missing required property on a dependency | A bundle still carries the old burned-in credential schema. Re-run `mass bundle build` and `mass bundle publish`. |
 
 ## Related Configuration
 
 - Dynamic credentials cover **provisioning only**. Massdriver's blob storage access is a separate identity configured through `massdriver.blobStorage.serviceAccount.annotations` — see [Cloud Storage](/platform-operations/self-hosted/cloud-storage).
 - The [AWS Cost and Usage Report](/reference/integrations/aws-cost-and-usage-reports) and [Azure Cost Management](/reference/integrations/azure-cost-management-exports) integrations provision their own credentials and are unaffected.
-- For background on shaping credential resource types, see [Customizing Cloud Support](/guides/customizing-cloud-support) and [Crafting Custom Resource Types](/guides/custom-artifact-definition).
+- For background on shaping credential resource types, see [Customizing Cloud Support](/guides/customizing-cloud-support) and [Crafting Custom Resource Types](/guides/custom-resource-type).

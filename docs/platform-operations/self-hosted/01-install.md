@@ -92,8 +92,10 @@ Edit your `values-custom.yaml` file to provide the necessary configuration. Focu
 
 3. **Domain Configuration**
    ```yaml
-   domain: "your-domain.com"  # e.g., "massdriver.example.com"
+   domain: "massdriver.example.com"
    ```
+
+   Massdriver is served on two subdomains of this domain, `app.massdriver.example.com` and `api.massdriver.example.com`. Create DNS records for both pointing at your ingress controller or Gateway's external address (see [Step 4](#step-4-configure-ingress-or-gateway-api)).
 
 4. **Docker Registry Access**
    ```yaml
@@ -107,15 +109,27 @@ Edit your `values-custom.yaml` file to provide the necessary configuration. Focu
    ```
 
 
+#### Optional Configuration
+
+**Documentation link**
+
+The documentation link in the sidebar points at `https://docs.massdriver.cloud`. Installations that serve their own documentation can point it somewhere else with `MD_DOCS_URL`:
+
+```bash
+MD_DOCS_URL=https://docs.internal.example.com
+```
+
+Leave it unset to keep the default.
+
 :::info Custom Release Name (Optional)
 
 If you plan to use a different release name than `massdriver`, search for `"release name"` in the values file and update the associated values accordingly.
 
 :::
 
-### Step 4: Configure Ingress and TLS
+### Step 4: Configure Ingress or Gateway API
 
-The ingress configuration allows you to configure how you will access Massdriver in a web browser:
+This step configures how you will access Massdriver in a web browser. Use either a Kubernetes [Ingress](#ingress-controller) or the [Gateway API](#gateway-api), not both.
 
 #### Ingress Controller
 
@@ -156,7 +170,7 @@ massdriver:
   ingress:
     tls:
       createSecret: true
-      certificate: |
+      cert: |
         -----BEGIN CERTIFICATE-----
         # Your certificate content
         -----END CERTIFICATE-----
@@ -200,6 +214,28 @@ massdriver:
     tls:
       enabled: false
 ```
+
+#### Gateway API
+
+If your cluster uses the [Gateway API](https://gateway-api.sigs.k8s.io/), Massdriver can attach `HTTPRoute` resources to an existing `Gateway` instead of creating an Ingress. This requires the Gateway API CRDs and a Gateway with listeners for `app.<your-domain>` and `api.<your-domain>`. If the Gateway is in a different namespace than Massdriver, its listeners' `allowedRoutes` must permit routes from the Massdriver namespace.
+
+Disable the ingress (it is enabled in `values-example.yaml`) and enable `httpRoute`:
+
+```yaml
+massdriver:
+  ingress:
+    enabled: false
+  httpRoute:
+    enabled: true
+    parentRefs:
+      - name: "external-gateway"         # Name of your Gateway
+        namespace: "gateway-system"      # Optional: defaults to the Massdriver namespace
+        # sectionName: "https"           # Optional: attach to a specific listener
+    tls:
+      enabled: true
+```
+
+TLS is terminated on the Gateway, so the certificate for both subdomains is configured on the Gateway's listeners, not in the Massdriver chart. `httpRoute.tls.enabled` only tells Massdriver whether to generate `https` URLs. Set it to `false` if your Gateway serves plain HTTP (NOT recommended for production).
 
 ### Step 5: Configure Access
 
@@ -248,6 +284,12 @@ Verify that your ingress is configured correctly:
 kubectl get ingress -n massdriver
 ```
 
+If you are using the Gateway API, check that both routes are accepted by the Gateway:
+
+```bash
+kubectl get httproute -n massdriver
+```
+
 ## Accessing Your Installation
 
 Once installed, you can access your Massdriver installation at:
@@ -291,8 +333,9 @@ Always review the changelog before upgrading to check for changes that are requi
 - Check that your license key is valid
 - Ensure PostgreSQL connectivity
 
-**Ingress not working**
-- Verify your ingress controller is running
+**Ingress or Gateway not working**
+- Verify your ingress controller or Gateway is running
+- For the Gateway API, run `kubectl describe httproute -n massdriver` and check the `Accepted` and `ResolvedRefs` conditions
 - Check that DNS is properly configured
 - Ensure TLS certificates are valid for all required subdomains
 

@@ -90,7 +90,8 @@ The `$md.enum` annotation expects a map with the following properties:
 
 | Property | Required | Description |
 |----------|----------|-------------|
-| `connection` | Yes | Name of the connection resource to query |
+| `dependency` | Yes | Name of the dependency to query |
+| `connection` | — | The name `dependency` replaced. Still accepted; `dependency` wins when a bundle sets both |
 | `options` | Yes | JQ filter to extract available options from the resource data |
 | `value` | No | JQ formatter for option values (defaults to `.`) |
 | `label` | No | JQ formatter for option labels (defaults to `value` formatter) |
@@ -116,12 +117,12 @@ properties:
     description: Select the database instance to connect to
     type: string
     $md.enum:
-      connection: postgres_cluster
+      dependency: postgres_cluster
       options: .data.instances[]
 ```
 
 **How it works:**
-- Queries the `postgres_cluster` connection resource
+- Queries the resource filling the `postgres_cluster` dependency
 - Extracts instance names using the JQ filter `.data.instances[]`
 - Creates a dropdown with each instance as both the value and label
 
@@ -146,14 +147,14 @@ properties:
     description: Select the subnet for resource deployment
     type: string
     $md.enum:
-      connection: vpc
+      dependency: vpc
       options: .data.infrastructure.subnets[]
       value: .id
       label: '"\(.name) - \(.cidr) (\(.availability_zone))"'
 ```
 
 **How it works:**
-- Queries the `vpc` connection resource
+- Queries the resource filling the `vpc` dependency
 - Iterates over subnets using `.data.infrastructure.subnets[]`
 - Extracts the subnet ID as the value: `.id`
 - Creates a formatted label: `"Private Subnet 1 - 10.0.1.0/24 (us-east-1a)"`
@@ -179,7 +180,7 @@ properties:
     description: Select the IAM policy to attach
     type: string
     $md.enum:
-      connection: security
+      dependency: security
       options: .data.security.iam | keys
       value: .
       label: .
@@ -187,8 +188,8 @@ properties:
 
 ### Error Handling
 
-If the connection is not found or the JQ query is invalid, Massdriver will display an error option in the dropdown:
-- `"ERROR: Connection not found: <connection_name>"`
+If the dependency is not wired up or the JQ query is invalid, Massdriver will display an error option in the dropdown:
+- `"ERROR: Dependency not found: <dependency_name>"`
 - `"ERROR: Invalid JQ query: <query>"`
 
 These errors help developers identify configuration issues during bundle development.
@@ -196,8 +197,8 @@ These errors help developers identify configuration issues during bundle develop
 ### Technical Details
 
 The `$md.enum` extension:
-1. Finds the specified connection by its name on the consuming bundle
-2. Executes the JQ `options` filter against the connection's resource data
+1. Finds the specified dependency by its name on the consuming bundle
+2. Executes the JQ `options` filter against the resource filling it
 3. For each result, applies the `value` and `label` formatters
 4. Generates a JSON Schema `oneOf` array with `const` (value) and `title` (label) pairs
 5. Removes the `$md.enum` annotation from the final schema
@@ -516,7 +517,7 @@ properties:
     description: Select the subnet for database deployment
     type: string
     $md.enum:
-      connection: vpc
+      dependency: vpc
       options: .data.infrastructure.private_subnets[]
       value: .id
       label: '"\(.name) (\(.availability_zone))"'

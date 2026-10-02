@@ -1,0 +1,161 @@
+.figure {
+  margin: 1.5rem 0 2rem;
+}
+
+.svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.caption {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--ifm-color-emphasis-600);
+  text-align: center;
+}
+
+.surface {
+  fill: var(--ifm-background-surface-color);
+  stroke: var(--ifm-color-emphasis-300);
+  stroke-width: 1.5;
+}
+
+.surfaceAccent {
+  fill: var(--ifm-background-surface-color);
+  stroke: var(--ifm-color-primary);
+  stroke-width: 1.5;
+}
+
+.well {
+  fill: var(--ifm-color-emphasis-100);
+  stroke: var(--ifm-color-emphasis-300);
+  stroke-width: 1.5;
+}
+
+.heading {
+  fill: var(--ifm-color-emphasis-700);
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.name {
+  fill: var(--ifm-font-color-base);
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.body {
+  fill: var(--ifm-color-emphasis-700);
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 11px;
+}
+
+.muted {
+  fill: var(--ifm-color-emphasis-600);
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 10px;
+}
+
+.accent {
+  fill: var(--ifm-color-primary);
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.accentSmall {
+  fill: var(--ifm-color-primary);
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 10px;
+}
+
+.danger {
+  fill: #d64545;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.barMuted {
+  fill: var(--ifm-color-emphasis-500);
+}
+
+.barAccent {
+  fill: var(--ifm-color-primary);
+}
+
+.route {
+  fill: none;
+  stroke: var(--ifm-color-emphasis-400);
+  stroke-width: 1.5;
+}
+
+.routeAccent {
+  fill: none;
+  stroke: var(--ifm-color-primary);
+  stroke-width: 2;
+}
+
+.routeDanger {
+  fill: none;
+  stroke: #d64545;
+  stroke-width: 2;
+  stroke-dasharray: 4 3;
+}
+
+/* Versioned connections: staging moves to a new major and reads the other route. */
+.stgOld { animation: stgOff 14s linear infinite; }
+.stgNew { opacity: 0; animation: stgOn 14s linear infinite; }
+.routeOld { animation: stgOff 14s linear infinite; }
+.routeNew { opacity: 0; animation: stgOn 14s linear infinite; }
+.stgBox { animation: stgBorder 14s linear infinite; }
+.capBefore { animation: stgOff 14s linear infinite; }
+.capAfter { opacity: 0; animation: stgOn 14s linear infinite; }
+
+@keyframes stgOff { 0%, 36% { opacity: 1 } 40%, 86% { opacity: 0 } 90%, 100% { opacity: 1 } }
+@keyframes stgOn { 0%, 36% { opacity: 0 } 40%, 86% { opacity: 1 } 90%, 100% { opacity: 0 } }
+@keyframes stgBorder {
+  0%, 36% { stroke: var(--ifm-color-emphasis-300) }
+  40%, 86% { stroke: var(--ifm-color-primary) }
+  90%, 100% { stroke: var(--ifm-color-emphasis-300) }
+}
+
+/* Slot resolution: each tier takes its turn, highest priority first. */
+.tier1 { animation: tier 18s linear infinite; }
+.tier2 { animation: tier 18s linear infinite -6s; }
+.tier3 { animation: tier 18s linear infinite -12s; }
+
+@keyframes tier {
+  0% { opacity: 0.35 }
+  4%, 29% { opacity: 1 }
+  33%, 100% { opacity: 0.35 }
+}
+
+.tierRoute1 { opacity: 0; animation: tierRoute 18s linear infinite; }
+.tierRoute2 { opacity: 0; animation: tierRoute 18s linear infinite -6s; }
+.tierRoute3 { opacity: 0; animation: tierRoute 18s linear infinite -12s; }
+
+@keyframes tierRoute {
+  0% { opacity: 0 }
+  4%, 29% { opacity: 1 }
+  33%, 100% { opacity: 0 }
+}
+
+/* Separation of duty: the proposer is turned away, a second reviewer approves. */
+.sodDenied { opacity: 0; animation: sodDenied 16s linear infinite; }
+.sodAllowed { opacity: 0; animation: sodAllowed 16s linear infinite; }
+
+@keyframes sodDenied { 0%, 6% { opacity: 0 } 12%, 44% { opacity: 1 } 50%, 100% { opacity: 0 } }
+@keyframes sodAllowed { 0%, 56% { opacity: 0 } 62%, 94% { opacity: 1 } 100% { opacity: 0 } }
+
+@media (prefers-reduced-motion: reduce) {
+  .stgOld, .routeOld, .capBefore, .sodDenied { opacity: 0; animation: none; }
+  .stgNew, .routeNew, .capAfter, .sodAllowed { opacity: 1; animation: none; }
+  .stgBox { stroke: var(--ifm-color-primary); animation: none; }
+  .tier1, .tier2, .tier3 { opacity: 1; animation: none; }
+  .tierRoute1, .tierRoute2, .tierRoute3 { opacity: 1; animation: none; }
+}

@@ -23,10 +23,11 @@ module.exports = {
         },
         {
           type: "category",
-          label: "Connections & Resources",
-          link: { type: "doc", id: "bundle-development/connections-artifacts/connections-artifacts-overview" },
+          label: "Dependencies & Resources",
+          link: { type: "doc", id: "bundle-development/dependencies-resources/dependencies-resources-overview" },
           items: [
-            "bundle-development/connections-artifacts/artifact-definition-spec",
+            "bundle-development/dependencies-resources/resource-type-spec",
+            "bundle-development/dependencies-resources/version-resolution",
           ],
         },
         {
@@ -89,6 +90,7 @@ module.exports = {
           items: [
             "platform-operations/security/security-service-accounts",
             "platform-operations/security/security-access-control",
+            "platform-operations/security/security-abac-by-example",
             "platform-operations/security/security-changing-custom-attributes",
             "platform-operations/security/security-graphql-permissions",
           ],
@@ -123,8 +125,9 @@ module.exports = {
         "concepts/concepts-projects-and-environments",
         "concepts/concepts-components-instances-deployments",
         "concepts/concepts-deployments",
-        "concepts/concepts-connections",
+        "concepts/concepts-dependencies",
         "concepts/concepts-organizations",
+        "concepts/concepts-organization-settings",
       ],
     },
     {

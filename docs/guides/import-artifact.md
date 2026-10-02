@@ -14,7 +14,7 @@ Why import a resource? A few common scenarios:
 
 ## Prerequisites
 
-To import a resource, you need a [resource type](/concepts/resources-and-types) (its schema). You can create a [custom resource type](/guides/custom-artifact-definition) or use an [official Massdriver resource type](https://github.com/massdriver-cloud/artifact-definitions/tree/main/definitions/artifacts).
+To import a resource, you need a [resource type](/concepts/resources-and-types) (its schema). You can create a [custom resource type](/guides/custom-resource-type) or use an [official Massdriver resource type](https://github.com/massdriver-cloud/artifact-definitions/tree/main/definitions/artifacts).
 
 You also need a payload that conforms to that resource type. Example schema and payload:
 

@@ -27,7 +27,7 @@ This is useful for answering questions like: Should you have separate `postgres`
 
 1. **Model** - Publish the catalog to your instance, add bundles to canvases, connect them, configure parameters
 2. **Implement** - Replace placeholder code with your OpenTofu/Terraform
-3. **Iterate** - Add more bundles, create [custom resource types](/guides/custom-artifact-definition), use [release channels](/bundle-development/publishing/versioning#release-channels)
+3. **Iterate** - Add more bundles, create [custom resource types](/guides/custom-resource-type), use [release channels](/bundle-development/publishing/versioning#release-channels)
 
 ## Prerequisites
 
@@ -42,7 +42,7 @@ The repository contains setup instructions, customization guides, and examples.
 
 ## Related
 
-- [Custom Resource Types](/guides/custom-artifact-definition)
+- [Custom Resource Types](/guides/custom-resource-type)
 - [Core Resource Types](https://github.com/massdriver-cloud/artifact-definitions)
 - [Massdriver Slack](https://massdriver.cloud/slack)
 

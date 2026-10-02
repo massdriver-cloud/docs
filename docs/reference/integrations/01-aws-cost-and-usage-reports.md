@@ -112,10 +112,20 @@ The IAM user has these minimal permissions:
 The CUR report is configured with:
 
 - **Time Granularity**: Daily
-- **Format**: CSV (text/csv)
-- **Compression**: ZIP
+- **Format**: ZIP-compressed CSV, or Parquet
 - **Additional Schema Elements**: RESOURCES (resource-level details)
 - **Report Versioning**: OVERWRITE_REPORT
+
+### Report format
+
+Massdriver reads both ZIP-compressed CSV and Parquet reports. Set the integration's **Report Format** field to match what AWS delivers:
+
+| Value | AWS report format |
+|-------|-------------------|
+| `zip` (default) | ZIP-compressed CSV |
+| `parquet` | Parquet |
+
+Parquet reports name their columns in snake_case with native types. Massdriver maps them to the same fields it reads from a CSV report, so cost attribution behaves identically either way.
 
 :::note
 Cost and Usage Reports can only be created in `us-east-1`, but the S3 bucket can be created in any AWS region. Specify the region where your bucket is located when configuring the integration.
