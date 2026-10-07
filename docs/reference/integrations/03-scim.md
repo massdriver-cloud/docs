@@ -89,34 +89,103 @@ Once configured, your identity provider can automatically:
 - **Create** users in Massdriver when they are assigned in your IdP
 - **Update** user attributes when changes are made in your IdP
 - **Deactivate** users in Massdriver when they are unassigned or deprovisioned in your IdP
-  (see [Deactivation and Seats](#deactivation-and-seats))
+  (see [Seats](#seats))
 
-## Deactivation and Seats
+Massdriver never refuses a SCIM request because the organization has no free seats.
 
-A user holds a **seat** in your Massdriver organization while they are a member of one or
-more groups. All access in Massdriver comes from groups, so a user in no group can do
-nothing and holds no seat. You can move seats between people by changing group membership
-in your identity provider.
+## Seats
 
-- Provisioning a user claims no seat. Your IdP can provision every user, and the groups it
-  pushes decide who holds a seat.
-- Adding a user to a group claims a seat if they are in no other group. If the organization
-  has no seats left, the group update is refused and organization owners are notified. An
-  update that adds several users is refused as a whole, so no user is added. Adding a user
-  who is already in another group claims nothing new.
-- Removing a user from their last group releases their seat.
-- `active: false` removes the user's group memberships in that organization and releases
-  their seat. The account itself is retained. `active: true` restores no groups, so it
-  claims no seat. Access comes back when your IdP pushes the user into a group.
-- A `DELETE` removes the provisioning record and the user's group memberships in that
-  organization.
+Each user who has access to your organization holds a **seat**. `billing.seatsUsed` on the
+API is the number of seats in use, and `holdsSeat` on each member shows who holds one.
 
-A pending invitation also holds a seat. Current usage is available as `billing.seatsUsed` on
-the API.
+### Users your identity provider provisions
 
-If your IdP moves a user between groups as two requests (a removal, then an add), the user
-holds no seat between the two requests. When the organization is full, another user can
-take that seat first.
+For a user your IdP provisions, the SCIM `active` value decides the seat. Group membership
+does not.
+
+- A user your IdP marks active wants a seat. If you set a [seat rule](#seat-rule), the user
+  must also match it.
+- A user who wants a seat gets one if the organization has a free seat. If every seat is in
+  use, the user waits. When a seat becomes free, or when you add seats to your plan, the
+  user who has waited longest gets it. Organization owners get one email each day while
+  users wait.
+- `active: false` releases the user's seat. Their group memberships stay, so when your IdP
+  sets `active: true` again, they get their groups back with their seat.
+- A `DELETE` removes the user's seat, provisioning record, and group memberships in that
+  organization. The account itself is retained.
+- If your IdP does not send `active` when it creates a user, the user starts active.
+
+Groups decide what a user can do. A user who holds a seat but is in no group has no access,
+and still uses a seat.
+
+### Members you add in Massdriver
+
+- An invitation does not hold a seat. The invited person gets a seat when they accept, if
+  the organization has a free seat. If it does not, the accept fails with a message to
+  contact the organization owner, and the invitation stays so they can accept it later.
+- Single sign-on autojoin also needs a free seat.
+- A member who leaves their last group releases their seat. Deleting a group releases the
+  seats of members it leaves in no group.
+
+The organization owner always holds a seat.
+
+### Seat rule
+
+Some identity providers mark licensed users with an attribute instead of `active`. For
+example, an Entra app role named **Licensed** with the value `licensed`. A seat rule tells
+Massdriver to give a seat only to active users whose attribute has that value.
+
+Set the rule with two optional fields in the SCIM integration's config:
+
+| Field | Description |
+| --- | --- |
+| `seat_attribute` | A top-level SCIM user attribute, for example `roles`. Sub-attributes such as `name.givenName` and extension attributes are not supported. |
+| `seat_value` | The value the attribute must have, for example `licensed`. |
+
+Set both fields, or neither. Matching ignores case and reads values only, never display
+names:
+
+- For a multi-valued attribute such as `roles`, a user matches when any entry's `value`
+  matches. Entra sends each app role as a JSON string inside `value`; Massdriver reads the
+  `value` inside it.
+- For a boolean attribute, `true` and `false` match their string forms, such as `"True"`.
+- For any other string attribute, the strings must be equal.
+
+To set or change the rule on an existing integration, use the `updateIntegration` mutation:
+
+```graphql
+mutation {
+  updateIntegration(
+    organizationId: "your-org"
+    id: "scim"
+    input: { config: "{\"seat_attribute\": \"roles\", \"seat_value\": \"licensed\"}" }
+  ) {
+    successful
+    messages { field message }
+  }
+}
+```
+
+The rule applies to every provisioned user immediately. Users who no longer match release
+their seats, and users who now match get a seat or wait for one. Set `config` to `"{}"` to
+remove the rule.
+
+Massdriver stores the attributes your IdP sends for each user, so the rule works for users
+provisioned before you set it. Users whose attributes Massdriver has not stored yet do not
+match. Before you set a rule, restart provisioning in your IdP so it sends every user's
+attributes again, and wait for the cycle to complete.
+
+#### Example: Entra app roles
+
+1. In your Entra enterprise app, open **Provisioning > Mappings > Provision Microsoft Entra
+   ID Users**. Add a mapping from `AppRoleAssignmentsComplex([appRoleAssignments])` to
+   `roles`.
+2. Create an app role with the value `licensed`, and assign it to the users or groups that
+   must hold a seat.
+3. Open **Provisioning** and click **Restart provisioning**. Wait for the cycle to complete.
+4. Set `seat_attribute` to `roles` and `seat_value` to `licensed` with `updateIntegration`.
+
+Removing the app role from a user, or unassigning them from the app, releases their seat.
 
 ### What sets `active` in your identity provider
 

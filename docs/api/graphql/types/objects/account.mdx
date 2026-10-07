@@ -56,6 +56,8 @@ type Account {
   email: String!
   firstName: String
   lastName: String
+  holdsSeat: Boolean!
+  source: AccountSource!
 }
 ```
 
@@ -78,6 +80,20 @@ Given name as it appears in the UI, or `null` if not set.
 
 #### [<code style={{ fontWeight: 'normal' }}>Account.<b>lastName</b></code>](#last-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#last-name\} 
 Family name as it appears in the UI, or `null` if not set.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Account.<b>holdsSeat</b></code>](#holds-seat)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#holds-seat\} 
+Whether this member holds one of the organization's seats. A member without a
+seat cannot use the organization, whatever groups they are in.
+
+A member added by an identity provider holds a seat while the identity provider
+marks them active and a seat is free. An active member who finds every seat
+held waits, and takes the next seat that is released. A member added in
+Massdriver holds a seat while they are in at least one group.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Account.<b>source</b></code>](#source)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AccountSource!</b></code>](/api/graphql/types/enums/account-source.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#source\} 
+How this member was added to the organization.
 
 
 

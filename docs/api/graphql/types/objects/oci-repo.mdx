@@ -148,15 +148,16 @@ author omitted the description.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>icon</b></code>](#icon)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#icon\} 
-URL to this repository's display icon (SVG), taken from the latest
-published release. `null` when the repository has no releases yet or the
-latest release has no icon.
+URL to this repository's display icon, or `null` if it has none.
 
-The URL is **authenticated** — callers must have an active browser session
-or valid API credentials for the owning organization. Embedding it in an
-`<img>` tag from the web UI works because the browser sends the session
+For a bundle repository the URL is **authenticated** and serves the SVG
+packaged with its latest release — callers must have an active browser
+session or valid API credentials for the owning organization. Embedding it in
+an `<img>` tag from the web UI works because the browser sends the session
 cookie automatically; programmatic clients must include an `Authorization`
 header.
+
+For a resource-type repository it is the icon URL the type declares.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>sourceUrl</b></code>](#source-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#source-url\} 

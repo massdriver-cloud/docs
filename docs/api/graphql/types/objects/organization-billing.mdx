@@ -51,6 +51,7 @@ Non-admin members will see `null` here even when they can otherwise view the org
 ```graphql
 type OrganizationBilling {
   seats: Int!
+  seatsUsed: Int!
   cost: Int
   currency: String
   frequency: BillingFrequency
@@ -69,6 +70,12 @@ type OrganizationBilling {
 
 #### [<code style={{ fontWeight: 'normal' }}>OrganizationBilling.<b>seats</b></code>](#seats)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/api/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#seats\} 
 Number of seats currently provisioned on the subscription (the org's max member count).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationBilling.<b>seatsUsed</b></code>](#seats-used)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/api/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#seats-used\} 
+Number of members who hold a seat (see `Account.holdsSeat`). A member added by the identity provider holds a seat while the identity provider marks them active and they match the SCIM integration's seat rule, if it has one. A member added in Massdriver holds a seat while they are in at least one group. A pending invitation holds no seat.
+
+Can exceed `seats` for organizations that held more seats than their plan when seats were introduced. The value is reported as-is rather than capped. When `seatsUsed >= seats`, accepting an invitation is refused and identity provider users who become active wait for a seat.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OrganizationBilling.<b>cost</b></code>](#cost)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/api/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#cost\} 

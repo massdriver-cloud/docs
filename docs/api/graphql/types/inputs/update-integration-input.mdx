@@ -2,8 +2,8 @@
 pagination_next: null
 pagination_prev: null
 hide_table_of_contents: true
-id: oci-repo-release-channels-filter
-title: OciRepoReleaseChannelsFilter
+id: update-integration-input
+title: UpdateIntegrationInput
 ---
 
 
@@ -42,12 +42,12 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Filters for narrowing the release channels list.
+Change an integration's configuration. The config payload must conform to the integration type's configSchema and replaces the current config.
 
 
 ```graphql
-input OciRepoReleaseChannelsFilter {
-  stable: Boolean
+input UpdateIntegrationInput {
+  config: Map!
 }
 ```
 
@@ -56,5 +56,14 @@ input OciRepoReleaseChannelsFilter {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>OciRepoReleaseChannelsFilter.<b>stable</b></code>](#stable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#stable\} 
-Controls whether stable or development channels are returned. `true` returns only stable channels (`latest`, `~1`, `~1.2`). `false` returns only development channels (`latest+dev`, `~1+dev`, `~1.2+dev`). Omit to return both. A development channel is listed even when it currently resolves to the same version as its stable counterpart, because the two track future releases differently.
+#### [<code style={{ fontWeight: 'normal' }}>UpdateIntegrationInput.<b>config</b></code>](#config)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#config\} 
+Integration-specific configuration. Must conform to the integration type's configSchema.
+
+
+
+
+
+
+### Member Of
+
+[`updateIntegration`](/api/graphql/operations/mutations/update-integration.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

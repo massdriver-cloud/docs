@@ -44,8 +44,12 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 Delete a custom attribute from your organization.
 
-Removing a custom attribute stops enforcing the rule for future resources.
-Existing attributes on resources are not removed. Requires the `organization:manageCustomAttributes` action.
+Refused while a policy or grant condition on this key exists; the error names each one
+so you can edit or delete it first.
+
+Once deleted, the key can no longer be set on new or existing resources. Values
+already set on resources are not removed, and updates to those resources still
+succeed. Requires the `organization:manageCustomAttributes` action.
 
 
 ```graphql
