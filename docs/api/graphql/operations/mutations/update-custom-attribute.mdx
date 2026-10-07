@@ -44,10 +44,14 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 Replace the closed set of values for an existing custom attribute.
 
-Changing `values` does not retroactively validate or rewrite resources
-that were tagged before this update. Subsequent writes (and policy conditions
-referencing this key) must use a value from the new set. Requires the
-`organization:manageCustomAttributes` action.
+Adding a value is always accepted. Removing a value is refused while a policy or
+grant condition on this key would be left matching no permitted value; the error
+names each one so you can edit or delete it first.
+
+Resources tagged before this update are not validated or rewritten. A resource keeps
+a value the attribute no longer declares, and updates to that resource still succeed.
+Set the attribute to a value from the new set to clear it. New writes must use a value
+from the new set. Requires the `organization:manageCustomAttributes` action.
 
 
 

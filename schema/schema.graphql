@@ -477,6 +477,15 @@ type RootQueryType {
   ): Group
 
   """
+  List the atoms available for this organization's naming convention, including
+  the organization's declared custom attributes, for the naming convention editor.
+  """
+  namingConventionAtoms(
+    "Your organization's unique identifier."
+    organizationId: ID!
+  ): [NamingConventionAtom!]!
+
+  """
   Fetch your organization's details, including custom attributes and logo.
 
   ```graphql
@@ -1882,8 +1891,10 @@ type RootMutationType {
   """
   Declare a new custom attribute in your organization.
 
-  Once declared, the attribute immediately applies to new resources at the specified scope.
-  Existing resources are not retroactively validated. Requires the `organization:manageCustomAttributes` action.
+  Once declared, the attribute applies to resources created at the specified scope from
+  this point on. Resources that already exist keep their attributes unchanged, and a
+  `required` attribute does not have to be added to them before they can be updated.
+  Requires the `organization:manageCustomAttributes` action.
   """
   createCustomAttribute(
     "Your organization's unique identifier."
@@ -1896,10 +1907,14 @@ type RootMutationType {
   """
   Replace the closed set of values for an existing custom attribute.
 
-  Changing `values` does not retroactively validate or rewrite resources
-  that were tagged before this update. Subsequent writes (and policy conditions
-  referencing this key) must use a value from the new set. Requires the
-  `organization:manageCustomAttributes` action.
+  Adding a value is always accepted. Removing a value is refused while a policy or
+  grant condition on this key would be left matching no permitted value; the error
+  names each one so you can edit or delete it first.
+
+  Resources tagged before this update are not validated or rewritten. A resource keeps
+  a value the attribute no longer declares, and updates to that resource still succeed.
+  Set the attribute to a value from the new set to clear it. New writes must use a value
+  from the new set. Requires the `organization:manageCustomAttributes` action.
   """
   updateCustomAttribute(
     "Your organization's unique identifier."
@@ -1915,8 +1930,12 @@ type RootMutationType {
   """
   Delete a custom attribute from your organization.
 
-  Removing a custom attribute stops enforcing the rule for future resources.
-  Existing attributes on resources are not removed. Requires the `organization:manageCustomAttributes` action.
+  Refused while a policy or grant condition on this key exists; the error names each one
+  so you can edit or delete it first.
+
+  Once deleted, the key can no longer be set on new or existing resources. Values
+  already set on resources are not removed, and updates to those resources still
+  succeed. Requires the `organization:manageCustomAttributes` action.
   """
   deleteCustomAttribute(
     "Your organization's unique identifier."
@@ -2040,6 +2059,47 @@ type RootMutationType {
     "Create and activate an integration for your organization. The config and auth payloads must conform to the integration type's configSchema and authSchema respectively."
     input: CreateIntegrationInput!
   ): IntegrationActivationPayload @inputs(name: "createIntegration", schema: "\/graphql\/v2\/inputs\/createIntegration.json", ui: "\/graphql\/v2\/inputs\/createIntegration.ui.json")
+
+  """
+  Change an integration's configuration.
+
+  The new `config` replaces the current one and must conform to the integration
+  type's `configSchema`. The change applies right away. Only some integration
+  types accept a new config; for the others, delete the integration and create
+  it again.
+
+  For SCIM, `seat_attribute` and `seat_value` set which users hold a seat. A
+  change gives or releases seats for every provisioned user.
+
+  ```graphql
+  mutation {
+    updateIntegration(
+      organizationId: "my-org"
+      id: "scim"
+      input: {
+        config: "{\"seat_attribute\": \"roles\", \"seat_value\": \"licensed\"}"
+      }
+    ) {
+      result {
+        id
+        config
+      }
+      successful
+      messages { field message }
+    }
+  }
+  ```
+  """
+  updateIntegration(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The integration type identifier to change."
+    id: ID!
+
+    "Change an integration's configuration. The config payload must conform to the integration type's configSchema and replaces the current config."
+    input: UpdateIntegrationInput!
+  ): IntegrationPayload @inputs(name: "updateIntegration", schema: "\/graphql\/v2\/inputs\/updateIntegration.json", ui: "\/graphql\/v2\/inputs\/updateIntegration.ui.json")
 
   """
   Re-enable a disabled integration.
@@ -2389,7 +2449,7 @@ type RootMutationType {
     "Your organization's unique identifier."
     organizationId: ID!
 
-    "The resource type this resource conforms to (e.g., `aws-iam-role`). Append `@<version>` (e.g., `aws-iam-role@1.2.3`) to conform to a specific published version; a bare identifier means the type's `0.0.0` document."
+    "The resource type this resource conforms to (e.g., `aws-iam-role`). Append `@<version>` (e.g., `aws-iam-role@1.2.3`) to conform to a specific published version; a bare identifier conforms to the latest published version."
     resourceTypeId: ID!
 
     "Import a new resource with a name and optional payload conforming to the resource type's schema."
@@ -4778,6 +4838,12 @@ input CreateIntegrationInput {
   config: Map!
 }
 
+"Change an integration's configuration. The config payload must conform to the integration type's configSchema and replaces the current config."
+input UpdateIntegrationInput {
+  "Integration-specific configuration. Must conform to the integration type's configSchema."
+  config: Map!
+}
+
 """
 A supported integration type from the Massdriver catalog.
 
@@ -4980,6 +5046,14 @@ to determine how to render the login screen and check API compatibility.
 type Server {
   "The base URL of the Massdriver web application (e.g., `\"https:\/\/app.massdriver.cloud\"`)."
   appUrl: String!
+
+  """
+  Base URL of the documentation this server links to (e.g., `"https://docs.massdriver.cloud"`).
+
+  Self-hosted installations can serve their own documentation site; when one is not
+  configured this is Massdriver's public documentation.
+  """
+  docsUrl: String!
 
   "The server's semantic version (e.g., `\"1.2.3\"`)."
   version: String!
@@ -5242,6 +5316,29 @@ type Account {
 
   "Family name as it appears in the UI, or `null` if not set."
   lastName: String
+
+  """
+  Whether this member holds one of the organization's seats. A member without a
+  seat cannot use the organization, whatever groups they are in.
+
+  A member added by an identity provider holds a seat while the identity provider
+  marks them active and a seat is free. An active member who finds every seat
+  held waits, and takes the next seat that is released. A member added in
+  Massdriver holds a seat while they are in at least one group.
+  """
+  holdsSeat: Boolean!
+
+  "How this member was added to the organization."
+  source: AccountSource!
+}
+
+"How a member was added to the organization."
+enum AccountSource {
+  "Added by the organization's identity provider over SCIM. The identity provider manages their seat."
+  SCIM
+
+  "Added in Massdriver, by an invitation or by signing in with single sign-on."
+  NATIVE
 }
 
 """
@@ -5476,7 +5573,7 @@ type AddedAccountToGroupPayload {
 
 "Create a new organization. An organization is the top-level container for all your projects, environments, and infrastructure resources."
 input CreateOrganizationInput {
-  "A short, memorable identifier for looking up this organization in the API and CLI. Choose something concise and meaningful—human-readable, not a UUID. Max 20 characters, lowercase alphanumeric only (a-z, 0-9). Immutable after creation."
+  "A short, memorable identifier for looking up this organization in the API and CLI. Choose something concise and meaningful—human-readable, not a UUID. Max 20 characters, lowercase letters, numbers, and hyphens (a-z, 0-9, -). Immutable after creation."
   id: String!
 
   "A human-readable name for the organization."
@@ -5493,6 +5590,9 @@ input UpdateOrganizationInput {
 input UpdateOrganizationSettingsInput {
   "Access granted to new bundle repositories at creation. NONE keeps each new repository restricted until a grant is authored for it. ALL_PROJECTS automatically creates an org-wide repo:pull grant on each new bundle repository, making its bundles usable by every project. Changing this setting only affects repositories created afterwards."
   defaultBundleAccess: OrganizationDefaultBundleAccess
+
+  "Liquid template that names every provisioned cloud resource, composed from atoms such as {{org.id}}, {{project.id}}, {{environment.id}}, {{environment.local_id}}, {{instance.id}}, {{instance.local_id}}, {{component.id}}, {{component.name}}, {{component.suffix}}, and {{attrs.YOUR_KEY}} for any declared custom attribute. Built-in Liquid filters (downcase, replace, ...) are available. To keep names distinct per instance, the template must include {{instance.id}}, or {{component.id}} with an environment atom, or {{project.id}} with an environment atom and {{instance.local_id}}. Spaces are allowed; control characters are not. Send an empty string or null to use the default convention {{instance.id}}-{{component.suffix}}. The resolved name is burned into each instance at first creation and does not change afterward."
+  namingConvention: String
 }
 
 """
@@ -5682,6 +5782,9 @@ the default. Change settings with the `updateOrganizationSettings` mutation.
 type OrganizationSettings {
   "Access granted to new bundle repositories at creation. Defaults to `NONE` — new repositories are restricted until a grant is authored for them."
   defaultBundleAccess: OrganizationDefaultBundleAccess!
+
+  "Liquid template that names every provisioned cloud resource, e.g. `{{attrs.team}}-{{instance.id}}`. `null` means the default convention `{{instance.id}}-{{component.suffix}}`. The resolved name is burned into each instance when it is first created and does not change afterward."
+  namingConvention: String
 }
 
 "Confirmation payload returned after removing a member from the organization."
@@ -5763,6 +5866,37 @@ type LogoOrganizationPayload {
   result: LogoOrganization
 }
 
+"The group an atom belongs to, for arranging the naming convention editor."
+enum NamingConventionAtomCategory {
+  ORG
+  PROJECT
+  ENVIRONMENT
+  INSTANCE
+  COMPONENT
+  ATTRIBUTE
+}
+
+"An atom that can be placed in an organization's naming convention template."
+type NamingConventionAtom {
+  "The Liquid token to insert, for example `{{instance.id}}`."
+  token: String!
+
+  "A short human label for the atom."
+  label: String!
+
+  "What the atom renders to."
+  description: String!
+
+  "An example rendered value."
+  example: String!
+
+  "The group the atom belongs to."
+  category: NamingConventionAtomCategory!
+
+  "True when using this atom alone makes every instance's name unique within the organization."
+  guaranteesUniqueName: Boolean!
+}
+
 "Cadence at which an organization or plan is billed."
 enum BillingFrequency {
   "Billed every month."
@@ -5810,6 +5944,13 @@ Non-admin members will see `null` here even when they can otherwise view the org
 type OrganizationBilling {
   "Number of seats currently provisioned on the subscription (the org's max member count)."
   seats: Int!
+
+  """
+  Number of members who hold a seat (see `Account.holdsSeat`). A member added by the identity provider holds a seat while the identity provider marks them active and they match the SCIM integration's seat rule, if it has one. A member added in Massdriver holds a seat while they are in at least one group. A pending invitation holds no seat.
+
+  Can exceed `seats` for organizations that held more seats than their plan when seats were introduced. The value is reported as-is rather than capped. When `seatsUsed >= seats`, accepting an invitation is refused and identity provider users who become active wait for a seat.
+  """
+  seatsUsed: Int!
 
   "Current subscription cost for the full billing period, expressed in the smallest subunit of `currency` (e.g., cents for `USD`). `null` if the org is not on a paid plan."
   cost: Int
@@ -7450,7 +7591,7 @@ type InstanceResource {
   "Whether the bundle guarantees this output is produced on every successful deployment."
   required: Boolean!
 
-  "The resource type (artifact definition) this output produces."
+  "The resource type this output produces."
   resourceType: ResourceType!
 }
 
@@ -7486,7 +7627,7 @@ type InstanceDependency {
   "Whether this dependency must be connected before the instance can be deployed."
   required: Boolean!
 
-  "The resource type (artifact definition) this dependency slot accepts."
+  "The resource type this dependency slot accepts."
   resourceType: ResourceType!
 
   "Where this slot's wire-in comes from. Inspect the concrete type — `Connection`, `RemoteReference`, or `EnvironmentDefault` — to distinguish."
@@ -7576,7 +7717,7 @@ type Instance {
 
   - `$md.enum` is replaced with a `oneOf` list whose entries are computed by
     running the configured jq expression against the connected resource's
-    payload. Missing connections or jq errors produce a single placeholder
+    payload. A missing dependency or a jq error produces a single placeholder
     entry whose `title` begins with `ERROR:`.
   - `$md.immutable` is rewritten to `readOnly: true` once the instance has
     reached a state where the field can no longer be changed (`PROVISIONED`
@@ -7669,9 +7810,12 @@ type Instance {
   deployedVersion: String
 
   """
-  The newest bundle version available that satisfies the version constraint.
+  The newest bundle version available that satisfies the version constraint
+  and is newer than the version the instance is currently on.
 
   Returns null if the instance is already on the latest matching version.
+  An exact version pin reports patch-level upgrades within its major.minor;
+  a pre-release pin also includes newer pre-releases.
   Use this field to detect when an upgrade is available.
   """
   availableUpgrade: String
@@ -8797,7 +8941,7 @@ input OciFilesSort {
 
 "Filters for narrowing the release channels list."
 input OciRepoReleaseChannelsFilter {
-  "Controls whether stable or development channels are returned. `true` returns only stable channels (`latest`, `~1`, `~1.2`). `false` returns only development channels (`latest+dev`, `~1+dev`, `~1.2+dev`). Omit to return all channels. When returning all channels, dev variants that resolve to the same version as their stable counterpart are automatically deduplicated."
+  "Controls whether stable or development channels are returned. `true` returns only stable channels (`latest`, `~1`, `~1.2`). `false` returns only development channels (`latest+dev`, `~1+dev`, `~1.2+dev`). Omit to return both. A development channel is listed even when it currently resolves to the same version as its stable counterpart, because the two track future releases differently."
   stable: Boolean
 }
 
@@ -8988,15 +9132,16 @@ type OciRepo {
   description: String
 
   """
-  URL to this repository's display icon (SVG), taken from the latest
-  published release. `null` when the repository has no releases yet or the
-  latest release has no icon.
+  URL to this repository's display icon, or `null` if it has none.
 
-  The URL is **authenticated** — callers must have an active browser session
-  or valid API credentials for the owning organization. Embedding it in an
-  `<img>` tag from the web UI works because the browser sends the session
+  For a bundle repository the URL is **authenticated** and serves the SVG
+  packaged with its latest release — callers must have an active browser
+  session or valid API credentials for the owning organization. Embedding it in
+  an `<img>` tag from the web UI works because the browser sends the session
   cookie automatically; programmatic clients must include an `Authorization`
   header.
+
+  For a resource-type repository it is the icon URL the type declares.
   """
   icon: String
 

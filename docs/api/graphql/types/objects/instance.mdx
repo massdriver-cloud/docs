@@ -133,7 +133,7 @@ Massdriver's `$md` extensions evaluated against the current instance state:
 
 - `$md.enum` is replaced with a `oneOf` list whose entries are computed by
   running the configured jq expression against the connected resource's
-  payload. Missing connections or jq errors produce a single placeholder
+  payload. A missing dependency or a jq error produces a single placeholder
   entry whose `title` begins with `ERROR:`.
 - `$md.immutable` is rewritten to `readOnly: true` once the instance has
   reached a state where the field can no longer be changed (`PROVISIONED`
@@ -224,9 +224,12 @@ but no deployment has occurred yet. Null if the instance has never been deployed
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Instance.<b>availableUpgrade</b></code>](#available-upgrade)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#available-upgrade\} 
-The newest bundle version available that satisfies the version constraint.
+The newest bundle version available that satisfies the version constraint
+and is newer than the version the instance is currently on.
 
 Returns null if the instance is already on the latest matching version.
+An exact version pin reports patch-level upgrades within its major.minor;
+a pre-release pin also includes newer pre-releases.
 Use this field to detect when an upgrade is available.
 
 

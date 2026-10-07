@@ -1,0 +1,94 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: naming-convention-atom-category
+title: NamingConventionAtomCategory
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+The group an atom belongs to, for arranging the naming convention editor.
+
+
+```graphql
+enum NamingConventionAtomCategory {
+  ORG
+  PROJECT
+  ENVIRONMENT
+  INSTANCE
+  COMPONENT
+  ATTRIBUTE
+}
+```
+
+
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>NamingConventionAtomCategory.<b>ORG</b></code>](#org) \{#org\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>NamingConventionAtomCategory.<b>PROJECT</b></code>](#project) \{#project\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>NamingConventionAtomCategory.<b>ENVIRONMENT</b></code>](#environment) \{#environment\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>NamingConventionAtomCategory.<b>INSTANCE</b></code>](#instance) \{#instance\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>NamingConventionAtomCategory.<b>COMPONENT</b></code>](#component) \{#component\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>NamingConventionAtomCategory.<b>ATTRIBUTE</b></code>](#attribute) \{#attribute\} 
+
+
+
+
+
+
+
+### Member Of
+
+[`NamingConventionAtom`](/api/graphql/types/objects/naming-convention-atom.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

@@ -53,6 +53,7 @@ the default. Change settings with the `updateOrganizationSettings` mutation.
 ```graphql
 type OrganizationSettings {
   defaultBundleAccess: OrganizationDefaultBundleAccess!
+  namingConvention: String
 }
 ```
 
@@ -63,6 +64,10 @@ type OrganizationSettings {
 
 #### [<code style={{ fontWeight: 'normal' }}>OrganizationSettings.<b>defaultBundleAccess</b></code>](#default-bundle-access)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OrganizationDefaultBundleAccess!</b></code>](/api/graphql/types/enums/organization-default-bundle-access.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#default-bundle-access\} 
 Access granted to new bundle repositories at creation. Defaults to `NONE` — new repositories are restricted until a grant is authored for them.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationSettings.<b>namingConvention</b></code>](#naming-convention)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#naming-convention\} 
+Liquid template that names every provisioned cloud resource, e.g. `{{attrs.team}}-{{instance.id}}`. `null` means the default convention `{{instance.id}}-{{component.suffix}}`. The resolved name is burned into each instance when it is first created and does not change afterward.
 
 
 

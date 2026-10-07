@@ -52,6 +52,7 @@ to determine how to render the login screen and check API compatibility.
 ```graphql
 type Server {
   appUrl: String!
+  docsUrl: String!
   version: String!
   mode: ServerMode!
   ssoProviders: [SsoProvider]
@@ -67,6 +68,13 @@ type Server {
 
 #### [<code style={{ fontWeight: 'normal' }}>Server.<b>appUrl</b></code>](#app-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-url\} 
 The base URL of the Massdriver web application (e.g., `"https://app.massdriver.cloud"`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Server.<b>docsUrl</b></code>](#docs-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#docs-url\} 
+Base URL of the documentation this server links to (e.g., `"https://docs.massdriver.cloud"`).
+
+Self-hosted installations can serve their own documentation site; when one is not
+configured this is Massdriver's public documentation.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Server.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version\} 

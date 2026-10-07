@@ -48,6 +48,7 @@ Change organization-wide behavior settings. Only the settings you provide are ch
 ```graphql
 input UpdateOrganizationSettingsInput {
   defaultBundleAccess: OrganizationDefaultBundleAccess
+  namingConvention: String
 }
 ```
 
@@ -58,6 +59,10 @@ input UpdateOrganizationSettingsInput {
 
 #### [<code style={{ fontWeight: 'normal' }}>UpdateOrganizationSettingsInput.<b>defaultBundleAccess</b></code>](#default-bundle-access)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OrganizationDefaultBundleAccess</b></code>](/api/graphql/types/enums/organization-default-bundle-access.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#default-bundle-access\} 
 Access granted to new bundle repositories at creation. NONE keeps each new repository restricted until a grant is authored for it. ALL_PROJECTS automatically creates an org-wide repo:pull grant on each new bundle repository, making its bundles usable by every project. Changing this setting only affects repositories created afterwards.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateOrganizationSettingsInput.<b>namingConvention</b></code>](#naming-convention)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#naming-convention\} 
+Liquid template that names every provisioned cloud resource, composed from atoms such as &#x007B;&#x007B;org.id&#x007D;&#x007D;, &#x007B;&#x007B;project.id&#x007D;&#x007D;, &#x007B;&#x007B;environment.id&#x007D;&#x007D;, &#x007B;&#x007B;environment.local_id&#x007D;&#x007D;, &#x007B;&#x007B;instance.id&#x007D;&#x007D;, &#x007B;&#x007B;instance.local_id&#x007D;&#x007D;, &#x007B;&#x007B;component.id&#x007D;&#x007D;, &#x007B;&#x007B;component.name&#x007D;&#x007D;, &#x007B;&#x007B;component.suffix&#x007D;&#x007D;, and &#x007B;&#x007B;attrs.YOUR_KEY&#x007D;&#x007D; for any declared custom attribute. Built-in Liquid filters (downcase, replace, ...) are available. To keep names distinct per instance, the template must include &#x007B;&#x007B;instance.id&#x007D;&#x007D;, or &#x007B;&#x007B;component.id&#x007D;&#x007D; with an environment atom, or &#x007B;&#x007B;project.id&#x007D;&#x007D; with an environment atom and &#x007B;&#x007B;instance.local_id&#x007D;&#x007D;. Spaces are allowed; control characters are not. Send an empty string or null to use the default convention &#x007B;&#x007B;instance.id&#x007D;&#x007D;-&#x007B;&#x007B;component.suffix&#x007D;&#x007D;. The resolved name is burned into each instance at first creation and does not change afterward.
 
 
 

@@ -1,0 +1,94 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: naming-convention-atom
+title: NamingConventionAtom
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+An atom that can be placed in an organization's naming convention template.
+
+
+```graphql
+type NamingConventionAtom {
+  token: String!
+  label: String!
+  description: String!
+  example: String!
+  category: NamingConventionAtomCategory!
+  guaranteesUniqueName: Boolean!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>NamingConventionAtom.<b>token</b></code>](#token)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#token\} 
+The Liquid token to insert, for example `{{instance.id}}`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>NamingConventionAtom.<b>label</b></code>](#label)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#label\} 
+A short human label for the atom.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>NamingConventionAtom.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+What the atom renders to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>NamingConventionAtom.<b>example</b></code>](#example)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#example\} 
+An example rendered value.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>NamingConventionAtom.<b>category</b></code>](#category)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>NamingConventionAtomCategory!</b></code>](/api/graphql/types/enums/naming-convention-atom-category.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#category\} 
+The group the atom belongs to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>NamingConventionAtom.<b>guaranteesUniqueName</b></code>](#guarantees-unique-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#guarantees-unique-name\} 
+True when using this atom alone makes every instance's name unique within the organization.
+
+
+
+
+
+
+### Returned By
+
+[`namingConventionAtoms`](/api/graphql/operations/queries/naming-convention-atoms.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

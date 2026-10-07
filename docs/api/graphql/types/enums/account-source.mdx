@@ -2,8 +2,8 @@
 pagination_next: null
 pagination_prev: null
 hide_table_of_contents: true
-id: oci-repo-release-channels-filter
-title: OciRepoReleaseChannelsFilter
+id: account-source
+title: AccountSource
 ---
 
 
@@ -42,19 +42,33 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Filters for narrowing the release channels list.
+How a member was added to the organization.
 
 
 ```graphql
-input OciRepoReleaseChannelsFilter {
-  stable: Boolean
+enum AccountSource {
+  SCIM
+  NATIVE
 }
 ```
 
 
 
 
-### Fields
+### Values
 
-#### [<code style={{ fontWeight: 'normal' }}>OciRepoReleaseChannelsFilter.<b>stable</b></code>](#stable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#stable\} 
-Controls whether stable or development channels are returned. `true` returns only stable channels (`latest`, `~1`, `~1.2`). `false` returns only development channels (`latest+dev`, `~1+dev`, `~1.2+dev`). Omit to return both. A development channel is listed even when it currently resolves to the same version as its stable counterpart, because the two track future releases differently.
+#### [<code style={{ fontWeight: 'normal' }}>AccountSource.<b>SCIM</b></code>](#scim) \{#scim\} 
+Added by the organization's identity provider over SCIM. The identity provider manages their seat.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccountSource.<b>NATIVE</b></code>](#native) \{#native\} 
+Added in Massdriver, by an invitation or by signing in with single sign-on.
+
+
+
+
+
+
+### Member Of
+
+[`Account`](/api/graphql/types/objects/account.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

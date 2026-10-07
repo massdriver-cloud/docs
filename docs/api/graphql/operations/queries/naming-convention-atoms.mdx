@@ -2,8 +2,8 @@
 pagination_next: null
 pagination_prev: null
 hide_table_of_contents: true
-id: oci-repo-release-channels-filter
-title: OciRepoReleaseChannelsFilter
+id: naming-convention-atoms
+title: namingConventionAtoms
 ---
 
 
@@ -42,19 +42,26 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Filters for narrowing the release channels list.
+List the atoms available for this organization's naming convention, including
+the organization's declared custom attributes, for the naming convention editor.
 
 
 ```graphql
-input OciRepoReleaseChannelsFilter {
-  stable: Boolean
-}
+namingConventionAtoms(
+  organizationId: ID!
+): [NamingConventionAtom!]!
 ```
 
 
 
 
-### Fields
+### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>OciRepoReleaseChannelsFilter.<b>stable</b></code>](#stable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#stable\} 
-Controls whether stable or development channels are returned. `true` returns only stable channels (`latest`, `~1`, `~1.2`). `false` returns only development channels (`latest+dev`, `~1+dev`, `~1.2+dev`). Omit to return both. A development channel is listed even when it currently resolves to the same version as its stable counterpart, because the two track future releases differently.
+#### [<code style={{ fontWeight: 'normal' }}>namingConventionAtoms.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>NamingConventionAtom</b></code>](/api/graphql/types/objects/naming-convention-atom.mdx) <Badge class="badge badge--secondary " text="object"/> 
+An atom that can be placed in an organization's naming convention template.
