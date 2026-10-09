@@ -1464,6 +1464,46 @@ type RootMutationType {
   ): ProjectPayload @inputs(name: "cloneProject", schema: "\/graphql\/v2\/inputs\/cloneProject.json", ui: "\/graphql\/v2\/inputs\/cloneProject.ui.json")
 
   """
+  Create a new project from an existing environment.
+
+  The new project gets the source project's blueprint, the same as `cloneProject`, and one
+  environment. Each instance in the new environment uses the bundle version and release
+  strategy of the matching source instance. Set `copyParams` to also copy the source
+  instances' params.
+
+  Secrets, remote references, and environment defaults are not copied. If any step fails,
+  nothing is created.
+
+  ```graphql
+  mutation {
+    createProjectFromEnvironment(
+      organizationId: "acme"
+      sourceEnvironmentId: "template-dev"
+      input: {
+        id: "payments"
+        name: "Payments"
+        environment: { id: "dev", name: "Development" }
+        copyParams: LATEST
+      }
+    ) {
+      successful
+      result { id }
+    }
+  }
+  ```
+  """
+  createProjectFromEnvironment(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The identifier of the environment whose project and instances you want to copy."
+    sourceEnvironmentId: ID!
+
+    "Attributes for the new project and its environment."
+    input: CreateProjectFromEnvironmentInput!
+  ): ProjectPayload @inputs(name: "createProjectFromEnvironment", schema: "\/graphql\/v2\/inputs\/createProjectFromEnvironment.json", ui: "\/graphql\/v2\/inputs\/createProjectFromEnvironment.ui.json")
+
+  """
   Delete a project permanently.
 
   All environments must be deleted first. Query the project's `deletable` field
@@ -4698,7 +4738,7 @@ of actor, and `name` provides a human-readable label:
 - **`DEPLOYMENT`** — `name` is a reference like `deployment:<id>`.
 - **`SYSTEM`** — `name` is `system` for internal actions.
 
-If the original actor has been deleted, the `name` will indicate this (e.g., "deleted account").
+If the actor has been deleted, `name` is a reference like `service_account:<id>`.
 """
 type AuditLogActor {
   "Unique identifier of the actor that performed the action."
@@ -6981,7 +7021,7 @@ type Deployment {
   """
   elapsedTime: Int!
 
-  "The name of the user or service account that initiated this deployment. Null if the initiator has been removed."
+  "The user or service account that initiated this deployment."
   deployedBy: String
 
   "The instance that this deployment operates on."
@@ -8403,6 +8443,21 @@ enum ProjectsSortField {
   CREATED_AT
 }
 
+"""
+Which params a new instance gets from its source instance. Fields that the bundle's params
+schema marks as not copyable are never copied.
+"""
+enum CopyParams {
+  "Do not copy params. New instances start with empty params."
+  NONE
+
+  "Copy the source instance's current `params`. These are saved when a deployment is created or a proposed deployment is approved."
+  CONFIGURED
+
+  "Copy the params of the source instance's newest deployment, including plans and proposed deployments. Decommissions and rejected proposals are skipped. If the instance has no such deployment, its current `params` are copied."
+  LATEST
+}
+
 "Sorting options for the projects list. Specify a field and direction."
 input ProjectsSort {
   "The field to sort by."
@@ -8461,6 +8516,27 @@ input CloneProjectInput {
 
   "An optional description of the project's purpose or contents"
   description: String
+
+  "A short, memorable identifier for looking up this project in the API and CLI. This becomes the first segment of all resource identifiers within the project. Max 20 characters, lowercase alphanumeric only (a-z, 0-9). Immutable after creation."
+  id: String!
+
+  "A human-readable name for the new project"
+  name: String!
+}
+
+"Attributes for the new project and its environment."
+input CreateProjectFromEnvironmentInput {
+  "Key-value attributes for this project. Keys and values must be strings. Must conform to the organization's custom attributes for the project scope."
+  attributes: Map
+
+  "Which params the new instances get from the source instances. Fields that the bundle marks as not copyable are never copied. Defaults to NONE."
+  copyParams: CopyParams
+
+  "An optional description of the project's purpose or contents"
+  description: String
+
+  "The environment to create in the new project. Its instances are created from the source environment's instances."
+  environment: CreateEnvironmentInput!
 
   "A short, memorable identifier for looking up this project in the API and CLI. This becomes the first segment of all resource identifiers within the project. Max 20 characters, lowercase alphanumeric only (a-z, 0-9). Immutable after creation."
   id: String!

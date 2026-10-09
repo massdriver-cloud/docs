@@ -1,0 +1,80 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: copy-params
+title: CopyParams
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Which params a new instance gets from its source instance. Fields that the bundle's params
+schema marks as not copyable are never copied.
+
+
+```graphql
+enum CopyParams {
+  NONE
+  CONFIGURED
+  LATEST
+}
+```
+
+
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>CopyParams.<b>NONE</b></code>](#none) \{#none\} 
+Do not copy params. New instances start with empty params.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CopyParams.<b>CONFIGURED</b></code>](#configured) \{#configured\} 
+Copy the source instance's current `params`. These are saved when a deployment is created or a proposed deployment is approved.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CopyParams.<b>LATEST</b></code>](#latest) \{#latest\} 
+Copy the params of the source instance's newest deployment, including plans and proposed deployments. Decommissions and rejected proposals are skipped. If the instance has no such deployment, its current `params` are copied.
+
+
+
+
+
+
+### Member Of
+
+[`CreateProjectFromEnvironmentInput`](/api/graphql/types/inputs/create-project-from-environment-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>
