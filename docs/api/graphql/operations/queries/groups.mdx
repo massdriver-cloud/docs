@@ -45,13 +45,17 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 List all groups in your organization.
 
 Returns a paginated, sortable list of groups. By default, groups are sorted
-alphabetically by name.
+alphabetically by name. Use `filter` to search groups or to list the groups of one
+account or service account.
+
+**Note:** when a `search` filter is active, pagination cursors are offset-based and are
+not interchangeable with the cursors returned by queries without `search`.
 
 **Example:**
 
 ```graphql
 query {
-  groups(organizationId: "my-org") {
+  groups(organizationId: "my-org", filter: { search: "platform" }) {
     data {
       id
       name
@@ -67,6 +71,7 @@ query {
 ```graphql
 groups(
   organizationId: ID!
+  filter: GroupsFilter
   sort: GroupsSort
   cursor: Cursor
 ): GroupsPage
@@ -81,8 +86,12 @@ groups(
 Your organization's unique identifier.
 
 
+#### [<code style={{ fontWeight: 'normal' }}>groups.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GroupsFilter</b></code>](/api/graphql/types/inputs/groups-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#filter\} 
+Narrow results by search, account, or service account.
+
+
 #### [<code style={{ fontWeight: 'normal' }}>groups.<b>sort</b></code>](#sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GroupsSort</b></code>](/api/graphql/types/inputs/groups-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#sort\} 
-Sort field and direction. Defaults to name ascending.
+Sort field and direction. Defaults to name ascending. When a `search` filter is active and no sort is provided, results are ranked by relevance.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>groups.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#cursor\} 

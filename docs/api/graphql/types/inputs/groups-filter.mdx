@@ -1,0 +1,86 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: groups-filter
+title: GroupsFilter
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Filter criteria for narrowing which groups are returned.
+
+All filters combine with AND logic. A group must match every filter you set to appear
+in the results. Omit a filter to not restrict on that field.
+
+
+```graphql
+input GroupsFilter {
+  search: String
+  accountId: IdFilter
+  serviceAccountId: IdFilter
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GroupsFilter.<b>search</b></code>](#search)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#search\} 
+Case-insensitive search across the group's `name` and `description`. Matches a prefix
+of the name or whole words in either field.
+
+Blank or whitespace-only values skip this filter. When `search` is active and no
+explicit `sort` is provided, results are ranked by relevance.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GroupsFilter.<b>accountId</b></code>](#account-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IdFilter</b></code>](/api/graphql/types/inputs/id-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#account-id\} 
+Return only the groups that the specified account(s) are members of.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GroupsFilter.<b>serviceAccountId</b></code>](#service-account-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IdFilter</b></code>](/api/graphql/types/inputs/id-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#service-account-id\} 
+Return only the groups that the specified service account(s) are members of.
+
+
+
+
+
+
+### Member Of
+
+[`groups`](/api/graphql/operations/queries/groups.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

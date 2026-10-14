@@ -1,0 +1,97 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: group-viewer
+title: GroupViewer
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A group you are a member of, in any of your organizations.
+
+To see the members, policies, or service accounts of a group, query `group` with the
+group's organization.
+
+
+```graphql
+type GroupViewer {
+  id: ID!
+  name: String!
+  description: String
+  role: GroupRole!
+  createdAt: DateTime!
+  organization: GroupOrganizationViewer!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GroupViewer.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+Unique identifier for the group.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GroupViewer.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Name of the group.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GroupViewer.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+Optional text explaining the purpose of the group.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GroupViewer.<b>role</b></code>](#role)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GroupRole!</b></code>](/api/graphql/types/enums/group-role.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#role\} 
+The access level this group grants to its members.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GroupViewer.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When the group was created (UTC).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GroupViewer.<b>organization</b></code>](#organization)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GroupOrganizationViewer!</b></code>](/api/graphql/types/objects/group-organization-viewer.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#organization\} 
+The organization this group belongs to.
+
+
+
+
+
+
+### Member Of
+
+[`GroupsViewerPage`](/api/graphql/types/objects/groups-viewer-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

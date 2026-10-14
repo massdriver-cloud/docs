@@ -65,6 +65,11 @@ type AccountViewer {
     sort: OrganizationsSort
     cursor: Cursor
   ): OrganizationsPage
+  groups(
+    filter: GroupsViewerFilter
+    sort: GroupsSort
+    cursor: Cursor
+  ): GroupsViewerPage
   defaultOrganization: Organization
   identities(
     sort: IdentitiesSort
@@ -133,6 +138,23 @@ Sort field and direction. Defaults to name ascending.
 
 
 ##### [<code style={{ fontWeight: 'normal' }}>AccountViewer.organizations.<b>cursor</b></code>](#account-viewer-organizations-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#account-viewer-organizations-cursor\} 
+Pagination cursor from a previous response to fetch the next page.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>groups</b></code>](#groups)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GroupsViewerPage</b></code>](/api/graphql/types/objects/groups-viewer-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#groups\} 
+Groups you are a member of, across every organization you belong to.
+
+Use `filter` to narrow the list to one or more organizations. Defaults to alphabetical
+order by name.
+##### [<code style={{ fontWeight: 'normal' }}>AccountViewer.groups.<b>filter</b></code>](#account-viewer-groups-filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GroupsViewerFilter</b></code>](/api/graphql/types/inputs/groups-viewer-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#account-viewer-groups-filter\} 
+Optional filters to narrow results.
+
+
+##### [<code style={{ fontWeight: 'normal' }}>AccountViewer.groups.<b>sort</b></code>](#account-viewer-groups-sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GroupsSort</b></code>](/api/graphql/types/inputs/groups-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#account-viewer-groups-sort\} 
+Sort field and direction. Defaults to name ascending.
+
+
+##### [<code style={{ fontWeight: 'normal' }}>AccountViewer.groups.<b>cursor</b></code>](#account-viewer-groups-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#account-viewer-groups-cursor\} 
 Pagination cursor from a previous response to fetch the next page.
 
 
