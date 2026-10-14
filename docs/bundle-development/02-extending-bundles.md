@@ -11,6 +11,45 @@ A bundle can extend another bundle. The child reuses the parent's infrastructure
 
 This lets a platform team own one well-tested bundle, such as a Lambda function or a Kubernetes service, while each application team keeps a single `massdriver.yaml` with no IaC of its own.
 
+## Why extend instead of copy
+
+Most applications in an organization run on a handful of shapes: a function, a container service, a worker. Without inheritance, each application team either deploys the generic bundle and wires up everything by hand in every environment, or copies the bundle's IaC into its own repository. Copies drift. A security fix, a tagging change, or a new compliance control has to be applied to every copy, and some never get it.
+
+With `extends`, the IaC exists once. Application bundles carry only what differs between applications, and that difference is small enough to review at a glance.
+
+```mermaid
+flowchart LR
+  subgraph platform[Platform team]
+    lambda["lambda<br/>IaC, params, policies"]
+  end
+  subgraph apps[Application teams]
+    payments["payments-api<br/>+ postgres, STRIPE_KEY"]
+    search["search-api<br/>+ opensearch"]
+    reports["reports-worker<br/>+ s3 bucket, schedule env"]
+  end
+  lambda --> payments
+  lambda --> search
+  lambda --> reports
+```
+
+Each child is still a complete, versioned bundle. It appears in the catalog under its own name, deploys like any other bundle, and records exactly which parent release it was built from.
+
+## Use cases
+
+**A golden path for application teams.** The platform team publishes `ecs-service` with sane defaults for networking, logging, autoscaling, and IAM. A team shipping `orders-api` extends it, adds its database dependency and two env vars, and never opens a `.tf` file. Developers see a bundle named for their application, with a form that has only the params the platform team chose to expose.
+
+**Rolling out a fix across many applications.** A vulnerability requires a change to how the function's IAM role is scoped. The platform team releases `lambda@1.2.8`. Every child that extends `lambda@~1.2` picks up the fix the next time it is published, from a CI pipeline or a quick `mass bundle publish`, with no edits to the child.
+
+```mermaid
+flowchart LR
+  fix["lambda 1.2.8<br/>IAM fix"] --> ci["child CI runs<br/>mass bundle publish"]
+  ci --> p["payments-api 0.4.1<br/>built on lambda 1.2.8"]
+  ci --> s["search-api 1.0.3<br/>built on lambda 1.2.8"]
+```
+
+**Applications that publish their own contract.** `billing-api` extends the generic `lambda` bundle, but other services should depend on a `billing-api` resource type, not on "some Lambda function." The child declares that resource and fills it from the parent's outputs, so downstream bundles connect to billing by type and receive only the fields that type defines.
+## Example
+
 ```yaml
 extends: lambda@~1.2
 name: payments-api
