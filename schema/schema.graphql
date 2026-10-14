@@ -4346,7 +4346,7 @@ type ServiceAccount {
   "When this service account was last modified (UTC)."
   updatedAt: DateTime!
 
-  "When this service account last authenticated a request, with its secret or one of its access tokens (UTC). `null` if it has never been used."
+  "When this service account last authenticated a request, with its secret or one of its access tokens (UTC). Updated at most once a minute. `null` if it has never been used."
   lastUsedAt: DateTime
 }
 
