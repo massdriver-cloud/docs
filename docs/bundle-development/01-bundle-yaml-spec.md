@@ -716,6 +716,7 @@ To migrate, convert each `properties` entry into a named entry with `resource_ty
 | `dependencies` | `object` | - | Resources this bundle depends on (replaces deprecated `connections`) |
 | `resources` | `object` | - | Resources this bundle produces (replaces deprecated `artifacts`) |
 | `app` | `object` | - | Application configuration (envs, secrets, policies) |
+| `extends` | `string` | - | Parent bundle to inherit from, as `name@constraint`. See [Extending Bundles](/bundle-development/extending-bundles). |
 
 ### Dependency and Resource Fields
 

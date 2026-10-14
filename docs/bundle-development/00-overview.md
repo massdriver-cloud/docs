@@ -10,6 +10,7 @@ This section covers everything you need to build, test, and publish Massdriver b
 ## What's in this section
 
 - **[Bundle YAML Specification](./bundle-yaml-spec)** - Complete reference for the `massdriver.yaml` file format
+- **[Extending Bundles](./extending-bundles)** - Reuse another bundle's IaC and add app-specific dependencies, envs, and resources
 - **[Schema Design](./schema-design/overview)** - JSON Schema patterns and Massdriver annotations for building parameter forms
 - **[Dependencies & Resources](./dependencies-resources/overview)** - How bundles consume and produce resources for type-safe infrastructure composition
 - **[Provisioners](./provisioners/overview)** - Configure OpenTofu, Terraform, Helm, and Bicep provisioning steps
