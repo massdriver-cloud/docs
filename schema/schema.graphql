@@ -4346,7 +4346,7 @@ type ServiceAccount {
   "When this service account was last modified (UTC)."
   updatedAt: DateTime!
 
-  "When this service account last authenticated a request, with its secret or one of its access tokens (UTC). Updated at most once a minute. `null` if it has never been used."
+  "When this service account last authenticated a request, with its secret or one of its access tokens (UTC)."
   lastUsedAt: DateTime
 }
 
@@ -4547,7 +4547,7 @@ type AccessToken {
   "When this token was manually revoked, or `null` if still active."
   revokedAt: DateTime
 
-  "When this token was last used to authenticate an API request. Updated at most once a minute. `null` if never used."
+  "When this token was last used to authenticate an API request."
   lastUsedAt: DateTime
 
   "When this token was created (UTC)."
