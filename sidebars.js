@@ -19,6 +19,7 @@ module.exports = {
           items: [
             "bundle-development/schema-design/schema-design-validation-patterns",
             "bundle-development/schema-design/massdriver-annotations",
+            "bundle-development/schema-design/schema-design-ui-schema",
           ],
         },
         {
