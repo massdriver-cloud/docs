@@ -78,8 +78,13 @@ type Organization {
   planExpiresOn: Date
   logo: LogoOrganization
   members(
+    filter: OrganizationMembersFilter
+    sort: OrganizationMembersSort
     cursor: Cursor
   ): AccountsPage
+  member(
+    id: UUID!
+  ): Account
   customAttributes(
     sort: CustomAttributesSort
     cursor: Cursor
@@ -142,12 +147,29 @@ The organization's logo image, or `null` if no logo has been uploaded.
 Paginated list of every human account in this organization, whether or not they belong to a group.
 Includes members provisioned by an identity provider (e.g. Okta) who have not yet been added to a group.
 
-Sorted by email ascending. Service accounts live under the top-level `serviceAccounts`
-query — pair both when rendering the full organization roster.
+Service accounts live under the top-level `serviceAccounts` query — pair both when
+rendering the full organization roster.
 
 Requires the `organization:manageProfile` action.
+##### [<code style={{ fontWeight: 'normal' }}>Organization.members.<b>filter</b></code>](#organization-members-filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OrganizationMembersFilter</b></code>](/api/graphql/types/inputs/organization-members-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#organization-members-filter\} 
+Narrow results by search.
+
+
+##### [<code style={{ fontWeight: 'normal' }}>Organization.members.<b>sort</b></code>](#organization-members-sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OrganizationMembersSort</b></code>](/api/graphql/types/inputs/organization-members-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#organization-members-sort\} 
+How to sort results. Defaults to email ascending.
+
+
 ##### [<code style={{ fontWeight: 'normal' }}>Organization.members.<b>cursor</b></code>](#organization-members-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#organization-members-cursor\} 
 Cursor from a previous page to fetch the next set of results.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Organization.<b>member</b></code>](#member)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Account</b></code>](/api/graphql/types/objects/account.mdx) <Badge class="badge badge--secondary " text="object"/> \{#member\} 
+One human account in this organization, whether or not they belong to a group.
+
+Returns `null` with a `NOT_FOUND` error if the account is not a member of this organization.
+Requires the `organization:manageProfile` action.
+##### [<code style={{ fontWeight: 'normal' }}>Organization.member.<b>id</b></code>](#organization-member-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UUID!</b></code>](/api/graphql/types/scalars/uuid.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-member-id\} 
+The account's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Organization.<b>customAttributes</b></code>](#custom-attributes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CustomAttributesPage</b></code>](/api/graphql/types/objects/custom-attributes-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#custom-attributes\} 

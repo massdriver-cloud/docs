@@ -433,13 +433,17 @@ type RootQueryType {
   List all groups in your organization.
 
   Returns a paginated, sortable list of groups. By default, groups are sorted
-  alphabetically by name.
+  alphabetically by name. Use `filter` to search groups or to list the groups of one
+  account or service account.
+
+  **Note:** when a `search` filter is active, pagination cursors are offset-based and are
+  not interchangeable with the cursors returned by queries without `search`.
 
   **Example:**
 
   ```graphql
   query {
-    groups(organizationId: "my-org") {
+    groups(organizationId: "my-org", filter: { search: "platform" }) {
       data {
         id
         name
@@ -455,7 +459,10 @@ type RootQueryType {
     "Your organization's unique identifier."
     organizationId: ID!
 
-    "Sort field and direction. Defaults to name ascending."
+    "Narrow results by search, account, or service account."
+    filter: GroupsFilter
+
+    "Sort field and direction. Defaults to name ascending. When a `search` filter is active and no sort is provided, results are ranked by relevance."
     sort: GroupsSort
 
     "Pagination cursor returned from a previous response to fetch the next page."
@@ -4338,6 +4345,9 @@ type ServiceAccount {
 
   "When this service account was last modified (UTC)."
   updatedAt: DateTime!
+
+  "When this service account last authenticated a request, with its secret or one of its access tokens (UTC)."
+  lastUsedAt: DateTime
 }
 
 """
@@ -4415,6 +4425,9 @@ enum ServiceAccountsSortField {
 
   "Sort by creation date (oldest first or newest first)."
   CREATED_AT
+
+  "Sort by when the service account was last used. Service accounts never used come last."
+  LAST_USED_AT
 }
 
 "Sorting options for the service accounts list. Specify a field and direction."
@@ -4534,7 +4547,7 @@ type AccessToken {
   "When this token was manually revoked, or `null` if still active."
   revokedAt: DateTime
 
-  "When this token was last used to authenticate an API request, or `null` if never used."
+  "When this token was last used to authenticate an API request."
   lastUsedAt: DateTime
 
   "When this token was created (UTC)."
@@ -5312,6 +5325,29 @@ input GroupInvitationsSort {
   order: SortOrder!
 }
 
+"""
+Filter criteria for narrowing which groups are returned.
+
+All filters combine with AND logic. A group must match every filter you set to appear
+in the results. Omit a filter to not restrict on that field.
+"""
+input GroupsFilter {
+  """
+  Case-insensitive search across the group's `name` and `description`. Matches a prefix
+  of the name or whole words in either field.
+
+  Blank or whitespace-only values skip this filter. When `search` is active and no
+  explicit `sort` is provided, results are ranked by relevance.
+  """
+  search: String
+
+  "Return only the groups that the specified account(s) are members of."
+  accountId: IdFilter
+
+  "Return only the groups that the specified service account(s) are members of."
+  serviceAccountId: IdFilter
+}
+
 "Create a new group. Groups control which projects members can access."
 input CreateGroupInput {
   "What this group is for"
@@ -5700,6 +5736,34 @@ input OrganizationsSort {
   order: SortOrder!
 }
 
+"Available fields for sorting the members of an organization."
+enum OrganizationMembersSortField {
+  "Sort alphabetically by email (A-Z or Z-A)."
+  EMAIL
+
+  "Sort alphabetically by first name, then last name. Members without a name come last in ascending order."
+  NAME
+}
+
+"Sorting options for the members of an organization."
+input OrganizationMembersSort {
+  "The field to sort by."
+  field: OrganizationMembersSortField!
+
+  "Ascending (`ASC`) or descending (`DESC`)."
+  order: SortOrder!
+}
+
+"Filter criteria for narrowing which members of an organization are returned."
+input OrganizationMembersFilter {
+  """
+  Case-insensitive search for part of a member's `email`, `firstName`, or `lastName`.
+  So `search: "lee"` matches `lee@example.com`, a member named Leela, and a member
+  with the last name Lee. Blank or whitespace-only values skip this filter.
+  """
+  search: String
+}
+
 """
 The top-level account that owns all your infrastructure, projects, and team members.
 
@@ -5771,15 +5835,32 @@ type Organization {
   Paginated list of every human account in this organization, whether or not they belong to a group.
   Includes members provisioned by an identity provider (e.g. Okta) who have not yet been added to a group.
 
-  Sorted by email ascending. Service accounts live under the top-level `serviceAccounts`
-  query — pair both when rendering the full organization roster.
+  Service accounts live under the top-level `serviceAccounts` query — pair both when
+  rendering the full organization roster.
 
   Requires the `organization:manageProfile` action.
   """
   members(
+    "Narrow results by search."
+    filter: OrganizationMembersFilter
+
+    "How to sort results. Defaults to email ascending."
+    sort: OrganizationMembersSort
+
     "Cursor from a previous page to fetch the next set of results."
     cursor: Cursor
   ): AccountsPage
+
+  """
+  One human account in this organization, whether or not they belong to a group.
+
+  Returns `null` with a `NOT_FOUND` error if the account is not a member of this organization.
+  Requires the `organization:manageProfile` action.
+  """
+  member(
+    "The account's unique identifier."
+    id: UUID!
+  ): Account
 
   """
   Paginated list of custom attributes that govern attribute metadata across this organization.
@@ -6251,6 +6332,54 @@ type InvitesViewerPage {
   items: [InviteViewer]
 }
 
+"Organization details included with one of your groups."
+type GroupOrganizationViewer {
+  id: ID!
+
+  "Name of the organization the group belongs to."
+  name: String!
+}
+
+"""
+A group you are a member of, in any of your organizations.
+
+To see the members, policies, or service accounts of a group, query `group` with the
+group's organization.
+"""
+type GroupViewer {
+  "Unique identifier for the group."
+  id: ID!
+
+  "Name of the group."
+  name: String!
+
+  "Optional text explaining the purpose of the group."
+  description: String
+
+  "The access level this group grants to its members."
+  role: GroupRole!
+
+  "When the group was created (UTC)."
+  createdAt: DateTime!
+
+  "The organization this group belongs to."
+  organization: GroupOrganizationViewer!
+}
+
+"Filter criteria for narrowing which of your groups are returned."
+input GroupsViewerFilter {
+  "Return only groups in the specified organization(s)."
+  organizationId: IdFilter
+}
+
+type GroupsViewerPage {
+  "Pagination cursors for navigating between pages."
+  cursor: PaginationCursor!
+
+  "A list of type group_viewer."
+  items: [GroupViewer]
+}
+
 """
 A profile avatar image.
 
@@ -6350,6 +6479,23 @@ type AccountViewer {
     "Pagination cursor from a previous response to fetch the next page."
     cursor: Cursor
   ): OrganizationsPage
+
+  """
+  Groups you are a member of, across every organization you belong to.
+
+  Use `filter` to narrow the list to one or more organizations. Defaults to alphabetical
+  order by name.
+  """
+  groups(
+    "Optional filters to narrow results."
+    filter: GroupsViewerFilter
+
+    "Sort field and direction. Defaults to name ascending."
+    sort: GroupsSort
+
+    "Pagination cursor from a previous response to fetch the next page."
+    cursor: Cursor
+  ): GroupsViewerPage
 
   """
   Your most recently joined organization.
