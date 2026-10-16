@@ -143,15 +143,11 @@ app:
 
 The constraint resolves each time you build, so a new runtime release reaches the application the next time the application is published. Existing application releases keep the runtime code they were built with.
 
-The published `massdriver.yaml` records exactly which runtime was used:
+The published `massdriver.yaml` pins `app.runtime` to the exact runtime version it was built on:
 
 ```yaml
 app:
-  runtime:
-    name: lambda
-    constraint: ~1.2
-    version: 1.2.7
-    digest: sha256:...
+  runtime: lambda@1.2.7
 ```
 
 The runtime must be in your organization, and you need `repo:pull` access to its repository.
