@@ -51,6 +51,14 @@ version: 1.2.3
 # Helps users find documentation, report issues, and contribute.
 source_url: https://github.com/my-org/my-bundle
 
+# provides (optional, required in the next major release)
+# What the bundle offers, from a fixed set. Each value may appear once.
+# Any value requires at least one entry in `resources`.
+#
+# Values: compute, networking, storage, data, messaging, authentication,
+#         runtime, application
+provides: [data]
+
 # =============================================================================
 # PROVISIONING STEPS
 # =============================================================================
@@ -401,7 +409,7 @@ ui:
 
 # app (optional)
 # Configuration for bundles deploying application workloads.
-# Defines how to inject secrets, environment variables, and IAM policies.
+# Defines how to inject secrets and environment variables.
 #
 # The app block is processed by the terraform-massdriver-application module,
 # which parses your massdriver.yaml and provides outputs for secrets,
@@ -410,6 +418,11 @@ ui:
 # Module:   https://github.com/massdriver-cloud/terraform-massdriver-application
 # Registry: https://registry.terraform.io/modules/massdriver-cloud/application/massdriver
 app:
+  # runtime (applications only)
+  # The runtime this application runs on, as <runtime>@<constraint>.
+  # See /bundle-development/runtimes-and-applications
+  # runtime: lambda@~1.2
+
   # envs (optional)
   # Map environment variable names to JQ expressions.
   # Expressions can reference params (.params.<field>) and
@@ -715,7 +728,8 @@ To migrate, convert each `properties` entry into a named entry with `resource_ty
 | `steps` | `array` | Single terraform step | Provisioning steps |
 | `dependencies` | `object` | - | Resources this bundle depends on (replaces deprecated `connections`) |
 | `resources` | `object` | - | Resources this bundle produces (replaces deprecated `artifacts`) |
-| `app` | `object` | - | Application configuration (envs, secrets, policies) |
+| `app` | `object` | - | Application configuration: `envs`, `secrets`, and, for an application, the `runtime` it runs on |
+| `provides` | `array` | - | What the bundle provides: `compute`, `networking`, `storage`, `data`, `messaging`, `authentication`, `runtime`, `application`. Any value requires `resources`. See [Runtimes and Applications](/bundle-development/runtimes-and-applications#declaring-what-a-bundle-provides). |
 
 ### Dependency and Resource Fields
 
