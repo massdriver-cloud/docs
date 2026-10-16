@@ -51,26 +51,55 @@ flowchart LR
 
 **Applications that publish their own contract.** `billing-api` runs on `lambda` but emits a `billing-api` resource, so other services depend on billing by type and never see the function underneath.
 
+## Declaring what a bundle provides
+
+`provides` lists what a bundle offers, from a fixed set. The catalog uses it for filters and badges, and each value is checked when the bundle is published.
+
+| Value | Meaning |
+|-------|---------|
+| `compute` | Runs workloads: functions, containers, VMs, clusters. |
+| `networking` | Networks, subnets, load balancers, DNS. |
+| `storage` | Buckets, volumes, file systems. |
+| `data` | Databases, caches, warehouses. |
+| `messaging` | Queues, topics, streams. |
+| `authentication` | Credentials, identities, and access for other bundles. |
+| `runtime` | Applications can run on this bundle. |
+| `application` | An application that other bundles can depend on. |
+
+```yaml
+provides: [compute, runtime]
+```
+
+- A bundle that lists any value must declare at least one entry in `resources`.
+- Each value may appear once, and values outside the set fail the publish.
+- `provides` is optional for now. Publishing without it prints a warning; it becomes required in the next major release.
+
 ## Publishing a runtime
 
-Set `provides_runtime: true` and give the runtime an `app` block. The runtime's IaC must consume the envs and secrets in that block, because that is how applications reach their process.
+Add `runtime` to `provides` and give the runtime an `app` block. The runtime's IaC must consume the envs and secrets in that block, because that is how applications reach their process.
 
 ```yaml
 name: lambda
 version: 1.2.7
-provides_runtime: true
+provides: [compute, runtime]
+
+resources:
+  function:
+    resource_type: aws-lambda@1.0.0
+    required: true
 
 app:
   envs:
     LOG_LEVEL: .params.log_level
 ```
 
-`mass bundle lint` and `mass bundle publish` fail a runtime without an `app` block, and a bundle that sets both `provides_runtime` and `extends_runtime`.
+A runtime without an `app` block fails to publish, and so does a bundle that both provides `runtime` and sets `app.runtime`.
 
 ## Writing an application
 
+Set `app.runtime` to the runtime the application runs on:
+
 ```yaml
-extends_runtime: lambda@~1.2
 name: payments-api
 description: Handles card captures.
 version: 0.1.0
@@ -81,6 +110,7 @@ dependencies:
     required: true
 
 app:
+  runtime: lambda@~1.2
   envs:
     DB_HOST: .dependencies.db.host
   secrets:
@@ -92,8 +122,8 @@ app:
 
 `mass bundle build` and `mass bundle publish`:
 
-1. Resolve the `extends_runtime` constraint to the newest matching runtime version.
-2. Pull that runtime from your organization's registry and check that it sets `provides_runtime: true`.
+1. Resolve the `app.runtime` constraint to the newest matching runtime version.
+2. Pull that runtime from your organization's registry and check that its `provides` includes `runtime`.
 3. Merge the application's `massdriver.yaml` onto the runtime's.
 4. Copy the application's `README.md`, `CHANGELOG.md`, `icon.svg`, and `operator.md` over the runtime's.
 
@@ -101,7 +131,7 @@ app:
 
 ## Choosing a runtime version
 
-`extends_runtime` takes `<runtime>@<constraint>`, using the same constraint forms as [dependency versions](/bundle-development/dependencies-resources/version-resolution):
+`app.runtime` takes `<runtime>@<constraint>`, using the same constraint forms as [dependency versions](/bundle-development/dependencies-resources/version-resolution):
 
 | Form | Builds against |
 |------|----------------|
@@ -116,11 +146,12 @@ The constraint resolves each time you build, so a new runtime release reaches th
 The published `massdriver.yaml` records exactly which runtime was used:
 
 ```yaml
-extends_runtime:
-  name: lambda
-  constraint: ~1.2
-  version: 1.2.7
-  digest: sha256:...
+app:
+  runtime:
+    name: lambda
+    constraint: ~1.2
+    version: 1.2.7
+    digest: sha256:...
 ```
 
 The runtime must be in your organization, and you need `repo:pull` access to its repository.
@@ -134,12 +165,14 @@ The runtime owns everything that shapes the infrastructure: `steps`, `params`, `
 | `name` | Required. The application's own bundle name. |
 | `version` | Required. The application's own version, independent of the runtime's. |
 | `description`, `source_url` | Replace the runtime's. The runtime's `source_url` is never inherited. |
+| `provides` | The application's own. The runtime's `provides` is never inherited, and an application cannot provide `runtime`. |
 | `dependencies` | Added to the runtime's dependencies. |
+| `app.runtime` | Required. The runtime the application runs on. |
 | `app.envs`, `app.secrets` | Added to the runtime's. Any other `app` key fails the build. |
 | `resources` | Added to the runtime's resources. Each must be emitted by a step (see below). |
 | `steps` | Attaches resource templates to the runtime's steps. Cannot add, remove, or reconfigure steps. |
 
-Any other key, such as `params`, `ui`, or `provides_runtime`, fails the build. An application cannot be a runtime, so applications cannot run on other applications.
+Any other key, such as `params` or `ui`, fails the build. An application cannot be a runtime, so applications cannot run on other applications.
 
 ## Adding dependencies
 
