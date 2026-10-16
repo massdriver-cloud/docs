@@ -20,7 +20,7 @@ With `extends`, the IaC exists once. Application bundles carry only what differs
 ```mermaid
 flowchart LR
   subgraph platform[Platform team]
-    lambda["lambda<br/>IaC, params, policies"]
+    lambda["lambda<br/>IaC, params, UI"]
   end
   subgraph apps[Application teams]
     payments["payments-api<br/>+ postgres, STRIPE_KEY"]
@@ -116,8 +116,7 @@ The parent owns everything that shapes the infrastructure: `steps`, `params`, `u
 | `version` | Required. The child's own version, independent of the parent's. |
 | `description`, `source_url` | Replace the parent's. The parent's `source_url` is never inherited. |
 | `dependencies` | Added to the parent's dependencies. |
-| `app.envs`, `app.secrets` | Added to the parent's. |
-| `app.policies` | Combined with the parent's. |
+| `app.envs`, `app.secrets` | Added to the parent's. Any other `app` key fails the build. |
 | `resources` | Added to the parent's resources. Each must be emitted by a step (see below). |
 | `steps` | Attaches resource templates to the parent's steps. Cannot add, remove, or reconfigure steps. |
 
@@ -161,16 +160,18 @@ resources:
 steps:
   - path: src
     resources:
-      billing: |
-        {
-          url: .outputs.function_url,
-          region: .params.region
-        }
+      billing:
+        template: |
+          {
+            url: .outputs.function_url,
+            region: .params.region
+          }
 ```
 
 The template renders after that step applies. It can read the step's IaC outputs as `.outputs` and the instance's params as `.params`.
 
 - `path` must name one of the parent's steps. A child step can set only `path` and `resources`.
+- Each entry under a step's `resources` is a map with a `template` key holding the jq.
 - Every child resource needs exactly one template, and every template must belong to a declared resource.
 - A child resource must not reuse a parent resource name.
 
