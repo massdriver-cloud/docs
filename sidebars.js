@@ -12,6 +12,7 @@ module.exports = {
       link: { type: "doc", id: "bundle-development/bundle-development-overview" },
       items: [
         "bundle-development/bundle-yaml-spec",
+        "bundle-development/runtimes-and-applications",
         {
           type: "category",
           label: "Schema Design",
