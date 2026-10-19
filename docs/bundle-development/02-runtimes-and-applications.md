@@ -133,7 +133,7 @@ The runtime owns everything that shapes the infrastructure: `steps`, `params`, `
 | `name` | Required. The application's own bundle name. |
 | `version` | Required. The application's own version, independent of the runtime's. |
 | `description`, `source_url` | Replace the runtime's. The runtime's `source_url` is never inherited. |
-| `provides` | The application's own. The runtime's `provides` is never inherited, and an application cannot provide `runtime`. |
+| `provides` | Never inherited from the runtime. An application cannot provide `runtime`. |
 | `dependencies` | Added to the runtime's dependencies. |
 | `app.runtime` | Required. The runtime the application runs on. |
 | `app.envs`, `app.secrets` | Added to the runtime's. Any other `app` key fails the build. |
