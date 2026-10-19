@@ -53,24 +53,19 @@ flowchart LR
 
 ## Publishing a runtime
 
-Set `provides: [runtime]`, declare at least one entry in `resources`, and give the runtime an `app` block. The runtime's IaC must consume the envs and secrets in that block, because that is how applications reach their process.
+Set `provides: [runtime]` and give the runtime an `app` block. The runtime's IaC must consume the envs and secrets in that block, because that is how applications reach their process.
 
 ```yaml
 name: lambda
 version: 1.2.7
 provides: [runtime]
 
-resources:
-  function:
-    resource_type: aws-lambda@1.0.0
-    required: true
-
 app:
   envs:
     LOG_LEVEL: .params.log_level
 ```
 
-`runtime` is the only value `provides` accepts. A runtime fails to publish without `resources` or an `app` block, and so does a bundle that both provides `runtime` and sets `app.runtime`.
+`runtime` is the only value `provides` accepts. A runtime fails to publish without an `app` block, and so does a bundle that both provides `runtime` and sets `app.runtime`. A runtime does not need `resources`; many applications, such as a migration or cleanup task, have nothing for other bundles to depend on.
 
 ## Writing an application
 
