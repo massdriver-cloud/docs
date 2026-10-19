@@ -51,37 +51,14 @@ flowchart LR
 
 **Applications that publish their own contract.** `billing-api` runs on `lambda` but emits a `billing-api` resource, so other services depend on billing by type and never see the function underneath.
 
-## Declaring what a bundle provides
-
-`provides` lists what a bundle offers, from a fixed set. The catalog uses it for filters and badges, and each value is checked when the bundle is published.
-
-| Value | Meaning |
-|-------|---------|
-| `compute` | Runs workloads: functions, containers, VMs, clusters. |
-| `networking` | Networks, subnets, load balancers, DNS. |
-| `storage` | Buckets, volumes, file systems. |
-| `data` | Databases, caches, warehouses. |
-| `messaging` | Queues, topics, streams. |
-| `authentication` | Credentials, identities, and access for other bundles. |
-| `runtime` | Applications can run on this bundle. |
-| `application` | An application that other bundles can depend on. |
-
-```yaml
-provides: [compute, runtime]
-```
-
-- A bundle that lists any value must declare at least one entry in `resources`.
-- Each value may appear once, and values outside the set fail the publish.
-- `provides` is optional for now. Publishing without it prints a warning; it becomes required in the next major release.
-
 ## Publishing a runtime
 
-Add `runtime` to `provides` and give the runtime an `app` block. The runtime's IaC must consume the envs and secrets in that block, because that is how applications reach their process.
+Set `provides: [runtime]`, declare at least one entry in `resources`, and give the runtime an `app` block. The runtime's IaC must consume the envs and secrets in that block, because that is how applications reach their process.
 
 ```yaml
 name: lambda
 version: 1.2.7
-provides: [compute, runtime]
+provides: [runtime]
 
 resources:
   function:
@@ -93,7 +70,7 @@ app:
     LOG_LEVEL: .params.log_level
 ```
 
-A runtime without an `app` block fails to publish, and so does a bundle that both provides `runtime` and sets `app.runtime`.
+`runtime` is the only value `provides` accepts. A runtime fails to publish without `resources` or an `app` block, and so does a bundle that both provides `runtime` and sets `app.runtime`.
 
 ## Writing an application
 
