@@ -53,7 +53,7 @@ flowchart LR
 
 ## Publishing a runtime
 
-Set `provides: [runtime]` and give the runtime an `app` block. The runtime's IaC must consume the envs and secrets in that block, because that is how applications reach their process.
+Set `provides: [runtime]`. Applications pass envs and secrets through their own `app` block, and the runtime's IaC decides how those reach the process, so a runtime that supports them must consume them. A runtime can add envs and secrets of its own in an `app` block, but it does not need one.
 
 ```yaml
 name: lambda
@@ -65,7 +65,7 @@ app:
     LOG_LEVEL: .params.log_level
 ```
 
-`runtime` is the only value `provides` accepts. A runtime fails to publish without an `app` block, and so does a bundle that both provides `runtime` and sets `app.runtime`. A runtime does not need `resources`; many applications, such as a migration or cleanup task, have nothing for other bundles to depend on.
+`runtime` is the only value `provides` accepts. A bundle that both provides `runtime` and sets `app.runtime` fails to publish. A runtime does not need `resources`; many applications, such as a migration or cleanup task, have nothing for other bundles to depend on.
 
 ## Writing an application
 

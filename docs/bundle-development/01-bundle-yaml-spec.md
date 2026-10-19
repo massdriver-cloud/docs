@@ -52,8 +52,7 @@ version: 1.2.3
 source_url: https://github.com/my-org/my-bundle
 
 # provides (optional)
-# Set to [runtime] to let applications run on this bundle. A runtime
-# requires an `app` block.
+# Set to [runtime] to let applications run on this bundle.
 # See /bundle-development/runtimes-and-applications
 # provides: [runtime]
 
@@ -727,7 +726,7 @@ To migrate, convert each `properties` entry into a named entry with `resource_ty
 | `dependencies` | `object` | - | Resources this bundle depends on (replaces deprecated `connections`) |
 | `resources` | `object` | - | Resources this bundle produces (replaces deprecated `artifacts`) |
 | `app` | `object` | - | Application configuration: `envs`, `secrets`, and, for an application, the `runtime` it runs on |
-| `provides` | `array` | - | `[runtime]` marks the bundle as a runtime that applications can run on. Requires an `app` block. See [Runtimes and Applications](/bundle-development/runtimes-and-applications). |
+| `provides` | `array` | - | `[runtime]` marks the bundle as a runtime that applications can run on. See [Runtimes and Applications](/bundle-development/runtimes-and-applications). |
 
 ### Dependency and Resource Fields
 
