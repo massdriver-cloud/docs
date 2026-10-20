@@ -278,6 +278,37 @@ Instruction content and icons are files in the resource type's directory. They a
 
 See a real-world example of onboarding instructions in the [aws-iam-role resource type](https://github.com/massdriver-cloud/artifact-definitions/blob/main/definitions/artifacts/aws-iam-role.json#L20).
 
+### Customizing the import form
+
+The fields in the **Import Resource** dialog are generated from the resource type's `schema`. `ui.schema` takes a [React JSON Schema Form uiSchema](https://react-jsonschema-form.readthedocs.io/en/docs/api-reference/uiSchema/) to control field order and widgets, the same way the `ui` block does for a [bundle's configuration form](/bundle-development/schema-design/ui-schema):
+
+```yaml massdriver.yaml
+name: gcp-service-account
+version: 1.0.0
+label: GCP Service Account
+
+ui:
+  connectionOrientation: environmentDefault
+  schema:
+    ui:order: [project_id, client_email, private_key, "*"]
+    private_key:
+      ui:widget: textarea
+      ui:options:
+        rows: 8
+
+schema:
+  type: object
+  properties:
+    project_id:
+      type: string
+    client_email:
+      type: string
+    private_key:
+      type: string
+```
+
+Massdriver stores `ui.schema` as-is and returns it from the `uiSchema` field on `ResourceType` in the GraphQL API. A value that is not an object is dropped at publish.
+
 ### Offering a downloadable file
 
 `exports` gives users a download button on the resource, rendering a [Liquid](https://shopify.github.io/liquid/) template against the resource's data:

@@ -98,6 +98,21 @@ ui:
     - label: Configure Access
       path: ./instructions/configure-access.md
 
+  # schema (optional)
+  # A React JSON Schema Form (RJSF) uiSchema for the form users fill in when
+  # they import a resource of this type. Keys match the property names in the
+  # top-level `schema`. Massdriver stores it as-is and does not validate the
+  # ui:* directives. A value that is not an object is dropped.
+  # See: https://react-jsonschema-form.readthedocs.io/en/docs/api-reference/uiSchema/
+  schema:
+    ui:order:
+      - infrastructure
+      - authentication
+      - "*"
+    authentication:
+      password:
+        ui:widget: password
+
 # =============================================================================
 # EXPORT TEMPLATES
 # =============================================================================
@@ -504,6 +519,7 @@ A dependency accepts a range. A resource pins the single version it produces. Se
 | `ui.instructions` | No | Array of onboarding steps |
 | `ui.instructions[].label` | Yes | Step title |
 | `ui.instructions[].path` | Yes | Path to markdown file |
+| `ui.schema` | No | RJSF uiSchema for the import form |
 | `exports` | No | Array of export templates |
 | `exports[].downloadButtonText` | Yes | Download button label |
 | `exports[].fileFormat` | Yes | Output file extension |
@@ -517,3 +533,4 @@ A dependency accepts a range. A resource pins the single version it produces. Se
 - [Version Resolution](/bundle-development/dependencies-resources/version-resolution) - How a version range picks a resource at deploy time
 - [Custom Resource Type Guide](/guides/custom-resource-type) - JSON format and advanced customization
 - [Massdriver Annotations](/bundle-development/schema-design/massdriver-annotations) - Special `$md` annotations
+- [UI Schema](/bundle-development/schema-design/ui-schema) - RJSF uiSchema directives
