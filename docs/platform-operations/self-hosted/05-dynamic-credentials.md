@@ -534,5 +534,6 @@ If `AZURE_FEDERATED_TOKEN_FILE` is unset inside the pod, the webhook did not mut
 ## Related Configuration
 
 - Dynamic credentials cover **provisioning only**. Massdriver's blob storage access is a separate identity configured through `massdriver.blobStorage.serviceAccount.annotations` — see [Cloud Storage](/platform-operations/self-hosted/cloud-storage).
+- The provisioner ServiceAccount is one identity for all deployments. To give each organization, project, environment, or instance its own cloud identity, use [Deployment Identity Tokens](/platform-operations/security/deployment-identity-tokens).
 - The [AWS Cost and Usage Report](/reference/integrations/aws-cost-and-usage-reports) and [Azure Cost Management](/reference/integrations/azure-cost-management-exports) integrations provision their own credentials and are unaffected.
 - For background on shaping credential resource types, see [Customizing Cloud Support](/guides/customizing-cloud-support) and [Crafting Custom Resource Types](/guides/custom-resource-type).

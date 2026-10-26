@@ -95,6 +95,7 @@ module.exports = {
             "platform-operations/security/security-abac-by-example",
             "platform-operations/security/security-changing-custom-attributes",
             "platform-operations/security/security-graphql-permissions",
+            "platform-operations/security/security-deployment-identity-tokens",
           ],
         },
         {
