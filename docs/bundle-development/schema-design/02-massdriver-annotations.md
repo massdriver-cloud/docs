@@ -5,7 +5,7 @@ title: Massdriver Custom Annotations
 sidebar_label: Massdriver Annotations
 ---
 
-Massdriver extends JSON Schema with custom annotations prefixed with `$md.` to provide platform-specific functionality. These annotations enhance bundle configuration with features like immutability enforcement, dynamic enums from connected resources, and selective parameter copying between environments.
+Massdriver extends JSON Schema with custom annotations prefixed with `$md.` to provide platform-specific functionality. These annotations enhance bundle configuration with features like immutability enforcement, dynamic enums from connected resources, pickers for groups, service accounts, and projects, and selective parameter copying between environments.
 
 ## `$md.immutable`
 
@@ -202,6 +202,95 @@ The `$md.enum` extension:
 3. For each result, applies the `value` and `label` formatters
 4. Generates a JSON Schema `oneOf` array with `const` (value) and `title` (label) pairs
 5. Removes the `$md.enum` annotation from the final schema
+
+---
+
+## `$md.list`
+
+### Scope
+
+**Bundle params schemas only** - Used in bundle `params` field to let users pick groups, service accounts, or projects in your Massdriver organization.
+
+### Use Case
+
+Some bundles need to know who or what in the organization they serve. For example:
+- The group that owns a database and gets paged for its alarms
+- The service account that a CI pipeline deploys with
+- The project whose budget a shared resource is charged to
+
+### Behavior
+
+The field becomes a dropdown of the groups, service accounts, or projects in your organization. The value saved in params is the ID:
+
+| `resource` | Options | Saved value |
+|------------|---------|-------------|
+| `group` | Every group in the organization | Group UUID |
+| `service_account` | Every service account in the organization, when the user has `organization:manageServiceAccounts`. Other users see no options. | Service account UUID |
+| `project` | The projects the user has `project:view` on | Project identifier |
+
+Each user sees the options they can view. Two users can see different lists for the same field.
+
+**Values the user cannot view.** An instance can store a value that the current user cannot view, for example a project that someone else picked. That value stays in the dropdown with the title `You cannot view this project` (or `group`, `service account`). The saved config stays valid, and the user can keep it, remove it, or replace it.
+
+**Saving.** A save can keep or remove any stored value. Every value that a save adds must be one the user can view. Otherwise the save fails:
+
+```
+references project secret, which you cannot select
+```
+
+The same check applies when you copy an instance's params or fork an environment. Fields with `$md.copyable: false` are not copied, so they are not checked.
+
+**Deploying.** A deploy does not check stored values again. If a user loses access to a project after they pick it, or a picked group is deleted, the stored ID stays in params. Your bundle code must handle an ID that no longer exists.
+
+### Example: Single Pick
+
+```yaml
+properties:
+  owner_project:
+    title: Owning Project
+    description: The project this shared database is charged to
+    type: string
+    $md.list:
+      resource: project
+```
+
+### Example: Multi Pick
+
+Put `$md.list` on `items` to pick more than one value:
+
+```yaml
+properties:
+  on_call_teams:
+    title: On-call Teams
+    description: Groups paged for this database's alarms
+    type: array
+    items:
+      type: string
+      $md.list:
+        resource: group
+```
+
+### Publish Validation
+
+`mass bundle publish` fails when a `$md.list` declaration is not valid. Each error gives the JSON pointer to the field, for example:
+
+```
+$md.list at #/properties/owner_project: resource must be one of group, service_account, project
+```
+
+A declaration is not valid when:
+- `resource` is missing or is not `group`, `service_account`, or `project`
+- It has a key other than `resource`
+- The field `type` is not `string`. For a multi pick, put `$md.list` on `items`.
+- The field also sets `enum`, `const`, `default`, or `oneOf`
+
+### Technical Details
+
+The `$md.list` extension:
+1. Lists the groups, service accounts, or projects that the current user can view
+2. Adds every stored value that is not in that list, with a `You cannot view this ...` title
+3. Generates a JSON Schema `oneOf` array with `const` (ID) and `title` (name) pairs
+4. Removes the `$md.list` annotation from the final schema
 
 ---
 
