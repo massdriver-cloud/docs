@@ -138,24 +138,24 @@ Once enabled, Massdriver:
 1. Authenticates using the IAM user credentials
 2. Lists the S3 bucket for available reports
 3. Downloads and parses the latest report
-4. Aggregates costs by `md-package` tag (legacy terminology).
+4. Aggregates costs by instance tag
 5. Stores daily and monthly cost data
 
 Data is collected every 24 hours.
 
 ## Cost Attribution Modes
 
-Massdriver attributes each cost line item to a package using the `md-package` tag, and picks one of two modes automatically based on the report.
+Massdriver attributes each cost line item to an instance by its instance tag. The instance tag is `md-instance`, which holds the instance identifier. Resources that do not have `md-instance` are attributed by the legacy `md-package` tag. Massdriver picks one of two modes automatically based on the report.
 
 ### Resource Groups Tagging API (default)
 
-Massdriver reads each resource's current `md-package` tag from the AWS Resource Groups Tagging API. This works out of the box and needs no billing-account access — it's what the IAM user's `tag:GetResources` permission is for.
+Massdriver reads each resource's current instance tag from the AWS Resource Groups Tagging API. This works out of the box and needs no billing-account access — it's what the IAM user's `tag:GetResources` permission is for.
 
 ### Cost allocation tag column (more accurate)
 
-If you activate `md-package` as a cost allocation tag, AWS adds a `resourceTags/user:md-package` column to the report. Massdriver detects that column and reads the tag straight from each line item, skipping the Tagging API. This is more accurate: it captures values at the time of usage, so deleted and retagged resources are still attributed, along with line items the Tagging API can't return (Reserved Instances, Savings Plans, and other non-resource charges).
+If you activate `md-instance` or `md-package` as a cost allocation tag, AWS adds a `resourceTags/user:md-instance` or `resourceTags/user:md-package` column to the report. Massdriver detects either column and reads the tag straight from each line item, skipping the Tagging API. This is more accurate: it captures values at the time of usage, so deleted and retagged resources are still attributed, along with line items the Tagging API can't return (Reserved Instances, Savings Plans, and other non-resource charges).
 
-Enable it by setting `activate_cost_allocation_tag = true` on the OpenTofu module:
+To activate `md-package`, set `activate_cost_allocation_tag = true` on the OpenTofu module:
 
 ```hcl
 module "massdriver_cur" {
@@ -167,6 +167,25 @@ module "massdriver_cur" {
 :::note
 Activating a cost allocation tag is a billing setting that must be applied in the AWS management (payer) account. It applies going forward only and can take up to 24 hours to appear in reports. Until then — or if you leave it disabled — Massdriver uses the Tagging API.
 :::
+
+## Switching to Custom Default Tags
+
+Organizations that use the legacy default tags send `md-package` on every resource. When an organization switches to a custom list of default tags, Massdriver stops sending `md-package` and sends `md-instance` instead. Each resource gets the new tags at the next deployment of its instance.
+
+**Tagging API mode:** no change is necessary. Massdriver reads `md-instance` from each resource.
+
+**Cost allocation tag mode:** activate `md-instance` as a cost allocation tag before you switch. When the report has a cost allocation tag column, Massdriver reads the instance tag only from the report columns. Line items for resources that have only `md-instance` are not attributed until `md-instance` is active.
+
+The OpenTofu module's `activate_cost_allocation_tag` variable activates only `md-package`. Activate `md-instance` in the AWS management (payer) account, either in the Billing and Cost Management console under **Cost allocation tags**, or with OpenTofu:
+
+```hcl
+resource "aws_ce_cost_allocation_tag" "md_instance" {
+  tag_key = "md-instance"
+  status  = "Active"
+}
+```
+
+AWS can only activate a tag key after a resource in the account has that tag. To activate `md-instance` before you switch, add an `md-instance` tag to one resource manually, then activate the key. If you switch first, costs for line items between the deployment and the activation are not attributed, because the resources no longer have `md-package` and the report has no `md-instance` column yet. Activation does not apply to costs from before it.
 
 ## Troubleshooting
 
@@ -180,7 +199,8 @@ The S3 bucket doesn't exist or the IAM user doesn't have `s3:HeadBucket` permiss
 
 ### No cost data appears
 
-- Verify resources have the `md-package` tag applied (legacy terminology).
+- Verify resources have the `md-instance` or `md-package` tag applied.
+- If the report has cost allocation tag columns, verify that the tag your resources carry is activated as a cost allocation tag.
 - CUR reports take up to 24 hours to generate initially
 - Check that the report is being written to the S3 bucket
 

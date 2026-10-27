@@ -96,6 +96,56 @@ Two limits are worth knowing:
 - The setting applies to **bundle** repositories. Resource type repositories are catalog metadata and are not grant-gated, so they are unaffected.
 - The setting applies **at creation**. Turning it on does not grant access to repositories that already exist, and turning it off does not revoke grants it created earlier.
 
+## Default tags
+
+Every deployment receives a set of default tags in `md_metadata.default_tags`. Bundles apply them to the cloud resources they provision. `defaultTags` controls which attributes are in that set.
+
+```graphql
+mutation {
+  updateOrganizationSettings(
+    organizationId: "your-org-id"
+    input: {
+      defaultTags: ["md-project", "md-environment", "md-component", "md-instance", "cost_center"]
+    }
+  ) {
+    result { id }
+  }
+}
+```
+
+Each entry is an attribute key: a [system attribute](/platform-operations/security/access-control) such as `md-project`, or a custom attribute your organization has declared. The attribute must apply to instances. The value of each tag is the attribute's value on the instance, merged from the project, the environment, and the instance. An attribute that has no value on an instance is left out of that instance's tags.
+
+Two tags are always sent, whatever the list contains:
+
+| Tag | Value |
+|-----|-------|
+| `managed-by` | `massdriver` |
+| `md-instance` | The instance id, for example `api-prod-database` |
+
+Massdriver reads `md-instance` back to attribute cloud costs and alarms to the instance.
+
+An organization that has not set `defaultTags` sends these tags:
+
+| Tag | Value |
+|-----|-------|
+| `managed-by` | `massdriver` |
+| `md-project` | The project id |
+| `md-target` | The environment id without the project part |
+| `md-manifest` | The component id without the project part |
+| `md-package` | The instance's name prefix |
+
+### Rules
+
+- **Once set, the list cannot be removed.** You can change the list, and an empty list is allowed, but you cannot return to the tags above.
+- **Attributes in the list cannot be deleted.** Remove an attribute from `defaultTags` before you delete it.
+- **Cloud tag rules still apply.** Massdriver does not change tag values. GCP label values allow only lowercase letters, digits, `_`, and `-`, so a value such as `md-bundle` (`aws-aurora@1.2.3`) is not a valid GCP label. Bundles that provision GCP resources must convert or leave out such values. AWS and Azure limit a resource to 50 tags, and GCP to 64 labels.
+
+### When the tags are applied
+
+The tags are sent with each deployment. An instance's resources get the new tags at its next deployment. Resources that are not deployed again keep the tags they have.
+
+Before you set `defaultTags` for the first time, read how the switch affects [AWS cost reports](/reference/integrations/aws-cost-and-usage-reports#switching-to-custom-default-tags), [Azure cost exports](/reference/integrations/azure-cost-management-exports#switching-to-custom-default-tags), and [alarms](/platform-operations/monitoring-and-alarms#switching-to-custom-default-tags). Also check cloud tag policies, cost reports, and scripts that use the tags in the table above.
+
 ## Related documentation
 
 - [Organizations](/concepts/organizations) — members, groups, and finding your organization id

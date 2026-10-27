@@ -7,7 +7,7 @@ sidebar_label: Monitoring & Alarms
 
 An **instance alarm** is a monitoring mechanism that allows you to track the health and performance of your cloud resources managed through a Massdriver instance. Instance alarms are directly associated with instances and provide real-time visibility into the state of your infrastructure.
 
-> The Terraform provider resource name (`massdriver_package_alarm`) and the REST path (`/v1/packages/{package_id}/alarms`) preserve the legacy "package" noun for backwards compatibility. The data is the same — an instance alarm.
+> The REST path (`/v1/packages/{package_id}/alarms`) preserves the legacy "package" noun for backwards compatibility. The data is the same — an instance alarm.
 
 ## Relationship to Instances
 
@@ -70,7 +70,7 @@ To integrate alarms with your canvas:
 
 ## Cloud Provider Integration Examples
 
-For each major cloud platform, you can use Terraform to connect their native alarm/alerting services to Massdriver. The following examples illustrate how to configure an alarm in AWS CloudWatch, Google Cloud Monitoring, Azure Monitor, and Prometheus Alertmanager. In each case, the cloud provider sends alarm notifications to Massdriver's webhook, and a `massdriver_package_alarm` resource registers the alarm in the Massdriver system. (The Terraform provider resource type retains the legacy `_package_` name; it represents an instance alarm.)
+For each major cloud platform, you can use Terraform to connect their native alarm/alerting services to Massdriver. The following examples illustrate how to configure an alarm in AWS CloudWatch, Google Cloud Monitoring, Azure Monitor, and Prometheus Alertmanager. In each case, the cloud provider sends alarm notifications to Massdriver's webhook, and a `massdriver_instance_alarm` resource registers the alarm in the Massdriver system.
 
 ### AWS (CloudWatch Alarms) + Massdriver
 
@@ -125,14 +125,14 @@ resource "aws_cloudwatch_metric_alarm" "alarm" {
 }
 
 # Massdriver Instance Alarm resource (linking the CloudWatch alarm to Massdriver)
-resource "massdriver_package_alarm" "aws_package_alarm" {
+resource "massdriver_instance_alarm" "aws_instance_alarm" {
   count             = var.alarm.alarm_enabled ? 1 : 0
   display_name      = var.alarm.massdriver_display_name
   cloud_resource_id = aws_cloudwatch_metric_alarm.alarm[0].arn
 
   comparison_operator = var.alarm.comparison_operator
   threshold           = var.alarm.threshold
-  period_minutes      = var.alarm.period / 60    # convert seconds to minutes
+  period              = var.alarm.period    # seconds
 
   metric {
     namespace  = var.alarm.metric_namespace
@@ -187,14 +187,14 @@ resource "google_monitoring_alert_policy" "cpu_alert" {
 }
 
 # Massdriver Instance Alarm resource for GCP
-resource "massdriver_package_alarm" "gcp_package_alarm" {
+resource "massdriver_instance_alarm" "gcp_instance_alarm" {
   count             = var.alarm.alarm_enabled ? 1 : 0
   display_name      = var.alarm.massdriver_display_name
   cloud_resource_id = google_monitoring_alert_policy.cpu_alert[0].name
 
   comparison_operator = var.alarm.comparison_operator
   threshold           = var.alarm.threshold
-  period_minutes      = var.alarm.period / 60  # convert seconds to minutes
+  period              = var.alarm.period  # seconds
 
   metric {
     namespace  = "compute.googleapis.com/instance"
@@ -251,14 +251,14 @@ resource "azurerm_monitor_metric_alert" "cpu_alert" {
 }
 
 # Massdriver Instance Alarm resource for Azure
-resource "massdriver_package_alarm" "azure_package_alarm" {
+resource "massdriver_instance_alarm" "azure_instance_alarm" {
   count             = var.alarm.alarm_enabled ? 1 : 0
   display_name      = var.alarm.massdriver_display_name
   cloud_resource_id = azurerm_monitor_metric_alert.cpu_alert[0].id
 
   comparison_operator = var.alarm.comparison_operator
   threshold           = var.alarm.threshold
-  period_minutes      = 5  # Azure uses fixed window size (5 minutes here)
+  period              = 300  # matches the 5-minute window_size
 
   metric {
     namespace  = "Microsoft.Compute/virtualMachines"
@@ -299,23 +299,37 @@ resource "kubernetes_config_map" "alertmanager" {
 }
 
 # Massdriver Instance Alarm resource for Alertmanager
-resource "massdriver_package_alarm" "alertmanager_package_alarm" {
+resource "massdriver_instance_alarm" "alertmanager_instance_alarm" {
   count             = var.alarm.alarm_enabled ? 1 : 0
   display_name      = var.alarm.massdriver_display_name
-  cloud_resource_id = "k8s://monitoring/alertmanager-config"
-
-  comparison_operator = var.alarm.comparison_operator
-  threshold           = var.alarm.threshold
-  period_minutes      = var.alarm.period
-
-  metric {
-    namespace  = "custom/alertmanager"
-    name       = "custom_alert"
-    statistic  = "firing"
-    dimensions = {}
-  }
+  # <md_package label value>_<alertname>; see Instance Tags in Alarm Notifications
+  cloud_resource_id = "${var.md_metadata.name_prefix}_${var.alarm.prometheus_alert_name}"
 }
 ```
+
+## Instance Tags in Alarm Notifications
+
+Massdriver matches a notification to a registered alarm by its `cloud_resource_id`. When no registered alarm matches, Massdriver finds the instance from an instance tag in the notification and registers the alarm for that instance. The instance must be in the environment of the webhook URL.
+
+The instance tag is `md-instance`, which holds the instance identifier. Notifications that do not have `md-instance` are matched by the legacy `md-package` tag, which holds the instance's name prefix.
+
+| Service | Where Massdriver reads the instance tag |
+|---------|-----------------------------------------|
+| AWS CloudWatch | `md-instance` or `name_prefix` key in the JSON alarm description, next to a `message` key |
+| Google Cloud Monitoring | `md-instance` or `md-package` in the incident's resource user labels |
+| Azure Monitor | `md-instance` or `md-package` in the action's webhook properties |
+| Prometheus Alertmanager | `md_instance` or `md_package` in the alert's common labels |
+
+Alertmanager uses underscores because Prometheus label names cannot contain hyphens. Massdriver sets the `cloud_resource_id` of an Alertmanager alarm to the label value and the alert name, joined by an underscore: `<label value>_<alertname>`. To register an Alertmanager alarm with `massdriver_instance_alarm`, use the same format. If an alert has both labels, Massdriver uses `md_instance`.
+
+## Switching to Custom Default Tags
+
+Organizations that use the legacy default tags send `md-package` on every resource. When an organization switches to a custom list of default tags, Massdriver stops sending `md-package` and sends `md-instance` instead. Each resource gets the new tags at the next deployment of its instance. Before you switch, check each alarm service:
+
+- **AWS CloudWatch:** registered alarms match by alarm ARN, so no change is necessary. For alarms that are not registered, set `md-instance` to the instance identifier in the JSON alarm description.
+- **Google Cloud Monitoring:** alert policies that filter on `metadata.user_labels.md-package` stop matching after the next deployment, because the resources no longer have that label. Change the filter to `metadata.user_labels.md-instance` with the instance identifier as the value.
+- **Azure Monitor:** actions that set their webhook properties from `md_metadata.default_tags` send `md-instance` after the switch, so no change is necessary. Actions that set `md-package` directly continue to work.
+- **Prometheus Alertmanager:** alert rules that set `md_package` continue to work. If you add `md_instance` to a rule, change the `cloud_resource_id` of its registered alarm to `<instance identifier>_<alertname>`.
 
 ## API Integration
 

@@ -117,10 +117,18 @@ Once enabled, Massdriver:
 1. Authenticates using the service principal credentials
 2. Lists blobs in the cost export container
 3. Downloads the latest export CSV
-4. Parses and aggregates costs by `md-instance` tag
+4. Parses and aggregates costs by instance tag
 5. Stores daily and monthly cost data
 
 Data is collected every 24 hours.
+
+The instance tag is `md-instance`, which holds the instance identifier. Resources that do not have `md-instance` are attributed by the legacy `md-package` tag.
+
+## Switching to Custom Default Tags
+
+Organizations that use the legacy default tags send `md-package` on every resource. When an organization switches to a custom list of default tags, Massdriver stops sending `md-package` and sends `md-instance` instead. Each resource gets the new tags at the next deployment of its instance.
+
+No change to the export is necessary. Cost Management exports include all resource tags.
 
 ## Troubleshooting
 
@@ -134,7 +142,7 @@ The blob container doesn't exist. Verify the OpenTofu module was applied success
 
 ### No cost data appears
 
-- Verify resources have the `md-instance` tag applied
+- Verify resources have the `md-instance` or `md-package` tag applied
 - Cost exports take up to 24 hours to generate initially
 - Check the Azure portal to confirm exports are being written
 
