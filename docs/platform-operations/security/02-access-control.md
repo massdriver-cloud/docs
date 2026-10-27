@@ -208,6 +208,19 @@ The action determines what kind of entity the policy applies to — `project:vie
 
 Policies are attached to **groups**. Group membership determines who the policy applies to; the policy's `action` and `conditions` determine what they can do and against which entities. Manage groups, policies, and members on the [**Groups**](https://app.massdriver.cloud/orgs?destination=/settings/groups) tab in your org's settings.
 
+New organizations start with these custom groups. They have no members. You can rename them, delete them, or change their policies.
+
+| Group | Policies |
+|---|---|
+| Organization Viewers | Allow `project:view`, `repo:view`, `resource:view` |
+| Developers | Allow `project:view`, `project:design`, `environment:create`, `environment:update`, `environment:configure`, `instance:configure`, `instance:plan`, `instance:propose`, `repo:view`, `repo:pull`, `resource:view` |
+| Production Deployers | Allow `project:view`, `resource:view`. Allow `instance:plan`, `instance:deploy`, `environment:deploy` where `md-environment` is `prod` or `production` |
+| Platform Engineers | Allow `repo:view`, `repo:pull`, `repo:push`, `repo:create`, `repo:update`, `repo:grant`, `repo:delete`, `organization:manageResourceTypes`, `organization:manageCustomAttributes`, `project:view`, `resource:view`, `resource:import`, `resource:update`, `resource:grant` |
+| CI / Automation | Allow `project:view`, `repo:view`, `repo:pull`, `repo:push`, `instance:configure`, `instance:plan`, `instance:deploy` |
+| Billing | Allow `organization:manageBilling` |
+
+Developers propose deployments, and Production Deployers approve them in production. To let Developers deploy to other environments, add an allow policy for `instance:deploy` with an `md-environment` condition, for example `["dev", "staging"]`.
+
 For per-repo or per-resource sharing — making a specific OCI repo or resource visible to other projects / environments — see [Grants](#grants) below.
 
 ### Evaluation Rules
@@ -217,7 +230,7 @@ For per-repo or per-resource sharing — making a specific OCI repo or resource 
 - **Partial matches never accumulate** — you cannot combine conditions from different policies
 - **Deny wins** — if any deny policy matches, access is denied regardless of allow policies
 - **Implicit deny** — if no policy matches, access is denied
-- **Built-in admin group has full access** — the built-in `organization.admin` group grants its members access to every action in the org. The built-in admin and viewer groups are fixed — you can't author policies on them, rename them, or delete them. Use a custom group for everything else.
+- **Built-in admin group has full access** — the built-in `organization.admin` group grants its members access to every action in the org. The built-in admin group is fixed — you can't author policies on it, rename it, or delete it. Use a custom group for everything else.
 - **`organization:manage` is a one-level umbrella** — a policy whose `actions` includes `organization:manage` satisfies any `organization:manage*` sub-action query. Author it once on a custom group to grant full org-level administrative access without putting people in the built-in admin group. The umbrella does not widen any other namespace, and holding a single sub-action does **not** imply the umbrella.
 - **Empty conditions are invalid** — use `*` for wildcard
 
@@ -909,7 +922,7 @@ Because permissions are attribute-based rather than ID-based, authorization surv
 
 ## Built-in Administration
 
-The organization owner account always bypasses access control checks. The built-in `organization.admin` group has full access to everything in the org. The built-in admin and viewer groups are fixed — you can't author policies on them, rename them, or delete them. Use a custom group for everything else, and limit admin membership to the small number of people who own the account itself.
+The organization owner account always bypasses access control checks. The built-in `organization.admin` group has full access to everything in the org. The built-in admin group is fixed — you can't author policies on it, rename it, or delete it. Use a custom group for everything else, and limit admin membership to the small number of people who own the account itself.
 
 ## Related
 

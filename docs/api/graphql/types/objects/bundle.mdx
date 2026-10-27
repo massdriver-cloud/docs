@@ -77,10 +77,13 @@ type Bundle {
   sourceUrl: String
   readme: String
   changelog: String
+  paramsSchema: Map!
+  uiSchema: Map!
   createdAt: DateTime!
   updatedAt: DateTime!
   effectiveAttributes: Map!
   repo: String!
+  provides: [BundleCapability!]
   dependencies: [BundleDependency!]!
   resources: [BundleResource!]!
 }
@@ -131,6 +134,25 @@ Each version's changelog is preserved — for the latest stable changelog
 at the repository level, use `OciRepo.changelog`.
 
 
+#### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>paramsSchema</b></code>](#params-schema)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#params-schema\} 
+JSON Schema describing the configuration parameters this exact bundle
+version accepts, as published.
+
+Massdriver's `$md` extensions (`$md.enum`, `$md.immutable`) are returned
+as-is. For a schema with them evaluated against a deployed instance, use
+`Instance.paramsSchema`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>uiSchema</b></code>](#ui-schema)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#ui-schema\} 
+UI hints describing how to render the params form for this exact bundle
+version.
+
+Follows [react-jsonschema-form](https://rjsf-team.github.io/react-jsonschema-form/)'s
+`uiSchema` conventions: keys mirror the params schema's structure and values
+contain rendering directives (e.g., `ui:widget`, `ui:order`, `ui:help`).
+Returns an empty object when the bundle does not provide UI hints.
+
+
 #### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
 Timestamp when this bundle version was first published (UTC).
 
@@ -148,6 +170,12 @@ snapshots and do not carry user attributes of their own.
 
 #### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>repo</b></code>](#repo)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#repo\} 
 OCI repository name for this bundle (e.g., `aws-aurora-postgres`). Equivalent to `name`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>provides</b></code>](#provides)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[BundleCapability!]</b></code>](/api/graphql/types/enums/bundle-capability.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="enum"/> \{#provides\} 
+Capabilities this bundle provides, in the order its author listed them.
+`null` when the bundle doesn't declare any. A bundle that provides `RUNTIME`
+can host application bundles.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>dependencies</b></code>](#dependencies)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[BundleDependency!]!</b></code>](/api/graphql/types/objects/bundle-dependency.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#dependencies\} 

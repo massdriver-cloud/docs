@@ -274,7 +274,7 @@ The single-entity counterpart (`project`, `ociRepo`, `resource`) explicitly chec
 
 - **`forbidden` is masked as `not_found`** for read paths that need to obscure existence (e.g., `project`, `environment`). Mutations return an explicit `forbidden` error.
 - **Proposed-attribute checks** apply to `create*` mutations: the resolver synthesizes the would-be entity's effective attributes (cascaded parent attrs + the entity's own `md-id` and local identifier) and checks ABAC against that map. This lets policies gate creation by name (`md-environment: [dev, staging, prod]`).
-- **Built-in admin group has full access.** Members of the built-in `organization.admin` group pass every gate on this page. The built-in admin and viewer groups are fixed — you can't author policies on them, rename them, or delete them. Use a custom group for everything else.
+- **Built-in admin group has full access.** Members of the built-in `organization.admin` group pass every gate on this page. The built-in admin group is fixed — you can't author policies on it, rename it, or delete it. Use a custom group for everything else.
 
 ## See also
 

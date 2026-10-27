@@ -1182,9 +1182,10 @@ type RootQueryType {
   The schema is the org's custom-attribute schema for the action's scope
   (e.g. `project:create` → project-scope attributes), with each key's
   `enum` reduced to the values the caller's allow policies permit for
-  that action. Org admins see the full closed set; non-admins with no
-  matching policy receive `{"properties": {}, "additionalProperties": false}`,
-  which rejects any write. Actions whose entity has no custom-attribute
+  that action. Org admins see the full closed set. When the org declares no
+  attributes for the scope, or the caller has no matching policy, the result
+  is `{"properties": {}, "additionalProperties": false}`, which rejects any
+  attribute key. Actions whose entity has no custom-attribute
   scope (group, organization, resource, resource_type) return
   `{"type": "object"}` (no constraints).
 
@@ -1864,8 +1865,8 @@ type RootMutationType {
   """
   Delete a group.
 
-  Only groups with the `CUSTOM` role can be deleted. The built-in `organization_admin` and
-  `organization_viewer` groups are permanent and cannot be removed. All members lose the
+  Only groups with the `CUSTOM` role can be deleted. The built-in `organization_admin` group
+  is permanent and cannot be removed. All members lose the
   access granted by this group immediately upon deletion. Requires the `organization:manageGroups` action.
   """
   deleteGroup(
@@ -5259,16 +5260,12 @@ The access level assigned to a group within an organization.
 Every group has exactly one role that determines what its members can do:
 
 - **`ORGANIZATION_ADMIN`** — Full administrative access across all projects.
-- **`ORGANIZATION_VIEWER`** — Read-only access across all projects.
 - **`CUSTOM`** — Fine-grained, project-level access grants. Use this when you need
   to give a team access to specific projects without organization-wide permissions.
 """
 enum GroupRole {
   "Full administrative access to all projects and settings in the organization. Members can manage groups, service accounts, billing, and all infrastructure."
   ORGANIZATION_ADMIN
-
-  "Read-only access to all projects in the organization. Members can view infrastructure, deployments, and logs but cannot make changes."
-  ORGANIZATION_VIEWER
 
   "Project-level access grants. Members only see projects explicitly assigned to this group, with either `project_admin` or `project_viewer` permissions per project."
   CUSTOM
@@ -5436,8 +5433,12 @@ graph TD
   G3 -->|"project_viewer"| P2["Project: frontend"]
 ```
 
-**Built-in groups** — Every organization starts with an `Admins` group (`organization_admin` role)
-and a `Viewers` group (`organization_viewer` role). These cannot be deleted.
+**Built-in group** — Every organization has one `organization_admin` group. It cannot be renamed
+or deleted, and its policies cannot be changed.
+
+**Starter groups** — New organizations also start with these `CUSTOM` groups, with no members:
+Organization Viewers, Developers, Production Deployers, Platform Engineers, CI / Automation,
+and Billing. You can rename them, delete them, or change their policies.
 
 **Custom groups** — Create custom groups with the `CUSTOM` role to grant project-level access.
 Each custom group can be assigned `project_admin` or `project_viewer` on specific projects.
@@ -6132,9 +6133,6 @@ enum ProvisioningsSortField {
 enum ViewerGroupType {
   "Organization administrators with full access to all projects and settings."
   ORGANIZATION_ADMIN
-
-  "Organization viewers with read-only access to all projects."
-  ORGANIZATION_VIEWER
 
   "Custom group with project-level permission grants."
   CUSTOM
@@ -8875,6 +8873,12 @@ versions are valid, or `ReleaseChannel` when only channels are valid.
 """
 scalar VersionConstraint
 
+"A capability a bundle declares in the `provides` list of its massdriver.yaml."
+enum BundleCapability {
+  "Hosts application bundles built on it."
+  RUNTIME
+}
+
 """
 An input that a bundle requires from another bundle's output.
 
@@ -8994,6 +8998,27 @@ type Bundle {
   """
   changelog: String
 
+  """
+  JSON Schema describing the configuration parameters this exact bundle
+  version accepts, as published.
+
+  Massdriver's `$md` extensions (`$md.enum`, `$md.immutable`) are returned
+  as-is. For a schema with them evaluated against a deployed instance, use
+  `Instance.paramsSchema`.
+  """
+  paramsSchema: Map!
+
+  """
+  UI hints describing how to render the params form for this exact bundle
+  version.
+
+  Follows [react-jsonschema-form](https://rjsf-team.github.io/react-jsonschema-form/)'s
+  `uiSchema` conventions: keys mirror the params schema's structure and values
+  contain rendering directives (e.g., `ui:widget`, `ui:order`, `ui:help`).
+  Returns an empty object when the bundle does not provide UI hints.
+  """
+  uiSchema: Map!
+
   "Timestamp when this bundle version was first published (UTC)."
   createdAt: DateTime!
 
@@ -9010,6 +9035,13 @@ type Bundle {
 
   "OCI repository name for this bundle (e.g., `aws-aurora-postgres`). Equivalent to `name`."
   repo: String!
+
+  """
+  Capabilities this bundle provides, in the order its author listed them.
+  `null` when the bundle doesn't declare any. A bundle that provides `RUNTIME`
+  can host application bundles.
+  """
+  provides: [BundleCapability!]
 
   "Dependencies (inputs) this bundle requires. Each entry names a slot and the resource type it accepts. Sorted alphabetically by name."
   dependencies: [BundleDependency!]!

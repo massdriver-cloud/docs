@@ -60,8 +60,12 @@ graph TD
   G3 -->|"project_viewer"| P2["Project: frontend"]
 ```
 
-**Built-in groups** — Every organization starts with an `Admins` group (`organization_admin` role)
-and a `Viewers` group (`organization_viewer` role). These cannot be deleted.
+**Built-in group** — Every organization has one `organization_admin` group. It cannot be renamed
+or deleted, and its policies cannot be changed.
+
+**Starter groups** — New organizations also start with these `CUSTOM` groups, with no members:
+Organization Viewers, Developers, Production Deployers, Platform Engineers, CI / Automation,
+and Billing. You can rename them, delete them, or change their policies.
 
 **Custom groups** — Create custom groups with the `CUSTOM` role to grant project-level access.
 Each custom group can be assigned `project_admin` or `project_viewer` on specific projects.
