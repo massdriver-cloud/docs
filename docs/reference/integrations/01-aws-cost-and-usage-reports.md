@@ -176,16 +176,17 @@ Organizations that use the legacy default tags send `md-package` on every resour
 
 **Cost allocation tag mode:** activate `md-instance` as a cost allocation tag before you switch. When the report has a cost allocation tag column, Massdriver reads the instance tag only from the report columns. Line items for resources that have only `md-instance` are not attributed until `md-instance` is active.
 
-The OpenTofu module's `activate_cost_allocation_tag` variable activates only `md-package`. Activate `md-instance` in the AWS management (payer) account, either in the Billing and Cost Management console under **Cost allocation tags**, or with OpenTofu:
+Activate `md-instance` in the AWS management (payer) account. Set `activate_md_instance_cost_allocation_tag = true` on the OpenTofu module, or use the Billing and Cost Management console under **Cost allocation tags**. Keep `activate_cost_allocation_tag = true` while resources still carry `md-package`.
 
 ```hcl
-resource "aws_ce_cost_allocation_tag" "md_instance" {
-  tag_key = "md-instance"
-  status  = "Active"
+module "massdriver_cur" {
+  source                                   = "github.com/massdriver-cloud/integrations//aws-cost-and-usage-reports"
+  activate_cost_allocation_tag             = true
+  activate_md_instance_cost_allocation_tag = true
 }
 ```
 
-AWS can only activate a tag key after a resource in the account has that tag. To activate `md-instance` before you switch, add an `md-instance` tag to one resource manually, then activate the key. If you switch first, costs for line items between the deployment and the activation are not attributed, because the resources no longer have `md-package` and the report has no `md-instance` column yet. Activation does not apply to costs from before it.
+AWS can only activate a tag key after a resource in the account has that tag, and the key can take up to 24 hours to appear. Until then, `tofu apply` fails with `activate_md_instance_cost_allocation_tag = true`. To activate `md-instance` before you switch, add an `md-instance` tag to one resource manually, then activate the key. If you switch first, costs for line items between the deployment and the activation are not attributed, because the resources no longer have `md-package` and the report has no `md-instance` column yet. Activation does not apply to costs from before it.
 
 ## Troubleshooting
 
