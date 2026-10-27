@@ -329,7 +329,7 @@ Organizations that use the legacy default tags send `md-package` on every resour
 - **AWS CloudWatch:** registered alarms match by alarm ARN, so no change is necessary. For alarms that are not registered, set `md-instance` to the instance identifier in the JSON alarm description.
 - **Google Cloud Monitoring:** alert policies that filter on `metadata.user_labels.md-package` stop matching after the next deployment, because the resources no longer have that label. Change the filter to `metadata.user_labels.md-instance` with the instance identifier as the value.
 - **Azure Monitor:** actions that set their webhook properties from `md_metadata.default_tags` send `md-instance` after the switch, so no change is necessary. Actions that set `md-package` directly continue to work.
-- **Prometheus Alertmanager:** alert rules that set `md_package` continue to work. If you add `md_instance` to a rule, change the `cloud_resource_id` of its registered alarm to `<instance identifier>_<alertname>`.
+- **Prometheus Alertmanager:** alert rules that set `md_package` continue to work. If you add `md_instance` to a rule, change the `cloud_resource_id` of its registered alarm to `<instance identifier>_<alertname>`. Otherwise Massdriver does not match the alert to that alarm and registers a second alarm for the instance.
 
 ## API Integration
 
