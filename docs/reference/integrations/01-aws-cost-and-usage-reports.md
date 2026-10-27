@@ -155,14 +155,16 @@ Massdriver reads each resource's current instance tag from the AWS Resource Grou
 
 If you activate `md-instance` or `md-package` as a cost allocation tag, AWS adds a `resourceTags/user:md-instance` or `resourceTags/user:md-package` column to the report. Massdriver detects either column and reads the tag straight from each line item, skipping the Tagging API. This is more accurate: it captures values at the time of usage, so deleted and retagged resources are still attributed, along with line items the Tagging API can't return (Reserved Instances, Savings Plans, and other non-resource charges).
 
-To activate `md-package`, set `activate_cost_allocation_tag = true` on the OpenTofu module:
+To activate tags, list them in `cost_allocation_tags` on the OpenTofu module. Organizations on the legacy default tags activate `md-package`:
 
 ```hcl
 module "massdriver_cur" {
-  source                       = "github.com/massdriver-cloud/integrations//aws-cost-and-usage-reports"
-  activate_cost_allocation_tag = true
+  source               = "github.com/massdriver-cloud/integrations//aws-cost-and-usage-reports?ref=v2.0.0"
+  cost_allocation_tags = ["md-package"]
 }
 ```
+
+Version `v1.0.0` of the module uses `activate_cost_allocation_tag = true` for `md-package`. In `v2.0.0`, use `cost_allocation_tags = ["md-package"]`. The upgrade keeps the existing activation.
 
 :::note
 Activating a cost allocation tag is a billing setting that must be applied in the AWS management (payer) account. It applies going forward only and can take up to 24 hours to appear in reports. Until then — or if you leave it disabled — Massdriver uses the Tagging API.
@@ -176,17 +178,16 @@ Organizations that use the legacy default tags send `md-package` on every resour
 
 **Cost allocation tag mode:** activate `md-instance` as a cost allocation tag before you switch. When the report has a cost allocation tag column, Massdriver reads the instance tag only from the report columns. Line items for resources that have only `md-instance` are not attributed until `md-instance` is active.
 
-Activate `md-instance` in the AWS management (payer) account. Set `activate_md_instance_cost_allocation_tag = true` on the OpenTofu module, or use the Billing and Cost Management console under **Cost allocation tags**. Keep `activate_cost_allocation_tag = true` while resources still carry `md-package`.
+Activate `md-instance` in the AWS management (payer) account. Add `md-instance` to `cost_allocation_tags` on the OpenTofu module, or use the Billing and Cost Management console under **Cost allocation tags**. Keep `md-package` in the list while resources still carry it.
 
 ```hcl
 module "massdriver_cur" {
-  source                                   = "github.com/massdriver-cloud/integrations//aws-cost-and-usage-reports"
-  activate_cost_allocation_tag             = true
-  activate_md_instance_cost_allocation_tag = true
+  source               = "github.com/massdriver-cloud/integrations//aws-cost-and-usage-reports?ref=v2.0.0"
+  cost_allocation_tags = ["md-package", "md-instance"]
 }
 ```
 
-AWS can only activate a tag key after a resource in the account has that tag, and the key can take up to 24 hours to appear. Until then, `tofu apply` fails with `activate_md_instance_cost_allocation_tag = true`. To activate `md-instance` before you switch, add an `md-instance` tag to one resource manually, then activate the key. If you switch first, costs for line items between the deployment and the activation are not attributed, because the resources no longer have `md-package` and the report has no `md-instance` column yet. Activation does not apply to costs from before it.
+AWS can only activate a tag key after a resource in the account has that tag, and the key can take up to 24 hours to appear. Until then, `tofu apply` fails when `cost_allocation_tags` includes `md-instance`. To activate `md-instance` before you switch, add an `md-instance` tag to one resource manually, then activate the key. If you switch first, costs for line items between the deployment and the activation are not attributed, because the resources no longer have `md-package` and the report has no `md-instance` column yet. Activation does not apply to costs from before it.
 
 ## Troubleshooting
 
