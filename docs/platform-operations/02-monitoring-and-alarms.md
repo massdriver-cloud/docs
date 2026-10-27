@@ -317,6 +317,30 @@ resource "massdriver_package_alarm" "alertmanager_package_alarm" {
 }
 ```
 
+## Instance Tags in Alarm Notifications
+
+Massdriver matches a notification to a registered alarm by its `cloud_resource_id`. When no registered alarm matches, Massdriver finds the instance from an instance tag in the notification and registers the alarm for that instance. The instance must be in the environment of the webhook URL.
+
+The instance tag is `md-instance`, which holds the instance identifier. Notifications that do not have `md-instance` are matched by the legacy `md-package` tag, which holds the instance's name prefix.
+
+| Service | Where Massdriver reads the instance tag |
+|---------|-----------------------------------------|
+| AWS CloudWatch | `md-instance` or `name_prefix` key in the JSON alarm description, next to a `message` key |
+| Google Cloud Monitoring | `md-instance` or `md-package` in the incident's resource user labels |
+| Azure Monitor | `md-instance` or `md-package` in the action's webhook properties |
+| Prometheus Alertmanager | `md_instance` or `md_package` in the alert's common labels |
+
+Alertmanager uses underscores because Prometheus label names cannot contain hyphens. Massdriver sets the `cloud_resource_id` of an Alertmanager alarm to the label value and the alert name, joined by an underscore: `<label value>_<alertname>`. To register an Alertmanager alarm with `massdriver_package_alarm`, use the same format. If an alert has both labels, Massdriver uses `md_instance`.
+
+## Switching to Custom Default Tags
+
+Organizations that use the legacy default tags send `md-package` on every resource. When an organization switches to a custom list of default tags, Massdriver stops sending `md-package` and sends `md-instance` instead. Each resource gets the new tags at the next deployment of its instance. Before you switch, check each alarm service:
+
+- **AWS CloudWatch:** registered alarms match by alarm ARN, so no change is necessary. For alarms that are not registered, set `md-instance` to the instance identifier in the JSON alarm description.
+- **Google Cloud Monitoring:** alert policies that filter on `metadata.user_labels.md-package` stop matching after the next deployment, because the resources no longer have that label. Change the filter to `metadata.user_labels.md-instance` with the instance identifier as the value.
+- **Azure Monitor:** actions that set their webhook properties from `md_metadata.default_tags` send `md-instance` after the switch, so no change is necessary. Actions that set `md-package` directly continue to work.
+- **Prometheus Alertmanager:** alert rules that set `md_package` continue to work. If you add `md_instance` to a rule, change the `cloud_resource_id` of its registered alarm to `<instance identifier>_<alertname>`.
+
 ## API Integration
 
 You can also register alarms programmatically using the Massdriver API, which allows integration into scripts or CI/CD pipelines. The example below demonstrates creating a new instance alarm with a simple HTTP request (using `curl`). Once this API call is executed, the alarm becomes active and its state will be tracked and visualized on your Massdriver canvas in real time (just like alarms created via Terraform or the UI).
