@@ -48,6 +48,7 @@ Change organization-wide behavior settings. Only the settings you provide are ch
 ```graphql
 input UpdateOrganizationSettingsInput {
   defaultBundleAccess: OrganizationDefaultBundleAccess
+  defaultTags: [String!]
   namingConvention: String
 }
 ```
@@ -59,6 +60,10 @@ input UpdateOrganizationSettingsInput {
 
 #### [<code style={{ fontWeight: 'normal' }}>UpdateOrganizationSettingsInput.<b>defaultBundleAccess</b></code>](#default-bundle-access)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OrganizationDefaultBundleAccess</b></code>](/api/graphql/types/enums/organization-default-bundle-access.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#default-bundle-access\} 
 Access granted to new bundle repositories at creation. NONE keeps each new repository restricted until a grant is authored for it. ALL_PROJECTS automatically creates an org-wide repo:pull grant on each new bundle repository, making its bundles usable by every project. Changing this setting only affects repositories created afterwards.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateOrganizationSettingsInput.<b>defaultTags</b></code>](#default-tags)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#default-tags\} 
+Attribute keys whose values are sent to deployments as default tags. Each key must apply to instances. managed-by and md-instance are always sent.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>UpdateOrganizationSettingsInput.<b>namingConvention</b></code>](#naming-convention)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#naming-convention\} 

@@ -54,6 +54,7 @@ the default. Change settings with the `updateOrganizationSettings` mutation.
 type OrganizationSettings {
   defaultBundleAccess: OrganizationDefaultBundleAccess!
   namingConvention: String
+  defaultTags: [String!]
 }
 ```
 
@@ -68,6 +69,10 @@ Access granted to new bundle repositories at creation. Defaults to `NONE` — ne
 
 #### [<code style={{ fontWeight: 'normal' }}>OrganizationSettings.<b>namingConvention</b></code>](#naming-convention)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#naming-convention\} 
 Liquid template that names every provisioned cloud resource, e.g. `{{attrs.team}}-{{instance.id}}`. `null` means the default convention `{{instance.id}}-{{component.suffix}}`. The resolved name is burned into each instance when it is first created and does not change afterward.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrganizationSettings.<b>defaultTags</b></code>](#default-tags)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#default-tags\} 
+Attribute keys whose values are sent to deployments as default tags. `managed-by` and `md-instance` are always sent.
 
 
 

@@ -1176,6 +1176,24 @@ type RootQueryType {
   ): [PolicyDecision!]!
 
   """
+  Returns the attribute keys that apply to an entity type: the `md-*` system keys
+  Massdriver sets on it and the custom attributes it inherits. For example, scope
+  `INSTANCE` returns `md-project`, `md-environment`, `md-component`, `md-instance`
+  and more, plus every custom attribute declared at `PROJECT`, `ENVIRONMENT` or
+  `COMPONENT` scope.
+
+  System keys come first, then custom keys sorted by key. Values are not included;
+  they depend on the individual entity.
+  """
+  effectiveAttributes(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The kind of entity to list attribute keys for."
+    scope: EffectiveAttributeScope!
+  ): [EffectiveAttribute!]!
+
+  """
   Returns a JSON Schema document describing the custom-attribute keys and
   permitted values for a given action, narrowed by the caller's policies.
 
@@ -5144,8 +5162,38 @@ enum AttributeScope {
   "Attribute is set on blueprint components (design-time)."
   COMPONENT
 
-  "Attribute is set on individual OCI repositories (bundles)."
+  "Attribute is set on individual OCI repositories."
   REPO
+}
+
+"A kind of entity whose attributes can be listed with `effectiveAttributes`."
+enum EffectiveAttributeScope {
+  "Projects."
+  PROJECT
+
+  "Environments."
+  ENVIRONMENT
+
+  "Blueprint components."
+  COMPONENT
+
+  "Instances, and the deployments made from them."
+  INSTANCE
+
+  "Resources produced by instances."
+  RESOURCE
+
+  "OCI repositories."
+  REPO
+}
+
+"Where an attribute key comes from."
+enum AttributeSource {
+  "An `md-*` key Massdriver sets from the entity's identity."
+  SYSTEM
+
+  "A custom attribute declared by your organization."
+  CUSTOM
 }
 
 "Fields available for sorting the custom attributes list."
@@ -5233,6 +5281,18 @@ type CustomAttribute {
 
   "When this custom attribute was last modified (UTC)."
   updatedAt: DateTime!
+}
+
+"""
+An attribute key that applies to a kind of entity, either set by Massdriver or
+declared by your organization and inherited down the resource hierarchy.
+"""
+type EffectiveAttribute {
+  "The attribute key (for example `md-project` or `TEAM`)."
+  key: String!
+
+  "Whether Massdriver or your organization defines the key."
+  source: AttributeSource!
 }
 
 type CustomAttributesPage {
@@ -5668,6 +5728,9 @@ input UpdateOrganizationSettingsInput {
   "Access granted to new bundle repositories at creation. NONE keeps each new repository restricted until a grant is authored for it. ALL_PROJECTS automatically creates an org-wide repo:pull grant on each new bundle repository, making its bundles usable by every project. Changing this setting only affects repositories created afterwards."
   defaultBundleAccess: OrganizationDefaultBundleAccess
 
+  "Attribute keys whose values are sent to deployments as default tags. Each key must apply to instances. managed-by and md-instance are always sent."
+  defaultTags: [String!]
+
   "Liquid template that names every provisioned cloud resource, composed from atoms such as {{org.id}}, {{project.id}}, {{environment.id}}, {{environment.local_id}}, {{instance.id}}, {{instance.local_id}}, {{component.id}}, {{component.name}}, {{component.suffix}}, and {{attrs.YOUR_KEY}} for any declared custom attribute. Built-in Liquid filters (downcase, replace, ...) are available. To keep names distinct per instance, the template must include {{instance.id}}, or {{component.id}} with an environment atom, or {{project.id}} with an environment atom and {{instance.local_id}}. Spaces are allowed; control characters are not. Send an empty string or null to use the default convention {{instance.id}}-{{component.suffix}}. The resolved name is burned into each instance at first creation and does not change afterward."
   namingConvention: String
 }
@@ -5907,6 +5970,9 @@ type OrganizationSettings {
 
   "Liquid template that names every provisioned cloud resource, e.g. `{{attrs.team}}-{{instance.id}}`. `null` means the default convention `{{instance.id}}-{{component.suffix}}`. The resolved name is burned into each instance when it is first created and does not change afterward."
   namingConvention: String
+
+  "Attribute keys whose values are sent to deployments as default tags. `managed-by` and `md-instance` are always sent."
+  defaultTags: [String!]
 }
 
 "Confirmation payload returned after removing a member from the organization."

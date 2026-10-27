@@ -1,0 +1,79 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: effective-attributes
+title: effectiveAttributes
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Returns the attribute keys that apply to an entity type: the `md-*` system keys
+Massdriver sets on it and the custom attributes it inherits. For example, scope
+`INSTANCE` returns `md-project`, `md-environment`, `md-component`, `md-instance`
+and more, plus every custom attribute declared at `PROJECT`, `ENVIRONMENT` or
+`COMPONENT` scope.
+
+System keys come first, then custom keys sorted by key. Values are not included;
+they depend on the individual entity.
+
+
+```graphql
+effectiveAttributes(
+  organizationId: ID!
+  scope: EffectiveAttributeScope!
+): [EffectiveAttribute!]!
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>effectiveAttributes.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>effectiveAttributes.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EffectiveAttributeScope!</b></code>](/api/graphql/types/enums/effective-attribute-scope.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#scope\} 
+The kind of entity to list attribute keys for.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>EffectiveAttribute</b></code>](/api/graphql/types/objects/effective-attribute.mdx) <Badge class="badge badge--secondary " text="object"/> 
+An attribute key that applies to a kind of entity, either set by Massdriver or
+declared by your organization and inherited down the resource hierarchy.
