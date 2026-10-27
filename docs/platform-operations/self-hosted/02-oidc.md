@@ -43,7 +43,7 @@ https://api.massdriver.example.com/auth/github/callback
 | `tokenUrl` | Yes | The provider's OAuth token endpoint |
 | `clientId` | Yes | The client/application ID from your OAuth app |
 | `clientSecret` | Yes | The client secret from your OAuth app |
-| `autojoinOrganization` | No | Massdriver organization ID to auto-join after authentication |
+| `autojoinOrganization` | No | Massdriver organization ID. New users join its admin group after authentication |
 | `uiLabel` | No | Custom label for the sign-in button in the Massdriver UI |
 | `uiIconUrl` | No | URL of a custom icon for the sign-in button |
 | `okta.site` | Yes (Okta only) | Your Okta organization URL, e.g., `https://your-org.okta.com` |
@@ -52,7 +52,7 @@ https://api.massdriver.example.com/auth/github/callback
 
 ### Optional Fields
 
-**`autojoinOrganization`** — Automatically associates new users who sign up via this OIDC provider with the specified Massdriver organization. Without this, new users will be prompted to create a new organization. Use the organization ID (e.g., `myorg`), not the display name (e.g., `"My First Organization"`).
+**`autojoinOrganization`** — Adds users who sign in via this OIDC provider to the admin group of the specified Massdriver organization. Only users who are not yet members of the organization join; existing members keep their groups. Every new user gets full admin access, so use this only when everyone who can sign in to the provider should administer the organization. Without this, new users will be prompted to create a new organization. Use the organization ID (e.g., `myorg`), not the display name (e.g., `"My First Organization"`).
 
 **`uiLabel`** — Overrides the default button text on the login page. Useful if you want to show something like `"Sign in with Corporate SSO"` instead of the default provider name.
 

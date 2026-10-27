@@ -48,9 +48,10 @@ permitted values for a given action, narrowed by the caller's policies.
 The schema is the org's custom-attribute schema for the action's scope
 (e.g. `project:create` → project-scope attributes), with each key's
 `enum` reduced to the values the caller's allow policies permit for
-that action. Org admins see the full closed set; non-admins with no
-matching policy receive `{"properties": {}, "additionalProperties": false}`,
-which rejects any write. Actions whose entity has no custom-attribute
+that action. Org admins see the full closed set. When the org declares no
+attributes for the scope, or the caller has no matching policy, the result
+is `{"properties": {}, "additionalProperties": false}`, which rejects any
+attribute key. Actions whose entity has no custom-attribute
 scope (group, organization, resource, resource_type) return
 `{"type": "object"}` (no constraints).
 

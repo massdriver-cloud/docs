@@ -47,7 +47,6 @@ The access level assigned to a group within an organization.
 Every group has exactly one role that determines what its members can do:
 
 - **`ORGANIZATION_ADMIN`** — Full administrative access across all projects.
-- **`ORGANIZATION_VIEWER`** — Read-only access across all projects.
 - **`CUSTOM`** — Fine-grained, project-level access grants. Use this when you need
   to give a team access to specific projects without organization-wide permissions.
 
@@ -55,7 +54,6 @@ Every group has exactly one role that determines what its members can do:
 ```graphql
 enum GroupRole {
   ORGANIZATION_ADMIN
-  ORGANIZATION_VIEWER
   CUSTOM
 }
 ```
@@ -67,10 +65,6 @@ enum GroupRole {
 
 #### [<code style={{ fontWeight: 'normal' }}>GroupRole.<b>ORGANIZATION&#x005F;ADMIN</b></code>](#organization-admin) \{#organization-admin\} 
 Full administrative access to all projects and settings in the organization. Members can manage groups, service accounts, billing, and all infrastructure.
-
-
-#### [<code style={{ fontWeight: 'normal' }}>GroupRole.<b>ORGANIZATION&#x005F;VIEWER</b></code>](#organization-viewer) \{#organization-viewer\} 
-Read-only access to all projects in the organization. Members can view infrastructure, deployments, and logs but cannot make changes.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GroupRole.<b>CUSTOM</b></code>](#custom) \{#custom\} 
