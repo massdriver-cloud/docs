@@ -1,15 +1,23 @@
 ---
-id: self-hosted-dynamic-credentials
-slug: /platform-operations/self-hosted/dynamic-credentials
-title: Dynamic Cloud Credentials
-sidebar_label: Dynamic Credentials
+id: self-hosted-provisioner-workload-identity
+slug: /platform-operations/self-hosted/provisioner-workload-identity
+title: Provisioner Workload Identity
+sidebar_label: Provisioner Workload Identity
 ---
 
-The [resource types](/guides/customizing-cloud-support) system in Massdriver allows you to define your credential structure for cloud authentication. **Dynamic credentials are the recommended approach.** Instead of storing a long-lived secret — an AWS Secret Access Key, GCP service account key or an Azure client secret — the provisioner pod is given a cloud identity through its Kubernetes ServiceAccount, and the IaC provider exchanges the pod's projected ServiceAccount token for a credential that expires in minutes.
+The [resource types](/guides/customizing-cloud-support) system in Massdriver allows you to define your credential structure for cloud authentication. With provisioner workload identity, instead of storing a long-lived secret — an AWS Secret Access Key, GCP service account key or an Azure client secret — the provisioner pod is given a cloud identity through its Kubernetes ServiceAccount, and the IaC provider exchanges the pod's projected ServiceAccount token for a credential that expires in minutes.
 
-:::info Self-Hosted Only
+:::info Self-Hosted and Same-Cloud Only
 
-Dynamic credentials require control over the Kubernetes cluster running the provisioners, so they are only available in self-hosted Massdriver installations.
+Provisioner workload identity requires control over the Kubernetes cluster running the provisioners, so they are only available in self-hosted Massdriver installations.
+
+Provisioner workload identity only reaches the cloud that runs the cluster: EKS to AWS, GKE to GCP, and AKS to Azure. To deploy to another cloud, use [Deployment Identity Tokens](/platform-operations/self-hosted/deployment-identity-tokens).
+
+:::
+
+:::tip Deployment Identity Tokens Are Recommended
+
+[Deployment identity tokens](/platform-operations/self-hosted/deployment-identity-tokens) are the recommended approach. They work across clouds, and cloud trust rules can restrict access by organization, project, environment, or instance. Provisioner workload identity gives every deployment the same cloud identity, so access can only be restricted in Massdriver with [resource grants](/guides/share-resources). Provisioner workload identity is still supported. See [Identity Tokens vs. Provisioner Workload Identity](/platform-operations/security/deployment-identity-tokens#identity-tokens-vs-provisioner-workload-identity).
 
 :::
 
@@ -533,7 +541,7 @@ If `AZURE_FEDERATED_TOKEN_FILE` is unset inside the pod, the webhook did not mut
 
 ## Related Configuration
 
-- Dynamic credentials cover **provisioning only**. Massdriver's blob storage access is a separate identity configured through `massdriver.blobStorage.serviceAccount.annotations` — see [Cloud Storage](/platform-operations/self-hosted/cloud-storage).
-- The provisioner ServiceAccount is one identity for all deployments. To give each organization, project, environment, or instance its own cloud identity, use [Deployment Identity Tokens](/platform-operations/security/deployment-identity-tokens).
+- Provisioner workload identity covers **provisioning only**. Massdriver's blob storage access is a separate identity configured through `massdriver.blobStorage.serviceAccount.annotations` — see [Cloud Storage](/platform-operations/self-hosted/cloud-storage).
+- The provisioner ServiceAccount is one identity for all deployments, so any deployment can assume the credential. To restrict cloud access by organization, project, environment, or instance, use [Deployment Identity Tokens](/platform-operations/self-hosted/deployment-identity-tokens).
 - The [AWS Cost and Usage Report](/reference/integrations/aws-cost-and-usage-reports) and [Azure Cost Management](/reference/integrations/azure-cost-management-exports) integrations provision their own credentials and are unaffected.
 - For background on shaping credential resource types, see [Customizing Cloud Support](/guides/customizing-cloud-support) and [Crafting Custom Resource Types](/guides/custom-resource-type).

@@ -107,7 +107,8 @@ module.exports = {
             "platform-operations/self-hosted/self-hosted-oidc",
             "platform-operations/self-hosted/self-hosted-cloud-storage",
             "platform-operations/self-hosted/self-hosted-custom-provisioners",
-            "platform-operations/self-hosted/self-hosted-dynamic-credentials",
+            "platform-operations/self-hosted/self-hosted-deployment-identity-tokens",
+            "platform-operations/self-hosted/self-hosted-provisioner-workload-identity",
             {
               type: "category",
               label: "Runbooks",
