@@ -2074,7 +2074,7 @@ type RootMutationType {
 
   This revokes all group memberships and cancels any pending invitations for the
   specified email address. The member immediately loses access to all organization
-  resources. Requires the `organization:manageProfile` action.
+  resources. Requires the `organization:manageMembers` action.
   """
   deleteOrganizationMember(
     "Your organization's unique identifier."
@@ -5902,7 +5902,7 @@ type Organization {
   Service accounts live under the top-level `serviceAccounts` query — pair both when
   rendering the full organization roster.
 
-  Requires the `organization:manageProfile` action.
+  Every member of the organization can see this list.
   """
   members(
     "Narrow results by search."
@@ -5919,7 +5919,7 @@ type Organization {
   One human account in this organization, whether or not they belong to a group.
 
   Returns `null` with a `NOT_FOUND` error if the account is not a member of this organization.
-  Requires the `organization:manageProfile` action.
+  Every member of the organization can see this.
   """
   member(
     "The account's unique identifier."
