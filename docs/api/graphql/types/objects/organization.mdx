@@ -150,7 +150,7 @@ Includes members provisioned by an identity provider (e.g. Okta) who have not ye
 Service accounts live under the top-level `serviceAccounts` query — pair both when
 rendering the full organization roster.
 
-Requires the `organization:manageProfile` action.
+Every member of the organization can see this list.
 ##### [<code style={{ fontWeight: 'normal' }}>Organization.members.<b>filter</b></code>](#organization-members-filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OrganizationMembersFilter</b></code>](/api/graphql/types/inputs/organization-members-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#organization-members-filter\} 
 Narrow results by search.
 
@@ -167,7 +167,7 @@ Cursor from a previous page to fetch the next set of results.
 One human account in this organization, whether or not they belong to a group.
 
 Returns `null` with a `NOT_FOUND` error if the account is not a member of this organization.
-Requires the `organization:manageProfile` action.
+Every member of the organization can see this.
 ##### [<code style={{ fontWeight: 'normal' }}>Organization.member.<b>id</b></code>](#organization-member-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UUID!</b></code>](/api/graphql/types/scalars/uuid.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-member-id\} 
 The account's unique identifier.
 
