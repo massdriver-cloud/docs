@@ -220,6 +220,117 @@ mass bundle publish
 - The application must use the current format as well.
 - The application's own IaC is not used. Directories such as `src/` in the application repository are ignored.
 
+## Example: services connected over mTLS
+
+`payments-api` serves an mTLS endpoint, and `checkout-api` calls it. Both run on the `lambda` runtime. `payments-api` publishes a `payments-api-server` resource, and `checkout-api` depends on that type, so checkout connects to payments by contract and never needs to know which function serves it.
+
+```mermaid
+flowchart LR
+  lambda["lambda runtime"] -.runs.-> payments["payments-api"]
+  lambda -.runs.-> checkout["checkout-api"]
+  payments -- "payments-api-server<br/>url, ca_cert, server_name" --> checkout
+```
+
+### The resource type
+
+The resource holds only what a client needs to verify the server. The server's private key never goes in a resource, because every bundle connected to it can read it.
+
+```yaml
+name: payments-api-server
+version: 1.0.0
+label: Payments API Server
+
+schema:
+  title: Payments API Server
+  description: mTLS endpoint other services bind to for payments.
+  type: object
+  additionalProperties: false
+  required: [url, ca_cert, server_name]
+  properties:
+    url:
+      title: URL
+      type: string
+      pattern: ^https://
+    ca_cert:
+      title: CA certificate
+      description: PEM bundle clients use to verify the server.
+      type: string
+    server_name:
+      title: Server name
+      description: Name clients verify in the server certificate.
+      type: string
+```
+
+### The server
+
+`payments-api` declares the resource and fills it from the runtime's outputs. The output names here are illustrative; use the outputs your runtime's IaC produces.
+
+```yaml
+name: payments-api
+description: Handles card captures.
+version: 0.1.0
+
+dependencies:
+  db:
+    resource_type: postgres@~1
+    required: true
+
+resources:
+  server: # mTLS endpoint other services depend on to call this API: its URL, CA certificate, and server name
+    resource_type: payments-api-server@1.0.0
+    required: true
+
+steps:
+  - path: src
+    resources:
+      server:
+        template: |
+          {
+            url: .outputs.function_url,
+            ca_cert: .outputs.mtls_ca_cert,
+            server_name: .outputs.mtls_server_name
+          }
+
+app:
+  runtime: lambda@~1.2
+  envs:
+    DB_HOST: .dependencies.db.authentication.hostname
+  secrets:
+    STRIPE_KEY:
+      required: true
+```
+
+### The client
+
+`checkout-api` depends on `payments-api-server` and maps its fields to environment variables:
+
+```yaml
+name: checkout-api
+description: Shopping cart and checkout service.
+version: 0.1.0
+
+dependencies:
+  payments:
+    resource_type: payments-api-server@~1
+    required: true
+
+app:
+  runtime: lambda@~1.2
+  envs:
+    PAYMENTS_URL: .dependencies.payments.url
+    PAYMENTS_CA_CERT: .dependencies.payments.ca_cert
+    PAYMENTS_SERVER_NAME: .dependencies.payments.server_name
+```
+
+### Where the handshake happens
+
+Massdriver delivers the connection details. The TLS handshake happens in one of two places:
+
+- **In the application.** The service's HTTP client loads `PAYMENTS_CA_CERT`, verifies `PAYMENTS_SERVER_NAME`, and presents its own client certificate. The runtime only has to pass envs and secrets through.
+- **In the runtime.** A runtime that configures a service mesh or mTLS sidecar reads the dependency and sets up the connection itself, and the application calls a local endpoint without handling certificates. The runtime has to be built for this, so it is a platform decision rather than a per-application one.
+
+Either way, `checkout-api`'s own client certificate does not come from `payments-api-server`. It is issued separately, by the runtime or as a secret or resource of its own.
+
 ## Related documentation
 
 - [Bundle YAML Specification](/bundle-development/bundle-yaml-spec)
