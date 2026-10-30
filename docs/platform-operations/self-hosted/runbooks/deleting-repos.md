@@ -5,12 +5,14 @@ title: "Runbook: Deleting a Repo or Resource Type"
 sidebar_label: Deleting a Repo or Resource Type
 ---
 
-The Massdriver bundle registry is **immutable by design**. Once a bundle version is published to a repo, it cannot be overwritten or deleted through the API, CLI, or UI. Immutability guarantees that what is running in your environments is exactly what was published — a version tag can never silently change out from under a deployed instance.
+The Massdriver bundle registry is **immutable by design**. Once a bundle version is published to a repo, that version cannot be overwritten or individually deleted through the API, CLI, or UI. Immutability guarantees that what is running in your environments is exactly what was published — a version tag can never silently change out from under a deployed instance.
 
-As a **self-hosted operator**, you have direct access to the Postgres database and the object storage bucket, so you can remove a repo (and all of its bundle versions) manually when you're certain it's no longer needed. The same applies to resource types; see [Deleting a resource type](#deleting-a-resource-type).
+**Deleting a whole repo is now first-class.** From a repo's **Settings → Danger zone** in the UI, or the `deleteOciRepo` API mutation, you can delete a repo and all of its published versions. It requires the `repo:delete` permission and is refused while the repo is still in use — placed on a project canvas, or deployed. Prefer that over the manual steps below.
 
-:::info Coming in Q3
-First-class support for **archiving and renaming repos** and **yanking bundle versions** is planned for Q3 2026. Once available, prefer those over manual deletion — they preserve the registry's audit history.
+As a **self-hosted operator** you still have direct access to the Postgres database and the object storage bucket, so this runbook covers what the product does not yet do: deleting a **single** published version, and the resource-type cases the UI doesn't surface. It's also a fallback for removing content the API won't. The same manual steps apply to resource types; see [Deleting a resource type](#deleting-a-resource-type).
+
+:::info Still planned
+Deleting a **single published version** (yanking), and **archiving or renaming repos**, are still planned. Until then, use the manual steps below for version-level removal.
 :::
 
 :::warning
