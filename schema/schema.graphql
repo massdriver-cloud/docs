@@ -3122,10 +3122,12 @@ type RootMutationType {
   ): OciRepoPayload @inputs(name: "updateOciRepo", schema: "\/graphql\/v2\/inputs\/updateOciRepo.json", ui: "\/graphql\/v2\/inputs\/updateOciRepo.ui.json")
 
   """
-  Delete an OCI repository.
+  Delete an OCI repository and every version published in it.
 
-  Refused if the repository has any published versions. Tags are immutable;
-  to remove versions today, recreate the repository.
+  Refused while the repository is still in use: a bundle repository that is on
+  a project canvas or deployed, or a resource-type repository whose type a
+  resource, an environment default, or a published bundle still references. The
+  error lists what is using it.
   """
   deleteOciRepo(
     "Your organization's unique identifier."
