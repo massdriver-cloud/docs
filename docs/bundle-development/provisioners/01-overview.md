@@ -66,7 +66,7 @@ Every `jq` expression in a `config` block, and in the `params.jq`, `connections.
 | `.resources` | The resources the bundle produces, keyed by slot name |
 | `.id` | The instance identifier |
 
-`.connections` and `.artifacts` are deprecated aliases for `.dependencies` and `.resources`. They hold the same data and still work, so existing bundles keep running, but new expressions should use the current names.
+`.connections` and `.artifacts` are deprecated aliases for `.dependencies` and `.resources`. They hold the same data and still work, so existing bundles keep running, but new expressions should use the current names. The `.connections` alias reaches its end of life on [December 31, 2026](/deprecations/connections-and-artifacts-aliases).
 
 ```yaml
 config:
@@ -91,7 +91,7 @@ The following files are generated and placed at the specified path in the provis
 |---------------------------------|-------------------------------------------------|
 | `/massdriver/params.json`        | Parameters from instance configuration          |
 | `/massdriver/dependencies.json`  | The resources filling the bundle's dependencies |
-| `/massdriver/connections.json`   | Deprecated. The same document as `dependencies.json` |
+| `/massdriver/connections.json`   | Deprecated, end of life [December 31, 2026](/deprecations/connections-and-artifacts-aliases). The same document as `dependencies.json` |
 | `/massdriver/envs.json`          | Environment variables                           |
 | `/massdriver/secrets.json`       | Secrets (in decrypted form)                     |
 | `/massdriver/config.json`        | Provisioner configuration (from `config` block) |
