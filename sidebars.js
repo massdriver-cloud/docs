@@ -198,7 +198,15 @@ module.exports = {
       type: "category",
       label: "Deprecations",
       link: { type: "doc", id: "deprecations/deprecations-overview" },
-      items: ["deprecations/deprecations-service-account-secrets"],
+      items: [
+        "deprecations/deprecations-service-account-secrets",
+        "deprecations/deprecations-connections-and-artifacts-aliases",
+        "deprecations/deprecations-legacy-bundle-format",
+        "deprecations/deprecations-raw-json-schema-resource-types",
+        "deprecations/deprecations-renamed-resource-type-names",
+        "deprecations/deprecations-artifact-rest-paths",
+        "deprecations/deprecations-graphql-v2-fields",
+      ],
     },
   ],
 };

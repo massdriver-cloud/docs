@@ -471,7 +471,7 @@ Each resource type also gets a repository in the OCI catalog, with the same acce
 
 ### Publishing a raw JSON schema is deprecated
 
-`mass resource-type publish` still accepts a raw JSON or YAML schema file, the format that predates `massdriver.yaml`, and prints a deprecation warning. That path will be removed in a future release.
+`mass resource-type publish` still accepts a raw JSON or YAML schema file, the format that predates `massdriver.yaml`, and prints a deprecation warning. That path reaches its end of life on [December 31, 2026](/deprecations/raw-json-schema-resource-types).
 
 A raw schema carries no version of its own. It is stored as the resource type's unversioned `0.0.0` document, cannot take part in versioning, and cannot be pulled back down.
 

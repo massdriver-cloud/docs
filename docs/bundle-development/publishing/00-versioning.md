@@ -285,7 +285,7 @@ Each instance in Massdriver has several version-related fields that control how 
 ### Instance Version Fields
 
 - **`version`** - The version constraint (e.g., `"1.2.3"`, `"~1.2"`, `"latest"`)
-- **`releaseStrategy`** - Whether the instance receives `stable` releases only or also `development` releases
+- **`releaseStrategy`** - Deprecated, end of life [December 31, 2026](/deprecations/graphql-v2-fields). Whether the instance receives `stable` releases only or also `development` releases. A `version` that ends in `+dev` gives the same information.
 - **`resolvedVersion`** - The resolved semantic version that will be deployed next
 - **`deployedVersion`** - The version that was last successfully deployed to infrastructure
 - **`availableUpgrade`** - The newest version available for upgrade based on the constraint
