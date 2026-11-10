@@ -55,6 +55,7 @@ input AuditLogsFilter {
   actorType: AuditLogActorTypeFilter
   actorId: IdFilter
   actor: ActorSearchFilter
+  attributes: Map
 }
 ```
 
@@ -81,6 +82,10 @@ Filter by the specific actor's identifier. Matches across all actor types (accou
 
 #### [<code style={{ fontWeight: 'normal' }}>AuditLogsFilter.<b>actor</b></code>](#actor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ActorSearchFilter</b></code>](/api/graphql/types/inputs/actor-search-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#actor\} 
 Search actors by a substring match across their identifying fields (email and name for users, name for service accounts, ID for deployments and system actions). Useful for finding every action taken by a person or bot without knowing their exact ID.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AuditLogsFilter.<b>attributes</b></code>](#attributes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#attributes\} 
+Match events whose attributes contain every given key and value, e.g. `{"contains_secrets": true, "credential": "access_token"}`. Values must match exactly, including type. `eventTypes` lists the attributes each event type records.
 
 
 

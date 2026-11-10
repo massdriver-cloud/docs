@@ -3122,10 +3122,12 @@ type RootMutationType {
   ): OciRepoPayload @inputs(name: "updateOciRepo", schema: "\/graphql\/v2\/inputs\/updateOciRepo.json", ui: "\/graphql\/v2\/inputs\/updateOciRepo.ui.json")
 
   """
-  Delete an OCI repository.
+  Delete an OCI repository and every version published in it.
 
-  Refused if the repository has any published versions. Tags are immutable;
-  to remove versions today, recreate the repository.
+  Refused while the repository is still in use: a bundle repository that is on
+  a project canvas or deployed, or a resource-type repository whose type a
+  resource, an environment default, or a published bundle still references. The
+  error lists what is using it.
   """
   deleteOciRepo(
     "Your organization's unique identifier."
@@ -3216,6 +3218,15 @@ enum EventTypesSortField {
   ID
 }
 
+"The JSON type of an event attribute's value."
+enum EventAttributeType {
+  "A JSON string."
+  STRING
+
+  "A JSON boolean."
+  BOOLEAN
+}
+
 """
 Filter criteria for narrowing the event type catalog.
 
@@ -3234,6 +3245,22 @@ input EventTypesSort {
 
   "`ASC` for A-Z, `DESC` for Z-A."
   order: SortOrder!
+}
+
+"""
+A fact Massdriver records with an event, such as how the actor authenticated or
+whether a resource export revealed a secret. Audit logs return these in
+`AuditLog.attributes` and can be filtered on them with `AuditLogsFilter.attributes`.
+"""
+type EventAttribute {
+  "Key of the attribute in `AuditLog.attributes`, e.g. `contains_secrets`."
+  name: String!
+
+  "The JSON type of the attribute's value."
+  type: EventAttributeType!
+
+  "What the attribute's value means."
+  description: String!
 }
 
 """
@@ -3257,6 +3284,13 @@ type EventType {
 
   "How the entity was modified. Consumers use this for cache invalidation — `CREATED` \/ `UPDATED` \/ `DELETED` maps cleanly onto an in-memory cache's add \/ replace \/ remove."
   changeType: EventAction!
+
+  """
+  The attributes recorded with every event of this type. Every event records `credential`
+  and, when an access token was used, `access_token_id`. Some event types record more,
+  such as `contains_secrets` on `resource.exported`.
+  """
+  attributes: [EventAttribute!]!
 }
 
 """
@@ -4757,6 +4791,9 @@ input AuditLogsFilter {
 
   "Search actors by a substring match across their identifying fields (email and name for users, name for service accounts, ID for deployments and system actions). Useful for finding every action taken by a person or bot without knowing their exact ID."
   actor: ActorSearchFilter
+
+  "Match events whose attributes contain every given key and value, e.g. `{\"contains_secrets\": true, \"credential\": \"access_token\"}`. Values must match exactly, including type. `eventTypes` lists the attributes each event type records."
+  attributes: Map
 }
 
 """
@@ -4814,6 +4851,9 @@ type AuditLog {
 
   "Event payload containing context-specific details about the action. The structure varies by event type."
   data: Map
+
+  "Facts recorded with the event that you can filter on, such as how the actor authenticated (`credential`) or whether a resource export revealed a secret (`contains_secrets`). `eventTypes` lists the attributes each event type records."
+  attributes: Map!
 
   "The actor (user, service account, deployment, or system) that performed this action."
   actor: AuditLogActor!

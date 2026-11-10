@@ -63,6 +63,7 @@ type AuditLog {
   source: String!
   subject: String
   data: Map
+  attributes: Map!
   actor: AuditLogActor!
 }
 ```
@@ -94,6 +95,10 @@ The affected resource in MRI format (e.g., `mri://organization/my-org/project/ba
 
 #### [<code style={{ fontWeight: 'normal' }}>AuditLog.<b>data</b></code>](#data)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#data\} 
 Event payload containing context-specific details about the action. The structure varies by event type.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AuditLog.<b>attributes</b></code>](#attributes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#attributes\} 
+Facts recorded with the event that you can filter on, such as how the actor authenticated (`credential`) or whether a resource export revealed a secret (`contains_secrets`). `eventTypes` lists the attributes each event type records.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AuditLog.<b>actor</b></code>](#actor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AuditLogActor!</b></code>](/api/graphql/types/objects/audit-log-actor.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#actor\} 
