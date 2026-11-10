@@ -3122,10 +3122,12 @@ type RootMutationType {
   ): OciRepoPayload @inputs(name: "updateOciRepo", schema: "\/graphql\/v2\/inputs\/updateOciRepo.json", ui: "\/graphql\/v2\/inputs\/updateOciRepo.ui.json")
 
   """
-  Delete an OCI repository.
+  Delete an OCI repository and every version published in it.
 
-  Refused if the repository has any published versions. Tags are immutable;
-  to remove versions today, recreate the repository.
+  Refused while the repository is still in use: a bundle repository that is on
+  a project canvas or deployed, or a resource-type repository whose type a
+  resource, an environment default, or a published bundle still references. The
+  error lists what is using it.
   """
   deleteOciRepo(
     "Your organization's unique identifier."
@@ -3915,8 +3917,27 @@ type Resource {
   Null for **imported** resources. For **provisioned** resources, this is the instance
   that owns the resource's lifecycle — updating or decommissioning the instance will
   update or remove the resource.
+
+  Also null when you cannot view the project that contains the instance. You can see a
+  resource from another project through a grant, a `resource:view` policy, or a
+  dependency of an instance you can view; the instance that produced it stays hidden.
   """
   instance: Instance
+
+  """
+  The groups whose members can view `instance`.
+
+  Null for **imported** resources. You can read this field even when you cannot view the
+  project that contains the instance. When `instance` is null for you, ask a member of one
+  of these groups for access.
+  """
+  instanceAccessGroups(
+    "Sort field and direction. Defaults to name ascending."
+    sort: GroupsSort
+
+    "Pagination cursor returned from a previous response to fetch the next page."
+    cursor: Cursor
+  ): GroupsPage
 
   """
   Download formats supported for this resource.
@@ -8529,6 +8550,37 @@ type EnvironmentDefaultResource {
 
   "The resource type (e.g., `massdriver\/aws-vpc`) that this resource conforms to."
   resourceType: ResourceType
+
+  "How this resource was created. Determines whether it can be modified through the API."
+  origin: ResourceOrigin!
+
+  """
+  The instance whose deployment produced this resource.
+
+  Null for **imported** resources. For **provisioned** resources, this is the instance
+  that owns the resource's lifecycle — updating or decommissioning the instance will
+  update or remove the resource.
+
+  Also null when you cannot view the project that contains the instance. You can see a
+  resource from another project through a grant, a `resource:view` policy, or a
+  dependency of an instance you can view; the instance that produced it stays hidden.
+  """
+  instance: Instance
+
+  """
+  The groups whose members can view `instance`.
+
+  Null for **imported** resources. You can read this field even when you cannot view the
+  project that contains the instance. When `instance` is null for you, ask a member of one
+  of these groups for access.
+  """
+  instanceAccessGroups(
+    "Sort field and direction. Defaults to name ascending."
+    sort: GroupsSort
+
+    "Pagination cursor returned from a previous response to fetch the next page."
+    cursor: Cursor
+  ): GroupsPage
 }
 
 """
