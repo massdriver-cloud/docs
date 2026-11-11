@@ -553,37 +553,57 @@ removes bundles from the policy side only, so it does not hide a granted
 bundle. To keep a bundle out of a group's view, narrow the grant's
 `recipient_conditions`, or delete the grant.
 
-Inside a project, the canvas lists the bundles granted to that project, plus
-the bundles the caller can see but has not granted to the project yet. Only
-granted bundles can be added to the project.
+Users of a bundle need its repo page to read the changelog and to see the
+instances and deployments that use the bundle. The repo page is how a user
+tracks a bundle across their projects.
 
-The `ociRepos` query takes an optional `projectId`. With it, only grants to
-that project count, and bundles that the caller's `repo:view` policies match
-are still listed. Each repo's `access` field tells you which rule applies:
+Inside a project, the canvas lists only the bundles granted to that project.
+These are the bundles that can be added to it. The **My bundles** list shows
+the bundles your own `repo:view` policies match. You cannot add them from
+there. Grant a bundle to the project from its Permissions page first.
 
-| `access` | Meaning |
+The `ociRepos` query has two filters that split the list:
+
+- `filter.projectId` returns only the bundles granted to that project. You
+  must have `project:view` on the project, or the query returns `NOT_FOUND`.
+- `filter.viewer: true` returns only the repos your own `repo:view` policies
+  match. `false` returns only the repos you see through a grant. When omitted,
+  both are returned.
+
+When both filters are set, a repo must match both. To list a project's bundles
+and your own bundles together, make two queries.
+
+Example: you can view projects `checkout` and `billing`, and your group policy
+allows `repo:view` on repos with `TEAM=payments`.
+
+| Repo | `TEAM` | Granted to |
+|---|---|---|
+| `aws-aurora` | `payments` | none |
+| `aws-s3` | `payments` | `checkout` |
+| `aws-iam-role` | none | `checkout` |
+| `aws-vpc` | none | `billing` |
+
+| `filter` | Result |
 |---|---|
-| `GRANT` | A grant matches the project, or any project the caller can view when `projectId` is omitted. Bundles from the repo can be added to that project. |
-| `POLICY` | No grant matches, but the caller's `repo:view` policies do. |
-| `null` | Neither applies. |
+| none | `aws-aurora`, `aws-iam-role`, `aws-s3`, `aws-vpc` |
+| `{ projectId: "checkout" }` | `aws-iam-role`, `aws-s3` |
+| `{ projectId: "billing" }` | `aws-vpc` |
+| `{ viewer: true }` | `aws-aurora`, `aws-s3` |
+| `{ viewer: false }` | `aws-iam-role`, `aws-vpc` |
+| `{ projectId: "checkout", viewer: true }` | `aws-s3` |
+| `{ projectId: "checkout", viewer: false }` | `aws-iam-role` |
+| `{ projectId: "billing", viewer: true }` | empty list |
+| `{ projectId: "x" }`, no `project:view` on `x` | `NOT_FOUND` error |
 
 ```graphql
 query {
-  ociRepos(
-    organizationId: "acme"
-    projectId: "ecomm"
-    sort: { field: ACCESS, order: ASC }
-  ) {
+  ociRepos(organizationId: "acme", filter: { projectId: "checkout" }) {
     items {
       name
-      access(projectId: "ecomm")
     }
   }
 }
 ```
-
-Sorting by `ACCESS` with `ASC` lists `GRANT` repos first, then `POLICY` repos,
-each by name.
 
 A caller's visible resources is the union of:
 
