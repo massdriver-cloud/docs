@@ -467,20 +467,13 @@ Each resource type also gets a repository in the OCI catalog, with the same acce
 
 ### Development releases
 
-A development release lets you test a resource type change against real bundles before cutting the stable version. It uses the same `MAJOR.MINOR.PATCH-dev.TIMESTAMP` format as a [bundle development release](/bundle-development/publishing/versioning#development-releases), where the timestamp is UTC in RFC 3339 basic format (`YYYYMMDDTHHMMSSZ`).
-
-`mass resource-type publish` has no `--development` flag. Write the development version into `massdriver.yaml` and publish as usual:
-
-```yaml
-name: aws-vpc
-version: 2.2.0-dev.20261110T153000Z
-```
+A development release lets you test a resource type change against real bundles before cutting the stable version. It works the same way as a [bundle development release](/bundle-development/publishing/versioning#development-releases).
 
 ```bash
-mass resource-type publish ./aws-vpc
+mass resource-type publish --development ./aws-vpc
 ```
 
-Any other suffix, such as `2.2.0-dev.1` or `2.2.0-rc.1`, is rejected. Each development release is immutable like any other version, so publish the next iteration with a new timestamp. When the change is ready, set `version: 2.2.0` and publish the stable release.
+With `version: 2.2.0` in `massdriver.yaml`, this publishes `2.2.0-dev.<timestamp>`, for example `2.2.0-dev.20261110T153000Z`. Each run publishes a new development release. When the change is ready, publish without `--development` to release `2.2.0`. A development release cannot be published for a version that already exists.
 
 A development release is skipped by stable ranges. Bundles only pick it up when their `dependencies` or `resources` entry opts in with an exact version or a `+dev` range. See [Version Resolution: Development releases](/bundle-development/dependencies-resources/version-resolution#development-releases).
 
