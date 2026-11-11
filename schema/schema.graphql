@@ -9324,7 +9324,7 @@ input OciReposFilter {
   "Only repositories granted to this project. These are the bundles that can be added to the project. Returns `NOT_FOUND` when you cannot view the project."
   projectId: ID
 
-  "`true` returns only repositories your own `repo:view` group policies match. `false` returns only repositories you see because they are granted to a project you can view. When omitted, both are returned."
+  "`true` returns only repositories your own `repo:view` group policies match. `false` returns only repositories you see only through a grant to a project you can view, with no `repo:view` policy of yours matching them. When omitted, both are returned."
   viewer: Boolean
 }
 
