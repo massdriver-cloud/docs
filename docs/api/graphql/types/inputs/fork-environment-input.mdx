@@ -69,15 +69,15 @@ Key-value attributes for this environment. Keys and values must be strings. Must
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ForkEnvironmentInput.<b>copyEnvironmentDefaults</b></code>](#copy-environment-defaults)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#copy-environment-defaults\} 
-When true, copies the parent environment's default resource connections into the fork.
+When true, copies the parent environment's default resource connections into the fork. Each resource requires `resource:view` and a resource grant that covers the fork.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ForkEnvironmentInput.<b>copyRemoteReferences</b></code>](#copy-remote-references)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#copy-remote-references\} 
-When true, copies every package's remote resource references from the parent into the fork. Applies the same behavior as `copyInstance(copyRemoteReferences: true)` to every package in one call. Defaults to false.
+When true, copies every package's remote resource references from the parent into the fork. Applies the same behavior as `copyInstance(copyRemoteReferences: true)` to every package in one call, so each referenced resource requires `resource:view` and a resource grant that covers the fork. Defaults to false.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ForkEnvironmentInput.<b>copySecrets</b></code>](#copy-secrets)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#copy-secrets\} 
-When true, copies every package's secret values from the parent into the fork. Applies the same behavior as `copyInstance(copySecrets: true)` to every package in one call. Defaults to false.
+When true, copies every package's secret values from the parent into the fork. Applies the same behavior as `copyInstance(copySecrets: true)` to every package in one call, so each parent instance with secrets requires `instance:configure`. Defaults to false.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ForkEnvironmentInput.<b>decommissionProtection</b></code>](#decommission-protection)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#decommission-protection\} 

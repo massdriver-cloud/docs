@@ -55,6 +55,7 @@ type EventType {
   entity: String!
   action: String!
   changeType: EventAction!
+  metadata: [EventMetadataField!]!
 }
 ```
 
@@ -81,6 +82,12 @@ Past-tense verb describing what happened to the entity (e.g., `"created"`, `"dep
 
 #### [<code style={{ fontWeight: 'normal' }}>EventType.<b>changeType</b></code>](#change-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventAction!</b></code>](/api/graphql/types/enums/event-action.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#change-type\} 
 How the entity was modified. Consumers use this for cache invalidation — `CREATED` / `UPDATED` / `DELETED` maps cleanly onto an in-memory cache's add / replace / remove.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventType.<b>metadata</b></code>](#metadata)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[EventMetadataField!]!</b></code>](/api/graphql/types/objects/event-metadata-field.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#metadata\} 
+The metadata recorded with every event of this type. Every event records `credential`
+and, when an access token was used, `access_token_id`. Some event types record more,
+such as `contains_secrets` on `resource.exported`.
 
 
 

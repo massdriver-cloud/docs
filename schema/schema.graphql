@@ -400,6 +400,48 @@ type RootQueryType {
   versions of its artifact. Use `filter` to narrow by name, artifact type,
   or full-text search.
 
+  The list holds every repository you can see:
+
+  - repositories your `repo:view` group policies match, **plus**
+  - bundle repositories granted to a project you can view.
+
+  A grant to one of your projects adds its repository to the list even when
+  no `repo:view` policy matches it, and a deny `repo:view` policy does not
+  remove it. Use `filter.projectId` for the bundles granted to one project,
+  and `filter.viewer` for the repositories your own policies match. When
+  both are set, a repository must match both. To list a project's bundles
+  and your own bundles together, make two queries.
+
+  Example: you can view projects `checkout` and `billing`, and your group
+  policy allows `repo:view` on repositories with `TEAM=payments`.
+
+  | Repository     | `TEAM`     | Granted to |
+  | -------------- | ---------- | ---------- |
+  | `aws-aurora`   | `payments` | none       |
+  | `aws-s3`       | `payments` | `checkout` |
+  | `aws-iam-role` | none       | `checkout` |
+  | `aws-vpc`      | none       | `billing`  |
+
+  | `filter`                                       | Result                                            |
+  | ---------------------------------------------- | ------------------------------------------------- |
+  | none                                           | `aws-aurora`, `aws-iam-role`, `aws-s3`, `aws-vpc` |
+  | `{ projectId: "checkout" }`                    | `aws-iam-role`, `aws-s3`                          |
+  | `{ projectId: "billing" }`                     | `aws-vpc`                                         |
+  | `{ viewer: true }`                             | `aws-aurora`, `aws-s3`                            |
+  | `{ viewer: false }`                            | `aws-iam-role`, `aws-vpc`                         |
+  | `{ projectId: "checkout", viewer: true }`      | `aws-s3`                                          |
+  | `{ projectId: "checkout", viewer: false }`     | `aws-iam-role`                                    |
+  | `{ projectId: "billing", viewer: true }`       | empty list                                        |
+  | `{ projectId: "x" }`, no `project:view` on `x` | `NOT_FOUND` error                                 |
+
+  ```graphql
+  query {
+    ociRepos(organizationId: "your-org-id", filter: { projectId: "ecomm" }) {
+      items { name }
+    }
+  }
+  ```
+
   ```graphql
   query {
     ociRepos(organizationId: "your-org-id", filter: { name: { startsWith: "aws-" } }) {
@@ -1583,6 +1625,12 @@ type RootMutationType {
   `copyEnvironmentDefaults: true` to also copy the parent's default resource
   connections.
 
+  Each copied environment default and remote reference requires `resource:view` on
+  the resource and a resource grant that covers the new environment — the same checks
+  as `setEnvironmentDefault` and `setRemoteReference`. Copying secrets requires
+  `instance:configure` on each parent instance that has secrets. If any check fails,
+  the fork makes no changes.
+
   Re-calling `forkEnvironment` with the same parent + `id` is a no-op that
   returns the existing environment. Re-calling with the same `id` but a
   different `parentId` is rejected — a fork's parent is immutable.
@@ -2683,6 +2731,11 @@ type RootMutationType {
   state transfer. Deployment is a separate action — call `createDeployment` on the
   destination when you're ready to apply.
 
+  Copying secrets requires `instance:configure` on the source instance. Copying remote
+  references requires `resource:view` on each referenced resource and a resource grant
+  that covers the destination environment — the same checks as `setRemoteReference`.
+  If any check fails, nothing is copied.
+
   ```graphql
   mutation {
     copyInstance(
@@ -3276,6 +3329,15 @@ enum EventTypesSortField {
   ID
 }
 
+"The JSON type of an event metadata field's value."
+enum EventMetadataType {
+  "A JSON string."
+  STRING
+
+  "A JSON boolean."
+  BOOLEAN
+}
+
 """
 Filter criteria for narrowing the event type catalog.
 
@@ -3294,6 +3356,22 @@ input EventTypesSort {
 
   "`ASC` for A-Z, `DESC` for Z-A."
   order: SortOrder!
+}
+
+"""
+A fact Massdriver records with an event, such as how the actor authenticated or
+whether a resource export revealed a secret. Audit logs return these in
+`AuditLog.metadata` and can be filtered on them with `AuditLogsFilter.metadata`.
+"""
+type EventMetadataField {
+  "Key of the field in `AuditLog.metadata`, e.g. `contains_secrets`."
+  name: String!
+
+  "The JSON type of the field's value."
+  type: EventMetadataType!
+
+  "What the field's value means."
+  description: String!
 }
 
 """
@@ -3317,6 +3395,13 @@ type EventType {
 
   "How the entity was modified. Consumers use this for cache invalidation — `CREATED` \/ `UPDATED` \/ `DELETED` maps cleanly onto an in-memory cache's add \/ replace \/ remove."
   changeType: EventAction!
+
+  """
+  The metadata recorded with every event of this type. Every event records `credential`
+  and, when an access token was used, `access_token_id`. Some event types record more,
+  such as `contains_secrets` on `resource.exported`.
+  """
+  metadata: [EventMetadataField!]!
 }
 
 """
@@ -4836,6 +4921,12 @@ input AuditLogsFilter {
 
   "Search actors by a substring match across their identifying fields (email and name for users, name for service accounts, ID for deployments and system actions). Useful for finding every action taken by a person or bot without knowing their exact ID."
   actor: ActorSearchFilter
+
+  "Match events whose metadata contains every given key and value, e.g. `{\"contains_secrets\": true, \"credential\": \"access_token\"}`. Values must match exactly, including type. `eventTypes` lists the metadata each event type records."
+  metadata: Map
+
+  "Match events whose entity had every given attribute and value when the event happened, e.g. `{\"md-environment\": \"prod\", \"TEAM\": \"payments\"}`. Takes custom attributes and system (`md-*`) attributes."
+  attributes: Map
 }
 
 """
@@ -4893,6 +4984,12 @@ type AuditLog {
 
   "Event payload containing context-specific details about the action. The structure varies by event type."
   data: Map
+
+  "Facts recorded with the event that you can filter on, such as how the actor authenticated (`credential`) or whether a resource export revealed a secret (`contains_secrets`). `eventTypes` lists the metadata each event type records."
+  metadata: Map!
+
+  "The custom and system (`md-*`) attributes of the event's entity when the event happened, e.g. `{\"md-project\": \"api\", \"md-environment\": \"prod\", \"TEAM\": \"payments\"}`. Empty for entities that do not carry attributes, such as accounts and access tokens."
+  attributes: Map!
 
   "The actor (user, service account, deployment, or system) that performed this action."
   actor: AuditLogActor!
@@ -7818,10 +7915,10 @@ input SetInstanceSecretInput {
 
 "Copy configuration from one instance to another. The source and destination must be instances of the same component. Source params (minus any fields marked non-copyable in the bundle) are written to the destination."
 input CopyInstanceInput {
-  "When true, copies remote resource references from the source instance to the destination. Defaults to false."
+  "When true, copies remote resource references from the source instance to the destination. Each referenced resource requires `resource:view` and a resource grant that covers the destination environment. Defaults to false."
   copyRemoteReferences: Boolean
 
-  "When true, copies secret values from the source instance to the destination. Defaults to false."
+  "When true, copies secret values from the source instance to the destination. Requires `instance:configure` on the source instance when it has secrets. Defaults to false."
   copySecrets: Boolean
 
   "Optional overrides that are deep-merged onto the source params before writing to the destination. Useful for tweaking environment-specific values (e.g., instance sizes)."
@@ -8442,13 +8539,13 @@ input ForkEnvironmentInput {
   "Key-value attributes for this environment. Keys and values must be strings. Must conform to the organization's custom attributes for the environment scope."
   attributes: Map
 
-  "When true, copies the parent environment's default resource connections into the fork."
+  "When true, copies the parent environment's default resource connections into the fork. Each resource requires `resource:view` and a resource grant that covers the fork."
   copyEnvironmentDefaults: Boolean
 
-  "When true, copies every package's remote resource references from the parent into the fork. Applies the same behavior as `copyInstance(copyRemoteReferences: true)` to every package in one call. Defaults to false."
+  "When true, copies every package's remote resource references from the parent into the fork. Applies the same behavior as `copyInstance(copyRemoteReferences: true)` to every package in one call, so each referenced resource requires `resource:view` and a resource grant that covers the fork. Defaults to false."
   copyRemoteReferences: Boolean
 
-  "When true, copies every package's secret values from the parent into the fork. Applies the same behavior as `copyInstance(copySecrets: true)` to every package in one call. Defaults to false."
+  "When true, copies every package's secret values from the parent into the fork. Applies the same behavior as `copyInstance(copySecrets: true)` to every package in one call, so each parent instance with secrets requires `instance:configure`. Defaults to false."
   copySecrets: Boolean
 
   "When true, blocks `decommissionEnvironment` and any per-instance deployment with `action: DECOMMISSION` against this environment. Disable it via `updateEnvironment` before tearing down. Defaults to false."
@@ -9331,6 +9428,12 @@ input OciReposFilter {
 
   "Full-text search across the repository name, readme, and changelog. Results are ranked by relevance unless you provide an explicit `sort`. For terms longer than 3 characters, name-prefix matches are also included. **Note:** pagination cursors returned by search results use offset-based pagination and are not interchangeable with cursors from non-search queries."
   search: String
+
+  "Only repositories granted to this project. These are the bundles that can be added to the project. Returns `NOT_FOUND` when you cannot view the project."
+  projectId: ID
+
+  "`true` returns only repositories your own `repo:view` group policies match. `false` returns only repositories you see only through a grant to a project you can view, with no `repo:view` policy of yours matching them. When omitted, both are returned."
+  viewer: Boolean
 }
 
 """
