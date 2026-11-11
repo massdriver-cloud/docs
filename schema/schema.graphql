@@ -400,6 +400,17 @@ type RootQueryType {
   versions of its artifact. Use `filter` to narrow by name, artifact type,
   or full-text search.
 
+  The list holds every repository you can see:
+
+  - repositories your `repo:view` group policies match, **plus**
+  - bundle repositories granted to a project you can view.
+
+  A grant to one of your projects adds its repository to the list even when
+  no `repo:view` policy matches it, and a deny `repo:view` policy does not
+  remove it. Without `projectId`, grants to every project you can view count.
+  With `projectId`, only grants to that project count. Each item's `access`
+  field tells you which rule applies.
+
   ```graphql
   query {
     ociRepos(organizationId: "your-org-id", filter: { name: { startsWith: "aws-" } }) {
@@ -414,10 +425,31 @@ type RootQueryType {
     }
   }
   ```
+
+  List the bundles available in one project, granted bundles first:
+
+  ```graphql
+  query {
+    ociRepos(
+      organizationId: "your-org-id"
+      projectId: "ecomm"
+      filter: { artifactType: "application/vnd.massdriver.bundle.v1+json" }
+      sort: { field: ACCESS, order: ASC }
+    ) {
+      items {
+        name
+        access(projectId: "ecomm")
+      }
+    }
+  }
+  ```
   """
   ociRepos(
     "Your organization's unique identifier."
     organizationId: ID!
+
+    "Count only grants to this project. Repositories your `repo:view` policies match are still listed. Returns `NOT_FOUND` when you cannot view the project."
+    projectId: ID
 
     "Narrow results by name, artifact type, or search term."
     filter: OciReposFilter
@@ -1583,6 +1615,12 @@ type RootMutationType {
   `copyEnvironmentDefaults: true` to also copy the parent's default resource
   connections.
 
+  Each copied environment default and remote reference requires `resource:view` on
+  the resource and a resource grant that covers the new environment — the same checks
+  as `setEnvironmentDefault` and `setRemoteReference`. Copying secrets requires
+  `instance:configure` on each parent instance that has secrets. If any check fails,
+  the fork makes no changes.
+
   Re-calling `forkEnvironment` with the same parent + `id` is a no-op that
   returns the existing environment. Re-calling with the same `id` but a
   different `parentId` is rejected — a fork's parent is immutable.
@@ -2683,6 +2721,11 @@ type RootMutationType {
   state transfer. Deployment is a separate action — call `createDeployment` on the
   destination when you're ready to apply.
 
+  Copying secrets requires `instance:configure` on the source instance. Copying remote
+  references requires `resource:view` on each referenced resource and a resource grant
+  that covers the destination environment — the same checks as `setRemoteReference`.
+  If any check fails, nothing is copied.
+
   ```graphql
   mutation {
     copyInstance(
@@ -3122,10 +3165,12 @@ type RootMutationType {
   ): OciRepoPayload @inputs(name: "updateOciRepo", schema: "\/graphql\/v2\/inputs\/updateOciRepo.json", ui: "\/graphql\/v2\/inputs\/updateOciRepo.ui.json")
 
   """
-  Delete an OCI repository.
+  Delete an OCI repository and every version published in it.
 
-  Refused if the repository has any published versions. Tags are immutable;
-  to remove versions today, recreate the repository.
+  Refused while the repository is still in use: a bundle repository that is on
+  a project canvas or deployed, or a resource-type repository whose type a
+  resource, an environment default, or a published bundle still references. The
+  error lists what is using it.
   """
   deleteOciRepo(
     "Your organization's unique identifier."
@@ -3915,8 +3960,27 @@ type Resource {
   Null for **imported** resources. For **provisioned** resources, this is the instance
   that owns the resource's lifecycle — updating or decommissioning the instance will
   update or remove the resource.
+
+  Also null when you cannot view the project that contains the instance. You can see a
+  resource from another project through a grant, a `resource:view` policy, or a
+  dependency of an instance you can view; the instance that produced it stays hidden.
   """
   instance: Instance
+
+  """
+  The groups whose members can view `instance`.
+
+  Null for **imported** resources. You can read this field even when you cannot view the
+  project that contains the instance. When `instance` is null for you, ask a member of one
+  of these groups for access.
+  """
+  instanceAccessGroups(
+    "Sort field and direction. Defaults to name ascending."
+    sort: GroupsSort
+
+    "Pagination cursor returned from a previous response to fetch the next page."
+    cursor: Cursor
+  ): GroupsPage
 
   """
   Download formats supported for this resource.
@@ -7739,10 +7803,10 @@ input SetInstanceSecretInput {
 
 "Copy configuration from one instance to another. The source and destination must be instances of the same component. Source params (minus any fields marked non-copyable in the bundle) are written to the destination."
 input CopyInstanceInput {
-  "When true, copies remote resource references from the source instance to the destination. Defaults to false."
+  "When true, copies remote resource references from the source instance to the destination. Each referenced resource requires `resource:view` and a resource grant that covers the destination environment. Defaults to false."
   copyRemoteReferences: Boolean
 
-  "When true, copies secret values from the source instance to the destination. Defaults to false."
+  "When true, copies secret values from the source instance to the destination. Requires `instance:configure` on the source instance when it has secrets. Defaults to false."
   copySecrets: Boolean
 
   "Optional overrides that are deep-merged onto the source params before writing to the destination. Useful for tweaking environment-specific values (e.g., instance sizes)."
@@ -8357,13 +8421,13 @@ input ForkEnvironmentInput {
   "Key-value attributes for this environment. Keys and values must be strings. Must conform to the organization's custom attributes for the environment scope."
   attributes: Map
 
-  "When true, copies the parent environment's default resource connections into the fork."
+  "When true, copies the parent environment's default resource connections into the fork. Each resource requires `resource:view` and a resource grant that covers the fork."
   copyEnvironmentDefaults: Boolean
 
-  "When true, copies every package's remote resource references from the parent into the fork. Applies the same behavior as `copyInstance(copyRemoteReferences: true)` to every package in one call. Defaults to false."
+  "When true, copies every package's remote resource references from the parent into the fork. Applies the same behavior as `copyInstance(copyRemoteReferences: true)` to every package in one call, so each referenced resource requires `resource:view` and a resource grant that covers the fork. Defaults to false."
   copyRemoteReferences: Boolean
 
-  "When true, copies every package's secret values from the parent into the fork. Applies the same behavior as `copyInstance(copySecrets: true)` to every package in one call. Defaults to false."
+  "When true, copies every package's secret values from the parent into the fork. Applies the same behavior as `copyInstance(copySecrets: true)` to every package in one call, so each parent instance with secrets requires `instance:configure`. Defaults to false."
   copySecrets: Boolean
 
   "When true, blocks `decommissionEnvironment` and any per-instance deployment with `action: DECOMMISSION` against this environment. Disable it via `updateEnvironment` before tearing down. Defaults to false."
@@ -8529,6 +8593,37 @@ type EnvironmentDefaultResource {
 
   "The resource type (e.g., `massdriver\/aws-vpc`) that this resource conforms to."
   resourceType: ResourceType
+
+  "How this resource was created. Determines whether it can be modified through the API."
+  origin: ResourceOrigin!
+
+  """
+  The instance whose deployment produced this resource.
+
+  Null for **imported** resources. For **provisioned** resources, this is the instance
+  that owns the resource's lifecycle — updating or decommissioning the instance will
+  update or remove the resource.
+
+  Also null when you cannot view the project that contains the instance. You can see a
+  resource from another project through a grant, a `resource:view` policy, or a
+  dependency of an instance you can view; the instance that produced it stays hidden.
+  """
+  instance: Instance
+
+  """
+  The groups whose members can view `instance`.
+
+  Null for **imported** resources. You can read this field even when you cannot view the
+  project that contains the instance. When `instance` is null for you, ask a member of one
+  of these groups for access.
+  """
+  instanceAccessGroups(
+    "Sort field and direction. Defaults to name ascending."
+    sort: GroupsSort
+
+    "Pagination cursor returned from a previous response to fetch the next page."
+    cursor: Cursor
+  ): GroupsPage
 }
 
 """
@@ -9154,6 +9249,25 @@ enum OciReposSortField {
 
   "Chronological order by the date the repository was created."
   CREATED_AT
+
+  "Order by `access`, then by name. `ASC` lists repositories with access `GRANT` first, then `POLICY`. Grants are evaluated against the `projectId` argument when it is set. Pagination cursors for this sort are offset-based and are not interchangeable with cursors from other sorts."
+  ACCESS
+}
+
+"""
+How you can see an OCI repository.
+
+You can see a repository when a group policy gives you `repo:view` on it, or
+when the repository is granted to a project you can view. A grant adds the
+repository to what you can see even when no `repo:view` policy matches it,
+and a deny `repo:view` policy does not remove it.
+"""
+enum OciRepoAccess {
+  "A grant on the repository matches the project. Components from this repository can be added to that project."
+  GRANT
+
+  "Only your `repo:view` group policies match the repository. No grant matches the project, so adding a component from this repository to the project is refused until the repository is granted to it."
+  POLICY
 }
 
 "Fields available for ordering tags within an OCI repository."
@@ -9437,6 +9551,17 @@ type OciRepo {
   attributes (today: `md-id`, `md-repo`).
   """
   effectiveAttributes: Map!
+
+  """
+  How you can see this repository. `GRANT` when a grant on the repository
+  matches `projectId`, or any project you can view when `projectId` is
+  omitted. `POLICY` when no grant matches but your `repo:view` group
+  policies do. `null` when neither applies.
+  """
+  access(
+    "Evaluate grants against this project only. Returns `NOT_FOUND` when you cannot view the project."
+    projectId: ID
+  ): OciRepoAccess
 
   "Timestamp when this repository was created (UTC)."
   createdAt: DateTime!

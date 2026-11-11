@@ -119,7 +119,7 @@ Deployments are an action *on* an instance — `createDeployment`, `planDeployme
 
 | Operation | Type | Required permission(s) | Notes |
 |---|---|---|---|
-| `ociRepos` | Query | *visibility-filtered* | Union of `repo:view` policies and matching grants. |
+| `ociRepos` | Query | *visibility-filtered* | Union of `repo:view` policies and matching grants. With `projectId`, also `project:view` on that project, and only grants to that project count. |
 | `ociRepo` | Query | `repo:view` | |
 | `bundles` | Query | *visibility-filtered* | |
 | `bundle` | Query | `repo:view` | |
@@ -265,7 +265,7 @@ There is no `updateGrant` — grants are immutable; delete and re-create to chan
 A *visibility-filtered* list query is not gated by a single ABAC permission. Instead, the resolver folds in the caller's group policies and any matching grants when building its query, and the result set is whatever the caller can already see through other permissions:
 
 - `projects` returns the union of projects matched by the caller's `project:view` policies.
-- `ociRepos` returns repos matched by `repo:view` policies plus repos with grants whose `recipient_conditions` match a project the caller has `project:view` on.
+- `ociRepos` returns repos matched by `repo:view` policies plus repos with grants whose `recipient_conditions` match a project the caller has `project:view` on. A deny `repo:view` policy does not remove a granted repo. With `projectId`, only grants to that project count, and each repo's `access` field is `GRANT` or `POLICY`.
 - `resources` returns resources matched by `resource:view` policies plus the project cascade for provisioned resources, plus grants.
 
 The single-entity counterpart (`project`, `ociRepo`, `resource`) explicitly checks the corresponding `:view` permission and returns `not_found` to obscure existence on denial.

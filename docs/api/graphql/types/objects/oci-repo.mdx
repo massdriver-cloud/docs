@@ -66,6 +66,9 @@ type OciRepo {
   artifactType: String!
   attributes: Map!
   effectiveAttributes: Map!
+  access(
+    projectId: ID
+  ): OciRepoAccess
   createdAt: DateTime!
   updatedAt: DateTime!
   description: String
@@ -131,6 +134,15 @@ and excluded from this map — see `effectiveAttributes` for the merged view.
 The full set of attributes that ABAC policy evaluation sees for this
 repository — your user attributes plus auto-injected `md-*` system
 attributes (today: `md-id`, `md-repo`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>access</b></code>](#access)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoAccess</b></code>](/api/graphql/types/enums/oci-repo-access.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#access\} 
+How you can see this repository. `GRANT` when a grant on the repository
+matches `projectId`, or any project you can view when `projectId` is
+omitted. `POLICY` when no grant matches but your `repo:view` group
+policies do. `null` when neither applies.
+##### [<code style={{ fontWeight: 'normal' }}>OciRepo.access.<b>projectId</b></code>](#oci-repo-access-project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#oci-repo-access-project-id\} 
+Evaluate grants against this project only. Returns `NOT_FOUND` when you cannot view the project.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 

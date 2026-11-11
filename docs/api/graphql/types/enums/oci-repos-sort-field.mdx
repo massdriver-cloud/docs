@@ -52,6 +52,7 @@ ranked by relevance instead of these fields.
 enum OciReposSortField {
   NAME
   CREATED_AT
+  ACCESS
 }
 ```
 
@@ -66,6 +67,10 @@ Alphabetical order by repository name (e.g., `aws-aurora-postgres`).
 
 #### [<code style={{ fontWeight: 'normal' }}>OciReposSortField.<b>CREATED&#x005F;AT</b></code>](#created-at) \{#created-at\} 
 Chronological order by the date the repository was created.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciReposSortField.<b>ACCESS</b></code>](#access) \{#access\} 
+Order by `access`, then by name. `ASC` lists repositories with access `GRANT` first, then `POLICY`. Grants are evaluated against the `projectId` argument when it is set. Pagination cursors for this sort are offset-based and are not interchangeable with cursors from other sorts.
 
 
 

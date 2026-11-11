@@ -546,6 +546,45 @@ A caller's visible bundles is the union of:
 - bundles with a grant whose `recipient_conditions` match a project the
   caller has `project:view` on.
 
+A grant adds to what a caller sees beyond their own policies. If a bundle is
+granted to any project the caller can view, the caller sees the bundle in the
+catalog, even when no `repo:view` policy matches it. A deny `repo:view` policy
+removes bundles from the policy side only, so it does not hide a granted
+bundle. To keep a bundle out of a group's view, narrow the grant's
+`recipient_conditions`, or delete the grant.
+
+Inside a project, the canvas lists the bundles granted to that project, plus
+the bundles the caller can see but has not granted to the project yet. Only
+granted bundles can be added to the project.
+
+The `ociRepos` query takes an optional `projectId`. With it, only grants to
+that project count, and bundles that the caller's `repo:view` policies match
+are still listed. Each repo's `access` field tells you which rule applies:
+
+| `access` | Meaning |
+|---|---|
+| `GRANT` | A grant matches the project, or any project the caller can view when `projectId` is omitted. Bundles from the repo can be added to that project. |
+| `POLICY` | No grant matches, but the caller's `repo:view` policies do. |
+| `null` | Neither applies. |
+
+```graphql
+query {
+  ociRepos(
+    organizationId: "acme"
+    projectId: "ecomm"
+    sort: { field: ACCESS, order: ASC }
+  ) {
+    items {
+      name
+      access(projectId: "ecomm")
+    }
+  }
+}
+```
+
+Sorting by `ACCESS` with `ASC` lists `GRANT` repos first, then `POLICY` repos,
+each by name.
+
 A caller's visible resources is the union of:
 
 - the project cascade — provisioned resources whose parent project the

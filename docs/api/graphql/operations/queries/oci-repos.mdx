@@ -49,6 +49,17 @@ and resource types). Each repository is the container for all published
 versions of its artifact. Use `filter` to narrow by name, artifact type,
 or full-text search.
 
+The list holds every repository you can see:
+
+- repositories your `repo:view` group policies match, **plus**
+- bundle repositories granted to a project you can view.
+
+A grant to one of your projects adds its repository to the list even when
+no `repo:view` policy matches it, and a deny `repo:view` policy does not
+remove it. Without `projectId`, grants to every project you can view count.
+With `projectId`, only grants to that project count. Each item's `access`
+field tells you which rule applies.
+
 ```graphql
 query {
   ociRepos(organizationId: "your-org-id", filter: { name: { startsWith: "aws-" } }) {
@@ -64,10 +75,29 @@ query {
 }
 ```
 
+List the bundles available in one project, granted bundles first:
+
+```graphql
+query {
+  ociRepos(
+    organizationId: "your-org-id"
+    projectId: "ecomm"
+    filter: { artifactType: "application/vnd.massdriver.bundle.v1+json" }
+    sort: { field: ACCESS, order: ASC }
+  ) {
+    items {
+      name
+      access(projectId: "ecomm")
+    }
+  }
+}
+```
+
 
 ```graphql
 ociRepos(
   organizationId: ID!
+  projectId: ID
   filter: OciReposFilter
   sort: OciReposSort
   cursor: Cursor
@@ -81,6 +111,10 @@ ociRepos(
 
 #### [<code style={{ fontWeight: 'normal' }}>ociRepos.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
 Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ociRepos.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#project-id\} 
+Count only grants to this project. Repositories your `repo:view` policies match are still listed. Returns `NOT_FOUND` when you cannot view the project.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ociRepos.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciReposFilter</b></code>](/api/graphql/types/inputs/oci-repos-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#filter\} 
