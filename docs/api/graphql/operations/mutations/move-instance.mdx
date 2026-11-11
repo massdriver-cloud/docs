@@ -1,0 +1,139 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: move-instance
+title: moveInstance
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+<Badge class="badge badge--secondary badge--primary" text="form schema"/>
+
+
+
+Move an instance to an environment in another project.
+
+The instance keeps its configuration, secrets, state, resources, and deployment
+history. Its identifier changes to the destination environment and component;
+its name prefix does not. The source component stays on its blueprint, and its
+instance in the source environment is reset to a new `INITIALIZED` instance.
+
+The destination component's instance in that environment must be `INITIALIZED`
+or `DECOMMISSIONED`, and the moved instance replaces it. If the destination
+project has no component with `componentId`, the move adds one for the same
+bundle. A component with that ID that uses a different bundle is an error.
+
+Links across the move become remote references, and each resource is granted to
+the environment that uses it when no grant covers that environment yet.
+
+Requires `instance:move` on the instance before and after the move, plus every
+permission for what the move creates: `project:design` to add the component,
+`instance:configure` and `resource:view` for each remote reference, and
+`resource:grant` for each new grant. The move completes fully or fails; a failed
+move changes nothing and returns every reason in `messages`.
+
+Cloud tags and identifiers change with the move. Deploy the instance afterwards
+to bring your cloud resources in sync.
+
+```graphql
+mutation {
+  moveInstance(
+    organizationId: "my-org"
+    id: "billing-prod-vpc"
+    environmentId: "network-prod"
+    componentId: "vpc"
+    input: { preserveHistory: true }
+  ) {
+    result { id status }
+    successful
+    messages { message }
+  }
+}
+```
+
+
+
+
+```graphql
+moveInstance(
+  organizationId: ID!
+  id: ID!
+  environmentId: ID!
+  componentId: ID!
+  input: MoveInstanceInput!
+): InstancePayload
+```
+
+
+
+
+
+### Form Schema
+
+This mutation supports dynamic form generation using JSON Schema.
+
+- [JSON Schema](https://api.massdriver.cloud/graphql/v2/inputs/moveInstance.json)
+- [UI Schema](https://api.massdriver.cloud/graphql/v2/inputs/moveInstance.ui.json)
+
+<SchemaForm
+  schemaUrl="https://api.massdriver.cloud/graphql/v2/inputs/moveInstance.json"
+  uiSchemaUrl="https://api.massdriver.cloud/graphql/v2/inputs/moveInstance.ui.json"
+  name="moveInstance"
+/>
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>moveInstance.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>moveInstance.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+The instance to move.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>moveInstance.<b>environmentId</b></code>](#environment-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#environment-id\} 
+The environment, in another project, to move the instance into.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>moveInstance.<b>componentId</b></code>](#component-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#component-id\} 
+The component in the destination project that the instance belongs to after the move, without the project prefix (for example `vpc`, not `network-vpc`). Max 20 characters, lowercase alphanumeric only.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>moveInstance.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>MoveInstanceInput!</b></code>](/api/graphql/types/inputs/move-instance-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Move an instance, with its configuration, state, and deployment history, to an environment in another project.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>InstancePayload</b></code>](/api/graphql/types/objects/instance-payload.mdx) <Badge class="badge badge--secondary " text="object"/>
