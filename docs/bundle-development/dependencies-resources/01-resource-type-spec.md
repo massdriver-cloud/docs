@@ -465,6 +465,18 @@ Resource types use the same version model as bundles: semantic versions, release
 
 Each resource type also gets a repository in the OCI catalog, with the same access grants and attribute filters as a bundle repository.
 
+### Development releases
+
+A development release lets you test a resource type change against real bundles before cutting the stable version. It works the same way as a [bundle development release](/bundle-development/publishing/versioning#development-releases).
+
+```bash
+mass resource-type publish --development ./aws-vpc
+```
+
+With `version: 2.2.0` in `massdriver.yaml`, this publishes `2.2.0-dev.<timestamp>`, for example `2.2.0-dev.20261110T153000Z`. Each run publishes a new development release. When the change is ready, publish without `--development` to release `2.2.0`. A development release cannot be published for a version that already exists.
+
+A development release is skipped by stable ranges. Bundles only pick it up when their `dependencies` or `resources` entry opts in with an exact version or a `+dev` range. See [Version Resolution: Development releases](/bundle-development/dependencies-resources/version-resolution#development-releases).
+
 ### Referenced files must exist
 
 `ui.instructions[].path` and `exports[].templatePath` point at files rather than carrying their content inline. A path that does not exist, or that resolves outside the resource type's directory, fails the publish. An incomplete artifact is never shipped.
@@ -504,7 +516,7 @@ resources:
     required: true
 ```
 
-A dependency accepts a range. A resource pins the single version it produces. See [Version Resolution](/bundle-development/dependencies-resources/version-resolution) for the accepted range forms.
+Both accept an exact version or a range. See [Version Resolution](/bundle-development/dependencies-resources/version-resolution) for the accepted range forms.
 
 ## Field Reference
 
