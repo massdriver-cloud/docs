@@ -69,6 +69,7 @@ Deployments are an action *on* an instance — `createDeployment`, `planDeployme
 | `setRemoteReference` | Mutation | `instance:configure`, `resource:view` | Configure the destination instance, view the resource being wired in. Also requires a resource grant covering the instance's environment. |
 | `removeRemoteReference` | Mutation | `instance:configure` | |
 | `copyInstance` | Mutation | `project:view`, `instance:configure` | View on source instance, configure on destination. |
+| `moveInstance` | Mutation | `instance:move`, plus `project:design`, `instance:configure`, `resource:view`, `resource:grant` as needed | `instance:move` on the instance before and after the move. `project:design` when the move adds the component, `instance:configure` and `resource:view` for each link it turns into a remote reference, `resource:grant` for each grant it creates. Fails with every missing permission and changes nothing. |
 | `orphanInstance` | Mutation | `instance:decommission` | Break-glass reset to `INITIALIZED`. Clears state locks, bulk-aborts in-flight deployments, and (with `deleteState: true`) deletes the remote Terraform/OpenTofu state files. |
 | `createDeployment` | Mutation | `instance:deploy`, `instance:plan`, or `instance:decommission` | Permission depends on `input.action`: `PROVISION` → `instance:deploy`, `PLAN` → `instance:plan`, `DECOMMISSION` → `instance:decommission`. |
 | `planDeployment` | Mutation | `instance:plan` | Re-runs a `PLAN` against a source deployment's params on the same instance. Source may be in any status. |

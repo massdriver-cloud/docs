@@ -2785,6 +2785,64 @@ type RootMutationType {
   ): InstancePayload @inputs(name: "orphanInstance", schema: "\/graphql\/v2\/inputs\/orphanInstance.json", ui: "\/graphql\/v2\/inputs\/orphanInstance.ui.json")
 
   """
+  Move an instance to an environment in another project.
+
+  The instance keeps its configuration, secrets, state, resources, and deployment
+  history. Its identifier changes to the destination environment and component;
+  its name prefix does not. The source component stays on its blueprint, and its
+  instance in the source environment is reset to a new `INITIALIZED` instance.
+
+  The destination component's instance in that environment must be `INITIALIZED`
+  or `DECOMMISSIONED`, and the moved instance replaces it. If the destination
+  project has no component with `componentId`, the move adds one for the same
+  bundle. A component with that ID that uses a different bundle is an error.
+
+  Links across the move become remote references, and each resource is granted to
+  the environment that uses it when no grant covers that environment yet.
+
+  Requires `instance:move` on the instance before and after the move, plus every
+  permission for what the move creates: `project:design` to add the component,
+  `instance:configure` and `resource:view` for each remote reference, and
+  `resource:grant` for each new grant. The move completes fully or fails; a failed
+  move changes nothing and returns every reason in `messages`.
+
+  Cloud tags and identifiers change with the move. Deploy the instance afterwards
+  to bring your cloud resources in sync.
+
+  ```graphql
+  mutation {
+    moveInstance(
+      organizationId: "my-org"
+      id: "billing-prod-vpc"
+      environmentId: "network-prod"
+      componentId: "vpc"
+      input: { preserveHistory: true }
+    ) {
+      result { id status }
+      successful
+      messages { message }
+    }
+  }
+  ```
+  """
+  moveInstance(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The instance to move."
+    id: ID!
+
+    "The environment, in another project, to move the instance into."
+    environmentId: ID!
+
+    "The component in the destination project that the instance belongs to after the move, without the project prefix (for example `vpc`, not `network-vpc`). Max 20 characters, lowercase alphanumeric only."
+    componentId: ID!
+
+    "Move an instance, with its configuration, state, and deployment history, to an environment in another project."
+    input: MoveInstanceInput!
+  ): InstancePayload @inputs(name: "moveInstance", schema: "\/graphql\/v2\/inputs\/moveInstance.json", ui: "\/graphql\/v2\/inputs\/moveInstance.ui.json")
+
+  """
   Create a new deployment for an instance.
 
   Saves the provided `params` as the instance's configuration, then initiates the
@@ -3122,10 +3180,12 @@ type RootMutationType {
   ): OciRepoPayload @inputs(name: "updateOciRepo", schema: "\/graphql\/v2\/inputs\/updateOciRepo.json", ui: "\/graphql\/v2\/inputs\/updateOciRepo.ui.json")
 
   """
-  Delete an OCI repository.
+  Delete an OCI repository and every version published in it.
 
-  Refused if the repository has any published versions. Tags are immutable;
-  to remove versions today, recreate the repository.
+  Refused while the repository is still in use: a bundle repository that is on
+  a project canvas or deployed, or a resource-type repository whose type a
+  resource, an environment default, or a published bundle still references. The
+  error lists what is using it.
   """
   deleteOciRepo(
     "Your organization's unique identifier."
@@ -3915,8 +3975,27 @@ type Resource {
   Null for **imported** resources. For **provisioned** resources, this is the instance
   that owns the resource's lifecycle — updating or decommissioning the instance will
   update or remove the resource.
+
+  Also null when you cannot view the project that contains the instance. You can see a
+  resource from another project through a grant, a `resource:view` policy, or a
+  dependency of an instance you can view; the instance that produced it stays hidden.
   """
   instance: Instance
+
+  """
+  The groups whose members can view `instance`.
+
+  Null for **imported** resources. You can read this field even when you cannot view the
+  project that contains the instance. When `instance` is null for you, ask a member of one
+  of these groups for access.
+  """
+  instanceAccessGroups(
+    "Sort field and direction. Defaults to name ascending."
+    sort: GroupsSort
+
+    "Pagination cursor returned from a previous response to fetch the next page."
+    cursor: Cursor
+  ): GroupsPage
 
   """
   Download formats supported for this resource.
@@ -7755,6 +7834,12 @@ input OrphanInstanceInput {
   deleteState: Boolean
 }
 
+"Move an instance, with its configuration, state, and deployment history, to an environment in another project."
+input MoveInstanceInput {
+  "When the move replaces a DECOMMISSIONED instance, true moves that instance's deployments, alarms, and costs onto the moved instance. An alarm for a cloud resource that the moved instance already has an alarm for is deleted. Costs for a billing period that both instances have are added together. False deletes them with the replaced instance."
+  preserveHistory: Boolean!
+}
+
 """
 Metadata about an encrypted secret attached to an instance.
 
@@ -8529,6 +8614,37 @@ type EnvironmentDefaultResource {
 
   "The resource type (e.g., `massdriver\/aws-vpc`) that this resource conforms to."
   resourceType: ResourceType
+
+  "How this resource was created. Determines whether it can be modified through the API."
+  origin: ResourceOrigin!
+
+  """
+  The instance whose deployment produced this resource.
+
+  Null for **imported** resources. For **provisioned** resources, this is the instance
+  that owns the resource's lifecycle — updating or decommissioning the instance will
+  update or remove the resource.
+
+  Also null when you cannot view the project that contains the instance. You can see a
+  resource from another project through a grant, a `resource:view` policy, or a
+  dependency of an instance you can view; the instance that produced it stays hidden.
+  """
+  instance: Instance
+
+  """
+  The groups whose members can view `instance`.
+
+  Null for **imported** resources. You can read this field even when you cannot view the
+  project that contains the instance. When `instance` is null for you, ask a member of one
+  of these groups for access.
+  """
+  instanceAccessGroups(
+    "Sort field and direction. Defaults to name ascending."
+    sort: GroupsSort
+
+    "Pagination cursor returned from a previous response to fetch the next page."
+    cursor: Cursor
+  ): GroupsPage
 }
 
 """

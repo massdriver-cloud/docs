@@ -341,6 +341,7 @@ Massdriver defines 39 permissions using an `entity:verb` format.
 | `instance:plan` | Run an infrastructure plan without deploying |
 | `instance:decommission` | Tear down infrastructure |
 | `instance:propose` | Submit a deployment for approval, including a rollback proposal that returns the instance to a past deployment's exact state. Approving or rejecting the proposal is gated by `instance:deploy` — anyone who can deploy can also decide a proposal. |
+| `instance:move` | Move an instance, with its configuration, state, and deployment history, to an environment in another project. Checked on the instance before and after the move. The move also needs every permission for what it creates: `project:design` to add the component, `instance:configure` and `resource:view` for each remote reference, and `resource:grant` for each grant. |
 
 ### Group
 
