@@ -465,6 +465,25 @@ Resource types use the same version model as bundles: semantic versions, release
 
 Each resource type also gets a repository in the OCI catalog, with the same access grants and attribute filters as a bundle repository.
 
+### Development releases
+
+A development release lets you test a resource type change against real bundles before cutting the stable version. It uses the same `MAJOR.MINOR.PATCH-dev.TIMESTAMP` format as a [bundle development release](/bundle-development/publishing/versioning#development-releases), where the timestamp is UTC in RFC 3339 basic format (`YYYYMMDDTHHMMSSZ`).
+
+`mass resource-type publish` has no `--development` flag. Write the development version into `massdriver.yaml` and publish as usual:
+
+```yaml
+name: aws-vpc
+version: 2.2.0-dev.20261110T153000Z
+```
+
+```bash
+mass resource-type publish ./aws-vpc
+```
+
+Any other suffix, such as `2.2.0-dev.1` or `2.2.0-rc.1`, is rejected. Each development release is immutable like any other version, so publish the next iteration with a new timestamp. When the change is ready, set `version: 2.2.0` and publish the stable release.
+
+A development release is skipped by stable ranges. Bundles only pick it up when their `dependencies` or `resources` entry opts in with an exact version or a `+dev` range. See [Version Resolution: Development releases](/bundle-development/dependencies-resources/version-resolution#development-releases).
+
 ### Referenced files must exist
 
 `ui.instructions[].path` and `exports[].templatePath` point at files rather than carrying their content inline. A path that does not exist, or that resolves outside the resource type's directory, fails the publish. An incomplete artifact is never shipped.
@@ -504,7 +523,7 @@ resources:
     required: true
 ```
 
-A dependency accepts a range. A resource pins the single version it produces. See [Version Resolution](/bundle-development/dependencies-resources/version-resolution) for the accepted range forms.
+Both accept an exact version or a range. See [Version Resolution](/bundle-development/dependencies-resources/version-resolution) for the accepted range forms.
 
 ## Field Reference
 
