@@ -400,6 +400,48 @@ type RootQueryType {
   versions of its artifact. Use `filter` to narrow by name, artifact type,
   or full-text search.
 
+  The list holds every repository you can see:
+
+  - repositories your `repo:view` group policies match, **plus**
+  - bundle repositories granted to a project you can view.
+
+  A grant to one of your projects adds its repository to the list even when
+  no `repo:view` policy matches it, and a deny `repo:view` policy does not
+  remove it. Use `filter.projectId` for the bundles granted to one project,
+  and `filter.viewer` for the repositories your own policies match. When
+  both are set, a repository must match both. To list a project's bundles
+  and your own bundles together, make two queries.
+
+  Example: you can view projects `checkout` and `billing`, and your group
+  policy allows `repo:view` on repositories with `TEAM=payments`.
+
+  | Repository     | `TEAM`     | Granted to |
+  | -------------- | ---------- | ---------- |
+  | `aws-aurora`   | `payments` | none       |
+  | `aws-s3`       | `payments` | `checkout` |
+  | `aws-iam-role` | none       | `checkout` |
+  | `aws-vpc`      | none       | `billing`  |
+
+  | `filter`                                       | Result                                            |
+  | ---------------------------------------------- | ------------------------------------------------- |
+  | none                                           | `aws-aurora`, `aws-iam-role`, `aws-s3`, `aws-vpc` |
+  | `{ projectId: "checkout" }`                    | `aws-iam-role`, `aws-s3`                          |
+  | `{ projectId: "billing" }`                     | `aws-vpc`                                         |
+  | `{ viewer: true }`                             | `aws-aurora`, `aws-s3`                            |
+  | `{ viewer: false }`                            | `aws-iam-role`, `aws-vpc`                         |
+  | `{ projectId: "checkout", viewer: true }`      | `aws-s3`                                          |
+  | `{ projectId: "checkout", viewer: false }`     | `aws-iam-role`                                    |
+  | `{ projectId: "billing", viewer: true }`       | empty list                                        |
+  | `{ projectId: "x" }`, no `project:view` on `x` | `NOT_FOUND` error                                 |
+
+  ```graphql
+  query {
+    ociRepos(organizationId: "your-org-id", filter: { projectId: "ecomm" }) {
+      items { name }
+    }
+  }
+  ```
+
   ```graphql
   query {
     ociRepos(organizationId: "your-org-id", filter: { name: { startsWith: "aws-" } }) {
@@ -1583,6 +1625,12 @@ type RootMutationType {
   `copyEnvironmentDefaults: true` to also copy the parent's default resource
   connections.
 
+  Each copied environment default and remote reference requires `resource:view` on
+  the resource and a resource grant that covers the new environment — the same checks
+  as `setEnvironmentDefault` and `setRemoteReference`. Copying secrets requires
+  `instance:configure` on each parent instance that has secrets. If any check fails,
+  the fork makes no changes.
+
   Re-calling `forkEnvironment` with the same parent + `id` is a no-op that
   returns the existing environment. Re-calling with the same `id` but a
   different `parentId` is rejected — a fork's parent is immutable.
@@ -2683,6 +2731,11 @@ type RootMutationType {
   state transfer. Deployment is a separate action — call `createDeployment` on the
   destination when you're ready to apply.
 
+  Copying secrets requires `instance:configure` on the source instance. Copying remote
+  references requires `resource:view` on each referenced resource and a resource grant
+  that covers the destination environment — the same checks as `setRemoteReference`.
+  If any check fails, nothing is copied.
+
   ```graphql
   mutation {
     copyInstance(
@@ -3122,10 +3175,12 @@ type RootMutationType {
   ): OciRepoPayload @inputs(name: "updateOciRepo", schema: "\/graphql\/v2\/inputs\/updateOciRepo.json", ui: "\/graphql\/v2\/inputs\/updateOciRepo.ui.json")
 
   """
-  Delete an OCI repository.
+  Delete an OCI repository and every version published in it.
 
-  Refused if the repository has any published versions. Tags are immutable;
-  to remove versions today, recreate the repository.
+  Refused while the repository is still in use: a bundle repository that is on
+  a project canvas or deployed, or a resource-type repository whose type a
+  resource, an environment default, or a published bundle still references. The
+  error lists what is using it.
   """
   deleteOciRepo(
     "Your organization's unique identifier."
@@ -3915,8 +3970,27 @@ type Resource {
   Null for **imported** resources. For **provisioned** resources, this is the instance
   that owns the resource's lifecycle — updating or decommissioning the instance will
   update or remove the resource.
+
+  Also null when you cannot view the project that contains the instance. You can see a
+  resource from another project through a grant, a `resource:view` policy, or a
+  dependency of an instance you can view; the instance that produced it stays hidden.
   """
   instance: Instance
+
+  """
+  The groups whose members can view `instance`.
+
+  Null for **imported** resources. You can read this field even when you cannot view the
+  project that contains the instance. When `instance` is null for you, ask a member of one
+  of these groups for access.
+  """
+  instanceAccessGroups(
+    "Sort field and direction. Defaults to name ascending."
+    sort: GroupsSort
+
+    "Pagination cursor returned from a previous response to fetch the next page."
+    cursor: Cursor
+  ): GroupsPage
 
   """
   Download formats supported for this resource.
@@ -7739,10 +7813,10 @@ input SetInstanceSecretInput {
 
 "Copy configuration from one instance to another. The source and destination must be instances of the same component. Source params (minus any fields marked non-copyable in the bundle) are written to the destination."
 input CopyInstanceInput {
-  "When true, copies remote resource references from the source instance to the destination. Defaults to false."
+  "When true, copies remote resource references from the source instance to the destination. Each referenced resource requires `resource:view` and a resource grant that covers the destination environment. Defaults to false."
   copyRemoteReferences: Boolean
 
-  "When true, copies secret values from the source instance to the destination. Defaults to false."
+  "When true, copies secret values from the source instance to the destination. Requires `instance:configure` on the source instance when it has secrets. Defaults to false."
   copySecrets: Boolean
 
   "Optional overrides that are deep-merged onto the source params before writing to the destination. Useful for tweaking environment-specific values (e.g., instance sizes)."
@@ -8357,13 +8431,13 @@ input ForkEnvironmentInput {
   "Key-value attributes for this environment. Keys and values must be strings. Must conform to the organization's custom attributes for the environment scope."
   attributes: Map
 
-  "When true, copies the parent environment's default resource connections into the fork."
+  "When true, copies the parent environment's default resource connections into the fork. Each resource requires `resource:view` and a resource grant that covers the fork."
   copyEnvironmentDefaults: Boolean
 
-  "When true, copies every package's remote resource references from the parent into the fork. Applies the same behavior as `copyInstance(copyRemoteReferences: true)` to every package in one call. Defaults to false."
+  "When true, copies every package's remote resource references from the parent into the fork. Applies the same behavior as `copyInstance(copyRemoteReferences: true)` to every package in one call, so each referenced resource requires `resource:view` and a resource grant that covers the fork. Defaults to false."
   copyRemoteReferences: Boolean
 
-  "When true, copies every package's secret values from the parent into the fork. Applies the same behavior as `copyInstance(copySecrets: true)` to every package in one call. Defaults to false."
+  "When true, copies every package's secret values from the parent into the fork. Applies the same behavior as `copyInstance(copySecrets: true)` to every package in one call, so each parent instance with secrets requires `instance:configure`. Defaults to false."
   copySecrets: Boolean
 
   "When true, blocks `decommissionEnvironment` and any per-instance deployment with `action: DECOMMISSION` against this environment. Disable it via `updateEnvironment` before tearing down. Defaults to false."
@@ -8529,6 +8603,37 @@ type EnvironmentDefaultResource {
 
   "The resource type (e.g., `massdriver\/aws-vpc`) that this resource conforms to."
   resourceType: ResourceType
+
+  "How this resource was created. Determines whether it can be modified through the API."
+  origin: ResourceOrigin!
+
+  """
+  The instance whose deployment produced this resource.
+
+  Null for **imported** resources. For **provisioned** resources, this is the instance
+  that owns the resource's lifecycle — updating or decommissioning the instance will
+  update or remove the resource.
+
+  Also null when you cannot view the project that contains the instance. You can see a
+  resource from another project through a grant, a `resource:view` policy, or a
+  dependency of an instance you can view; the instance that produced it stays hidden.
+  """
+  instance: Instance
+
+  """
+  The groups whose members can view `instance`.
+
+  Null for **imported** resources. You can read this field even when you cannot view the
+  project that contains the instance. When `instance` is null for you, ask a member of one
+  of these groups for access.
+  """
+  instanceAccessGroups(
+    "Sort field and direction. Defaults to name ascending."
+    sort: GroupsSort
+
+    "Pagination cursor returned from a previous response to fetch the next page."
+    cursor: Cursor
+  ): GroupsPage
 }
 
 """
@@ -9215,6 +9320,12 @@ input OciReposFilter {
 
   "Full-text search across the repository name, readme, and changelog. Results are ranked by relevance unless you provide an explicit `sort`. For terms longer than 3 characters, name-prefix matches are also included. **Note:** pagination cursors returned by search results use offset-based pagination and are not interchangeable with cursors from non-search queries."
   search: String
+
+  "Only repositories granted to this project. These are the bundles that can be added to the project. Returns `NOT_FOUND` when you cannot view the project."
+  projectId: ID
+
+  "`true` returns only repositories your own `repo:view` group policies match. `false` returns only repositories you see only through a grant to a project you can view, with no `repo:view` policy of yours matching them. When omitted, both are returned."
+  viewer: Boolean
 }
 
 """

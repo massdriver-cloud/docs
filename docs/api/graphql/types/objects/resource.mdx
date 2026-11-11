@@ -65,6 +65,10 @@ type Resource {
   resourceType: ResourceType
   field: String
   instance: Instance
+  instanceAccessGroups(
+    sort: GroupsSort
+    cursor: Cursor
+  ): GroupsPage
   formats: [String!]!
   payload: Map
   attributes: Map!
@@ -127,6 +131,24 @@ The instance whose deployment produced this resource.
 Null for **imported** resources. For **provisioned** resources, this is the instance
 that owns the resource's lifecycle — updating or decommissioning the instance will
 update or remove the resource.
+
+Also null when you cannot view the project that contains the instance. You can see a
+resource from another project through a grant, a `resource:view` policy, or a
+dependency of an instance you can view; the instance that produced it stays hidden.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Resource.<b>instanceAccessGroups</b></code>](#instance-access-groups)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GroupsPage</b></code>](/api/graphql/types/objects/groups-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#instance-access-groups\} 
+The groups whose members can view `instance`.
+
+Null for **imported** resources. You can read this field even when you cannot view the
+project that contains the instance. When `instance` is null for you, ask a member of one
+of these groups for access.
+##### [<code style={{ fontWeight: 'normal' }}>Resource.instanceAccessGroups.<b>sort</b></code>](#resource-instance-access-groups-sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GroupsSort</b></code>](/api/graphql/types/inputs/groups-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#resource-instance-access-groups-sort\} 
+Sort field and direction. Defaults to name ascending.
+
+
+##### [<code style={{ fontWeight: 'normal' }}>Resource.instanceAccessGroups.<b>cursor</b></code>](#resource-instance-access-groups-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#resource-instance-access-groups-cursor\} 
+Pagination cursor returned from a previous response to fetch the next page.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Resource.<b>formats</b></code>](#formats)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#formats\} 

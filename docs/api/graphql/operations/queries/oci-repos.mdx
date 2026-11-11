@@ -49,6 +49,48 @@ and resource types). Each repository is the container for all published
 versions of its artifact. Use `filter` to narrow by name, artifact type,
 or full-text search.
 
+The list holds every repository you can see:
+
+- repositories your `repo:view` group policies match, **plus**
+- bundle repositories granted to a project you can view.
+
+A grant to one of your projects adds its repository to the list even when
+no `repo:view` policy matches it, and a deny `repo:view` policy does not
+remove it. Use `filter.projectId` for the bundles granted to one project,
+and `filter.viewer` for the repositories your own policies match. When
+both are set, a repository must match both. To list a project's bundles
+and your own bundles together, make two queries.
+
+Example: you can view projects `checkout` and `billing`, and your group
+policy allows `repo:view` on repositories with `TEAM=payments`.
+
+| Repository     | `TEAM`     | Granted to |
+| -------------- | ---------- | ---------- |
+| `aws-aurora`   | `payments` | none       |
+| `aws-s3`       | `payments` | `checkout` |
+| `aws-iam-role` | none       | `checkout` |
+| `aws-vpc`      | none       | `billing`  |
+
+| `filter`                                       | Result                                            |
+| ---------------------------------------------- | ------------------------------------------------- |
+| none                                           | `aws-aurora`, `aws-iam-role`, `aws-s3`, `aws-vpc` |
+| `{ projectId: "checkout" }`                    | `aws-iam-role`, `aws-s3`                          |
+| `{ projectId: "billing" }`                     | `aws-vpc`                                         |
+| `{ viewer: true }`                             | `aws-aurora`, `aws-s3`                            |
+| `{ viewer: false }`                            | `aws-iam-role`, `aws-vpc`                         |
+| `{ projectId: "checkout", viewer: true }`      | `aws-s3`                                          |
+| `{ projectId: "checkout", viewer: false }`     | `aws-iam-role`                                    |
+| `{ projectId: "billing", viewer: true }`       | empty list                                        |
+| `{ projectId: "x" }`, no `project:view` on `x` | `NOT_FOUND` error                                 |
+
+```graphql
+query {
+  ociRepos(organizationId: "your-org-id", filter: { projectId: "ecomm" }) {
+    items { name }
+  }
+}
+```
+
 ```graphql
 query {
   ociRepos(organizationId: "your-org-id", filter: { name: { startsWith: "aws-" } }) {

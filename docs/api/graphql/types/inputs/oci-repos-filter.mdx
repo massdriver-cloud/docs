@@ -54,6 +54,8 @@ input OciReposFilter {
   createdAt: DatetimeFilter
   attributes: [AttributeFilter!]
   search: String
+  projectId: ID
+  viewer: Boolean
 }
 ```
 
@@ -80,6 +82,14 @@ Match by the repository's attributes. Repositories are organization-level, so th
 
 #### [<code style={{ fontWeight: 'normal' }}>OciReposFilter.<b>search</b></code>](#search)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#search\} 
 Full-text search across the repository name, readme, and changelog. Results are ranked by relevance unless you provide an explicit `sort`. For terms longer than 3 characters, name-prefix matches are also included. **Note:** pagination cursors returned by search results use offset-based pagination and are not interchangeable with cursors from non-search queries.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciReposFilter.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#project-id\} 
+Only repositories granted to this project. These are the bundles that can be added to the project. Returns `NOT_FOUND` when you cannot view the project.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciReposFilter.<b>viewer</b></code>](#viewer)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#viewer\} 
+`true` returns only repositories your own `repo:view` group policies match. `false` returns only repositories you see only through a grant to a project you can view, with no `repo:view` policy of yours matching them. When omitted, both are returned.
 
 
 
