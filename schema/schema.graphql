@@ -5063,7 +5063,26 @@ input EventFilterInput {
   "Event types from `eventTypes`, or `<entity>.*` for every event of an entity, such as `deployment.*`."
   types: [String!]
 
-  "The event's metadata must contain every key and value in this object."
+  """
+  The event's metadata must contain every key and value in this object, such as
+  `{"deployment_action": "PROVISION"}`. A key that does not apply to an event is left out of its metadata, so
+  a filter on that key does not match the event.
+
+  Every event records:
+
+  - `credential`: how the actor authenticated. `session` (a person signed in to Massdriver), `access_token`
+    (a personal access token, as used by the CLI, scripts, and agents), `service_account`, `deployment`
+    (a running deployment), or `system` (Massdriver itself).
+  - `access_token_id`: ID of the access token the actor used. Only when the actor used an access token.
+
+  Some event types record more:
+
+  - `deployment_action` on every `deployment.*` event: `PROVISION`, `PLAN`, or `DECOMMISSION`.
+  - `contains_secrets` on `resource.exported`: `true` when the export revealed at least one value of a field
+    that the resource type marks as sensitive.
+
+  `eventTypes` lists the metadata fields of each event type.
+  """
   metadata: Map
 
   """
@@ -5165,7 +5184,7 @@ type EventFilter {
   "Event types, or `<entity>.*` for every event of an entity."
   types: [String!]!
 
-  "Metadata keys and values that the event must contain."
+  "Metadata keys and values that the event must contain. See `EventFilterInput.metadata` for the fields Massdriver records."
   metadata: Map!
 
   "Attributes and values that the event's entity must have had when the event happened."
