@@ -1,0 +1,76 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: redeliver-events
+title: redeliverEvents
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Send a destination's `FAILED` deliveries again, with a new set of retries. Leave out `deliveryIds` to send
+every failed delivery again. A paused destination sends them after it is resumed.
+
+
+```graphql
+redeliverEvents(
+  organizationId: ID!
+  eventDestinationId: UUID!
+  deliveryIds: [UUID!]
+): EventDestinationPayload
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>redeliverEvents.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>redeliverEvents.<b>eventDestinationId</b></code>](#event-destination-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UUID!</b></code>](/api/graphql/types/scalars/uuid.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#event-destination-id\} 
+The destination's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>redeliverEvents.<b>deliveryIds</b></code>](#delivery-ids)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[UUID!]</b></code>](/api/graphql/types/scalars/uuid.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#delivery-ids\} 
+The failed deliveries to send again. Deliveries that are not `FAILED` are left as they are.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>EventDestinationPayload</b></code>](/api/graphql/types/objects/event-destination-payload.mdx) <Badge class="badge badge--secondary " text="object"/>

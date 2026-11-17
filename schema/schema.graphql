@@ -743,6 +743,73 @@ type RootQueryType {
   ): [String!]!
 
   """
+  List the organization's event destinations.
+
+  ```graphql
+  query {
+    eventDestinations(organizationId: "my-org", filter: { status: { eq: PAUSED } }) {
+      items {
+        id
+        name
+        status
+        failingSince
+      }
+      cursor { next }
+    }
+  }
+  ```
+  """
+  eventDestinations(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "Filter criteria. All filters are combined with AND."
+    filter: EventDestinationsFilter
+
+    "Sort order. Defaults to `name` ascending."
+    sort: EventDestinationsSort
+
+    "Pagination cursor from a previous response."
+    cursor: Cursor
+  ): EventDestinationsPage
+
+  "Get one of the organization's event destinations."
+  eventDestination(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The destination's unique identifier."
+    id: UUID!
+  ): EventDestination
+
+  """
+  List the organization's recent audit log events that a filter matches, newest first. Use it to check a
+  filter before you create or change a destination with it.
+
+  ```graphql
+  query {
+    previewEventDestination(organizationId: "my-org", filter: { types: ["deployment.*"] }) {
+      items {
+        id
+        type
+        occurredAt
+      }
+    }
+  }
+  ```
+  """
+  previewEventDestination(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The filter to check."
+    filter: EventFilterInput!
+
+    "Pagination cursor from a previous response."
+    cursor: Cursor
+  ): AuditLogsPage
+
+  """
   List resource types available to your organization.
 
   Returns both public resource types provided by Massdriver and any private
@@ -2259,6 +2326,97 @@ type RootMutationType {
     "The integration type identifier to delete."
     id: ID!
   ): IntegrationPayload
+
+  """
+  Add a destination that receives the organization's audit log events.
+
+  An `HTTP` destination gets a `signingSecret`. Massdriver signs each request with it.
+
+  ```graphql
+  mutation {
+    createEventDestination(
+      organizationId: "my-org"
+      input: {
+        name: "Production deployments"
+        adapter: HTTP
+        config: "{\"url\": \"https://hooks.example.com/massdriver\"}"
+        filter: { types: ["deployment.*"], attributes: "{\"md-environment\": \"prod\"}" }
+      }
+    ) {
+      result { id signingSecret }
+      successful
+      messages { field message }
+    }
+  }
+  ```
+  """
+  createEventDestination(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "Add a destination that receives the organization's audit log events that match its filter."
+    input: CreateEventDestinationInput!
+  ): EventDestinationPayload @inputs(name: "createEventDestination", schema: "\/graphql\/v2\/inputs\/createEventDestination.json", ui: "\/graphql\/v2\/inputs\/createEventDestination.ui.json")
+
+  """
+  Change a destination's name, config, or filter. Fields you leave out do not change. A new `config`
+  replaces the current one. The new filter applies to events that happen after the change.
+  """
+  updateEventDestination(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The destination's unique identifier."
+    id: UUID!
+
+    "Change a destination's name, config, or filter. Fields you leave out do not change."
+    input: UpdateEventDestinationInput!
+  ): EventDestinationPayload @inputs(name: "updateEventDestination", schema: "\/graphql\/v2\/inputs\/updateEventDestination.json", ui: "\/graphql\/v2\/inputs\/updateEventDestination.ui.json")
+
+  """
+  Stop sending events to a destination. Events that happen while it is paused are not sent. Events that
+  were waiting to be sent are sent after it is resumed.
+  """
+  pauseEventDestination(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The destination's unique identifier."
+    id: UUID!
+  ): EventDestinationPayload
+
+  "Start sending events to a paused destination again, beginning with the events that were waiting."
+  resumeEventDestination(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The destination's unique identifier."
+    id: UUID!
+  ): EventDestinationPayload
+
+  "Delete a destination and its deliveries. Events waiting to be sent are not sent."
+  deleteEventDestination(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The destination's unique identifier."
+    id: UUID!
+  ): EventDestinationPayload
+
+  """
+  Send a destination's `FAILED` deliveries again, with a new set of retries. Leave out `deliveryIds` to send
+  every failed delivery again. A paused destination sends them after it is resumed.
+  """
+  redeliverEvents(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The destination's unique identifier."
+    eventDestinationId: UUID!
+
+    "The failed deliveries to send again. Deliveries that are not `FAILED` are left as they are."
+    deliveryIds: [UUID!]
+  ): EventDestinationPayload
 
   """
   Create a scoped, time-limited personal access token for the authenticated account.
@@ -4827,6 +4985,280 @@ input CreateServiceAccountAccessTokenInput {
 
   "Permission scopes. At least one required. Currently only [\"*\"] (full access) is supported."
   scopes: [String!]!
+}
+
+"How Massdriver sends events to a destination."
+enum EventDestinationAdapter {
+  "POST each event to a URL as a CloudEvent (`application\/cloudevents+json`), signed with [Standard Webhooks](https:\/\/www.standardwebhooks.com) headers."
+  HTTP
+}
+
+"Whether a destination receives events."
+enum EventDestinationStatus {
+  "The destination receives the events that match its filter."
+  ACTIVE
+
+  "The destination receives no events. Events that match its filter while it is paused are not sent. Massdriver pauses a destination when a send fails and no send has succeeded for 24 hours."
+  PAUSED
+}
+
+"The state of one event's delivery to a destination."
+enum EventDeliveryStatus {
+  "Waiting to be sent, or waiting for a retry."
+  PENDING
+
+  "The destination accepted the event."
+  DELIVERED
+
+  "Massdriver stopped trying. The destination rejected the event, or every retry failed. Use `redeliverEvents` to send it again."
+  FAILED
+}
+
+"Fields to sort event destinations by."
+enum EventDestinationsSortField {
+  "Sort alphabetically by name."
+  NAME
+
+  "Sort by when the destination was added."
+  CREATED_AT
+}
+
+"Fields to sort a destination's deliveries by."
+enum EventDeliveriesSortField {
+  "Sort by when the event matched the destination."
+  CREATED_AT
+
+  "Sort by the last change to the delivery, such as an attempt."
+  UPDATED_AT
+}
+
+"""
+Selects audit log events. An event matches when it matches every field. An empty field matches every event,
+so an empty filter matches all of the organization's events.
+
+```graphql
+{
+  types: ["deployment.*", "instance.alarm_triggered"]
+  attributes: "{\"md-environment\": \"prod\"}"
+  actorTypes: [ACCOUNT, SERVICE_ACCOUNT]
+}
+```
+"""
+input EventFilterInput {
+  "Event types from `eventTypes`, or `<entity>.*` for every event of an entity, such as `deployment.*`."
+  types: [String!]
+
+  "The event's metadata must contain every key and value in this object."
+  metadata: Map
+
+  """
+  The event's entity must have had every attribute and value in this object when the event happened, such
+  as `{"md-project": "api"}`.
+  """
+  attributes: Map
+
+  "The kinds of actor whose events match."
+  actorTypes: [AuditLogActorType!]
+}
+
+"Filter by destination status."
+input EventDestinationStatusFilter {
+  "Return only destinations with this status."
+  eq: EventDestinationStatus
+
+  "Return destinations with any of these statuses."
+  in: [EventDestinationStatus!]
+}
+
+"Filter options for the `eventDestinations` query. All filters are combined with **AND**."
+input EventDestinationsFilter {
+  "Filter by whether the destination receives events."
+  status: EventDestinationStatusFilter
+}
+
+"Sorting options for the `eventDestinations` query."
+input EventDestinationsSort {
+  "The field to sort by."
+  field: EventDestinationsSortField!
+
+  "`ASC` for A-Z \/ oldest first, `DESC` for Z-A \/ newest first."
+  order: SortOrder!
+}
+
+"Filter by delivery status."
+input EventDeliveryStatusFilter {
+  "Return only deliveries with this status."
+  eq: EventDeliveryStatus
+
+  "Return deliveries with any of these statuses."
+  in: [EventDeliveryStatus!]
+}
+
+"Filter options for a destination's deliveries. All filters are combined with **AND**."
+input EventDeliveriesFilter {
+  "Filter by the state of the delivery."
+  status: EventDeliveryStatusFilter
+
+  "Filter by when the event matched the destination."
+  createdAt: DatetimeFilter
+}
+
+"Sorting options for a destination's deliveries."
+input EventDeliveriesSort {
+  "The field to sort by."
+  field: EventDeliveriesSortField!
+
+  "`ASC` for oldest first, `DESC` for newest first."
+  order: SortOrder!
+}
+
+"Add a destination that receives the organization's audit log events that match its filter."
+input CreateEventDestinationInput {
+  "How Massdriver sends events. HTTP posts each event to a URL as a signed CloudEvent."
+  adapter: EventDestinationAdapter!
+
+  "Where and how events are sent. For HTTP: `url` (http or https, required) and `headers`, an object of header names and string values sent with each request."
+  config: Map!
+
+  "The events the destination receives. An empty filter matches all of the organization's events."
+  filter: EventFilterInput!
+
+  "Name of the destination, unique in the organization."
+  name: String!
+}
+
+"Change a destination's name, config, or filter. Fields you leave out do not change."
+input UpdateEventDestinationInput {
+  "Replaces the current config. For HTTP: `url` (http or https, required) and `headers`, an object of header names and string values sent with each request."
+  config: Map
+
+  "The events the destination receives. Fields you leave out of the filter do not change."
+  filter: EventFilterInput
+
+  "Name of the destination, unique in the organization."
+  name: String
+}
+
+"The events a destination receives. An empty field matches every event."
+type EventFilter {
+  "Event types, or `<entity>.*` for every event of an entity."
+  types: [String!]!
+
+  "Metadata keys and values that the event must contain."
+  metadata: Map!
+
+  "Attributes and values that the event's entity must have had when the event happened."
+  attributes: Map!
+
+  "The kinds of actor whose events match."
+  actorTypes: [AuditLogActorType!]!
+}
+
+"""
+A place outside Massdriver that receives the organization's audit log events.
+
+Massdriver sends each event that matches the `filter`, one at a time, and retries failed sends with
+backoff. Order is not guaranteed. A receiver can drop duplicates by the event `id`.
+"""
+type EventDestination {
+  "Unique identifier of the destination."
+  id: ID!
+
+  "Name of the destination, unique in the organization."
+  name: String!
+
+  "How Massdriver sends events."
+  adapter: EventDestinationAdapter!
+
+  "Where and how events are sent. For `HTTP`: `url`, and `headers` sent with each request. Headers can hold credentials."
+  config: Map!
+
+  "The events the destination receives."
+  filter: EventFilter!
+
+  "Whether the destination receives events."
+  status: EventDestinationStatus!
+
+  "The secret that signs each request, in Standard Webhooks form (`whsec_` followed by base64). Use it to check the `webhook-signature` header. Treat it as a credential. `null` for adapters that do not sign."
+  signingSecret: String
+
+  "When sends to the destination started to fail. `null` when the last send succeeded."
+  failingSince: DateTime
+
+  "When the destination was added (UTC)."
+  createdAt: DateTime!
+
+  "When the destination last changed (UTC)."
+  updatedAt: DateTime!
+
+  "The events matched to this destination and the state of each send. Newest first by default."
+  deliveries(
+    "Filter criteria. All filters are combined with AND."
+    filter: EventDeliveriesFilter
+
+    "Sort order. Defaults to `createdAt` descending."
+    sort: EventDeliveriesSort
+
+    "Pagination cursor from a previous response."
+    cursor: Cursor
+  ): EventDeliveriesPage
+}
+
+"One event's delivery to a destination."
+type EventDelivery {
+  "Unique identifier of the delivery."
+  id: ID!
+
+  "The state of the delivery."
+  status: EventDeliveryStatus!
+
+  "How many times Massdriver tried to send the event."
+  attempts: Int!
+
+  "When Massdriver sends the event next, while the delivery is `PENDING` (UTC)."
+  nextAttemptAt: DateTime!
+
+  "Why the last attempt failed, such as `HTTP 503` or `connection refused`."
+  lastError: String
+
+  "When the destination accepted the event (UTC)."
+  deliveredAt: DateTime
+
+  "When the event matched the destination (UTC)."
+  createdAt: DateTime!
+
+  "When the delivery last changed (UTC)."
+  updatedAt: DateTime!
+
+  "The audit log event. `null` when the event is older than the audit log retention."
+  event: AuditLog
+}
+
+type EventDestinationsPage {
+  "Pagination cursors for navigating between pages."
+  cursor: PaginationCursor!
+
+  "A list of type event_destination."
+  items: [EventDestination]
+}
+
+type EventDeliveriesPage {
+  "Pagination cursors for navigating between pages."
+  cursor: PaginationCursor!
+
+  "A list of type event_delivery."
+  items: [EventDelivery]
+}
+
+type EventDestinationPayload {
+  "Indicates if the mutation completed successfully or not."
+  successful: Boolean!
+
+  "A list of failed validations. May be blank or null if mutation succeeded."
+  messages: [ValidationMessage]
+
+  "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
+  result: EventDestination
 }
 
 """

@@ -1,0 +1,74 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: event-destination-status
+title: EventDestinationStatus
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Whether a destination receives events.
+
+
+```graphql
+enum EventDestinationStatus {
+  ACTIVE
+  PAUSED
+}
+```
+
+
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDestinationStatus.<b>ACTIVE</b></code>](#active) \{#active\} 
+The destination receives the events that match its filter.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDestinationStatus.<b>PAUSED</b></code>](#paused) \{#paused\} 
+The destination receives no events. Events that match its filter while it is paused are not sent. Massdriver pauses a destination when a send fails and no send has succeeded for 24 hours.
+
+
+
+
+
+
+### Member Of
+
+[`EventDestination`](/api/graphql/types/objects/event-destination.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EventDestinationStatusFilter`](/api/graphql/types/inputs/event-destination-status-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

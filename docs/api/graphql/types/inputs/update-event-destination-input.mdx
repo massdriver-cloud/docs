@@ -1,0 +1,79 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: update-event-destination-input
+title: UpdateEventDestinationInput
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Change a destination's name, config, or filter. Fields you leave out do not change.
+
+
+```graphql
+input UpdateEventDestinationInput {
+  config: Map
+  filter: EventFilterInput
+  name: String
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateEventDestinationInput.<b>config</b></code>](#config)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#config\} 
+Replaces the current config. For HTTP: `url` (http or https, required) and `headers`, an object of header names and string values sent with each request.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateEventDestinationInput.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventFilterInput</b></code>](/api/graphql/types/inputs/event-filter-input.mdx) <Badge class="badge badge--secondary " text="input"/> \{#filter\} 
+The events the destination receives. Fields you leave out of the filter do not change.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateEventDestinationInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Name of the destination, unique in the organization.
+
+
+
+
+
+
+### Member Of
+
+[`updateEventDestination`](/api/graphql/operations/mutations/update-event-destination.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

@@ -1,0 +1,94 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: event-filter-input
+title: EventFilterInput
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Selects audit log events. An event matches when it matches every field. An empty field matches every event,
+so an empty filter matches all of the organization's events.
+
+```graphql
+{
+  types: ["deployment.*", "instance.alarm_triggered"]
+  attributes: "{\"md-environment\": \"prod\"}"
+  actorTypes: [ACCOUNT, SERVICE_ACCOUNT]
+}
+```
+
+
+```graphql
+input EventFilterInput {
+  types: [String!]
+  metadata: Map
+  attributes: Map
+  actorTypes: [AuditLogActorType!]
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>EventFilterInput.<b>types</b></code>](#types)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#types\} 
+Event types from `eventTypes`, or `<entity>.*` for every event of an entity, such as `deployment.*`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventFilterInput.<b>metadata</b></code>](#metadata)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#metadata\} 
+The event's metadata must contain every key and value in this object.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventFilterInput.<b>attributes</b></code>](#attributes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#attributes\} 
+The event's entity must have had every attribute and value in this object when the event happened, such
+as `{"md-project": "api"}`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventFilterInput.<b>actorTypes</b></code>](#actor-types)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[AuditLogActorType!]</b></code>](/api/graphql/types/enums/audit-log-actor-type.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="enum"/> \{#actor-types\} 
+The kinds of actor whose events match.
+
+
+
+
+
+
+### Member Of
+
+[`CreateEventDestinationInput`](/api/graphql/types/inputs/create-event-destination-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`previewEventDestination`](/api/graphql/operations/queries/preview-event-destination.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`UpdateEventDestinationInput`](/api/graphql/types/inputs/update-event-destination-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>
