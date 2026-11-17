@@ -47,6 +47,7 @@ Change a destination's name, config, or filter. Fields you leave out do not chan
 
 ```graphql
 input UpdateEventDestinationInput {
+  condition: String
   config: Map
   filter: EventFilterInput
   name: String
@@ -57,6 +58,10 @@ input UpdateEventDestinationInput {
 
 
 ### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateEventDestinationInput.<b>condition</b></code>](#condition)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#condition\} 
+A jq expression run on each CloudEvent that the filter matches. The event is sent only when it outputs `true`. Use it for checks the filter cannot express, such as comparisons, `or`, or values inside `data`. It must finish within the install's timeout (1 second by default) and cannot use `import`, `include`, `module`, `modulemeta`, or `get_search_list`. Pass an empty string to remove the condition.
+
 
 #### [<code style={{ fontWeight: 'normal' }}>UpdateEventDestinationInput.<b>config</b></code>](#config)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#config\} 
 Replaces the current config. For HTTP: `url` (http or https, required) and `headers`, an object of header names and string values sent with each request.

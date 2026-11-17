@@ -48,6 +48,7 @@ Add a destination that receives the organization's audit log events that match i
 ```graphql
 input CreateEventDestinationInput {
   adapter: EventDestinationAdapter!
+  condition: String
   config: Map!
   filter: EventFilterInput!
   name: String!
@@ -61,6 +62,10 @@ input CreateEventDestinationInput {
 
 #### [<code style={{ fontWeight: 'normal' }}>CreateEventDestinationInput.<b>adapter</b></code>](#adapter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventDestinationAdapter!</b></code>](/api/graphql/types/enums/event-destination-adapter.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#adapter\} 
 How Massdriver sends events. HTTP posts each event to a URL as a signed CloudEvent.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateEventDestinationInput.<b>condition</b></code>](#condition)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#condition\} 
+A jq expression run on each CloudEvent that the filter matches. The event is sent only when it outputs `true`. Use it for checks the filter cannot express, such as comparisons, `or`, or values inside `data`. It must finish within the install's timeout (1 second by default) and cannot use `import`, `include`, `module`, `modulemeta`, or `get_search_list`.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CreateEventDestinationInput.<b>config</b></code>](#config)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#config\} 

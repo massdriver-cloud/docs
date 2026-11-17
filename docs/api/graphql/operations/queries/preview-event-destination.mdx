@@ -42,8 +42,12 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-List the organization's recent audit log events that a filter matches, newest first. Use it to check a
-filter before you create or change a destination with it.
+List the organization's recent audit log events that a filter and a condition match, newest first. Use it to
+check a filter and condition before you create or change a destination with them.
+
+The condition runs on each page after the filter selects it, so a page can hold fewer items than `limit`.
+Follow `cursor.next` until it is `null` to see every match. If the condition cannot run on an event, the
+error names that event.
 
 ```graphql
 query {
@@ -62,6 +66,7 @@ query {
 previewEventDestination(
   organizationId: ID!
   filter: EventFilterInput!
+  condition: String
   cursor: Cursor
 ): AuditLogsPage
 ```
@@ -77,6 +82,10 @@ Your organization's unique identifier.
 
 #### [<code style={{ fontWeight: 'normal' }}>previewEventDestination.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventFilterInput!</b></code>](/api/graphql/types/inputs/event-filter-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#filter\} 
 The filter to check.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>previewEventDestination.<b>condition</b></code>](#condition)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#condition\} 
+A jq expression to check with the filter. The event matches when it outputs `true`.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>previewEventDestination.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#cursor\} 

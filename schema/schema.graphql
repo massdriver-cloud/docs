@@ -783,8 +783,12 @@ type RootQueryType {
   ): EventDestination
 
   """
-  List the organization's recent audit log events that a filter matches, newest first. Use it to check a
-  filter before you create or change a destination with it.
+  List the organization's recent audit log events that a filter and a condition match, newest first. Use it to
+  check a filter and condition before you create or change a destination with them.
+
+  The condition runs on each page after the filter selects it, so a page can hold fewer items than `limit`.
+  Follow `cursor.next` until it is `null` to see every match. If the condition cannot run on an event, the
+  error names that event.
 
   ```graphql
   query {
@@ -804,6 +808,9 @@ type RootQueryType {
 
     "The filter to check."
     filter: EventFilterInput!
+
+    "A jq expression to check with the filter. The event matches when it outputs `true`."
+    condition: String
 
     "Pagination cursor from a previous response."
     cursor: Cursor
@@ -5015,8 +5022,11 @@ enum EventDeliveryStatus {
   "The destination accepted the event."
   DELIVERED
 
-  "Massdriver stopped trying. The destination rejected the event, or every retry failed. Use `redeliverEvents` to send it again."
+  "Massdriver stopped trying. The destination rejected the event, every retry failed, or the destination's condition could not run. Use `redeliverEvents` to send it again."
   FAILED
+
+  "The destination's condition did not output `true` for the event, so it was not sent."
+  SKIPPED
 }
 
 "Fields to sort event destinations by."
@@ -5122,6 +5132,9 @@ input CreateEventDestinationInput {
   "How Massdriver sends events. HTTP posts each event to a URL as a signed CloudEvent."
   adapter: EventDestinationAdapter!
 
+  "A jq expression run on each CloudEvent that the filter matches. The event is sent only when it outputs `true`. Use it for checks the filter cannot express, such as comparisons, `or`, or values inside `data`. It must finish within the install's timeout (1 second by default) and cannot use `import`, `include`, `module`, `modulemeta`, or `get_search_list`."
+  condition: String
+
   "Where and how events are sent. For HTTP: `url` (http or https, required) and `headers`, an object of header names and string values sent with each request."
   config: Map!
 
@@ -5134,6 +5147,9 @@ input CreateEventDestinationInput {
 
 "Change a destination's name, config, or filter. Fields you leave out do not change."
 input UpdateEventDestinationInput {
+  "A jq expression run on each CloudEvent that the filter matches. The event is sent only when it outputs `true`. Use it for checks the filter cannot express, such as comparisons, `or`, or values inside `data`. It must finish within the install's timeout (1 second by default) and cannot use `import`, `include`, `module`, `modulemeta`, or `get_search_list`. Pass an empty string to remove the condition."
+  condition: String
+
   "Replaces the current config. For HTTP: `url` (http or https, required) and `headers`, an object of header names and string values sent with each request."
   config: Map
 
@@ -5180,6 +5196,9 @@ type EventDestination {
 
   "The events the destination receives."
   filter: EventFilter!
+
+  "A jq expression run on each CloudEvent that the filter matches. The event is sent only when it outputs `true`. `null` sends every event the filter matches."
+  condition: String
 
   "Whether the destination receives events."
   status: EventDestinationStatus!

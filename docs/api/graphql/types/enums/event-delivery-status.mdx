@@ -50,6 +50,7 @@ enum EventDeliveryStatus {
   PENDING
   DELIVERED
   FAILED
+  SKIPPED
 }
 ```
 
@@ -67,7 +68,11 @@ The destination accepted the event.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EventDeliveryStatus.<b>FAILED</b></code>](#failed) \{#failed\} 
-Massdriver stopped trying. The destination rejected the event, or every retry failed. Use `redeliverEvents` to send it again.
+Massdriver stopped trying. The destination rejected the event, every retry failed, or the destination's condition could not run. Use `redeliverEvents` to send it again.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDeliveryStatus.<b>SKIPPED</b></code>](#skipped) \{#skipped\} 
+The destination's condition did not output `true` for the event, so it was not sent.
 
 
 
