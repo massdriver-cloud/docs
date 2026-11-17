@@ -2333,13 +2333,17 @@ type RootMutationType {
   An `HTTP` destination gets a `signingSecret`. Massdriver signs each request with it.
 
   ```graphql
-  mutation {
+  Pass `config` as a variable when it holds credentials in `headers`. Query text can appear in request
+  traces. Variables do not.
+
+  ```graphql
+  mutation CreateEventDestination($config: Map!) {
     createEventDestination(
       organizationId: "my-org"
       input: {
         name: "Production deployments"
         adapter: HTTP
-        config: "{\"url\": \"https://hooks.example.com/massdriver\"}"
+        config: $config
         filter: { types: ["deployment.*"], attributes: "{\"md-environment\": \"prod\"}" }
       }
     ) {
@@ -2405,7 +2409,8 @@ type RootMutationType {
 
   """
   Send a destination's `FAILED` deliveries again, with a new set of retries. Leave out `deliveryIds` to send
-  every failed delivery again. A paused destination sends them after it is resumed.
+  every failed delivery again. `deliveryIds: null` is an error. A paused destination sends them after it is
+  resumed.
   """
   redeliverEvents(
     "Your organization's unique identifier."

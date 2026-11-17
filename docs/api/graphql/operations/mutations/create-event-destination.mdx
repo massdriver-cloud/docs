@@ -47,13 +47,17 @@ Add a destination that receives the organization's audit log events.
 An `HTTP` destination gets a `signingSecret`. Massdriver signs each request with it.
 
 ```graphql
-mutation {
+Pass `config` as a variable when it holds credentials in `headers`. Query text can appear in request
+traces. Variables do not.
+
+```graphql
+mutation CreateEventDestination($config: Map!) {
   createEventDestination(
     organizationId: "my-org"
     input: {
       name: "Production deployments"
       adapter: HTTP
-      config: "{\"url\": \"https://hooks.example.com/massdriver\"}"
+      config: $config
       filter: { types: ["deployment.*"], attributes: "{\"md-environment\": \"prod\"}" }
     }
   ) {

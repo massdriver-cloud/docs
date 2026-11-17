@@ -43,7 +43,8 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 Send a destination's `FAILED` deliveries again, with a new set of retries. Leave out `deliveryIds` to send
-every failed delivery again. A paused destination sends them after it is resumed.
+every failed delivery again. `deliveryIds: null` is an error. A paused destination sends them after it is
+resumed.
 
 
 ```graphql
