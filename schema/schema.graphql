@@ -4358,7 +4358,10 @@ type ResourceType {
   "Fully resolved semantic version of this resource type (e.g., `1.2.3`)."
   version: Semver!
 
-  "URL to the icon representing this resource type, if available."
+  """
+  URL to the icon representing this resource type, if available. Every
+  version shows the icon declared by the type's newest published version.
+  """
   icon: String
 
   "How instances receive a dependency of this resource type. Determines whether connections are explicit links on the canvas or automatic environment-level defaults."
@@ -9665,8 +9668,9 @@ type OciRepo {
 
   """
   Short summary of what this repository provisions, taken from the latest
-  published release. `null` when the repository has no releases yet or the
-  author omitted the description.
+  published release. For a resource-type repository it is the schema
+  `description` of the type's newest published version. `null` when the
+  repository has no releases yet or the author omitted the description.
   """
   description: String
 
@@ -9680,7 +9684,8 @@ type OciRepo {
   cookie automatically; programmatic clients must include an `Authorization`
   header.
 
-  For a resource-type repository it is the icon URL the type declares.
+  For a resource-type repository it is the icon URL declared by the type's
+  newest published version.
   """
   icon: String
 
