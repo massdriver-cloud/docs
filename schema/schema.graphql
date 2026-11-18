@@ -4358,10 +4358,7 @@ type ResourceType {
   "Fully resolved semantic version of this resource type (e.g., `1.2.3`)."
   version: Semver!
 
-  """
-  URL to the icon representing this resource type, if available. Every
-  version shows the icon declared by the type's newest published version.
-  """
+  "URL to the icon representing this resource type, if available."
   icon: String
 
   "How instances receive a dependency of this resource type. Determines whether connections are explicit links on the canvas or automatic environment-level defaults."
