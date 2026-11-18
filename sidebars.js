@@ -155,6 +155,7 @@ module.exports = {
           ],
         },
         "reference/identifier-constraints",
+        "reference/s3-api",
         {
           type: "category",
           label: "GraphQL API",
