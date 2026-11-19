@@ -143,8 +143,9 @@ Timestamp when this repository was last modified (UTC).
 
 #### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
 Short summary of what this repository provisions, taken from the latest
-published release. `null` when the repository has no releases yet or the
-author omitted the description.
+published release. For a resource-type repository it is the schema
+`description` of the type's newest published version. `null` when the
+repository has no releases yet or the author omitted the description.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>icon</b></code>](#icon)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#icon\} 
@@ -157,7 +158,8 @@ an `<img>` tag from the web UI works because the browser sends the session
 cookie automatically; programmatic clients must include an `Authorization`
 header.
 
-For a resource-type repository it is the icon URL the type declares.
+For a resource-type repository it is the icon URL declared by the type's
+newest published version.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OciRepo.<b>sourceUrl</b></code>](#source-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#source-url\} 
