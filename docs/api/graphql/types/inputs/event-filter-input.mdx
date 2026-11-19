@@ -56,10 +56,10 @@ so an empty filter matches all of the organization's events.
 
 ```graphql
 input EventFilterInput {
-  types: [String!]
-  metadata: Map
-  attributes: Map
   actorTypes: [AuditLogActorType!]
+  attributes: Map
+  metadata: Map
+  types: [String!]
 }
 ```
 
@@ -68,8 +68,13 @@ input EventFilterInput {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>EventFilterInput.<b>types</b></code>](#types)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#types\} 
-Event types from `eventTypes`, or `<entity>.*` for every event of an entity, such as `deployment.*`.
+#### [<code style={{ fontWeight: 'normal' }}>EventFilterInput.<b>actorTypes</b></code>](#actor-types)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[AuditLogActorType!]</b></code>](/api/graphql/types/enums/audit-log-actor-type.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="enum"/> \{#actor-types\} 
+The kinds of actor whose events match.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventFilterInput.<b>attributes</b></code>](#attributes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#attributes\} 
+The event's entity must have had every attribute and value in this object when the event happened, such
+as `{"md-project": "api"}`.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EventFilterInput.<b>metadata</b></code>](#metadata)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#metadata\} 
@@ -93,13 +98,8 @@ Some event types record more:
 `eventTypes` lists the metadata fields of each event type.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>EventFilterInput.<b>attributes</b></code>](#attributes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#attributes\} 
-The event's entity must have had every attribute and value in this object when the event happened, such
-as `{"md-project": "api"}`.
-
-
-#### [<code style={{ fontWeight: 'normal' }}>EventFilterInput.<b>actorTypes</b></code>](#actor-types)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[AuditLogActorType!]</b></code>](/api/graphql/types/enums/audit-log-actor-type.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="enum"/> \{#actor-types\} 
-The kinds of actor whose events match.
+#### [<code style={{ fontWeight: 'normal' }}>EventFilterInput.<b>types</b></code>](#types)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#types\} 
+Event types from `eventTypes`, or `<entity>.*` for every event of an entity, such as `deployment.*`.
 
 
 

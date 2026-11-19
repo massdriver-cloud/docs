@@ -87,7 +87,7 @@ How Massdriver sends events.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EventDestination.<b>config</b></code>](#config)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#config\} 
-Where and how events are sent. For `HTTP`: `url`, and `headers` sent with each request. Headers can hold credentials.
+Where and how events are sent, in the shape of the adapter's `configSchema`. The destination's `auth` credentials are never returned.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EventDestination.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventFilter!</b></code>](/api/graphql/types/objects/event-filter.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#filter\} 

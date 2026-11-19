@@ -47,7 +47,7 @@ check a filter and condition before you create or change a destination with them
 
 The condition runs on each page after the filter selects it, so a page can hold fewer items than `limit`.
 Follow `cursor.next` until it is `null` to see every match. If the condition cannot run on an event, the
-error names that event.
+preview stops at that event and returns an error that names it. Events after it are not checked.
 
 ```graphql
 query {
