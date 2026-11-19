@@ -42,7 +42,8 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-How Massdriver sends events to a destination.
+How Massdriver sends events to a destination. `eventDestinationAdapters` lists the settings and credentials
+each adapter takes.
 
 
 ```graphql
@@ -66,4 +67,4 @@ POST each event to a URL as a CloudEvent (`application/cloudevents+json`), signe
 
 ### Member Of
 
-[`CreateEventDestinationInput`](/api/graphql/types/inputs/create-event-destination-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`EventDestination`](/api/graphql/types/objects/event-destination.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`CreateEventDestinationInput`](/api/graphql/types/inputs/create-event-destination-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`EventDestination`](/api/graphql/types/objects/event-destination.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EventDestinationAdapterInfo`](/api/graphql/types/objects/event-destination-adapter-info.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

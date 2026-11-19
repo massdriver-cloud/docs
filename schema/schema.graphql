@@ -743,6 +743,29 @@ type RootQueryType {
   ): [String!]!
 
   """
+  List the ways Massdriver can send events, with the JSON schemas of the settings and credentials each one
+  takes.
+
+  ```graphql
+  query {
+    eventDestinationAdapters(organizationId: "my-org") {
+      items {
+        id
+        name
+        configSchema
+        authSchema
+        signs
+      }
+    }
+  }
+  ```
+  """
+  eventDestinationAdapters(
+    "Your organization's unique identifier."
+    organizationId: ID!
+  ): EventDestinationAdaptersPage
+
+  """
   List the organization's event destinations.
 
   ```graphql
@@ -783,8 +806,12 @@ type RootQueryType {
   ): EventDestination
 
   """
-  List the organization's recent audit log events that a filter matches, newest first. Use it to check a
-  filter before you create or change a destination with it.
+  List the organization's recent audit log events that a filter and a condition match, newest first. Use it to
+  check a filter and condition before you create or change a destination with them.
+
+  The condition runs on each page after the filter selects it, so a page can hold fewer items than `limit`.
+  Follow `cursor.next` until it is `null` to see every match. If the condition cannot run on an event, the
+  preview stops at that event and returns an error that names it. Events after it are not checked.
 
   ```graphql
   query {
@@ -804,6 +831,9 @@ type RootQueryType {
 
     "The filter to check."
     filter: EventFilterInput!
+
+    "A jq expression to check with the filter. The event matches when it outputs `true`."
+    condition: String
 
     "Pagination cursor from a previous response."
     cursor: Cursor
@@ -2330,20 +2360,21 @@ type RootMutationType {
   """
   Add a destination that receives the organization's audit log events.
 
-  An `HTTP` destination gets a `signingSecret`. Massdriver signs each request with it.
+  `eventDestinationAdapters` lists each adapter's `configSchema` and `authSchema`. Put credentials in `auth`:
+  the API never returns them. A destination of an adapter that `signs` gets a `signingSecret`, and Massdriver
+  signs each event with it.
+
+  Pass `auth` as a variable. Query text can appear in request traces. Variables do not.
 
   ```graphql
-  Pass `config` as a variable when it holds credentials in `headers`. Query text can appear in request
-  traces. Variables do not.
-
-  ```graphql
-  mutation CreateEventDestination($config: Map!) {
+  mutation CreateEventDestination($auth: Map) {
     createEventDestination(
       organizationId: "my-org"
       input: {
         name: "Production deployments"
         adapter: HTTP
-        config: $config
+        config: "{\"url\": \"https://hooks.example.com/massdriver\"}"
+        auth: $auth
         filter: { types: ["deployment.*"], attributes: "{\"md-environment\": \"prod\"}" }
       }
     ) {
@@ -2363,8 +2394,9 @@ type RootMutationType {
   ): EventDestinationPayload @inputs(name: "createEventDestination", schema: "\/graphql\/v2\/inputs\/createEventDestination.json", ui: "\/graphql\/v2\/inputs\/createEventDestination.ui.json")
 
   """
-  Change a destination's name, config, or filter. Fields you leave out do not change. A new `config`
-  replaces the current one. The new filter applies to events that happen after the change.
+  Change a destination's name, config, auth, filter, or condition. Fields you leave out do not change. A new
+  `config` or `auth` replaces the current one. An empty `condition` removes it. The new filter applies to events that happen after
+  the change. The new condition also applies to events that are waiting to be sent or retried.
   """
   updateEventDestination(
     "Your organization's unique identifier."
@@ -2373,7 +2405,7 @@ type RootMutationType {
     "The destination's unique identifier."
     id: UUID!
 
-    "Change a destination's name, config, or filter. Fields you leave out do not change."
+    "Change a destination's name, config, auth, filter, or condition. Fields you leave out do not change."
     input: UpdateEventDestinationInput!
   ): EventDestinationPayload @inputs(name: "updateEventDestination", schema: "\/graphql\/v2\/inputs\/updateEventDestination.json", ui: "\/graphql\/v2\/inputs\/updateEventDestination.ui.json")
 
@@ -4992,7 +5024,10 @@ input CreateServiceAccountAccessTokenInput {
   scopes: [String!]!
 }
 
-"How Massdriver sends events to a destination."
+"""
+How Massdriver sends events to a destination. `eventDestinationAdapters` lists the settings and credentials
+each adapter takes.
+"""
 enum EventDestinationAdapter {
   "POST each event to a URL as a CloudEvent (`application\/cloudevents+json`), signed with [Standard Webhooks](https:\/\/www.standardwebhooks.com) headers."
   HTTP
@@ -5015,8 +5050,11 @@ enum EventDeliveryStatus {
   "The destination accepted the event."
   DELIVERED
 
-  "Massdriver stopped trying. The destination rejected the event, or every retry failed. Use `redeliverEvents` to send it again."
+  "Massdriver stopped trying. The destination rejected the event, every retry failed, or the destination's condition could not run. Use `redeliverEvents` to send it again."
   FAILED
+
+  "The destination's condition did not output `true` for the event, so it was not sent."
+  SKIPPED
 }
 
 "Fields to sort event destinations by."
@@ -5050,11 +5088,8 @@ so an empty filter matches all of the organization's events.
 ```
 """
 input EventFilterInput {
-  "Event types from `eventTypes`, or `<entity>.*` for every event of an entity, such as `deployment.*`."
-  types: [String!]
-
-  "The event's metadata must contain every key and value in this object."
-  metadata: Map
+  "The kinds of actor whose events match."
+  actorTypes: [AuditLogActorType!]
 
   """
   The event's entity must have had every attribute and value in this object when the event happened, such
@@ -5062,8 +5097,30 @@ input EventFilterInput {
   """
   attributes: Map
 
-  "The kinds of actor whose events match."
-  actorTypes: [AuditLogActorType!]
+  """
+  The event's metadata must contain every key and value in this object, such as
+  `{"deployment_action": "PROVISION"}`. A key that does not apply to an event is left out of its metadata, so
+  a filter on that key does not match the event.
+
+  Every event records:
+
+  - `credential`: how the actor authenticated. `session` (a person signed in to Massdriver), `access_token`
+    (a personal access token, as used by the CLI, scripts, and agents), `service_account`, `deployment`
+    (a running deployment), or `system` (Massdriver itself).
+  - `access_token_id`: ID of the access token the actor used. Only when the actor used an access token.
+
+  Some event types record more:
+
+  - `deployment_action` on every `deployment.*` event: `PROVISION`, `PLAN`, or `DECOMMISSION`.
+  - `contains_secrets` on `resource.exported`: `true` when the export revealed at least one value of a field
+    that the resource type marks as sensitive.
+
+  `eventTypes` lists the metadata fields of each event type.
+  """
+  metadata: Map
+
+  "Event types from `eventTypes`, or `<entity>.*` for every event of an entity, such as `deployment.*`."
+  types: [String!]
 }
 
 "Filter by destination status."
@@ -5119,10 +5176,16 @@ input EventDeliveriesSort {
 
 "Add a destination that receives the organization's audit log events that match its filter."
 input CreateEventDestinationInput {
-  "How Massdriver sends events. HTTP posts each event to a URL as a signed CloudEvent."
+  "How Massdriver sends events. `eventDestinationAdapters` lists each adapter and the settings it takes."
   adapter: EventDestinationAdapter!
 
-  "Where and how events are sent. For HTTP: `url` (http or https, required) and `headers`, an object of header names and string values sent with each request."
+  "Credentials used to send events, in the shape of the adapter's `authSchema` from `eventDestinationAdapters`. The API never returns them."
+  auth: Map
+
+  "A jq expression run on each CloudEvent that the filter matches. The event is sent only when it outputs `true`. Use it for checks the filter cannot express, such as comparisons, `or`, or values inside `data`. It must finish within the install's timeout (1 second by default) and cannot use `import`, `include`, `module`, `modulemeta`, or `get_search_list`."
+  condition: String
+
+  "Where and how events are sent, in the shape of the adapter's `configSchema` from `eventDestinationAdapters`. The API returns it, so put credentials in `auth`."
   config: Map!
 
   "The events the destination receives. An empty filter matches all of the organization's events."
@@ -5132,9 +5195,15 @@ input CreateEventDestinationInput {
   name: String!
 }
 
-"Change a destination's name, config, or filter. Fields you leave out do not change."
+"Change a destination's name, config, auth, filter, or condition. Fields you leave out do not change."
 input UpdateEventDestinationInput {
-  "Replaces the current config. For HTTP: `url` (http or https, required) and `headers`, an object of header names and string values sent with each request."
+  "Replaces the current credentials. In the shape of the adapter's `authSchema` from `eventDestinationAdapters`. The API never returns them. Pass `null` to remove them."
+  auth: Map
+
+  "A jq expression run on each CloudEvent that the filter matches. The event is sent only when it outputs `true`. Use it for checks the filter cannot express, such as comparisons, `or`, or values inside `data`. It must finish within the install's timeout (1 second by default) and cannot use `import`, `include`, `module`, `modulemeta`, or `get_search_list`. Pass an empty string to remove the condition."
+  condition: String
+
+  "Replaces the current config. Where and how events are sent, in the shape of the adapter's `configSchema` from `eventDestinationAdapters`. The API returns it, so put credentials in `auth`."
   config: Map
 
   "The events the destination receives. Fields you leave out of the filter do not change."
@@ -5149,7 +5218,7 @@ type EventFilter {
   "Event types, or `<entity>.*` for every event of an entity."
   types: [String!]!
 
-  "Metadata keys and values that the event must contain."
+  "Metadata keys and values that the event must contain. See `EventFilterInput.metadata` for the fields Massdriver records."
   metadata: Map!
 
   "Attributes and values that the event's entity must have had when the event happened."
@@ -5175,11 +5244,14 @@ type EventDestination {
   "How Massdriver sends events."
   adapter: EventDestinationAdapter!
 
-  "Where and how events are sent. For `HTTP`: `url`, and `headers` sent with each request. Headers can hold credentials."
+  "Where and how events are sent, in the shape of the adapter's `configSchema`. The destination's `auth` credentials are never returned."
   config: Map!
 
   "The events the destination receives."
   filter: EventFilter!
+
+  "A jq expression run on each CloudEvent that the filter matches. The event is sent only when it outputs `true`. `null` sends every event the filter matches."
+  condition: String
 
   "Whether the destination receives events."
   status: EventDestinationStatus!
@@ -5237,6 +5309,38 @@ type EventDelivery {
 
   "The audit log event. `null` when the event is older than the audit log retention."
   event: AuditLog
+}
+
+"""
+A way Massdriver can send events. Use `configSchema` and `authSchema` to build the `config` and `auth` of
+`createEventDestination`.
+"""
+type EventDestinationAdapterInfo {
+  "The value to pass as `adapter`."
+  id: EventDestinationAdapter!
+
+  "Display name."
+  name: String!
+
+  "What the adapter does with each event."
+  description: String!
+
+  "JSON schema of a destination's `config`: where and how events are sent. The API returns it."
+  configSchema: Map!
+
+  "JSON schema of a destination's `auth`: the credentials used to send events. The API never returns it."
+  authSchema: Map!
+
+  "Whether destinations get a `signingSecret` and Massdriver signs each event with it."
+  signs: Boolean!
+}
+
+type EventDestinationAdaptersPage {
+  "Pagination cursors for navigating between pages."
+  cursor: PaginationCursor!
+
+  "A list of type event_destination_adapter_info."
+  items: [EventDestinationAdapterInfo]
 }
 
 type EventDestinationsPage {
