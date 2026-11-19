@@ -77,7 +77,7 @@ Massdriver sends a `POST` request to the `url` in the destination's `config`. Th
 
 Massdriver sends the headers in `config.headers` and `auth.headers` with each request. Massdriver changes header names to lowercase. If a header in `auth.headers` has the same name as a header in `config.headers`, Massdriver sends the value from `auth.headers`.
 
-If a custom header has the same name as one of the headers in the table above, Massdriver sends its own value and ignores your value.
+If a custom header has the same name as one of the headers in the table above, Massdriver sends its own value and ignores your value. Massdriver does not send a custom `host` header. The `host` header always names the host of the URL.
 
 The `event_destination.*` audit log events do not include the destination's `config`, `auth`, or signing secret.
 
