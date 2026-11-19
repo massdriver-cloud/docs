@@ -22,19 +22,19 @@ Massdriver runs the condition when it sends the event, not when it queues the de
 
 ```mermaid
 sequenceDiagram
-    participant MD as "Massdriver"
-    participant EP as "Your endpoint"
-    Note over MD: "Event matches the filter. Delivery is PENDING."
-    MD->>MD: "Run the condition"
-    MD->>EP: "POST CloudEvent (attempt 1)"
-    EP-->>MD: "503"
-    Note over MD: "Wait 30 seconds or more"
-    MD->>EP: "POST CloudEvent (attempt 2)"
-    EP-->>MD: "429"
-    Note over MD: "Wait 60 seconds or more"
-    MD->>EP: "POST CloudEvent (attempt 3)"
-    EP-->>MD: "200"
-    Note over MD: "Delivery is DELIVERED"
+    participant MD as Massdriver
+    participant EP as Your endpoint
+    Note over MD: Event matches the filter. Delivery is PENDING.
+    MD->>MD: Run the condition
+    MD->>EP: POST CloudEvent (attempt 1)
+    EP-->>MD: 503
+    Note over MD: Wait 30 seconds or more
+    MD->>EP: POST CloudEvent (attempt 2)
+    EP-->>MD: 429
+    Note over MD: Wait 60 seconds or more
+    MD->>EP: POST CloudEvent (attempt 3)
+    EP-->>MD: 200
+    Note over MD: Delivery is DELIVERED
 ```
 
 ### Order and duplicates
@@ -71,14 +71,14 @@ Custom headers can hold credentials. The `event_destination.*` audit log events 
 | `subject` | The Massdriver resource identifier of the entity that the event is about. |
 | `time` | When the event occurred (UTC, ISO 8601). |
 | `datacontenttype` | `application/json` |
-| `data` | The entity that the event is about, and the context of the event. |
+| `data` | `entity`, the entity that the event is about, and `actor`, the actor that caused the event. |
 
 Massdriver adds two objects to `data`:
 
 - `data.metadata`: facts about the event, such as how the actor authenticated. Refer to [`metadata`](/api/graphql/types/inputs/event-filter-input#metadata) for the fields.
 - `data.attributes`: the attributes that the entity had when the event occurred, including the system attributes (`md-*`). Refer to [`attributes`](/api/graphql/types/inputs/event-filter-input#attributes).
 
-When a person, a service account, or a deployment caused the event, `data.context` holds the IDs of the organization and the actor. When Massdriver caused the event, `data` has no `context`.
+When a person, a service account, or a deployment caused the event, `data.actor` holds the IDs of the organization and the actor. When Massdriver caused the event, `data` has no `actor`.
 
 This is a `deployment.completed` event:
 
@@ -92,7 +92,7 @@ This is a `deployment.completed` event:
   "time": "2026-11-19T15:04:11.482913Z",
   "datacontenttype": "application/json",
   "data": {
-    "resource": {
+    "entity": {
       "id": "5c1de0a7-92b4-4f1e-8d3a-6e27c9f0b815",
       "status": "COMPLETED",
       "action": "PROVISION",
@@ -211,12 +211,12 @@ stateDiagram-v2
     state "DELIVERED" as delivered
     state "SKIPPED" as skipped
     state "FAILED" as failed
-    [*] --> pending: "Event matches the filter"
-    pending --> pending: "Retryable failure"
-    pending --> delivered: "2xx response"
-    pending --> skipped: "Condition does not output true"
-    pending --> failed: "Error that cannot change, or last attempt fails"
-    failed --> pending: "redeliverEvents"
+    [*] --> pending: Event matches the filter
+    pending --> pending: Retryable failure
+    pending --> delivered: 2xx response
+    pending --> skipped: Condition does not output true
+    pending --> failed: Error that cannot change, or last attempt fails
+    failed --> pending: redeliverEvents
 ```
 
 | Status | Meaning |
