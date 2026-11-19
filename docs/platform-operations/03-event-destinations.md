@@ -7,7 +7,26 @@ sidebar_label: Event Destinations
 
 An event destination is an HTTP endpoint that receives your organization's audit log events. Massdriver sends each event that matches the destination's filter to the endpoint as a signed [CloudEvent](https://cloudevents.io).
 
-To add, change, pause, or delete a destination, use the [event destination API](/api/graphql/operations/mutations/create-event-destination). To select events, use the [filter](/api/graphql/types/inputs/event-filter-input) and the [jq condition](/api/graphql/types/inputs/create-event-destination-input#condition). To manage destinations, a person or service account needs the `organization:manageEventDestinations` permission. Refer to [GraphQL permissions](/platform-operations/security/graphql-permissions#event-destination).
+To add, change, pause, or delete a destination, use the [event destination API](/api/graphql/operations/mutations/create-event-destination).
+
+## Settings and credentials
+
+Each destination has an adapter. The adapter sets how Massdriver sends events. A destination has two objects of adapter settings:
+
+- `config`: the settings, such as the URL. The API returns `config`.
+- `auth`: the credentials, such as an `Authorization` header. The API never returns `auth`. To remove the credentials, set `auth` to `null`.
+
+The [`eventDestinationAdapters`](/api/graphql/operations/queries/event-destination-adapters) query lists each adapter. For each adapter, `configSchema` and `authSchema` are the JSON schemas of `config` and `auth`, and `signs` tells you if Massdriver signs the events.
+
+The `HTTP` adapter takes these settings:
+
+| Object | Field | Value |
+|---|---|---|
+| `config` | `url` | The URL that receives the events. It must start with `http://` or `https://` and include a host. Required. |
+| `config` | `headers` | Header names and values that Massdriver sends with each request. Do not put credentials here. |
+| `auth` | `headers` | Header names and values that hold credentials, such as `Authorization`. Massdriver sends them with each request. |
+
+When you save a destination, Massdriver refuses a URL whose host is a private address. Refer to [Private addresses](#private-addresses). To select events, use the [filter](/api/graphql/types/inputs/event-filter-input) and the [jq condition](/api/graphql/types/inputs/create-event-destination-input#condition). To manage destinations, a person or service account needs the `organization:manageEventDestinations` permission. Refer to [GraphQL permissions](/platform-operations/security/graphql-permissions#event-destination).
 
 ## How delivery works
 
@@ -56,9 +75,11 @@ Massdriver sends a `POST` request to the `url` in the destination's `config`. Th
 
 ### Custom headers
 
-You can add headers to the destination's `config.headers`, for example a token that your endpoint requires. Massdriver sends them with each request. Massdriver changes header names to lowercase. If a custom header has the same name as one of the headers in the table above, Massdriver sends its own value and ignores your value.
+Massdriver sends the headers in `config.headers` and `auth.headers` with each request. Massdriver changes header names to lowercase. If a header in `auth.headers` has the same name as a header in `config.headers`, Massdriver sends the value from `auth.headers`.
 
-Custom headers can hold credentials. The `event_destination.*` audit log events do not include the destination's `config` or signing secret.
+If a custom header has the same name as one of the headers in the table above, Massdriver sends its own value and ignores your value.
+
+The `event_destination.*` audit log events do not include the destination's `config`, `auth`, or signing secret.
 
 ### The body
 
@@ -216,6 +237,7 @@ stateDiagram-v2
     pending --> delivered: 2xx response
     pending --> skipped: Condition does not output true
     pending --> failed: Error that cannot change, or last attempt fails
+    pending --> failed: Not sent within 30 days
     failed --> pending: redeliverEvents
 ```
 
@@ -233,6 +255,7 @@ A delivery is `FAILED` when one of these occurs:
 - The last attempt failed.
 - The condition did not finish in time, or jq could not run it on the event.
 - The audit log event no longer exists.
+- Massdriver did not send the delivery within 30 days. Refer to [Delivery history](#delivery-history).
 
 To see the deliveries of a destination, query the `deliveries` field of [`eventDestination`](/api/graphql/operations/queries/event-destination). You can filter deliveries by status.
 
@@ -245,11 +268,13 @@ Use [`redeliverEvents`](/api/graphql/operations/mutations/redeliver-events) to s
 
 If the destination is paused, Massdriver sends the deliveries after you resume it.
 
+Massdriver records an `event_destination.redelivered` audit log event each time you use `redeliverEvents`.
+
 ## Automatic pause
 
-When a send to a destination fails, Massdriver records the time in the destination's [`failingSince`](/api/graphql/types/objects/event-destination#failing-since) field. A successful send clears `failingSince`.
+When a send to a destination fails, Massdriver records the time in the destination's [`failingSince`](/api/graphql/types/objects/event-destination#failing-since) field. All failed sends count: failures that Massdriver retries, and failures that make the delivery `FAILED` at once. One successful send clears `failingSince`.
 
-If a send fails and `failingSince` is 24 hours or more in the past, Massdriver pauses the destination. Thus Massdriver pauses a destination that has no successful send for 24 hours. Self-hosted installations can change this time with `MD_EVENT_DESTINATIONS_PAUSE_AFTER_HOURS`.
+If a send fails and `failingSince` is 24 hours or more in the past, Massdriver pauses the destination. Thus Massdriver pauses a destination that has no successful send for 24 hours. A destination that refuses every event is paused in the same way as a destination that is down. Self-hosted installations can change this time with `MD_EVENT_DESTINATIONS_PAUSE_AFTER_HOURS`.
 
 Failures from the condition do not set `failingSince`. They are about the condition, not about your endpoint.
 
@@ -266,13 +291,16 @@ You can also pause a destination yourself with [`pauseEventDestination`](/api/gr
 
 ## Private addresses
 
-Massdriver refuses to send events to private addresses. Before each send, Massdriver resolves the host of the URL. If one or more of its addresses is private, the delivery is `FAILED` at once. These addresses are private:
+Massdriver refuses to send events to private addresses. Massdriver checks the host of the URL at two times:
+
+- When you save a destination, Massdriver refuses a URL whose host is a private address. Massdriver accepts a host that does not resolve yet.
+- Before each send, Massdriver resolves the host again. If one or more of its addresses is private, the delivery is `FAILED` at once. Massdriver sends the request to the address that it checked.
+
+These addresses are private:
 
 - IPv4: `0.0.0.0/8`, `10.0.0.0/8`, `100.64.0.0/10`, `127.0.0.0/8`, `169.254.0.0/16`, `172.16.0.0/12`, `192.0.0.0/24`, `192.168.0.0/16`, `198.18.0.0/15`, and all addresses from `224.0.0.0` up.
 - IPv6: `fc00::/7`, `fe80::/10`, `ff00::/8`, and Teredo (`2001::/32`).
 - IPv6 addresses that hold a private IPv4 address: IPv4-compatible (`::/96`, which includes `::` and `::1`), IPv4-mapped (`::ffff:0:0/96`), 6to4 (`2002::/16`), and NAT64 (`64:ff9b::/96`).
-
-Massdriver does not check the address when you add the destination. It checks the address at each send.
 
 A self-hosted installation can allow private addresses with `MD_EVENT_DESTINATIONS_ALLOW_PRIVATE_ADDRESSES`.
 
@@ -282,7 +310,8 @@ Massdriver deletes old deliveries:
 
 - `DELIVERED` and `SKIPPED` deliveries after 7 days.
 - `FAILED` deliveries after 30 days.
-- `PENDING` deliveries that were due more than 30 days ago. These are deliveries of a destination that has been paused for that long.
+
+A `PENDING` delivery that has been due for more than 30 days becomes `FAILED`, with the error `not sent within 30 days`. Usually this occurs when a destination stays paused for that long. You can send these deliveries again with [`redeliverEvents`](#send-failed-events-again). Massdriver deletes them 30 days later, the same as other `FAILED` deliveries.
 
 The `event` field of a delivery is `null` when the audit log no longer keeps the event.
 
@@ -295,6 +324,6 @@ Self-hosted installations can change event delivery with these environment varia
 | `MD_EVENT_DESTINATIONS_MAX_ATTEMPTS` | `10` | The number of attempts for each delivery. After this number of failed attempts, the delivery is `FAILED`. |
 | `MD_EVENT_DESTINATIONS_PAUSE_AFTER_HOURS` | `24` | The number of hours without a successful send after which Massdriver pauses a destination. |
 | `MD_EVENT_DESTINATIONS_DELIVERED_RETENTION_DAYS` | `7` | The number of days that Massdriver keeps `DELIVERED` and `SKIPPED` deliveries. |
-| `MD_EVENT_DESTINATIONS_FAILED_RETENTION_DAYS` | `30` | The number of days that Massdriver keeps `FAILED` deliveries, and `PENDING` deliveries that are past due. |
+| `MD_EVENT_DESTINATIONS_FAILED_RETENTION_DAYS` | `30` | The number of days that Massdriver keeps `FAILED` deliveries. A `PENDING` delivery that has been due for longer than this number of days becomes `FAILED`. |
 | `MD_EVENT_DESTINATIONS_CONDITION_TIMEOUT_MS` | `1000` | The time in milliseconds that a condition can run on one event. A condition that runs longer makes the delivery `FAILED`. |
-| `MD_EVENT_DESTINATIONS_ALLOW_PRIVATE_ADDRESSES` | `false` | When `true`, Massdriver sends events to private addresses. Set it when your destinations are on an internal network. |
+| `MD_EVENT_DESTINATIONS_ALLOW_PRIVATE_ADDRESSES` | `false` | When `true`, Massdriver accepts and sends events to private addresses. Set it when your destinations are on an internal network. |
