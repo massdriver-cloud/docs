@@ -95,7 +95,7 @@ The affected resource in MRI format (e.g., `mri://organization/my-org/project/ba
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AuditLog.<b>data</b></code>](#data)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#data\} 
-Event payload containing context-specific details about the action. The structure varies by event type.
+The event body. `actor` holds the ids of the account, service account, or deployment that caused the event, and the organization. `entity` holds a copy of the entity the event is about, as it was when the event happened. The fields in `entity` depend on the entity type.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AuditLog.<b>metadata</b></code>](#metadata)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#metadata\} 

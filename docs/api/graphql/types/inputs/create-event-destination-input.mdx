@@ -48,6 +48,8 @@ Add a destination that receives the organization's audit log events that match i
 ```graphql
 input CreateEventDestinationInput {
   adapter: EventDestinationAdapter!
+  auth: Map
+  condition: String
   config: Map!
   filter: EventFilterInput!
   name: String!
@@ -60,11 +62,19 @@ input CreateEventDestinationInput {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>CreateEventDestinationInput.<b>adapter</b></code>](#adapter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventDestinationAdapter!</b></code>](/api/graphql/types/enums/event-destination-adapter.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#adapter\} 
-How Massdriver sends events. HTTP posts each event to a URL as a signed CloudEvent.
+How Massdriver sends events. `eventDestinationAdapters` lists each adapter and the settings it takes.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateEventDestinationInput.<b>auth</b></code>](#auth)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#auth\} 
+Credentials used to send events, in the shape of the adapter's `authSchema` from `eventDestinationAdapters`. The API never returns them.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateEventDestinationInput.<b>condition</b></code>](#condition)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#condition\} 
+A jq expression run on each CloudEvent that the filter matches. The event is sent only when it outputs `true`. Use it for checks the filter cannot express, such as comparisons, `or`, or values inside `data`. It must finish within the install's timeout (1 second by default) and cannot use `import`, `include`, `module`, `modulemeta`, or `get_search_list`.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CreateEventDestinationInput.<b>config</b></code>](#config)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#config\} 
-Where and how events are sent. For HTTP: `url` (http or https, required) and `headers`, an object of header names and string values sent with each request.
+Where and how events are sent, in the shape of the adapter's `configSchema` from `eventDestinationAdapters`. The API returns it, so put credentials in `auth`.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CreateEventDestinationInput.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventFilterInput!</b></code>](/api/graphql/types/inputs/event-filter-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#filter\} 

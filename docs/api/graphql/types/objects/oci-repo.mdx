@@ -185,7 +185,7 @@ the `bundle(id: "name@version") { changelog }` field.
 Paginated list of release channels for this repository.
 
 Each channel is a version constraint that auto-resolves to the latest matching
-tag. Use the `stable` filter to show only stable or only development channels.
+tag. Use the `channel` filter to show only stable or only development channels.
 ##### [<code style={{ fontWeight: 'normal' }}>OciRepo.releaseChannels.<b>filter</b></code>](#oci-repo-release-channels-filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoReleaseChannelsFilter</b></code>](/api/graphql/types/inputs/oci-repo-release-channels-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#oci-repo-release-channels-filter\} 
 Filter by stable or development channels.
 
@@ -204,7 +204,7 @@ Paginated list of published version tags in this repository.
 Each tag represents a single immutable bundle release. Defaults to newest
 version first (`version` descending).
 ##### [<code style={{ fontWeight: 'normal' }}>OciRepo.tags.<b>filter</b></code>](#oci-repo-tags-filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoTagsFilter</b></code>](/api/graphql/types/inputs/oci-repo-tags-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#oci-repo-tags-filter\} 
-Narrow results to a specific version.
+Narrow results to a specific version or channel.
 
 
 ##### [<code style={{ fontWeight: 'normal' }}>OciRepo.tags.<b>sort</b></code>](#oci-repo-tags-sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoTagsSort</b></code>](/api/graphql/types/inputs/oci-repo-tags-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#oci-repo-tags-sort\} 

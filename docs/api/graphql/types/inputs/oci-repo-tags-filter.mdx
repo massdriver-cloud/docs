@@ -50,6 +50,7 @@ All filters are combined with AND logic.
 ```graphql
 input OciRepoTagsFilter {
   version: Semver
+  channel: OciRepoChannel
 }
 ```
 
@@ -60,3 +61,7 @@ input OciRepoTagsFilter {
 
 #### [<code style={{ fontWeight: 'normal' }}>OciRepoTagsFilter.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Semver</b></code>](/api/graphql/types/scalars/semver.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#version\} 
 Return only the tag with this exact version (e.g., `1.3.3`). When set, the result is at most one item.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OciRepoTagsFilter.<b>channel</b></code>](#channel)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoChannel</b></code>](/api/graphql/types/enums/oci-repo-channel.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#channel\} 
+Return only versions in this channel: `STABLE` for releases, `DEV` for pre-release builds. Pagination counts only matching versions. Omit to return every version.

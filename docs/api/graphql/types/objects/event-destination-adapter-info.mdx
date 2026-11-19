@@ -1,0 +1,95 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: event-destination-adapter-info
+title: EventDestinationAdapterInfo
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A way Massdriver can send events. Use `configSchema` and `authSchema` to build the `config` and `auth` of
+`createEventDestination`.
+
+
+```graphql
+type EventDestinationAdapterInfo {
+  id: EventDestinationAdapter!
+  name: String!
+  description: String!
+  configSchema: Map!
+  authSchema: Map!
+  signs: Boolean!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDestinationAdapterInfo.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventDestinationAdapter!</b></code>](/api/graphql/types/enums/event-destination-adapter.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#id\} 
+The value to pass as `adapter`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDestinationAdapterInfo.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Display name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDestinationAdapterInfo.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+What the adapter does with each event.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDestinationAdapterInfo.<b>configSchema</b></code>](#config-schema)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#config-schema\} 
+JSON schema of a destination's `config`: where and how events are sent. The API returns it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDestinationAdapterInfo.<b>authSchema</b></code>](#auth-schema)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#auth-schema\} 
+JSON schema of a destination's `auth`: the credentials used to send events. The API never returns it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDestinationAdapterInfo.<b>signs</b></code>](#signs)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#signs\} 
+Whether destinations get a `signingSecret` and Massdriver signs each event with it.
+
+
+
+
+
+
+### Member Of
+
+[`EventDestinationAdaptersPage`](/api/graphql/types/objects/event-destination-adapters-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
