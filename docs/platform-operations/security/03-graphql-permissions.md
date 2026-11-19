@@ -18,7 +18,7 @@ This page maps every operation in the Massdriver GraphQL API to the [ABAC permis
 
 If you're building a least-privilege policy, scan the table for the operations the principal needs and assemble the union of required permissions. List queries (`projects`, `instances`, `resources`, etc.) are visibility-filtered: a caller only sees what their group policies and grants make visible — there's no explicit list permission to grant.
 
-`organization:manage` is a one-level umbrella: a single policy granting `organization:manage` on a custom group satisfies any `organization:manageServiceAccounts`, `organization:manageGroups`, `organization:manageBilling`, `organization:manageIntegrations`, `organization:manageCustomAttributes`, `organization:manageResourceTypes`, `organization:manageSettings`, `organization:manageProfile`, or `organization:manageMembers` query below. Grant the umbrella when you want full org-level administrative authority on a custom group; grant a single sub-action when you want to scope authority to one capability.
+`organization:manage` is a one-level umbrella: a single policy granting `organization:manage` on a custom group satisfies any `organization:manageServiceAccounts`, `organization:manageGroups`, `organization:manageBilling`, `organization:manageIntegrations`, `organization:manageCustomAttributes`, `organization:manageResourceTypes`, `organization:manageSettings`, `organization:manageProfile`, `organization:manageMembers`, or `organization:manageEventDestinations` query below. Grant the umbrella when you want full org-level administrative authority on a custom group; grant a single sub-action when you want to scope authority to one capability.
 
 ---
 
@@ -69,6 +69,7 @@ Deployments are an action *on* an instance — `createDeployment`, `planDeployme
 | `setRemoteReference` | Mutation | `instance:configure`, `resource:view` | Configure the destination instance, view the resource being wired in. Also requires a resource grant covering the instance's environment. |
 | `removeRemoteReference` | Mutation | `instance:configure` | |
 | `copyInstance` | Mutation | `project:view`, `instance:configure` | View on source instance, configure on destination. |
+| `moveInstance` | Mutation | `instance:move`, plus `project:design`, `instance:configure`, `resource:view`, `resource:grant` as needed | `instance:move` on the instance before and after the move. `project:design` when the move adds the component, `instance:configure` and `resource:view` for each link it turns into a remote reference, `resource:grant` for each grant it creates. Fails with every missing permission and changes nothing. |
 | `orphanInstance` | Mutation | `instance:decommission` | Break-glass reset to `INITIALIZED`. Clears state locks, bulk-aborts in-flight deployments, and (with `deleteState: true`) deletes the remote Terraform/OpenTofu state files. |
 | `createDeployment` | Mutation | `instance:deploy`, `instance:plan`, or `instance:decommission` | Permission depends on `input.action`: `PROVISION` → `instance:deploy`, `PLAN` → `instance:plan`, `DECOMMISSION` → `instance:decommission`. |
 | `planDeployment` | Mutation | `instance:plan` | Re-runs a `PLAN` against a source deployment's params on the same instance. Source may be in any status. |
@@ -119,7 +120,7 @@ Deployments are an action *on* an instance — `createDeployment`, `planDeployme
 
 | Operation | Type | Required permission(s) | Notes |
 |---|---|---|---|
-| `ociRepos` | Query | *visibility-filtered* | Union of `repo:view` policies and matching grants. |
+| `ociRepos` | Query | *visibility-filtered* | Union of `repo:view` policies and matching grants. `filter.projectId` also requires `project:view` on that project. |
 | `ociRepo` | Query | `repo:view` | |
 | `bundles` | Query | *visibility-filtered* | |
 | `bundle` | Query | `repo:view` | |
@@ -218,6 +219,20 @@ There is no `updateGrant` — grants are immutable; delete and re-create to chan
 | `disableIntegration` | Mutation | `organization:manageIntegrations` | Covered by the `organization:manage` umbrella. |
 | `deleteIntegration` | Mutation | `organization:manageIntegrations` | Covered by the `organization:manage` umbrella. |
 
+## Event Destination
+
+| Operation | Type | Required permission(s) | Notes |
+|---|---|---|---|
+| `eventDestinations` | Query | `organization:manageEventDestinations` | Covered by the `organization:manage` umbrella. |
+| `eventDestination` | Query | `organization:manageEventDestinations` | Covered by the `organization:manage` umbrella. Includes the destination's deliveries. |
+| `previewEventDestination` | Query | `organization:manageEventDestinations` | Covered by the `organization:manage` umbrella. Returns every matching event in the organization, not only events in projects the caller can view. |
+| `createEventDestination` | Mutation | `organization:manageEventDestinations` | Covered by the `organization:manage` umbrella. |
+| `updateEventDestination` | Mutation | `organization:manageEventDestinations` | Covered by the `organization:manage` umbrella. |
+| `pauseEventDestination` | Mutation | `organization:manageEventDestinations` | Covered by the `organization:manage` umbrella. |
+| `resumeEventDestination` | Mutation | `organization:manageEventDestinations` | Covered by the `organization:manage` umbrella. |
+| `deleteEventDestination` | Mutation | `organization:manageEventDestinations` | Covered by the `organization:manage` umbrella. |
+| `redeliverEvents` | Mutation | `organization:manageEventDestinations` | Covered by the `organization:manage` umbrella. |
+
 ## Audit Log
 
 | Operation | Type | Required permission(s) | Notes |
@@ -265,7 +280,7 @@ There is no `updateGrant` — grants are immutable; delete and re-create to chan
 A *visibility-filtered* list query is not gated by a single ABAC permission. Instead, the resolver folds in the caller's group policies and any matching grants when building its query, and the result set is whatever the caller can already see through other permissions:
 
 - `projects` returns the union of projects matched by the caller's `project:view` policies.
-- `ociRepos` returns repos matched by `repo:view` policies plus repos with grants whose `recipient_conditions` match a project the caller has `project:view` on.
+- `ociRepos` returns repos matched by `repo:view` policies plus repos with grants whose `recipient_conditions` match a project the caller has `project:view` on. A deny `repo:view` policy does not remove a granted repo. `filter.projectId` keeps only the repos granted to that project, and `filter.viewer` keeps only the repos the caller's own policies match (`true`) or do not match (`false`).
 - `resources` returns resources matched by `resource:view` policies plus the project cascade for provisioned resources, plus grants.
 
 The single-entity counterpart (`project`, `ociRepo`, `resource`) explicitly checks the corresponding `:view` permission and returns `not_found` to obscure existence on denial.

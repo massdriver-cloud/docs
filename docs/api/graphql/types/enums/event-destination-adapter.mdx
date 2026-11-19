@@ -1,0 +1,70 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: event-destination-adapter
+title: EventDestinationAdapter
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+How Massdriver sends events to a destination. `eventDestinationAdapters` lists the settings and credentials
+each adapter takes.
+
+
+```graphql
+enum EventDestinationAdapter {
+  HTTP
+}
+```
+
+
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDestinationAdapter.<b>HTTP</b></code>](#http) \{#http\} 
+POST each event to a URL as a CloudEvent (`application/cloudevents+json`), signed with [Standard Webhooks](https://www.standardwebhooks.com) headers.
+
+
+
+
+
+
+### Member Of
+
+[`CreateEventDestinationInput`](/api/graphql/types/inputs/create-event-destination-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`EventDestination`](/api/graphql/types/objects/event-destination.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EventDestinationAdapterInfo`](/api/graphql/types/objects/event-destination-adapter-info.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

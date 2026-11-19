@@ -50,6 +50,11 @@ with any `overrides`. `copySecrets` and `copyRemoteReferences` opt in to additio
 state transfer. Deployment is a separate action — call `createDeployment` on the
 destination when you're ready to apply.
 
+Copying secrets requires `instance:configure` on the source instance. Copying remote
+references requires `resource:view` on each referenced resource and a resource grant
+that covers the destination environment — the same checks as `setRemoteReference`.
+If any check fails, nothing is copied.
+
 ```graphql
 mutation {
   copyInstance(

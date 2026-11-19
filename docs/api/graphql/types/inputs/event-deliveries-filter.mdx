@@ -2,8 +2,8 @@
 pagination_next: null
 pagination_prev: null
 hide_table_of_contents: true
-id: event-attribute-type
-title: EventAttributeType
+id: event-deliveries-filter
+title: EventDeliveriesFilter
 ---
 
 
@@ -42,33 +42,24 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-The JSON type of an event attribute's value.
+Filter options for a destination's deliveries. All filters are combined with **AND**.
 
 
 ```graphql
-enum EventAttributeType {
-  STRING
-  BOOLEAN
+input EventDeliveriesFilter {
+  status: EventDeliveryStatusFilter
+  createdAt: DatetimeFilter
 }
 ```
 
 
 
 
-### Values
+### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>EventAttributeType.<b>STRING</b></code>](#string) \{#string\} 
-A JSON string.
-
-
-#### [<code style={{ fontWeight: 'normal' }}>EventAttributeType.<b>BOOLEAN</b></code>](#boolean) \{#boolean\} 
-A JSON boolean.
+#### [<code style={{ fontWeight: 'normal' }}>EventDeliveriesFilter.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventDeliveryStatusFilter</b></code>](/api/graphql/types/inputs/event-delivery-status-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#status\} 
+Filter by the state of the delivery.
 
 
-
-
-
-
-### Member Of
-
-[`EventAttribute`](/api/graphql/types/objects/event-attribute.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+#### [<code style={{ fontWeight: 'normal' }}>EventDeliveriesFilter.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DatetimeFilter</b></code>](/api/graphql/types/inputs/datetime-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#created-at\} 
+Filter by when the event matched the destination.

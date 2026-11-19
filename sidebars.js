@@ -194,5 +194,11 @@ module.exports = {
         },
       ],
     },
+    {
+      type: "category",
+      label: "Deprecations",
+      link: { type: "doc", id: "deprecations/deprecations-overview" },
+      items: ["deprecations/deprecations-service-account-secrets"],
+    },
   ],
 };

@@ -377,7 +377,7 @@ type RootQueryType {
         items { tag createdAt }
         cursor { next }
       }
-      releaseChannels(filter: { stable: true }) {
+      releaseChannels(filter: { channel: STABLE }) {
         items { name tag }
       }
     }
@@ -399,6 +399,48 @@ type RootQueryType {
   and resource types). Each repository is the container for all published
   versions of its artifact. Use `filter` to narrow by name, artifact type,
   or full-text search.
+
+  The list holds every repository you can see:
+
+  - repositories your `repo:view` group policies match, **plus**
+  - bundle repositories granted to a project you can view.
+
+  A grant to one of your projects adds its repository to the list even when
+  no `repo:view` policy matches it, and a deny `repo:view` policy does not
+  remove it. Use `filter.projectId` for the bundles granted to one project,
+  and `filter.viewer` for the repositories your own policies match. When
+  both are set, a repository must match both. To list a project's bundles
+  and your own bundles together, make two queries.
+
+  Example: you can view projects `checkout` and `billing`, and your group
+  policy allows `repo:view` on repositories with `TEAM=payments`.
+
+  | Repository     | `TEAM`     | Granted to |
+  | -------------- | ---------- | ---------- |
+  | `aws-aurora`   | `payments` | none       |
+  | `aws-s3`       | `payments` | `checkout` |
+  | `aws-iam-role` | none       | `checkout` |
+  | `aws-vpc`      | none       | `billing`  |
+
+  | `filter`                                       | Result                                            |
+  | ---------------------------------------------- | ------------------------------------------------- |
+  | none                                           | `aws-aurora`, `aws-iam-role`, `aws-s3`, `aws-vpc` |
+  | `{ projectId: "checkout" }`                    | `aws-iam-role`, `aws-s3`                          |
+  | `{ projectId: "billing" }`                     | `aws-vpc`                                         |
+  | `{ viewer: true }`                             | `aws-aurora`, `aws-s3`                            |
+  | `{ viewer: false }`                            | `aws-iam-role`, `aws-vpc`                         |
+  | `{ projectId: "checkout", viewer: true }`      | `aws-s3`                                          |
+  | `{ projectId: "checkout", viewer: false }`     | `aws-iam-role`                                    |
+  | `{ projectId: "billing", viewer: true }`       | empty list                                        |
+  | `{ projectId: "x" }`, no `project:view` on `x` | `NOT_FOUND` error                                 |
+
+  ```graphql
+  query {
+    ociRepos(organizationId: "your-org-id", filter: { projectId: "ecomm" }) {
+      items { name }
+    }
+  }
+  ```
 
   ```graphql
   query {
@@ -699,6 +741,103 @@ type RootQueryType {
     "Your organization's unique identifier."
     organizationId: ID!
   ): [String!]!
+
+  """
+  List the ways Massdriver can send events, with the JSON schemas of the settings and credentials each one
+  takes.
+
+  ```graphql
+  query {
+    eventDestinationAdapters(organizationId: "my-org") {
+      items {
+        id
+        name
+        configSchema
+        authSchema
+        signs
+      }
+    }
+  }
+  ```
+  """
+  eventDestinationAdapters(
+    "Your organization's unique identifier."
+    organizationId: ID!
+  ): EventDestinationAdaptersPage
+
+  """
+  List the organization's event destinations.
+
+  ```graphql
+  query {
+    eventDestinations(organizationId: "my-org", filter: { status: { eq: PAUSED } }) {
+      items {
+        id
+        name
+        status
+        failingSince
+      }
+      cursor { next }
+    }
+  }
+  ```
+  """
+  eventDestinations(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "Filter criteria. All filters are combined with AND."
+    filter: EventDestinationsFilter
+
+    "Sort order. Defaults to `name` ascending."
+    sort: EventDestinationsSort
+
+    "Pagination cursor from a previous response."
+    cursor: Cursor
+  ): EventDestinationsPage
+
+  "Get one of the organization's event destinations."
+  eventDestination(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The destination's unique identifier."
+    id: UUID!
+  ): EventDestination
+
+  """
+  List the organization's recent audit log events that a filter and a condition match, newest first. Use it to
+  check a filter and condition before you create or change a destination with them.
+
+  The condition runs on each page after the filter selects it, so a page can hold fewer items than `limit`.
+  Follow `cursor.next` until it is `null` to see every match. If the condition cannot run on an event, the
+  preview stops at that event and returns an error that names it. Events after it are not checked.
+
+  ```graphql
+  query {
+    previewEventDestination(organizationId: "my-org", filter: { types: ["deployment.*"] }) {
+      items {
+        id
+        type
+        occurredAt
+      }
+    }
+  }
+  ```
+  """
+  previewEventDestination(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The filter to check."
+    filter: EventFilterInput!
+
+    "A jq expression to check with the filter. The event matches when it outputs `true`."
+    condition: String
+
+    "Pagination cursor from a previous response."
+    cursor: Cursor
+  ): AuditLogsPage
 
   """
   List resource types available to your organization.
@@ -1583,6 +1722,12 @@ type RootMutationType {
   `copyEnvironmentDefaults: true` to also copy the parent's default resource
   connections.
 
+  Each copied environment default and remote reference requires `resource:view` on
+  the resource and a resource grant that covers the new environment — the same checks
+  as `setEnvironmentDefault` and `setRemoteReference`. Copying secrets requires
+  `instance:configure` on each parent instance that has secrets. If any check fails,
+  the fork makes no changes.
+
   Re-calling `forkEnvironment` with the same parent + `id` is a no-op that
   returns the existing environment. Re-calling with the same `id` but a
   different `parentId` is rejected — a fork's parent is immutable.
@@ -2213,6 +2358,104 @@ type RootMutationType {
   ): IntegrationPayload
 
   """
+  Add a destination that receives the organization's audit log events.
+
+  `eventDestinationAdapters` lists each adapter's `configSchema` and `authSchema`. Put credentials in `auth`:
+  the API never returns them. A destination of an adapter that `signs` gets a `signingSecret`, and Massdriver
+  signs each event with it.
+
+  Pass `auth` as a variable. Query text can appear in request traces. Variables do not.
+
+  ```graphql
+  mutation CreateEventDestination($auth: Map) {
+    createEventDestination(
+      organizationId: "my-org"
+      input: {
+        name: "Production deployments"
+        adapter: HTTP
+        config: "{\"url\": \"https://hooks.example.com/massdriver\"}"
+        auth: $auth
+        filter: { types: ["deployment.*"], attributes: "{\"md-environment\": \"prod\"}" }
+      }
+    ) {
+      result { id signingSecret }
+      successful
+      messages { field message }
+    }
+  }
+  ```
+  """
+  createEventDestination(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "Add a destination that receives the organization's audit log events that match its filter."
+    input: CreateEventDestinationInput!
+  ): EventDestinationPayload @inputs(name: "createEventDestination", schema: "\/graphql\/v2\/inputs\/createEventDestination.json", ui: "\/graphql\/v2\/inputs\/createEventDestination.ui.json")
+
+  """
+  Change a destination's name, config, auth, filter, or condition. Fields you leave out do not change. A new
+  `config` or `auth` replaces the current one. An empty `condition` removes it. The new filter applies to events that happen after
+  the change. The new condition also applies to events that are waiting to be sent or retried.
+  """
+  updateEventDestination(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The destination's unique identifier."
+    id: UUID!
+
+    "Change a destination's name, config, auth, filter, or condition. Fields you leave out do not change."
+    input: UpdateEventDestinationInput!
+  ): EventDestinationPayload @inputs(name: "updateEventDestination", schema: "\/graphql\/v2\/inputs\/updateEventDestination.json", ui: "\/graphql\/v2\/inputs\/updateEventDestination.ui.json")
+
+  """
+  Stop sending events to a destination. Events that happen while it is paused are not sent. Events that
+  were waiting to be sent are sent after it is resumed.
+  """
+  pauseEventDestination(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The destination's unique identifier."
+    id: UUID!
+  ): EventDestinationPayload
+
+  "Start sending events to a paused destination again, beginning with the events that were waiting."
+  resumeEventDestination(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The destination's unique identifier."
+    id: UUID!
+  ): EventDestinationPayload
+
+  "Delete a destination and its deliveries. Events waiting to be sent are not sent."
+  deleteEventDestination(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The destination's unique identifier."
+    id: UUID!
+  ): EventDestinationPayload
+
+  """
+  Send a destination's `FAILED` deliveries again, with a new set of retries. Leave out `deliveryIds` to send
+  every failed delivery again. `deliveryIds: null` is an error. A paused destination sends them after it is
+  resumed.
+  """
+  redeliverEvents(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The destination's unique identifier."
+    eventDestinationId: UUID!
+
+    "The failed deliveries to send again. Deliveries that are not `FAILED` are left as they are."
+    deliveryIds: [UUID!]
+  ): EventDestinationPayload
+
+  """
   Create a scoped, time-limited personal access token for the authenticated account.
 
   Only human accounts can call this mutation — service accounts should use
@@ -2683,6 +2926,11 @@ type RootMutationType {
   state transfer. Deployment is a separate action — call `createDeployment` on the
   destination when you're ready to apply.
 
+  Copying secrets requires `instance:configure` on the source instance. Copying remote
+  references requires `resource:view` on each referenced resource and a resource grant
+  that covers the destination environment — the same checks as `setRemoteReference`.
+  If any check fails, nothing is copied.
+
   ```graphql
   mutation {
     copyInstance(
@@ -2783,6 +3031,64 @@ type RootMutationType {
     "Reset an instance to INITIALIZED, clearing all of its Terraform\/OpenTofu state locks. Optionally also deletes the remote IaC state files."
     input: OrphanInstanceInput!
   ): InstancePayload @inputs(name: "orphanInstance", schema: "\/graphql\/v2\/inputs\/orphanInstance.json", ui: "\/graphql\/v2\/inputs\/orphanInstance.ui.json")
+
+  """
+  Move an instance to an environment in another project.
+
+  The instance keeps its configuration, secrets, state, resources, and deployment
+  history. Its identifier changes to the destination environment and component;
+  its name prefix does not. The source component stays on its blueprint, and its
+  instance in the source environment is reset to a new `INITIALIZED` instance.
+
+  The destination component's instance in that environment must be `INITIALIZED`
+  or `DECOMMISSIONED`, and the moved instance replaces it. If the destination
+  project has no component with `componentId`, the move adds one for the same
+  bundle. A component with that ID that uses a different bundle is an error.
+
+  Links across the move become remote references, and each resource is granted to
+  the environment that uses it when no grant covers that environment yet.
+
+  Requires `instance:move` on the instance before and after the move, plus every
+  permission for what the move creates: `project:design` to add the component,
+  `instance:configure` and `resource:view` for each remote reference, and
+  `resource:grant` for each new grant. The move completes fully or fails; a failed
+  move changes nothing and returns every reason in `messages`.
+
+  Cloud tags and identifiers change with the move. Deploy the instance afterwards
+  to bring your cloud resources in sync.
+
+  ```graphql
+  mutation {
+    moveInstance(
+      organizationId: "my-org"
+      id: "billing-prod-vpc"
+      environmentId: "network-prod"
+      componentId: "vpc"
+      input: { preserveHistory: true }
+    ) {
+      result { id status }
+      successful
+      messages { message }
+    }
+  }
+  ```
+  """
+  moveInstance(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The instance to move."
+    id: ID!
+
+    "The environment, in another project, to move the instance into."
+    environmentId: ID!
+
+    "The component in the destination project that the instance belongs to after the move, without the project prefix (for example `vpc`, not `network-vpc`). Max 20 characters, lowercase alphanumeric only."
+    componentId: ID!
+
+    "Move an instance, with its configuration, state, and deployment history, to an environment in another project."
+    input: MoveInstanceInput!
+  ): InstancePayload @inputs(name: "moveInstance", schema: "\/graphql\/v2\/inputs\/moveInstance.json", ui: "\/graphql\/v2\/inputs\/moveInstance.ui.json")
 
   """
   Create a new deployment for an instance.
@@ -3218,8 +3524,8 @@ enum EventTypesSortField {
   ID
 }
 
-"The JSON type of an event attribute's value."
-enum EventAttributeType {
+"The JSON type of an event metadata field's value."
+enum EventMetadataType {
   "A JSON string."
   STRING
 
@@ -3250,16 +3556,16 @@ input EventTypesSort {
 """
 A fact Massdriver records with an event, such as how the actor authenticated or
 whether a resource export revealed a secret. Audit logs return these in
-`AuditLog.attributes` and can be filtered on them with `AuditLogsFilter.attributes`.
+`AuditLog.metadata` and can be filtered on them with `AuditLogsFilter.metadata`.
 """
-type EventAttribute {
-  "Key of the attribute in `AuditLog.attributes`, e.g. `contains_secrets`."
+type EventMetadataField {
+  "Key of the field in `AuditLog.metadata`, e.g. `contains_secrets`."
   name: String!
 
-  "The JSON type of the attribute's value."
-  type: EventAttributeType!
+  "The JSON type of the field's value."
+  type: EventMetadataType!
 
-  "What the attribute's value means."
+  "What the field's value means."
   description: String!
 }
 
@@ -3286,11 +3592,11 @@ type EventType {
   changeType: EventAction!
 
   """
-  The attributes recorded with every event of this type. Every event records `credential`
+  The metadata recorded with every event of this type. Every event records `credential`
   and, when an access token was used, `access_token_id`. Some event types record more,
   such as `contains_secrets` on `resource.exported`.
   """
-  attributes: [EventAttribute!]!
+  metadata: [EventMetadataField!]!
 }
 
 """
@@ -3949,8 +4255,27 @@ type Resource {
   Null for **imported** resources. For **provisioned** resources, this is the instance
   that owns the resource's lifecycle — updating or decommissioning the instance will
   update or remove the resource.
+
+  Also null when you cannot view the project that contains the instance. You can see a
+  resource from another project through a grant, a `resource:view` policy, or a
+  dependency of an instance you can view; the instance that produced it stays hidden.
   """
   instance: Instance
+
+  """
+  The groups whose members can view `instance`.
+
+  Null for **imported** resources. You can read this field even when you cannot view the
+  project that contains the instance. When `instance` is null for you, ask a member of one
+  of these groups for access.
+  """
+  instanceAccessGroups(
+    "Sort field and direction. Defaults to name ascending."
+    sort: GroupsSort
+
+    "Pagination cursor returned from a previous response to fetch the next page."
+    cursor: Cursor
+  ): GroupsPage
 
   """
   Download formats supported for this resource.
@@ -4700,6 +5025,352 @@ input CreateServiceAccountAccessTokenInput {
 }
 
 """
+How Massdriver sends events to a destination. `eventDestinationAdapters` lists the settings and credentials
+each adapter takes.
+"""
+enum EventDestinationAdapter {
+  "POST each event to a URL as a CloudEvent (`application\/cloudevents+json`), signed with [Standard Webhooks](https:\/\/www.standardwebhooks.com) headers."
+  HTTP
+}
+
+"Whether a destination receives events."
+enum EventDestinationStatus {
+  "The destination receives the events that match its filter."
+  ACTIVE
+
+  "The destination receives no events. Events that match its filter while it is paused are not sent. Massdriver pauses a destination when a send fails and no send has succeeded for the install's pause time, 24 hours by default."
+  PAUSED
+}
+
+"The state of one event's delivery to a destination."
+enum EventDeliveryStatus {
+  "Waiting to be sent, or waiting for a retry."
+  PENDING
+
+  "The destination accepted the event."
+  DELIVERED
+
+  "Massdriver stopped trying. The destination rejected the event, every retry failed, or the destination's condition could not run. Use `redeliverEvents` to send it again."
+  FAILED
+
+  "The destination's condition did not output `true` for the event, so it was not sent."
+  SKIPPED
+}
+
+"Fields to sort event destinations by."
+enum EventDestinationsSortField {
+  "Sort alphabetically by name."
+  NAME
+
+  "Sort by when the destination was added."
+  CREATED_AT
+}
+
+"Fields to sort a destination's deliveries by."
+enum EventDeliveriesSortField {
+  "Sort by when the event matched the destination."
+  CREATED_AT
+
+  "Sort by the last change to the delivery, such as an attempt."
+  UPDATED_AT
+}
+
+"""
+Selects audit log events. An event matches when it matches every field. An empty field matches every event,
+so an empty filter matches all of the organization's events.
+
+```graphql
+{
+  types: ["deployment.*", "instance.alarm_triggered"]
+  attributes: "{\"md-environment\": \"prod\"}"
+  actorTypes: [ACCOUNT, SERVICE_ACCOUNT]
+}
+```
+"""
+input EventFilterInput {
+  "The kinds of actor whose events match."
+  actorTypes: [AuditLogActorType!]
+
+  """
+  The event's entity must have had every attribute and value in this object when the event happened, such
+  as `{"md-project": "api"}`.
+  """
+  attributes: Map
+
+  """
+  The event's metadata must contain every key and value in this object, such as
+  `{"deployment_action": "PROVISION"}`. A key that does not apply to an event is left out of its metadata, so
+  a filter on that key does not match the event.
+
+  Every event records:
+
+  - `credential`: how the actor authenticated. `session` (a person signed in to Massdriver), `access_token`
+    (a personal access token, as used by the CLI, scripts, and agents), `service_account`, `deployment`
+    (a running deployment), or `system` (Massdriver itself).
+  - `access_token_id`: ID of the access token the actor used. Only when the actor used an access token.
+
+  Some event types record more:
+
+  - `deployment_action` on every `deployment.*` event: `PROVISION`, `PLAN`, or `DECOMMISSION`.
+  - `contains_secrets` on `resource.exported`: `true` when the export revealed at least one value of a field
+    that the resource type marks as sensitive.
+
+  `eventTypes` lists the metadata fields of each event type.
+  """
+  metadata: Map
+
+  "Event types from `eventTypes`, or `<entity>.*` for every event of an entity, such as `deployment.*`."
+  types: [String!]
+}
+
+"Filter by destination status."
+input EventDestinationStatusFilter {
+  "Return only destinations with this status."
+  eq: EventDestinationStatus
+
+  "Return destinations with any of these statuses."
+  in: [EventDestinationStatus!]
+}
+
+"Filter options for the `eventDestinations` query. All filters are combined with **AND**."
+input EventDestinationsFilter {
+  "Filter by whether the destination receives events."
+  status: EventDestinationStatusFilter
+}
+
+"Sorting options for the `eventDestinations` query."
+input EventDestinationsSort {
+  "The field to sort by."
+  field: EventDestinationsSortField!
+
+  "`ASC` for A-Z \/ oldest first, `DESC` for Z-A \/ newest first."
+  order: SortOrder!
+}
+
+"Filter by delivery status."
+input EventDeliveryStatusFilter {
+  "Return only deliveries with this status."
+  eq: EventDeliveryStatus
+
+  "Return deliveries with any of these statuses."
+  in: [EventDeliveryStatus!]
+}
+
+"Filter options for a destination's deliveries. All filters are combined with **AND**."
+input EventDeliveriesFilter {
+  "Filter by the state of the delivery."
+  status: EventDeliveryStatusFilter
+
+  "Filter by when the event matched the destination."
+  createdAt: DatetimeFilter
+}
+
+"Sorting options for a destination's deliveries."
+input EventDeliveriesSort {
+  "The field to sort by."
+  field: EventDeliveriesSortField!
+
+  "`ASC` for oldest first, `DESC` for newest first."
+  order: SortOrder!
+}
+
+"Add a destination that receives the organization's audit log events that match its filter."
+input CreateEventDestinationInput {
+  "How Massdriver sends events. `eventDestinationAdapters` lists each adapter and the settings it takes."
+  adapter: EventDestinationAdapter!
+
+  "Credentials used to send events, in the shape of the adapter's `authSchema` from `eventDestinationAdapters`. The API never returns them."
+  auth: Map
+
+  "A jq expression run on each CloudEvent that the filter matches. The event is sent only when it outputs `true`. Use it for checks the filter cannot express, such as comparisons, `or`, or values inside `data`. It must finish within the install's timeout (1 second by default) and cannot use `import`, `include`, `module`, `modulemeta`, or `get_search_list`."
+  condition: String
+
+  "Where and how events are sent, in the shape of the adapter's `configSchema` from `eventDestinationAdapters`. The API returns it, so put credentials in `auth`."
+  config: Map!
+
+  "The events the destination receives. An empty filter matches all of the organization's events."
+  filter: EventFilterInput!
+
+  "Name of the destination, unique in the organization."
+  name: String!
+}
+
+"Change a destination's name, config, auth, filter, or condition. Fields you leave out do not change."
+input UpdateEventDestinationInput {
+  "Replaces the current credentials. In the shape of the adapter's `authSchema` from `eventDestinationAdapters`. The API never returns them. Pass `null` to remove them."
+  auth: Map
+
+  "A jq expression run on each CloudEvent that the filter matches. The event is sent only when it outputs `true`. Use it for checks the filter cannot express, such as comparisons, `or`, or values inside `data`. It must finish within the install's timeout (1 second by default) and cannot use `import`, `include`, `module`, `modulemeta`, or `get_search_list`. Pass an empty string to remove the condition."
+  condition: String
+
+  "Replaces the current config. Where and how events are sent, in the shape of the adapter's `configSchema` from `eventDestinationAdapters`. The API returns it, so put credentials in `auth`."
+  config: Map
+
+  "The events the destination receives. Fields you leave out of the filter do not change."
+  filter: EventFilterInput
+
+  "Name of the destination, unique in the organization."
+  name: String
+}
+
+"The events a destination receives. An empty field matches every event."
+type EventFilter {
+  "Event types, or `<entity>.*` for every event of an entity."
+  types: [String!]!
+
+  "Metadata keys and values that the event must contain. See `EventFilterInput.metadata` for the fields Massdriver records."
+  metadata: Map!
+
+  "Attributes and values that the event's entity must have had when the event happened."
+  attributes: Map!
+
+  "The kinds of actor whose events match."
+  actorTypes: [AuditLogActorType!]!
+}
+
+"""
+A place outside Massdriver that receives the organization's audit log events.
+
+Massdriver sends each event that matches the `filter`, one at a time, and retries failed sends with
+backoff. Order is not guaranteed. A receiver can drop duplicates by the event `id`.
+"""
+type EventDestination {
+  "Unique identifier of the destination."
+  id: ID!
+
+  "Name of the destination, unique in the organization."
+  name: String!
+
+  "How Massdriver sends events."
+  adapter: EventDestinationAdapter!
+
+  "Where and how events are sent, in the shape of the adapter's `configSchema`. The destination's `auth` credentials are never returned."
+  config: Map!
+
+  "The events the destination receives."
+  filter: EventFilter!
+
+  "A jq expression run on each CloudEvent that the filter matches. The event is sent only when it outputs `true`. `null` sends every event the filter matches."
+  condition: String
+
+  "Whether the destination receives events."
+  status: EventDestinationStatus!
+
+  "The secret that signs each request, in Standard Webhooks form (`whsec_` followed by base64). Use it to check the `webhook-signature` header. Treat it as a credential. `null` for adapters that do not sign."
+  signingSecret: String
+
+  "When sends to the destination started to fail. `null` when the last send succeeded."
+  failingSince: DateTime
+
+  "When the destination was added (UTC)."
+  createdAt: DateTime!
+
+  "When the destination last changed (UTC)."
+  updatedAt: DateTime!
+
+  "The events matched to this destination and the state of each send. Newest first by default."
+  deliveries(
+    "Filter criteria. All filters are combined with AND."
+    filter: EventDeliveriesFilter
+
+    "Sort order. Defaults to `createdAt` descending."
+    sort: EventDeliveriesSort
+
+    "Pagination cursor from a previous response."
+    cursor: Cursor
+  ): EventDeliveriesPage
+}
+
+"One event's delivery to a destination."
+type EventDelivery {
+  "Unique identifier of the delivery."
+  id: ID!
+
+  "The state of the delivery."
+  status: EventDeliveryStatus!
+
+  "How many times Massdriver tried to send the event."
+  attempts: Int!
+
+  "When Massdriver sends the event next, while the delivery is `PENDING` (UTC)."
+  nextAttemptAt: DateTime!
+
+  "Why the last attempt failed, such as `HTTP 503` or `connection refused`."
+  lastError: String
+
+  "When the destination accepted the event (UTC)."
+  deliveredAt: DateTime
+
+  "When the event matched the destination (UTC)."
+  createdAt: DateTime!
+
+  "When the delivery last changed (UTC)."
+  updatedAt: DateTime!
+
+  "The audit log event. `null` when the event is older than the audit log retention."
+  event: AuditLog
+}
+
+"""
+A way Massdriver can send events. Use `configSchema` and `authSchema` to build the `config` and `auth` of
+`createEventDestination`.
+"""
+type EventDestinationAdapterInfo {
+  "The value to pass as `adapter`."
+  id: EventDestinationAdapter!
+
+  "Display name."
+  name: String!
+
+  "What the adapter does with each event."
+  description: String!
+
+  "JSON schema of a destination's `config`: where and how events are sent. The API returns it."
+  configSchema: Map!
+
+  "JSON schema of a destination's `auth`: the credentials used to send events. The API never returns it."
+  authSchema: Map!
+
+  "Whether destinations get a `signingSecret` and Massdriver signs each event with it."
+  signs: Boolean!
+}
+
+type EventDestinationAdaptersPage {
+  "Pagination cursors for navigating between pages."
+  cursor: PaginationCursor!
+
+  "A list of type event_destination_adapter_info."
+  items: [EventDestinationAdapterInfo]
+}
+
+type EventDestinationsPage {
+  "Pagination cursors for navigating between pages."
+  cursor: PaginationCursor!
+
+  "A list of type event_destination."
+  items: [EventDestination]
+}
+
+type EventDeliveriesPage {
+  "Pagination cursors for navigating between pages."
+  cursor: PaginationCursor!
+
+  "A list of type event_delivery."
+  items: [EventDelivery]
+}
+
+type EventDestinationPayload {
+  "Indicates if the mutation completed successfully or not."
+  successful: Boolean!
+
+  "A list of failed validations. May be blank or null if mutation succeeded."
+  messages: [ValidationMessage]
+
+  "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
+  result: EventDestination
+}
+
+"""
 The type of actor that performed an audit-logged action.
 
 Every audit log event records who (or what) triggered it. The actor type tells you
@@ -4792,7 +5463,10 @@ input AuditLogsFilter {
   "Search actors by a substring match across their identifying fields (email and name for users, name for service accounts, ID for deployments and system actions). Useful for finding every action taken by a person or bot without knowing their exact ID."
   actor: ActorSearchFilter
 
-  "Match events whose attributes contain every given key and value, e.g. `{\"contains_secrets\": true, \"credential\": \"access_token\"}`. Values must match exactly, including type. `eventTypes` lists the attributes each event type records."
+  "Match events whose metadata contains every given key and value, e.g. `{\"contains_secrets\": true, \"credential\": \"access_token\"}`. Values must match exactly, including type. `eventTypes` lists the metadata each event type records."
+  metadata: Map
+
+  "Match events whose entity had every given attribute and value when the event happened, e.g. `{\"md-environment\": \"prod\", \"TEAM\": \"payments\"}`. Takes custom attributes and system (`md-*`) attributes."
   attributes: Map
 }
 
@@ -4849,10 +5523,13 @@ type AuditLog {
   "The affected resource in MRI format (e.g., `mri:\/\/organization\/my-org\/project\/backend`). May be `null` for organization-wide events."
   subject: String
 
-  "Event payload containing context-specific details about the action. The structure varies by event type."
+  "The event body. `actor` holds the ids of the account, service account, or deployment that caused the event, and the organization. `entity` holds a copy of the entity the event is about, as it was when the event happened. The fields in `entity` depend on the entity type."
   data: Map
 
-  "Facts recorded with the event that you can filter on, such as how the actor authenticated (`credential`) or whether a resource export revealed a secret (`contains_secrets`). `eventTypes` lists the attributes each event type records."
+  "Facts recorded with the event that you can filter on, such as how the actor authenticated (`credential`) or whether a resource export revealed a secret (`contains_secrets`). `eventTypes` lists the metadata each event type records."
+  metadata: Map!
+
+  "The custom and system (`md-*`) attributes of the event's entity when the event happened, e.g. `{\"md-project\": \"api\", \"md-environment\": \"prod\", \"TEAM\": \"payments\"}`. Empty for entities that do not carry attributes, such as accounts and access tokens."
   attributes: Map!
 
   "The actor (user, service account, deployment, or system) that performed this action."
@@ -7779,10 +8456,10 @@ input SetInstanceSecretInput {
 
 "Copy configuration from one instance to another. The source and destination must be instances of the same component. Source params (minus any fields marked non-copyable in the bundle) are written to the destination."
 input CopyInstanceInput {
-  "When true, copies remote resource references from the source instance to the destination. Defaults to false."
+  "When true, copies remote resource references from the source instance to the destination. Each referenced resource requires `resource:view` and a resource grant that covers the destination environment. Defaults to false."
   copyRemoteReferences: Boolean
 
-  "When true, copies secret values from the source instance to the destination. Defaults to false."
+  "When true, copies secret values from the source instance to the destination. Requires `instance:configure` on the source instance when it has secrets. Defaults to false."
   copySecrets: Boolean
 
   "Optional overrides that are deep-merged onto the source params before writing to the destination. Useful for tweaking environment-specific values (e.g., instance sizes)."
@@ -7793,6 +8470,12 @@ input CopyInstanceInput {
 input OrphanInstanceInput {
   "When true, permanently deletes the instance's Terraform\/OpenTofu state files. The next deployment will provision from scratch. Cannot be undone."
   deleteState: Boolean
+}
+
+"Move an instance, with its configuration, state, and deployment history, to an environment in another project."
+input MoveInstanceInput {
+  "When the move replaces a DECOMMISSIONED instance, true moves that instance's deployments, alarms, and costs onto the moved instance. An alarm for a cloud resource that the moved instance already has an alarm for is deleted. Costs for a billing period that both instances have are added together. False deletes them with the replaced instance."
+  preserveHistory: Boolean!
 }
 
 """
@@ -8397,13 +9080,13 @@ input ForkEnvironmentInput {
   "Key-value attributes for this environment. Keys and values must be strings. Must conform to the organization's custom attributes for the environment scope."
   attributes: Map
 
-  "When true, copies the parent environment's default resource connections into the fork."
+  "When true, copies the parent environment's default resource connections into the fork. Each resource requires `resource:view` and a resource grant that covers the fork."
   copyEnvironmentDefaults: Boolean
 
-  "When true, copies every package's remote resource references from the parent into the fork. Applies the same behavior as `copyInstance(copyRemoteReferences: true)` to every package in one call. Defaults to false."
+  "When true, copies every package's remote resource references from the parent into the fork. Applies the same behavior as `copyInstance(copyRemoteReferences: true)` to every package in one call, so each referenced resource requires `resource:view` and a resource grant that covers the fork. Defaults to false."
   copyRemoteReferences: Boolean
 
-  "When true, copies every package's secret values from the parent into the fork. Applies the same behavior as `copyInstance(copySecrets: true)` to every package in one call. Defaults to false."
+  "When true, copies every package's secret values from the parent into the fork. Applies the same behavior as `copyInstance(copySecrets: true)` to every package in one call, so each parent instance with secrets requires `instance:configure`. Defaults to false."
   copySecrets: Boolean
 
   "When true, blocks `decommissionEnvironment` and any per-instance deployment with `action: DECOMMISSION` against this environment. Disable it via `updateEnvironment` before tearing down. Defaults to false."
@@ -8569,6 +9252,37 @@ type EnvironmentDefaultResource {
 
   "The resource type (e.g., `massdriver\/aws-vpc`) that this resource conforms to."
   resourceType: ResourceType
+
+  "How this resource was created. Determines whether it can be modified through the API."
+  origin: ResourceOrigin!
+
+  """
+  The instance whose deployment produced this resource.
+
+  Null for **imported** resources. For **provisioned** resources, this is the instance
+  that owns the resource's lifecycle — updating or decommissioning the instance will
+  update or remove the resource.
+
+  Also null when you cannot view the project that contains the instance. You can see a
+  resource from another project through a grant, a `resource:view` policy, or a
+  dependency of an instance you can view; the instance that produced it stays hidden.
+  """
+  instance: Instance
+
+  """
+  The groups whose members can view `instance`.
+
+  Null for **imported** resources. You can read this field even when you cannot view the
+  project that contains the instance. When `instance` is null for you, ask a member of one
+  of these groups for access.
+  """
+  instanceAccessGroups(
+    "Sort field and direction. Defaults to name ascending."
+    sort: GroupsSort
+
+    "Pagination cursor returned from a previous response to fetch the next page."
+    cursor: Cursor
+  ): GroupsPage
 }
 
 """
@@ -9211,6 +9925,15 @@ enum OciRepoReleaseChannelsSortField {
   NAME
 }
 
+"The release line a version or release channel belongs to."
+enum OciRepoChannel {
+  "Stable releases. For tags, versions with no pre-release suffix (e.g., `1.2.3`). For release channels, `latest`, `~1`, and `~1.2`."
+  STABLE
+
+  "Development builds. For tags, pre-release versions (e.g., `1.2.4-dev.20260101T120000Z`). For release channels, `latest+dev`, `~1+dev`, and `~1.2+dev`."
+  DEV
+}
+
 "Fields available for ordering files within a tagged version of an OCI artifact."
 enum OciFilesSortField {
   "Alphabetical order by filename (e.g., `CHANGELOG.md`, `README.md`, `src\/main.tf`)."
@@ -9255,6 +9978,12 @@ input OciReposFilter {
 
   "Full-text search across the repository name, readme, and changelog. Results are ranked by relevance unless you provide an explicit `sort`. For terms longer than 3 characters, name-prefix matches are also included. **Note:** pagination cursors returned by search results use offset-based pagination and are not interchangeable with cursors from non-search queries."
   search: String
+
+  "Only repositories granted to this project. These are the bundles that can be added to the project. Returns `NOT_FOUND` when you cannot view the project."
+  projectId: ID
+
+  "`true` returns only repositories your own `repo:view` group policies match. `false` returns only repositories you see only through a grant to a project you can view, with no `repo:view` policy of yours matching them. When omitted, both are returned."
+  viewer: Boolean
 }
 
 """
@@ -9288,6 +10017,9 @@ All filters are combined with AND logic.
 input OciRepoTagsFilter {
   "Return only the tag with this exact version (e.g., `1.3.3`). When set, the result is at most one item."
   version: Semver
+
+  "Return only versions in this channel: `STABLE` for releases, `DEV` for pre-release builds. Pagination counts only matching versions. Omit to return every version."
+  channel: OciRepoChannel
 }
 
 "Controls the sort order of files in a tagged version of an OCI artifact."
@@ -9301,8 +10033,11 @@ input OciFilesSort {
 
 "Filters for narrowing the release channels list."
 input OciRepoReleaseChannelsFilter {
-  "Controls whether stable or development channels are returned. `true` returns only stable channels (`latest`, `~1`, `~1.2`). `false` returns only development channels (`latest+dev`, `~1+dev`, `~1.2+dev`). Omit to return both. A development channel is listed even when it currently resolves to the same version as its stable counterpart, because the two track future releases differently."
-  stable: Boolean
+  "Return only stable channels (`STABLE`: `latest`, `~1`, `~1.2`) or only development channels (`DEV`: `latest+dev`, `~1+dev`, `~1.2+dev`). Omit to return both. A development channel is listed even when it currently resolves to the same version as its stable counterpart, because the two track future releases differently."
+  channel: OciRepoChannel
+
+  "`true` returns only stable channels and `false` returns only development channels. Ignored when `channel` is set."
+  stable: Boolean @deprecated(reason: "Use `channel` instead.")
 }
 
 "Controls the sort order of release channels."
@@ -9486,8 +10221,9 @@ type OciRepo {
 
   """
   Short summary of what this repository provisions, taken from the latest
-  published release. `null` when the repository has no releases yet or the
-  author omitted the description.
+  published release. For a resource-type repository it is the schema
+  `description` of the type's newest published version. `null` when the
+  repository has no releases yet or the author omitted the description.
   """
   description: String
 
@@ -9501,7 +10237,8 @@ type OciRepo {
   cookie automatically; programmatic clients must include an `Authorization`
   header.
 
-  For a resource-type repository it is the icon URL the type declares.
+  For a resource-type repository it is the icon URL declared by the type's
+  newest published version.
   """
   icon: String
 
@@ -9531,7 +10268,7 @@ type OciRepo {
   Paginated list of release channels for this repository.
 
   Each channel is a version constraint that auto-resolves to the latest matching
-  tag. Use the `stable` filter to show only stable or only development channels.
+  tag. Use the `channel` filter to show only stable or only development channels.
   """
   releaseChannels(
     "Filter by stable or development channels."
@@ -9551,7 +10288,7 @@ type OciRepo {
   version first (`version` descending).
   """
   tags(
-    "Narrow results to a specific version."
+    "Narrow results to a specific version or channel."
     filter: OciRepoTagsFilter
 
     "Sort order for tags. Defaults to `version` descending (newest first)."

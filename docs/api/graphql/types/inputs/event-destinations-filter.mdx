@@ -1,0 +1,69 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: event-destinations-filter
+title: EventDestinationsFilter
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Filter options for the `eventDestinations` query. All filters are combined with **AND**.
+
+
+```graphql
+input EventDestinationsFilter {
+  status: EventDestinationStatusFilter
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDestinationsFilter.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventDestinationStatusFilter</b></code>](/api/graphql/types/inputs/event-destination-status-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#status\} 
+Filter by whether the destination receives events.
+
+
+
+
+
+
+### Member Of
+
+[`eventDestinations`](/api/graphql/operations/queries/event-destinations.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

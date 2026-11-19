@@ -30,7 +30,7 @@ resources:
 
 `required` means different things on each side. On a dependency it means the slot must be filled before the bundle can deploy. On a resource it means the bundle always creates it.
 
-A resource pins the single version it produces. A dependency accepts a range:
+Both accept an exact version or a range:
 
 | Form | Accepts |
 |------|---------|
@@ -41,6 +41,43 @@ A resource pins the single version it produces. A dependency accepts a range:
 | `aws-vpc@latest+dev` | the newest version, including development releases |
 
 The `+dev` suffix also applies to a tilde range. `~1+dev` accepts the newest `1.x` including development releases; `~1` on its own skips them.
+
+A `resources` entry takes the same forms. Massdriver resolves it to the newest published version the range accepts when the bundle deploys, and the produced resource carries that version. A bare name with no `@version` resolves as `latest`.
+
+## Development releases
+
+A [development release](/bundle-development/dependencies-resources/resource-type-spec#development-releases) of a resource type, such as `aws-vpc@2.2.0-dev.20261110T153000Z`, is invisible to stable ranges. `~2`, `~2.2`, and `latest` all skip it, both when picking a version and when checking a remote reference or a blueprint connection. A bundle opts in per entry:
+
+| Form | Accepts |
+|------|---------|
+| `aws-vpc@2.2.0-dev.20261110T153000Z` | that development release only |
+| `aws-vpc@~2.2+dev` | the newest `2.2.x`, development releases included |
+| `aws-vpc@~2+dev` | the newest `2.x`, development releases included |
+| `aws-vpc@latest+dev` | the newest version, development releases included |
+
+A development release sorts before the stable version it is based on, so a `+dev` range moves to `2.2.0` once it is published and stays there until a newer development release appears.
+
+To test a resource type change end to end, both sides of the contract opt in. The producing bundle emits the development version, and the consuming bundle accepts it:
+
+```yaml
+# producer massdriver.yaml
+resources:
+  network:
+    resource_type: aws-vpc@~2+dev
+    required: true
+```
+
+```yaml
+# consumer massdriver.yaml
+dependencies:
+  network:
+    resource_type: aws-vpc@~2+dev
+    required: true
+```
+
+Publish both bundles with `mass bundle publish --development` and deploy them to an environment whose instances have development releases enabled. A consumer left on `aws-vpc@~2` does not match a resource produced at `2.2.0-dev.<timestamp>`: an environment default at that version is skipped, and a blueprint connection or remote reference to it blocks the deploy.
+
+Use an exact development version on the producer to freeze it while the consumer iterates. Move both entries back to a stable range before publishing the stable bundle releases.
 
 ## What fills a slot
 

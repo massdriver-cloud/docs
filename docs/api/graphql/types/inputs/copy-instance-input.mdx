@@ -59,11 +59,11 @@ input CopyInstanceInput {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>CopyInstanceInput.<b>copyRemoteReferences</b></code>](#copy-remote-references)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#copy-remote-references\} 
-When true, copies remote resource references from the source instance to the destination. Defaults to false.
+When true, copies remote resource references from the source instance to the destination. Each referenced resource requires `resource:view` and a resource grant that covers the destination environment. Defaults to false.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CopyInstanceInput.<b>copySecrets</b></code>](#copy-secrets)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#copy-secrets\} 
-When true, copies secret values from the source instance to the destination. Defaults to false.
+When true, copies secret values from the source instance to the destination. Requires `instance:configure` on the source instance when it has secrets. Defaults to false.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CopyInstanceInput.<b>overrides</b></code>](#overrides)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#overrides\} 

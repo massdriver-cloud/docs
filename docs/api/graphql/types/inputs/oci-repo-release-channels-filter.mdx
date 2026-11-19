@@ -47,7 +47,8 @@ Filters for narrowing the release channels list.
 
 ```graphql
 input OciRepoReleaseChannelsFilter {
-  stable: Boolean
+  channel: OciRepoChannel
+  stable: Boolean @deprecated
 }
 ```
 
@@ -56,5 +57,22 @@ input OciRepoReleaseChannelsFilter {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>OciRepoReleaseChannelsFilter.<b>stable</b></code>](#stable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#stable\} 
-Controls whether stable or development channels are returned. `true` returns only stable channels (`latest`, `~1`, `~1.2`). `false` returns only development channels (`latest+dev`, `~1+dev`, `~1.2+dev`). Omit to return both. A development channel is listed even when it currently resolves to the same version as its stable counterpart, because the two track future releases differently.
+#### [<code style={{ fontWeight: 'normal' }}>OciRepoReleaseChannelsFilter.<b>channel</b></code>](#channel)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OciRepoChannel</b></code>](/api/graphql/types/enums/oci-repo-channel.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#channel\} 
+Return only stable channels (`STABLE`: `latest`, `~1`, `~1.2`) or only development channels (`DEV`: `latest+dev`, `~1+dev`, `~1.2+dev`). Omit to return both. A development channel is listed even when it currently resolves to the same version as its stable counterpart, because the two track future releases differently.
+
+
+ 
+
+<Details dataOpen="Hide deprecated" dataClose="Show deprecated">
+
+#### [<code style={{ fontWeight: 'normal' }}>OciRepoReleaseChannelsFilter.<b>stable</b></code>](#stable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> \{#stable\} 
+:::warning[DEPRECATED]
+
+Use `channel` instead.
+
+:::
+
+`true` returns only stable channels and `false` returns only development channels. Ignored when `channel` is set.
+
+
+</Details>

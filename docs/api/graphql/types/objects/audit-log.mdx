@@ -63,6 +63,7 @@ type AuditLog {
   source: String!
   subject: String
   data: Map
+  metadata: Map!
   attributes: Map!
   actor: AuditLogActor!
 }
@@ -94,11 +95,15 @@ The affected resource in MRI format (e.g., `mri://organization/my-org/project/ba
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AuditLog.<b>data</b></code>](#data)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#data\} 
-Event payload containing context-specific details about the action. The structure varies by event type.
+The event body. `actor` holds the ids of the account, service account, or deployment that caused the event, and the organization. `entity` holds a copy of the entity the event is about, as it was when the event happened. The fields in `entity` depend on the entity type.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AuditLog.<b>metadata</b></code>](#metadata)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#metadata\} 
+Facts recorded with the event that you can filter on, such as how the actor authenticated (`credential`) or whether a resource export revealed a secret (`contains_secrets`). `eventTypes` lists the metadata each event type records.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AuditLog.<b>attributes</b></code>](#attributes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#attributes\} 
-Facts recorded with the event that you can filter on, such as how the actor authenticated (`credential`) or whether a resource export revealed a secret (`contains_secrets`). `eventTypes` lists the attributes each event type records.
+The custom and system (`md-*`) attributes of the event's entity when the event happened, e.g. `{"md-project": "api", "md-environment": "prod", "TEAM": "payments"}`. Empty for entities that do not carry attributes, such as accounts and access tokens.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AuditLog.<b>actor</b></code>](#actor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AuditLogActor!</b></code>](/api/graphql/types/objects/audit-log-actor.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#actor\} 
@@ -115,4 +120,4 @@ The actor (user, service account, deployment, or system) that performed this act
 
 ### Member Of
 
-[`AuditLogsPage`](/api/graphql/types/objects/audit-logs-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`AuditLogsPage`](/api/graphql/types/objects/audit-logs-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EventDelivery`](/api/graphql/types/objects/event-delivery.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

@@ -1,0 +1,84 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: event-delivery-status
+title: EventDeliveryStatus
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+The state of one event's delivery to a destination.
+
+
+```graphql
+enum EventDeliveryStatus {
+  PENDING
+  DELIVERED
+  FAILED
+  SKIPPED
+}
+```
+
+
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDeliveryStatus.<b>PENDING</b></code>](#pending) \{#pending\} 
+Waiting to be sent, or waiting for a retry.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDeliveryStatus.<b>DELIVERED</b></code>](#delivered) \{#delivered\} 
+The destination accepted the event.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDeliveryStatus.<b>FAILED</b></code>](#failed) \{#failed\} 
+Massdriver stopped trying. The destination rejected the event, every retry failed, or the destination's condition could not run. Use `redeliverEvents` to send it again.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDeliveryStatus.<b>SKIPPED</b></code>](#skipped) \{#skipped\} 
+The destination's condition did not output `true` for the event, so it was not sent.
+
+
+
+
+
+
+### Member Of
+
+[`EventDelivery`](/api/graphql/types/objects/event-delivery.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EventDeliveryStatusFilter`](/api/graphql/types/inputs/event-delivery-status-filter.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

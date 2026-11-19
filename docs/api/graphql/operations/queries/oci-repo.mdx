@@ -58,7 +58,7 @@ query {
       items { tag createdAt }
       cursor { next }
     }
-    releaseChannels(filter: { stable: true }) {
+    releaseChannels(filter: { channel: STABLE }) {
       items { name tag }
     }
   }

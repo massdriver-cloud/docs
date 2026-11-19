@@ -52,6 +52,12 @@ instance `params`. By default, secrets and remote references are not copied
 `copyEnvironmentDefaults: true` to also copy the parent's default resource
 connections.
 
+Each copied environment default and remote reference requires `resource:view` on
+the resource and a resource grant that covers the new environment — the same checks
+as `setEnvironmentDefault` and `setRemoteReference`. Copying secrets requires
+`instance:configure` on each parent instance that has secrets. If any check fails,
+the fork makes no changes.
+
 Re-calling `forkEnvironment` with the same parent + `id` is a no-op that
 returns the existing environment. Re-calling with the same `id` but a
 different `parentId` is rejected — a fork's parent is immutable.
