@@ -77,6 +77,7 @@ module.exports = {
       items: [
         "platform-operations/state-management",
         "platform-operations/monitoring-and-alarms",
+        "platform-operations/event-destinations",
         {
           type: "category",
           label: "CI/CD",
