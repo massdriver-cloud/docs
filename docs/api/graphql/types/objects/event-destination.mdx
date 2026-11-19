@@ -1,0 +1,140 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: event-destination
+title: EventDestination
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A place outside Massdriver that receives the organization's audit log events.
+
+Massdriver sends each event that matches the `filter`, one at a time, and retries failed sends with
+backoff. Order is not guaranteed. A receiver can drop duplicates by the event `id`.
+
+
+```graphql
+type EventDestination {
+  id: ID!
+  name: String!
+  adapter: EventDestinationAdapter!
+  config: Map!
+  filter: EventFilter!
+  status: EventDestinationStatus!
+  signingSecret: String
+  failingSince: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deliveries(
+    filter: EventDeliveriesFilter
+    sort: EventDeliveriesSort
+    cursor: Cursor
+  ): EventDeliveriesPage
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDestination.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+Unique identifier of the destination.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDestination.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Name of the destination, unique in the organization.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDestination.<b>adapter</b></code>](#adapter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventDestinationAdapter!</b></code>](/api/graphql/types/enums/event-destination-adapter.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#adapter\} 
+How Massdriver sends events.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDestination.<b>config</b></code>](#config)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#config\} 
+Where and how events are sent. For `HTTP`: `url`, and `headers` sent with each request. Headers can hold credentials.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDestination.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventFilter!</b></code>](/api/graphql/types/objects/event-filter.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#filter\} 
+The events the destination receives.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDestination.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventDestinationStatus!</b></code>](/api/graphql/types/enums/event-destination-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
+Whether the destination receives events.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDestination.<b>signingSecret</b></code>](#signing-secret)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#signing-secret\} 
+The secret that signs each request, in Standard Webhooks form (`whsec_` followed by base64). Use it to check the `webhook-signature` header. Treat it as a credential. `null` for adapters that do not sign.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDestination.<b>failingSince</b></code>](#failing-since)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#failing-since\} 
+When sends to the destination started to fail. `null` when the last send succeeded.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDestination.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When the destination was added (UTC).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDestination.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+When the destination last changed (UTC).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDestination.<b>deliveries</b></code>](#deliveries)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventDeliveriesPage</b></code>](/api/graphql/types/objects/event-deliveries-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#deliveries\} 
+The events matched to this destination and the state of each send. Newest first by default.
+##### [<code style={{ fontWeight: 'normal' }}>EventDestination.deliveries.<b>filter</b></code>](#event-destination-deliveries-filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventDeliveriesFilter</b></code>](/api/graphql/types/inputs/event-deliveries-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#event-destination-deliveries-filter\} 
+Filter criteria. All filters are combined with AND.
+
+
+##### [<code style={{ fontWeight: 'normal' }}>EventDestination.deliveries.<b>sort</b></code>](#event-destination-deliveries-sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventDeliveriesSort</b></code>](/api/graphql/types/inputs/event-deliveries-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#event-destination-deliveries-sort\} 
+Sort order. Defaults to `createdAt` descending.
+
+
+##### [<code style={{ fontWeight: 'normal' }}>EventDestination.deliveries.<b>cursor</b></code>](#event-destination-deliveries-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#event-destination-deliveries-cursor\} 
+Pagination cursor from a previous response.
+
+
+
+
+
+
+### Returned By
+
+[`eventDestination`](/api/graphql/operations/queries/event-destination.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+
+### Member Of
+
+[`EventDestinationPayload`](/api/graphql/types/objects/event-destination-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`EventDestinationsPage`](/api/graphql/types/objects/event-destinations-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

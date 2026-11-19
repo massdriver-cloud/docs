@@ -395,7 +395,7 @@ Organization-level capabilities are split into one umbrella action and nine sub-
 
 | Permission | Description |
 |---|---|
-| `organization:manage` | Umbrella. A policy granting `organization:manage` satisfies any of the nine `organization:manage*` sub-actions below. |
+| `organization:manage` | Umbrella. A policy granting `organization:manage` satisfies any of the ten `organization:manage*` sub-actions below. |
 | `organization:manageServiceAccounts` | Create, update, delete, list, and inspect service accounts. |
 | `organization:manageGroups` | Create new groups. Editing an existing group's membership or policies is gated separately by `group:manage` on that group. |
 | `organization:manageBilling` | View and change subscription, payment, seats, and Stripe customer portal. |
@@ -405,6 +405,7 @@ Organization-level capabilities are split into one umbrella action and nine sub-
 | `organization:manageSettings` | View and change organization-wide behavior settings, such as the default access granted to new bundle repositories. |
 | `organization:manageProfile` | Update display name and logo. |
 | `organization:manageMembers` | Remove members from the organization, which also revokes their group memberships, invitations, and access tokens. |
+| `organization:manageEventDestinations` | Add, change, pause, resume, and delete the destinations that receive the organization's events, see what each destination was sent, and send failed events again. |
 
 Reading the organization's public profile (name, logo, identifier) is open to every org member — no policy required.
 

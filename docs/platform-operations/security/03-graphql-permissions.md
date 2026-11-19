@@ -18,7 +18,7 @@ This page maps every operation in the Massdriver GraphQL API to the [ABAC permis
 
 If you're building a least-privilege policy, scan the table for the operations the principal needs and assemble the union of required permissions. List queries (`projects`, `instances`, `resources`, etc.) are visibility-filtered: a caller only sees what their group policies and grants make visible — there's no explicit list permission to grant.
 
-`organization:manage` is a one-level umbrella: a single policy granting `organization:manage` on a custom group satisfies any `organization:manageServiceAccounts`, `organization:manageGroups`, `organization:manageBilling`, `organization:manageIntegrations`, `organization:manageCustomAttributes`, `organization:manageResourceTypes`, `organization:manageSettings`, `organization:manageProfile`, or `organization:manageMembers` query below. Grant the umbrella when you want full org-level administrative authority on a custom group; grant a single sub-action when you want to scope authority to one capability.
+`organization:manage` is a one-level umbrella: a single policy granting `organization:manage` on a custom group satisfies any `organization:manageServiceAccounts`, `organization:manageGroups`, `organization:manageBilling`, `organization:manageIntegrations`, `organization:manageCustomAttributes`, `organization:manageResourceTypes`, `organization:manageSettings`, `organization:manageProfile`, `organization:manageMembers`, or `organization:manageEventDestinations` query below. Grant the umbrella when you want full org-level administrative authority on a custom group; grant a single sub-action when you want to scope authority to one capability.
 
 ---
 
@@ -218,6 +218,20 @@ There is no `updateGrant` — grants are immutable; delete and re-create to chan
 | `enableIntegration` | Mutation | `organization:manageIntegrations` | Covered by the `organization:manage` umbrella. |
 | `disableIntegration` | Mutation | `organization:manageIntegrations` | Covered by the `organization:manage` umbrella. |
 | `deleteIntegration` | Mutation | `organization:manageIntegrations` | Covered by the `organization:manage` umbrella. |
+
+## Event Destination
+
+| Operation | Type | Required permission(s) | Notes |
+|---|---|---|---|
+| `eventDestinations` | Query | `organization:manageEventDestinations` | Covered by the `organization:manage` umbrella. |
+| `eventDestination` | Query | `organization:manageEventDestinations` | Covered by the `organization:manage` umbrella. Includes the destination's deliveries. |
+| `previewEventDestination` | Query | `organization:manageEventDestinations` | Covered by the `organization:manage` umbrella. Returns every matching event in the organization, not only events in projects the caller can view. |
+| `createEventDestination` | Mutation | `organization:manageEventDestinations` | Covered by the `organization:manage` umbrella. |
+| `updateEventDestination` | Mutation | `organization:manageEventDestinations` | Covered by the `organization:manage` umbrella. |
+| `pauseEventDestination` | Mutation | `organization:manageEventDestinations` | Covered by the `organization:manage` umbrella. |
+| `resumeEventDestination` | Mutation | `organization:manageEventDestinations` | Covered by the `organization:manage` umbrella. |
+| `deleteEventDestination` | Mutation | `organization:manageEventDestinations` | Covered by the `organization:manage` umbrella. |
+| `redeliverEvents` | Mutation | `organization:manageEventDestinations` | Covered by the `organization:manage` umbrella. |
 
 ## Audit Log
 
