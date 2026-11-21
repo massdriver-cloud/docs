@@ -1,0 +1,79 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: create-trust-rule-input
+title: CreateTrustRuleInput
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Let CI runs from a GitHub or GitLab repository act as a service account, with no stored token.
+
+
+```graphql
+input CreateTrustRuleInput {
+  claims: Map!
+  issuer: String!
+  name: String!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateTrustRuleInput.<b>claims</b></code>](#claims)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#claims\} 
+Claims the CI run's ID token must carry, with exact string values. GitHub rules must include `repository_owner_id`; GitLab rules must include `namespace_id`. Add `repository_id` or `project_id` to limit the rule to one repository, and `ref` to limit it to one branch.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateTrustRuleInput.<b>issuer</b></code>](#issuer)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#issuer\} 
+The OIDC issuer URL of the CI platform, such as `https://token.actions.githubusercontent.com` for GitHub Actions or `https://gitlab.com` for GitLab CI. Must be one of the issuers this Massdriver server trusts.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateTrustRuleInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+A label for this rule. Access tokens issued through the rule carry this name.
+
+
+
+
+
+
+### Member Of
+
+[`createTrustRule`](/api/graphql/operations/mutations/create-trust-rule.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

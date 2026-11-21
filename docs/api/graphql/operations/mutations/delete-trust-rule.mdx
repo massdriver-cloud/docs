@@ -1,0 +1,71 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: delete-trust-rule
+title: deleteTrustRule
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Delete a trust rule. Access tokens that CI runs received through the rule stop working
+immediately. Requires the `organization:manageServiceAccounts` action.
+
+
+```graphql
+deleteTrustRule(
+  organizationId: ID!
+  id: UUID!
+): TrustRulePayload
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>deleteTrustRule.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>deleteTrustRule.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UUID!</b></code>](/api/graphql/types/scalars/uuid.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+The trust rule's unique identifier.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>TrustRulePayload</b></code>](/api/graphql/types/objects/trust-rule-payload.mdx) <Badge class="badge badge--secondary " text="object"/>

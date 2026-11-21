@@ -1,0 +1,115 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: create-trust-rule
+title: createTrustRule
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+<Badge class="badge badge--secondary badge--primary" text="form schema"/>
+
+
+
+Let CI runs from a GitHub or GitLab repository act as a service account.
+
+The issuer must be one this Massdriver server trusts. If rules on two different service
+accounts match the same CI run, the run gets no token. Requires the
+`organization:manageServiceAccounts` action.
+
+**Example:**
+
+```graphql
+mutation {
+  createTrustRule(
+    organizationId: "my-org"
+    serviceAccountId: "b2f0c1de-5a8e-4c43-9f3a-6f1d0e7a9b21"
+    input: {
+      name: "aws catalog"
+      issuer: "https://token.actions.githubusercontent.com"
+      claims: "{\"repository_owner_id\": \"4401\", \"repository_id\": \"811\", \"ref\": \"refs/heads/main\"}"
+    }
+  ) {
+    result { id name }
+    successful
+    messages { field message }
+  }
+}
+```
+
+
+
+
+```graphql
+createTrustRule(
+  organizationId: ID!
+  serviceAccountId: UUID!
+  input: CreateTrustRuleInput!
+): TrustRulePayload
+```
+
+
+
+
+
+### Form Schema
+
+This mutation supports dynamic form generation using JSON Schema.
+
+- [JSON Schema](https://api.massdriver.cloud/graphql/v2/inputs/createTrustRule.json)
+- [UI Schema](https://api.massdriver.cloud/graphql/v2/inputs/createTrustRule.ui.json)
+
+<SchemaForm
+  schemaUrl="https://api.massdriver.cloud/graphql/v2/inputs/createTrustRule.json"
+  uiSchemaUrl="https://api.massdriver.cloud/graphql/v2/inputs/createTrustRule.ui.json"
+  name="createTrustRule"
+/>
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>createTrustRule.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>createTrustRule.<b>serviceAccountId</b></code>](#service-account-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UUID!</b></code>](/api/graphql/types/scalars/uuid.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#service-account-id\} 
+The service account that matching CI runs act as.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>createTrustRule.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CreateTrustRuleInput!</b></code>](/api/graphql/types/inputs/create-trust-rule-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Let CI runs from a GitHub or GitLab repository act as a service account, with no stored token.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>TrustRulePayload</b></code>](/api/graphql/types/objects/trust-rule-payload.mdx) <Badge class="badge badge--secondary " text="object"/>

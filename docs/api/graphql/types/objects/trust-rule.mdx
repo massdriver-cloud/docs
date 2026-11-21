@@ -1,0 +1,107 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: trust-rule
+title: TrustRule
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Lets CI runs from a GitHub or GitLab repository act as a service account, with no token stored
+in the CI platform.
+
+A run requests an OIDC ID token from its platform with the audience
+`massdriver:<organization id>`, and sends it to `POST /oauth/token` with the grant type
+`urn:ietf:params:oauth:grant-type:token-exchange`. When the token comes from `issuer` and
+carries every claim in `claims` with the same value, the run receives a short-lived access
+token for the service account. The run then has the service account's permissions.
+
+**GitHub Actions** — the job needs `permissions: id-token: write`. The rule must include
+`repository_owner_id`. Add `repository_id` to limit it to one repository, and `ref` (for example
+`refs/heads/main`) or `environment` to limit it to one branch or deployment environment.
+
+**GitLab CI** — the job requests the token with `id_tokens`. The rule must include
+`namespace_id`. Add `project_id` to limit it to one project, and `ref` or `ref_protected` to
+limit it to one branch or to protected branches.
+
+Use numeric IDs, not names. A deleted repository or owner name can be registered again by
+someone else.
+
+
+```graphql
+type TrustRule {
+  id: ID!
+  name: String!
+  issuer: String!
+  claims: Map!
+  createdAt: DateTime!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>TrustRule.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+Unique identifier for this trust rule.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TrustRule.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+A label for this rule. Access tokens issued through the rule carry this name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TrustRule.<b>issuer</b></code>](#issuer)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#issuer\} 
+The OIDC issuer URL of the CI platform, such as `https://token.actions.githubusercontent.com`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TrustRule.<b>claims</b></code>](#claims)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#claims\} 
+Claims a CI run's ID token must carry, with exact string values, for the rule to match.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TrustRule.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When this trust rule was created (UTC).
+
+
+
+
+
+
+### Member Of
+
+[`TrustRulePayload`](/api/graphql/types/objects/trust-rule-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`TrustRulesPage`](/api/graphql/types/objects/trust-rules-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
