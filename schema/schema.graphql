@@ -2662,6 +2662,56 @@ type RootMutationType {
   ): ServiceAccountGroupPayload
 
   """
+  Let CI runs from a GitHub or GitLab repository act as a service account.
+
+  The issuer must be one this Massdriver server trusts. If rules on two different service
+  accounts match the same CI run, the run gets no token. Requires the
+  `organization:manageServiceAccounts` action.
+
+  **Example:**
+
+  ```graphql
+  mutation {
+    createTrustRule(
+      organizationId: "my-org"
+      serviceAccountId: "b2f0c1de-5a8e-4c43-9f3a-6f1d0e7a9b21"
+      input: {
+        name: "aws catalog"
+        issuer: "https://token.actions.githubusercontent.com"
+        claims: "{\"repository_owner_id\": \"4401\", \"repository_id\": \"811\", \"ref\": \"refs/heads/main\"}"
+      }
+    ) {
+      result { id name }
+      successful
+      messages { field message }
+    }
+  }
+  ```
+  """
+  createTrustRule(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The service account that matching CI runs act as."
+    serviceAccountId: UUID!
+
+    "Let CI runs from a GitHub or GitLab repository act as a service account, with no stored token."
+    input: CreateTrustRuleInput!
+  ): TrustRulePayload @inputs(name: "createTrustRule", schema: "\/graphql\/v2\/inputs\/createTrustRule.json", ui: "\/graphql\/v2\/inputs\/createTrustRule.ui.json")
+
+  """
+  Delete a trust rule. Access tokens that CI runs received through the rule stop working
+  immediately. Requires the `organization:manageServiceAccounts` action.
+  """
+  deleteTrustRule(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The trust rule's unique identifier."
+    id: UUID!
+  ): TrustRulePayload
+
+  """
   Override one of an instance's connection slots with a resource from another
   project (or an imported resource).
 
@@ -4690,6 +4740,75 @@ type RemoteReferencesPage {
 }
 
 """
+Lets CI runs from a GitHub or GitLab repository act as a service account, with no token stored
+in the CI platform.
+
+A run requests an OIDC ID token from its platform with the audience
+`massdriver:<organization id>`, and sends it to `POST /oauth/token` with the grant type
+`urn:ietf:params:oauth:grant-type:token-exchange`. When the token comes from `issuer` and
+carries every claim in `claims` with the same value, the run receives a short-lived access
+token for the service account. The run then has the service account's permissions.
+
+**GitHub Actions** — the job needs `permissions: id-token: write`. The rule must include
+`repository_owner_id`. Add `repository_id` to limit it to one repository, and `ref` (for example
+`refs/heads/main`) or `environment` to limit it to one branch or deployment environment.
+
+**GitLab CI** — the job requests the token with `id_tokens`. The rule must include
+`namespace_id`. Add `project_id` to limit it to one project, and `ref` or `ref_protected` to
+limit it to one branch or to protected branches.
+
+Use numeric IDs, not names. A deleted repository or owner name can be registered again by
+someone else.
+"""
+type TrustRule {
+  "Unique identifier for this trust rule."
+  id: ID!
+
+  "A label for this rule. Access tokens issued through the rule carry this name."
+  name: String!
+
+  "The OIDC issuer URL of the CI platform, such as `https:\/\/token.actions.githubusercontent.com`."
+  issuer: String!
+
+  "Claims a CI run's ID token must carry, with exact string values, for the rule to match."
+  claims: Map!
+
+  "When this trust rule was created (UTC)."
+  createdAt: DateTime!
+}
+
+type TrustRulePayload {
+  "Indicates if the mutation completed successfully or not."
+  successful: Boolean!
+
+  "A list of failed validations. May be blank or null if mutation succeeded."
+  messages: [ValidationMessage]
+
+  "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
+  result: TrustRule
+}
+
+type TrustRulesPage {
+  "Pagination cursors for navigating between pages."
+  cursor: PaginationCursor!
+
+  "A list of type trust_rule."
+  items: [TrustRule]
+}
+
+"Let CI runs from a GitHub or GitLab repository act as a service account, with no stored token."
+input CreateTrustRuleInput {
+  "Claims the CI run's ID token must carry, with exact string values. GitHub rules must include `repository_owner_id`; GitLab rules must include `namespace_id`. Add `repository_id` or `project_id` to limit the rule to one repository, and `ref` to limit it to one branch."
+  claims: Map!
+
+  "The OIDC issuer URL of the CI platform, such as `https:\/\/token.actions.githubusercontent.com` for GitHub Actions or `https:\/\/gitlab.com` for GitLab CI. Must be one of the issuers this Massdriver server trusts."
+  issuer: String!
+
+  "A label for this rule. Access tokens issued through the rule carry this name."
+  name: String!
+}
+
+"""
 A non-human identity for programmatic API access.
 
 Service accounts let you integrate CI/CD pipelines, scripts, and external tools with the
@@ -4726,6 +4845,12 @@ type ServiceAccount {
 
   "When this service account last authenticated a request, with its secret or one of its access tokens (UTC)."
   lastUsedAt: DateTime
+
+  "Trust rules that let CI runs act as this service account, newest first."
+  trustRules(
+    "Cursor from a previous page's `cursor.next` or `cursor.previous`."
+    cursor: Cursor
+  ): TrustRulesPage!
 }
 
 """
