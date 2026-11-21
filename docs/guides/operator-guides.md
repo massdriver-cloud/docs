@@ -58,9 +58,9 @@ Operator guides have access to the following top-level variables:
 | `{{params.md_metadata.<field>}}` | Massdriver-injected metadata (see below) | `{{params.md_metadata.name_prefix}}` |
 | `{{dependencies.<name>.<...>}}` | Upstream dependency payload (shape depends on its resource type) | `{{dependencies.network.specs.aws.region}}` |
 | `{{resources.<name>.<...>}}` | This bundle's output payload (shape depends on its resource type) | `{{resources.database.data.infrastructure.arn}}` |
-| `{{slug}}` | **Deprecated** alias for `id` (will be removed 2026-03-12) | `myapp-prod-useast1` |
-| `{{connections.<name>.<...>}}` | **Deprecated** alias for `dependencies` (will be removed 2026-05-07) | `{{connections.network.specs.aws.region}}` |
-| `{{artifacts.<name>.<...>}}` | **Deprecated** alias for `resources` (will be removed 2026-05-07) | `{{artifacts.database.data.infrastructure.arn}}` |
+| `{{slug}}` | **Deprecated** alias for `id` (end of life [December 31, 2026](/deprecations/connections-and-artifacts-aliases)) | `myapp-prod-useast1` |
+| `{{connections.<name>.<...>}}` | **Deprecated** alias for `dependencies` (end of life [December 31, 2026](/deprecations/connections-and-artifacts-aliases)) | `{{connections.network.specs.aws.region}}` |
+| `{{artifacts.<name>.<...>}}` | **Deprecated** alias for `resources` (end of life [December 31, 2026](/deprecations/connections-and-artifacts-aliases)) | `{{artifacts.database.data.infrastructure.arn}}` |
 
 ### `params.md_metadata`
 

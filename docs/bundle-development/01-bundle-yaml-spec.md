@@ -697,7 +697,7 @@ artifacts:
       $ref: postgresql-authentication
 ```
 
-This format is **deprecated**:
+This format is **deprecated**. Massdriver does not accept a publish in this format after [December 31, 2026](/deprecations/legacy-bundle-format).
 
 - The CLI prints a deprecation warning when it encounters `connections` or `artifacts` and will ask you to migrate to `dependencies` and `resources`.
 - The legacy format does not support versioned resource types (`name@version`).
