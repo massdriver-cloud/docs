@@ -111,7 +111,7 @@ The UI shows recent events that match the **Events**, **Attributes**, and **Cond
 3. For each active destination, Massdriver reads the events after the position, in the order that Massdriver recorded them.
 4. Massdriver keeps the events whose type matches **Events** and whose entity had the **Attributes**. Then Massdriver runs the **Condition** on them.
 5. Massdriver sends each event that passes to your endpoint, one at a time.
-6. When your endpoint accepts an event, Massdriver moves the position past it.
+6. Massdriver moves the position past each event it is done with. An event that your endpoint cannot take now waits for a retry, and the position also moves past it.
 
 Massdriver sends an event as soon as the change that caused it is saved, usually in less than a second. One Massdriver server sends to a destination at a time.
 
@@ -127,18 +127,18 @@ sequenceDiagram
     Note over MD: Keep events that match Events, Attributes, and Condition
     MD->>EP: POST event 1, attempt 1
     EP-->>MD: 503
-    Note over MD: Stop. Event 2 waits. Wait 30 seconds or more.
-    MD->>EP: POST event 1, attempt 2
-    EP-->>MD: 200
-    Note over MD: Move the position past event 1
+    Note over MD: Keep event 1 for a retry. Move the position past it. Wait 30 seconds or more.
     MD->>EP: POST event 2, attempt 1
     EP-->>MD: 200
     Note over MD: Move the position past event 2
+    MD->>EP: POST event 1, attempt 2
+    EP-->>MD: 200
+    Note over MD: Event 1 is sent
 ```
 
 ### Order and duplicates
 
-Massdriver sends the events of a destination in the order that it recorded them. Events that you send again with [`redeliverEvents`](#failed-events) are an exception. Massdriver sends them before new events.
+Massdriver sends the events of a destination in the order that it recorded them, with one exception: an event that Massdriver retries, or that you send again with [`redeliverEvents`](#failed-events), arrives after newer events. Use the event `time` when order matters.
 
 Massdriver delivers each event at least once. Your endpoint can receive the same event more than one time. For example, this occurs when your endpoint accepts an event but the response does not get back to Massdriver. Each event has a unique `id`. Every attempt for an event sends the same `id`. Use the `id` to find and drop duplicates.
 
@@ -278,8 +278,8 @@ Massdriver waits 10 seconds for a response. Massdriver does not follow redirects
 | Result | What Massdriver does |
 |---|---|
 | `2xx` | The event is sent. Massdriver continues with the next event. |
-| `408`, `429`, `5xx` | Massdriver stops and sends the same event again later. The events after it wait. |
-| No response in 10 seconds, connection error, or the host does not resolve | Massdriver stops and sends the same event again later. The events after it wait. |
+| `408`, `429`, `5xx` | Massdriver keeps the event to send again later, and waits before it sends to the destination again. |
+| No response in 10 seconds, connection error, or the host does not resolve | Massdriver keeps the event to send again later, and waits before it sends to the destination again. |
 | Any other status, including `3xx` redirects and other `4xx` | The event becomes a failed event at once. Massdriver continues with the next event. |
 | The host is a private address | The event becomes a failed event at once. Massdriver continues with the next event. Refer to [Private addresses](#private-addresses). |
 | The condition does not finish in time, or jq cannot run it on the event | The event becomes a failed event at once. Massdriver continues with the next event. |
@@ -303,16 +303,16 @@ After a failed attempt, Massdriver waits `30 seconds × 2^(attempt − 1)`, with
 | 9 | 1 hour |
 | 10 | None. The event becomes a failed event and Massdriver continues with the next event. |
 
-While Massdriver retries an event, the events after it wait. An endpoint that is down gets one request for each attempt.
+After a failed attempt, Massdriver also waits before it sends any event to the destination, by the same schedule, counted in failed attempts in a row. One successful send ends the wait. Thus an endpoint that is down gets one request for each wait, not one for each event. An event that your endpoint cannot take does not hold back the events after it.
 
 ## Failed events
 
-A failed event is an event that Massdriver could not send. The **Failed events** tab of a destination lists them. With the API, query the `deliveries` field of [`eventDestination`](/api/graphql/operations/queries/event-destination). The field holds only failed events. Massdriver stores nothing for an event that it sent.
+A failed event is an event that Massdriver could not send. The **Failed events** tab of a destination lists them. With the API, query the `deliveries` field of [`eventDestination`](/api/graphql/operations/queries/event-destination). The field holds only events that wait for a retry and failed events. Massdriver stores nothing for an event that it sent.
 
 | Status | Meaning |
 |---|---|
 | `FAILED` | Massdriver stopped trying to send the event. |
-| `PENDING` | You sent the event again. It waits to be sent. |
+| `PENDING` | The event waits for a retry, or you sent it again. Massdriver sends it at `nextAttemptAt`. |
 
 The `lastError` field of a failed event tells you why the last attempt failed. The `event` field is `null` when the audit log no longer keeps the event.
 
