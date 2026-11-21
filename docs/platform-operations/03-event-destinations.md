@@ -17,7 +17,7 @@ To manage destinations, a person or service account needs the `organization:mana
 2. Click **New destination**.
 3. Enter a **Name** and the **URL** of your endpoint.
 4. Optional: add **Headers** that Massdriver sends with each request. Put credentials, such as an `Authorization` header, in **Credentials**, not in **Headers**.
-5. Choose the **Events** and, if necessary, write a **Condition**. Refer to [Choose events](#choose-events).
+5. Choose the **Events**. If necessary, add **Attributes** and a **Condition** under **Filters**. Refer to [Choose events](#choose-events).
 6. Click **Create destination**.
 
 The destination opens on its **Overview** tab. The **Overview** tab shows the signing secret. Refer to [Verify the signature](#verify-the-signature). The **Failed events** tab shows the events that Massdriver could not send. The **Settings** tab changes the destination.
@@ -36,7 +36,8 @@ mutation CreateEventDestination($auth: Map) {
       config: "{\"url\": \"https://hooks.example.com/massdriver\"}"
       auth: $auth
       eventTypes: ["deployment.*"]
-      condition: ".data.attributes[\"md-environment\"] == \"prod\""
+      attributes: "{\"md-environment\": \"prod\"}"
+      condition: ".data.metadata.deployment_action == \"PROVISION\""
     }
   ) {
     result { id signingSecret }
@@ -75,34 +76,40 @@ When you save a destination, Massdriver refuses a URL whose host is a private ad
 
 ## Choose events
 
-Two settings choose the events that a destination receives:
+Three settings choose the events that a destination receives. Massdriver applies them in this order:
 
-- **Events** (`eventTypes`): a list of event types, such as `deployment.failed`. To select all the event types of one entity, use `<entity>.*`, such as `deployment.*`. An empty list selects every event. The [`eventTypes`](/api/graphql/operations/queries/event-types) query lists all event types.
-- **Condition** (`condition`): an optional [jq](https://jqlang.org) expression. Massdriver runs the condition on each event that **Events** selects. Massdriver sends the event only when the condition outputs `true`.
+1. **Events** (`eventTypes`): a list of event types, such as `deployment.failed`. To select all the event types of one entity, use `<entity>.*`, such as `deployment.*`. An empty list selects every event. The [`eventTypes`](/api/graphql/operations/queries/event-types) query lists all event types.
+2. **Attributes** (`attributes`): an optional map of attribute keys to values, such as `{"md-environment": "prod"}`. Each key has one value. Massdriver keeps an event only when the entity that the event is about had every key with exactly that value when the event occurred. An empty map (`{}`) keeps every event.
+3. **Condition** (`condition`): an optional [jq](https://jqlang.org) expression. Massdriver runs the condition on each event that **Events** and **Attributes** keep. Massdriver sends the event only when the condition outputs `true`.
+
+Use **Attributes** for a match on one value for each key. Use the **Condition** for other logic, such as one of two values.
+
+In `updateEventDestination`, a new `attributes` map replaces the old map. To remove all the attributes, set `attributes` to `{}`. If you do not include `attributes`, the destination keeps its attributes.
 
 The condition gets the whole event, as shown in [The body](#the-body). The most useful fields are:
 
 - `.data.attributes`: the attributes that the entity had when the event occurred, including the system attributes (`md-*`), such as `md-project` and `md-environment`.
 - `.data.metadata`: facts about the event, such as how the actor authenticated. Each event type lists its metadata fields in the `metadata` field of the [`eventTypes`](/api/graphql/types/objects/event-type#metadata) query.
 
-| To send | Events | Condition |
-|---|---|---|
-| Every event | (empty) | (empty) |
-| Events in production environments | (empty) | `.data.attributes["md-environment"] == "prod"` |
-| Deployments that failed | `deployment.failed` | (empty) |
-| Resource exports that reveal a secret | `resource.exported` | `.data.metadata.contains_secrets == true` |
-| Events in one project | (empty) | `.data.attributes["md-project"] == "api"` |
+| To send | Events | Attributes | Condition |
+|---|---|---|---|
+| Every event | (empty) | (empty) | (empty) |
+| Events in production environments | (empty) | `{"md-environment": "prod"}` | (empty) |
+| Deployments that failed | `deployment.failed` | (empty) | (empty) |
+| Resource exports that reveal a secret | `resource.exported` | (empty) | `.data.metadata.contains_secrets == true` |
+| Events in one project | (empty) | `{"md-project": "api"}` | (empty) |
+| Events in production or staging environments | (empty) | (empty) | `.data.attributes["md-environment"] == "prod" or .data.attributes["md-environment"] == "staging"` |
 
 A condition must finish within 1 second on one event. Self-hosted installations can change this time with `MD_EVENT_DESTINATIONS_CONDITION_TIMEOUT_MS`. It cannot use `import`, `include`, `module`, `modulemeta`, or `get_search_list`.
 
-The UI shows recent events that match the **Events** and **Condition** while you edit them. With the API, use [`previewEventDestination`](/api/graphql/operations/queries/preview-event-destination). It returns the error `eventTypes: <type> is not an event type` for an event type that does not exist, and `condition: <message>` for a condition that jq cannot run.
+The UI shows recent events that match the **Events**, **Attributes**, and **Condition** while you edit them. With the API, use [`previewEventDestination`](/api/graphql/operations/queries/preview-event-destination). It returns the error `eventTypes: <type> is not an event type` for an event type that does not exist, `attributes: <message>` for attributes that are not valid, and `condition: <message>` for a condition that jq cannot run.
 
 ## How delivery works
 
 1. An event occurs in your organization. Massdriver records it in the audit log.
 2. Each destination keeps its position in your organization's audit log. A new destination starts at the time you create it. It does not get older events.
 3. For each active destination, Massdriver reads the events after the position, in the order that Massdriver recorded them.
-4. Massdriver keeps the events whose type matches **Events**, and runs the **Condition** on them.
+4. Massdriver keeps the events whose type matches **Events** and whose entity had the **Attributes**. Then Massdriver runs the **Condition** on them.
 5. Massdriver sends each event that passes to your endpoint, one at a time.
 6. When your endpoint accepts an event, Massdriver moves the position past it.
 
@@ -117,7 +124,7 @@ sequenceDiagram
     participant EP as Your endpoint
     MD->>AL: Read events after the position
     AL-->>MD: Events in recorded order
-    Note over MD: Keep events that match Events and Condition
+    Note over MD: Keep events that match Events, Attributes, and Condition
     MD->>EP: POST event 1, attempt 1
     EP-->>MD: 503
     Note over MD: Stop. Event 2 waits. Wait 30 seconds or more.
