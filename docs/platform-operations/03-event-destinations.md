@@ -113,7 +113,7 @@ The UI shows recent events that match the **Events**, **Attributes**, and **Cond
 5. Massdriver sends each event that passes to your endpoint, one at a time.
 6. When your endpoint accepts an event, Massdriver moves the position past it.
 
-Massdriver reads the audit log for each active destination every 10 seconds. Thus an event usually goes out within about 10 seconds. One Massdriver server sends to a destination at a time.
+Massdriver sends an event as soon as the change that caused it is saved, usually in less than a second. One Massdriver server sends to a destination at a time.
 
 Massdriver reads only events whose database transaction is older than every transaction that is still running. Thus Massdriver does not skip an event that is recorded late.
 
@@ -366,7 +366,8 @@ Self-hosted installations can change event delivery with these environment varia
 
 | Variable | Default | What it changes |
 |---|---|---|
-| `MD_EVENT_DESTINATIONS_POLL_SECONDS` | `10` | The number of seconds between reads of the audit log for each active destination. An event goes out within about this number of seconds. |
+| `MD_EVENT_DESTINATIONS_SWEEP_SECONDS` | `60` | Massdriver sends events as soon as they are written. It also checks each active destination this often, in case a server missed a new event. |
+| `MD_EVENT_DESTINATIONS_CONCURRENCY` | `10` | The number of destinations that one Massdriver server sends to at the same time. |
 | `MD_EVENT_DESTINATIONS_MAX_ATTEMPTS` | `10` | The number of attempts for each event. After this number of failed attempts, the event becomes a failed event. |
 | `MD_EVENT_DESTINATIONS_PAUSE_AFTER_HOURS` | `24` | The number of hours without a successful send after which Massdriver pauses a destination. |
 | `MD_EVENT_DESTINATIONS_FAILED_RETENTION_DAYS` | `30` | The number of days that Massdriver keeps failed events. |
