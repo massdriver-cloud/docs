@@ -366,8 +366,6 @@ Self-hosted installations can change event delivery with these environment varia
 
 | Variable | Default | What it changes |
 |---|---|---|
-| `MD_EVENT_DESTINATIONS_SWEEP_SECONDS` | `60` | Massdriver sends events as soon as they are written. It also checks each active destination this often, in case a server missed a new event. |
-| `MD_EVENT_DESTINATIONS_CONCURRENCY` | `10` | The number of destinations that one Massdriver server sends to at the same time. |
 | `MD_EVENT_DESTINATIONS_MAX_ATTEMPTS` | `10` | The number of attempts for each event. After this number of failed attempts, the event becomes a failed event. |
 | `MD_EVENT_DESTINATIONS_PAUSE_AFTER_HOURS` | `24` | The number of hours without a successful send after which Massdriver pauses a destination. |
 | `MD_EVENT_DESTINATIONS_FAILED_RETENTION_DAYS` | `30` | The number of days that Massdriver keeps failed events. |
