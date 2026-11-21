@@ -20,7 +20,7 @@ To manage destinations, a person or service account needs the `organization:mana
 5. Choose the **Events**. If necessary, add **Attributes** and a **Condition** under **Filters**. Refer to [Choose events](#choose-events).
 6. Click **Create destination**.
 
-The destination opens on its **Overview** tab. The **Overview** tab shows the signing secret. Refer to [Verify the signature](#verify-the-signature). The **Failed events** tab shows the events that Massdriver could not send. The **Settings** tab changes the destination.
+The destination opens on its **Overview** tab. The **Overview** tab shows the signing secret. Refer to [Verify the signature](#verify-the-signature). The **Undelivered events** tab shows the events that wait for a retry and the events that Massdriver could not send. The **Settings** tab changes the destination.
 
 ### With the API
 
@@ -307,7 +307,7 @@ After a failed attempt, Massdriver also waits before it sends any event to the d
 
 ## Failed events
 
-A failed event is an event that Massdriver could not send. The **Failed events** tab of a destination lists them. With the API, query the `deliveries` field of [`eventDestination`](/api/graphql/operations/queries/event-destination). The field holds only events that wait for a retry and failed events. Massdriver stores nothing for an event that it sent.
+A failed event is an event that Massdriver could not send. The **Undelivered events** tab of a destination lists them, with the events that wait for a retry. With the API, query the `deliveries` field of [`eventDestination`](/api/graphql/operations/queries/event-destination). The field holds only events that wait for a retry and failed events. Massdriver stores nothing for an event that it sent.
 
 | Status | Meaning |
 |---|---|
@@ -318,7 +318,7 @@ The `lastError` field of a failed event tells you why the last attempt failed. T
 
 ### Send failed events again
 
-On the **Failed events** tab, send one failed event again, or send all of them again. With the API, use [`redeliverEvents`](/api/graphql/operations/mutations/redeliver-events):
+On the **Undelivered events** tab, send one failed event again, or send all of them again. With the API, use [`redeliverEvents`](/api/graphql/operations/mutations/redeliver-events):
 
 - To send every failed event of a destination again, leave out `deliveryIds`.
 - To send some failed events again, give their IDs in `deliveryIds`. Massdriver does not change deliveries that are not `FAILED`.
