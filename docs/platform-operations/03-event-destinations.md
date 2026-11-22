@@ -335,7 +335,7 @@ To resume a destination, click **Resume**, or use [`resumeEventDestination`](/ap
 
 ### Automatic pause
 
-When a send to a destination fails, Massdriver records the time in the destination's [`failingSince`](/api/graphql/types/objects/event-destination#failing-since) field. All failed sends count: failures that Massdriver retries, and failures that make an event fail at once. One successful send clears `failingSince`.
+When a send to a destination fails, Massdriver records the time in the destination's [`failingSince`](/api/graphql/types/objects/event-destination#failing-since) field. All failures count: failures that Massdriver retries, failures that make an event fail at once, and condition errors. One successful send clears `failingSince`.
 
 If a send fails and `failingSince` is 24 hours or more in the past, Massdriver pauses the destination. Thus Massdriver pauses a destination that has no successful send for 24 hours. A destination that refuses every event is paused in the same way as a destination that is down. Self-hosted installations can change this time with `MD_EVENT_DESTINATIONS_PAUSE_AFTER_HOURS`.
 
