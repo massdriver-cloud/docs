@@ -115,7 +115,7 @@ The UI shows recent events that match the **Events**, **Attributes**, and **Cond
 
 Massdriver sends an event as soon as the change that caused it is saved, usually in less than a second. One Massdriver server sends to a destination at a time.
 
-Massdriver reads only events whose database transaction is older than every transaction that is still running. Thus Massdriver does not skip an event that is recorded late.
+Massdriver reads only events whose database transaction has committed, and keeps track of transactions that commit out of order. Thus Massdriver does not skip an event that is recorded late, and a slow transaction delays only its own events.
 
 ```mermaid
 sequenceDiagram
