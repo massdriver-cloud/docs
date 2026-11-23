@@ -109,9 +109,9 @@ The UI shows recent events that match the **Events**, **Attributes**, and **Cond
 1. An event occurs in your organization. Massdriver records it in the audit log.
 2. Massdriver gives the event to each destination whose **Events** match its type and whose **Attributes** its entity had, as one delivery. A new destination gets the events that occur after you create it. It does not get older events.
 3. For each delivery, Massdriver runs the destination's **Condition**. A delivery that the condition does not pass is `SKIPPED`.
-4. Massdriver sends the others to your endpoint, a few at a time.
+4. Massdriver sends the others to your endpoint, one at a time.
 
-Massdriver sends an event as soon as the change that caused it is saved, usually in less than a second. Massdriver reads only events whose database transaction has committed, and keeps track of transactions that commit out of order. Thus Massdriver does not skip an event that is recorded late, and a slow transaction delays only its own events.
+Massdriver records the event and its deliveries in one database transaction. It starts to send them when the transaction commits, usually in less than a second.
 
 ```mermaid
 sequenceDiagram
@@ -121,10 +121,11 @@ sequenceDiagram
     AL-->>MD: Events 1 and 2
     Note over MD: One delivery for each event that matches Events and Attributes
     MD->>EP: POST event 1, attempt 1
-    MD->>EP: POST event 2, attempt 1
-    EP-->>MD: 503 for event 1
-    EP-->>MD: 200 for event 2
-    Note over MD: Event 2 is DELIVERED. Event 1 is PENDING. Wait 30 seconds or more.
+    EP-->>MD: 503
+    Note over MD: Event 1 is PENDING and waits 30 seconds or more. Massdriver stops for now.
+    MD->>EP: POST event 2, attempt 1, within a minute
+    EP-->>MD: 200
+    Note over MD: Event 2 is DELIVERED
     MD->>EP: POST event 1, attempt 2
     EP-->>MD: 200
     Note over MD: Event 1 is DELIVERED
@@ -272,8 +273,8 @@ Massdriver waits 10 seconds for a response. Massdriver does not follow redirects
 | Result | What Massdriver does |
 |---|---|
 | `2xx` | The event is sent. Massdriver continues with the next event. |
-| `408`, `429`, `5xx` | Massdriver keeps the event to send again later, and waits before it sends to the destination again. |
-| No response in 10 seconds, connection error, or the host does not resolve | Massdriver keeps the event to send again later, and waits before it sends to the destination again. |
+| `408`, `429`, `5xx` | Massdriver keeps the event to send again later, and stops sending to the destination for now. |
+| No response in 10 seconds, connection error, or the host does not resolve | Massdriver keeps the event to send again later, and stops sending to the destination for now. |
 | Any other status, including `3xx` redirects and other `4xx` | The event becomes a failed event at once. Massdriver continues with the next event. |
 | The host is a private address | The event becomes a failed event at once. Massdriver continues with the next event. Refer to [Private addresses](#private-addresses). |
 | The condition does not finish in time, or jq cannot run it on the event | The event becomes a failed event at once. Massdriver continues with the next event. |
@@ -297,7 +298,7 @@ After a failed attempt, Massdriver waits `30 seconds × 2^(attempt − 1)`, with
 | 9 | 1 hour |
 | 10 | None. The event becomes a failed event and Massdriver continues with the next event. |
 
-After a failed attempt, Massdriver also waits before it sends any event to the destination, by the same schedule, counted in failed attempts in a row. One successful send ends the wait. Thus an endpoint that is down gets a few requests for each wait, not one for each event.
+When Massdriver keeps an event to send again, it also stops sending to the destination. Within a minute, it starts again with the events that are due. Thus an endpoint that is down gets about one request each minute, not one for each event.
 
 ## Deliveries
 
@@ -312,7 +313,7 @@ The **Deliveries** tab of a destination lists each event that Massdriver gave it
 
 The `lastError` field of a delivery tells you why the last attempt failed. The `event` field is `null` when the audit log no longer keeps the event.
 
-Massdriver keeps `DELIVERED` and `SKIPPED` deliveries for 30 days, and `FAILED` deliveries until you send them again. Self-hosted installations can change these times.
+Massdriver keeps `DELIVERED` and `SKIPPED` deliveries for 7 days, and `FAILED` deliveries for 30 days. A `PENDING` delivery that is not sent within 30 days, for example because its destination stayed paused, becomes `FAILED`, so that you can send it again. Self-hosted installations can change these times.
 
 ### Send failed events again
 
@@ -329,11 +330,11 @@ Massdriver records an `event_destination.redelivered` audit log event each time 
 
 To pause a destination, click **Pause** on the destination, or use [`pauseEventDestination`](/api/graphql/operations/mutations/pause-event-destination). While a destination is paused, Massdriver sends no events to it, and keeps giving it deliveries.
 
-To resume a destination, click **Resume**, or use [`resumeEventDestination`](/api/graphql/operations/mutations/resume-event-destination). Massdriver sends the events that it recorded while the destination was paused.
+To resume a destination, click **Resume**, or use [`resumeEventDestination`](/api/graphql/operations/mutations/resume-event-destination). Massdriver sends the events that it recorded while the destination was paused. An event that waited for more than 30 days is `FAILED`. You can send it again.
 
 ### Automatic pause
 
-When a send to a destination fails, Massdriver records the time in the destination's [`failingSince`](/api/graphql/types/objects/event-destination#failing-since) field. All failures count: failures that Massdriver retries, failures that make an event fail at once, and condition errors. One successful send clears `failingSince`.
+When a send to a destination fails, Massdriver records the time in the destination's [`failingSince`](/api/graphql/types/objects/event-destination#failing-since) field. All failures of a send count: failures that Massdriver retries, and failures that make an event fail at once. Condition errors do not count, because they are about the condition, not the endpoint. One successful send clears `failingSince`.
 
 If a send fails and `failingSince` is 24 hours or more in the past, Massdriver pauses the destination. Thus Massdriver pauses a destination that has no successful send for 24 hours. A destination that refuses every event is paused in the same way as a destination that is down. Self-hosted installations can change this time with `MD_EVENT_DESTINATIONS_PAUSE_AFTER_HOURS`.
 
@@ -364,9 +365,7 @@ Self-hosted installations can change event delivery with these environment varia
 |---|---|---|
 | `MD_EVENT_DESTINATIONS_MAX_ATTEMPTS` | `10` | The number of attempts for each event. After this number of failed attempts, the event becomes a failed event. |
 | `MD_EVENT_DESTINATIONS_PAUSE_AFTER_HOURS` | `24` | The number of hours without a successful send after which Massdriver pauses a destination. |
-| `MD_EVENT_DESTINATIONS_ENABLED` | `true` | When `false`, this Massdriver server sends no events. Set it on servers that serve web traffic to send events only from other servers. |
-| `MD_EVENT_DESTINATIONS_CONCURRENCY` | `20` | The number of events that one Massdriver server sends at the same time. |
-| `MD_EVENT_DESTINATIONS_DELIVERED_RETENTION_DAYS` | `30` | The number of days that Massdriver keeps delivered and skipped events. |
-| `MD_EVENT_DESTINATIONS_FAILED_RETENTION_DAYS` | not set | The number of days that Massdriver keeps failed events. When not set, Massdriver keeps them until you send them again. |
+| `MD_EVENT_DESTINATIONS_DELIVERED_RETENTION_DAYS` | `7` | The number of days that Massdriver keeps delivered and skipped events. |
+| `MD_EVENT_DESTINATIONS_FAILED_RETENTION_DAYS` | `30` | The number of days that Massdriver keeps failed events. An event that is not sent within this number of days becomes a failed event. |
 | `MD_EVENT_DESTINATIONS_CONDITION_TIMEOUT_MS` | `1000` | The time in milliseconds that a condition can run on one event. A condition that runs longer makes the event fail. |
 | `MD_EVENT_DESTINATIONS_ALLOW_PRIVATE_ADDRESSES` | `false` | When `true`, Massdriver accepts and sends events to private addresses. Set it when your destinations are on an internal network. |
