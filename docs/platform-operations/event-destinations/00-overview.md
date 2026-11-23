@@ -1,11 +1,15 @@
 ---
-id: event-destinations
+id: event-destinations-overview
 slug: /platform-operations/event-destinations
 title: Event Destinations
-sidebar_label: Event Destinations
+sidebar_label: Overview
 ---
 
-An event destination is an HTTP endpoint that receives your organization's audit log events. You choose the events that the destination receives. Massdriver sends each of these events to the endpoint as a signed [CloudEvent](https://cloudevents.io).
+An event destination receives your organization's audit log events. You choose the events that the destination receives. Each destination has an adapter. The adapter sets where and how Massdriver sends the events.
+
+| Adapter | Sends each event |
+|---|---|
+| [HTTP](/platform-operations/event-destinations/http) | As a signed [CloudEvent](https://cloudevents.io) in a `POST` request to your URL. |
 
 To manage destinations, a person or service account needs the `organization:manageEventDestinations` permission. Refer to [GraphQL permissions](/platform-operations/security/graphql-permissions#event-destination).
 
@@ -15,12 +19,12 @@ To manage destinations, a person or service account needs the `organization:mana
 
 1. Go to **Organization Settings** → **Event destinations**.
 2. Click **New destination**.
-3. Enter a **Name** and the **URL** of your endpoint.
-4. Optional: add **Headers** that Massdriver sends with each request. Put credentials, such as an `Authorization` header, in **Credentials**, not in **Headers**.
+3. Enter a **Name** and the settings of the adapter, such as the **URL** of your endpoint.
+4. Optional: add the credentials of the adapter under **Credentials**, such as an `Authorization` header.
 5. Choose the **Events**. If necessary, add **Attributes** and a **Condition** under **Filters**. Refer to [Choose events](#choose-events).
 6. Click **Create destination**.
 
-The destination opens on its **Overview** tab. The **Overview** tab shows the signing secret. Refer to [Verify the signature](#verify-the-signature). The **Deliveries** tab shows each event that Massdriver gave the destination: delivered, waiting, skipped, or failed. The **Settings** tab changes the destination.
+The destination opens on its **Overview** tab. For an adapter that signs events, the **Overview** tab shows the signing secret. The **Deliveries** tab shows each event that Massdriver gave the destination: delivered, waiting, skipped, or failed. The **Settings** tab changes the destination.
 
 ### With the API
 
@@ -57,22 +61,12 @@ To change a destination, use [`updateEventDestination`](/api/graphql/operations/
 
 ### Settings and credentials
 
-Each destination has an adapter. The adapter sets how Massdriver sends events. A destination has two objects of adapter settings:
+A destination has two objects of adapter settings:
 
 - `config`: the settings, such as the URL. The API returns `config`.
 - `auth`: the credentials, such as an `Authorization` header. The API never returns `auth`. To remove the credentials, set `auth` to `null`.
 
-The [`eventDestinationAdapters`](/api/graphql/operations/queries/event-destination-adapters) query lists each adapter. For each adapter, `configSchema` and `authSchema` are the JSON schemas of `config` and `auth`, and `signs` tells you if Massdriver signs the events.
-
-The `HTTP` adapter takes these settings:
-
-| Object | Field | Value |
-|---|---|---|
-| `config` | `url` | The URL that receives the events. It must start with `http://` or `https://` and include a host. Required. |
-| `config` | `headers` | Header names and values that Massdriver sends with each request. Do not put credentials here. |
-| `auth` | `headers` | Header names and values that hold credentials, such as `Authorization`. Massdriver sends them with each request. |
-
-When you save a destination, Massdriver refuses a URL whose host is a private address. Refer to [Private addresses](#private-addresses).
+The [`eventDestinationAdapters`](/api/graphql/operations/queries/event-destination-adapters) query lists each adapter. For each adapter, `configSchema` and `authSchema` are the JSON schemas of `config` and `auth`, and `signs` tells you if Massdriver signs the events. The page of each adapter lists its settings.
 
 ## Choose events
 
@@ -88,7 +82,7 @@ In `updateEventDestination`, a new `attributes` map replaces the old map. To rem
 
 New **Events** and **Attributes** apply to events recorded after the change. A new **Condition** also applies to events that wait to be sent, and to each retry.
 
-The condition gets the whole event, as shown in [The body](#the-body). The most useful fields are:
+The condition gets the whole event, as shown in [The event](#the-event). The most useful fields are:
 
 - `.data.attributes`: the attributes that the entity had when the event occurred, including the system attributes (`md-*`), such as `md-project` and `md-environment`.
 - `.data.metadata`: facts about the event, such as how the actor authenticated. Each event type lists its metadata fields in the `metadata` field of the [`eventTypes`](/api/graphql/types/objects/event-type#metadata) query.
@@ -111,7 +105,7 @@ The UI shows recent events that match the **Events**, **Attributes**, and **Cond
 1. An event occurs in your organization. Massdriver records it in the audit log.
 2. Massdriver gives the event to each destination whose **Events** match its type and whose **Attributes** its entity had, as one delivery. A new destination gets the events that occur after you create it. It does not get older events.
 3. For each delivery, Massdriver runs the destination's **Condition**. A delivery that the condition does not pass is `SKIPPED`.
-4. Massdriver sends the others to your endpoint, one at a time for each destination.
+4. Massdriver sends the others with the destination's adapter, one at a time for each destination.
 
 Massdriver records the event and its deliveries in one database transaction. It starts to send them when the transaction commits, usually in less than a second.
 
@@ -122,14 +116,14 @@ sequenceDiagram
     participant EP as Your endpoint
     AL-->>MD: Events 1 and 2
     Note over MD: One delivery for each event that matches Events and Attributes
-    MD->>EP: POST event 1, attempt 1
-    EP-->>MD: 503
+    MD->>EP: Send event 1, attempt 1
+    EP-->>MD: Failure that Massdriver retries
     Note over MD: Event 1 is PENDING and waits 30 seconds or more. Massdriver stops for now.
-    MD->>EP: POST event 2, attempt 1, within a minute
-    EP-->>MD: 200
+    MD->>EP: Send event 2, attempt 1, within a minute
+    EP-->>MD: Success
     Note over MD: Event 2 is DELIVERED
-    MD->>EP: POST event 1, attempt 2
-    EP-->>MD: 200
+    MD->>EP: Send event 1, attempt 2
+    EP-->>MD: Success
     Note over MD: Event 1 is DELIVERED
 ```
 
@@ -139,26 +133,9 @@ Massdriver sends events in any order. Use the event `time` when order matters.
 
 Massdriver delivers each event at least once. Your endpoint can receive the same event more than one time. For example, this occurs when your endpoint accepts an event but the response does not get back to Massdriver. Each event has a unique `id`. Every attempt for an event sends the same `id`. Use the `id` to find and drop duplicates.
 
-## The request
+## The event
 
-Massdriver sends a `POST` request to the `url` in the destination's `config`. The body is one CloudEvent in JSON structured mode.
-
-| Header | Value |
-|---|---|
-| `content-type` | `application/cloudevents+json` |
-| `webhook-id` | The CloudEvent `id`. It is the same for every attempt of the event. |
-| `webhook-timestamp` | The time of this attempt, in seconds since the Unix epoch. It changes for each attempt. |
-| `webhook-signature` | `v1,` followed by the base64 signature of the request. Refer to [Verify the signature](#verify-the-signature). |
-
-### Custom headers
-
-Massdriver sends the headers in `config.headers` and `auth.headers` with each request. Massdriver changes header names to lowercase. If a header in `auth.headers` has the same name as a header in `config.headers`, Massdriver sends the value from `auth.headers`.
-
-If a custom header has the same name as one of the headers in the table above, Massdriver sends its own value and ignores your value. Massdriver does not send a custom `host` header. The `host` header always names the host of the URL.
-
-The `event_destination.*` audit log events do not include the destination's `config`, `auth`, or signing secret.
-
-### The body
+Massdriver gives each event to the adapter as one [CloudEvent](https://cloudevents.io) in JSON. The page of each adapter tells you how the adapter sends it.
 
 | Field | Value |
 |---|---|
@@ -177,6 +154,8 @@ Massdriver adds two objects to `data`:
 - `data.attributes`: the attributes that the entity had when the event occurred, including the system attributes (`md-*`).
 
 When a person, a service account, or a deployment caused the event, `data.actor` holds the IDs of the organization and the actor. When Massdriver caused the event, `data` has no `actor`.
+
+The `event_destination.*` audit log events do not include the destination's `config`, `auth`, or signing secret.
 
 This is a `deployment.completed` event:
 
@@ -225,63 +204,18 @@ This is a `deployment.completed` event:
 }
 ```
 
-## Verify the signature
+## Failures and retries
 
-Massdriver signs each request with the [Standard Webhooks](https://www.standardwebhooks.com) method. Each HTTP destination has its own signing secret. Get it from the **Overview** tab of the destination, or from the [`signingSecret`](/api/graphql/types/objects/event-destination#signing-secret) field. The secret has the form `whsec_` followed by base64.
-
-The signature is the HMAC-SHA256 of `<webhook-id>.<webhook-timestamp>.<body>`. The key is the base64-decoded part of the secret after `whsec_`. The `webhook-signature` header holds `v1,` followed by the base64 of the signature.
-
-To verify a request:
-
-1. Read the raw request body. Do not parse and encode the JSON again before you verify it.
-2. Make sure that `webhook-timestamp` is near your current time. The Standard Webhooks specification recommends a tolerance of 5 minutes. This stops replay of old requests.
-3. Calculate the signature and compare it to each `v1` value in `webhook-signature`. Use a constant-time comparison.
-4. If no value is equal, refuse the request.
-
-The Standard Webhooks project has [libraries](https://github.com/standard-webhooks/standard-webhooks/tree/main/libraries) for many languages that do these steps. This Python function does the same steps with the standard library:
-
-```python
-import base64
-import hashlib
-import hmac
-import time
-
-TOLERANCE_SECONDS = 5 * 60
-
-
-def verify(secret: str, headers: dict, body: bytes) -> bool:
-    msg_id = headers["webhook-id"]
-    timestamp = headers["webhook-timestamp"]
-
-    if abs(time.time() - int(timestamp)) > TOLERANCE_SECONDS:
-        return False
-
-    key = base64.b64decode(secret.removeprefix("whsec_"))
-    signed = f"{msg_id}.{timestamp}.".encode() + body
-    expected = base64.b64encode(hmac.new(key, signed, hashlib.sha256).digest()).decode()
-
-    for signature in headers["webhook-signature"].split(" "):
-        version, _, value = signature.partition(",")
-        if version == "v1" and hmac.compare_digest(value, expected):
-            return True
-
-    return False
-```
-
-## Responses and retries
-
-Massdriver waits 10 seconds for a response. Massdriver does not follow redirects.
+The adapter tells Massdriver if a failed send can succeed later. The page of each adapter lists its results.
 
 | Result | What Massdriver does |
 |---|---|
-| `2xx` | The event is sent. Massdriver continues with the next event. |
-| `408`, `429`, `5xx` | Massdriver keeps the event to send again later, and stops sending to the destination for now. |
-| No response in 10 seconds, a connection that cannot be made, or the host does not resolve | Massdriver keeps the event to send again later, and stops sending to the destination for now. |
-| Any other status, including `3xx` redirects and other `4xx` | The event becomes a failed event at once. Massdriver continues with the next event. |
-| The host is a private address | The event becomes a failed event at once. Massdriver continues with the next event. Refer to [Private addresses](#private-addresses). |
+| The send succeeds | The event is sent. Massdriver continues with the next event. |
+| The send fails in a way that the adapter retries | Massdriver keeps the event to send again later, and stops sending to the destination for now. |
+| The send fails in a way that the adapter does not retry | The event becomes a failed event at once. Massdriver continues with the next event. |
 | The condition does not finish in time, or jq cannot run it on the event | The event becomes a failed event at once. Massdriver continues with the next event. |
 
-The destination's `lastError` field tells you why the last send failed, for example `HTTP 503`. A successful send clears it. Condition errors are on the delivery's `lastError`, not on the destination. The `lastDeliveredAt` field tells you when your endpoint last accepted an event.
+The destination's `lastError` field tells you why the last send failed, for example `HTTP 503`. A successful send clears it. Condition errors are on the delivery's `lastError`, not on the destination. The `lastDeliveredAt` field tells you when the destination last accepted an event.
 
 ### Retry schedule
 
@@ -300,7 +234,7 @@ After a failed attempt, Massdriver waits `30 seconds × 2^(attempt − 1)`, with
 | 9 | 1 hour |
 | 10 | None. The event becomes a failed event, and Massdriver stops sending to the destination for now, as after the other attempts. |
 
-When a send to the destination fails in a way that Massdriver retries, Massdriver also stops sending to the destination. It starts again within a minute, and when a new event arrives for the destination. Each time, it sends one due event. Thus an endpoint that is down gets about one request each minute, plus about one for each new event.
+When a send to the destination fails in a way that Massdriver retries, Massdriver also stops sending to the destination. It starts again within a minute, and when a new event arrives for the destination. Each time, it sends one due event. Thus a destination that is down gets about one attempt each minute, plus about one for each new event.
 
 ## Deliveries
 
@@ -309,7 +243,7 @@ The **Deliveries** tab of a destination lists each event that Massdriver gave it
 | Status | Meaning |
 |---|---|
 | `PENDING` | The event waits to be sent: it is new, it waits for a retry, or you sent it again. Massdriver sends it at or after `nextAttemptAt`. |
-| `DELIVERED` | Your endpoint accepted the event, at `deliveredAt`. |
+| `DELIVERED` | The destination accepted the event, at `deliveredAt`. |
 | `SKIPPED` | The destination's condition did not pass the event, so Massdriver did not send it. |
 | `FAILED` | Massdriver stopped trying to send the event. |
 
@@ -336,28 +270,13 @@ To resume a destination, click **Resume**, or use [`resumeEventDestination`](/ap
 
 ### Automatic pause
 
-When a send to a destination fails, Massdriver records the time in the destination's [`failingSince`](/api/graphql/types/objects/event-destination#failing-since) field. All failures of a send count: failures that Massdriver retries, and failures that make an event fail at once. Condition errors, and events that the audit log no longer keeps, do not count, because they are not about the endpoint. One successful send clears `failingSince`.
+When a send to a destination fails, Massdriver records the time in the destination's [`failingSince`](/api/graphql/types/objects/event-destination#failing-since) field. All failures of a send count: failures that Massdriver retries, and failures that make an event fail at once. Condition errors, and events that the audit log no longer keeps, do not count, because they are not about the destination. One successful send clears `failingSince`.
 
 If a send fails and `failingSince` is 24 hours or more in the past, Massdriver pauses the destination. Thus Massdriver pauses a destination whose sends have failed for 24 hours with no success. The pause occurs at the first failed send after the 24 hours. A destination that refuses every event is paused in the same way as a destination that is down. Self-hosted installations can change this time with `MD_EVENT_DESTINATIONS_PAUSE_AFTER_HOURS`.
 
 When Massdriver pauses a destination, it records an `event_destination.paused` event. To be told when this occurs, send `event_destination.paused` events to a different destination.
 
-To resume a destination after an automatic pause, first repair your endpoint. Then resume the destination. Massdriver clears `failingSince`. Failures before the pause do not count toward the next pause.
-
-## Private addresses
-
-Massdriver refuses to send events to private addresses. Massdriver checks the host of the URL at two times:
-
-- When you save a destination, Massdriver refuses a URL whose host is a private address. Massdriver accepts a host that does not resolve yet.
-- Before each send, Massdriver resolves the host again. If one or more of its addresses is private, the event becomes a failed event at once. Massdriver sends the request to the address that it checked.
-
-These addresses are private:
-
-- IPv4: `0.0.0.0/8`, `10.0.0.0/8`, `100.64.0.0/10`, `127.0.0.0/8`, `169.254.0.0/16`, `172.16.0.0/12`, `192.0.0.0/24`, `192.168.0.0/16`, `198.18.0.0/15`, and all addresses from `224.0.0.0` up.
-- IPv6: `fc00::/7`, `fe80::/10`, `ff00::/8`, and Teredo (`2001::/32`).
-- IPv6 addresses that hold a private IPv4 address: IPv4-compatible (`::/96`, which includes `::` and `::1`), IPv4-mapped (`::ffff:0:0/96`), 6to4 (`2002::/16`), and NAT64 (`64:ff9b::/96`).
-
-A self-hosted installation can allow private addresses with `MD_EVENT_DESTINATIONS_ALLOW_PRIVATE_ADDRESSES`.
+To resume a destination after an automatic pause, first repair the destination. Then resume it. Massdriver clears `failingSince`. Failures before the pause do not count toward the next pause.
 
 ## Self-hosted settings
 
@@ -370,4 +289,4 @@ Self-hosted installations can change event delivery with these environment varia
 | `MD_EVENT_DESTINATIONS_DELIVERED_RETENTION_DAYS` | `7` | The number of days that Massdriver keeps delivered and skipped events. |
 | `MD_EVENT_DESTINATIONS_FAILED_RETENTION_DAYS` | `30` | The number of days that Massdriver keeps failed events. An event that is not sent within this number of days becomes a failed event. |
 | `MD_EVENT_DESTINATIONS_CONDITION_TIMEOUT_MS` | `1000` | The time in milliseconds that a condition can run on one event. A condition that runs longer makes the event fail. |
-| `MD_EVENT_DESTINATIONS_ALLOW_PRIVATE_ADDRESSES` | `false` | When `true`, Massdriver accepts and sends events to private addresses. Set it when your destinations are on an internal network. |
+| `MD_EVENT_DESTINATIONS_ALLOW_PRIVATE_ADDRESSES` | `false` | When `true`, the HTTP adapter accepts and sends events to private addresses. Set it when your destinations are on an internal network. Refer to [Private addresses](/platform-operations/event-destinations/http#private-addresses). |
