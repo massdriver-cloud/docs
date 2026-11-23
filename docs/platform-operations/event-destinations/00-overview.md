@@ -10,6 +10,7 @@ An event destination receives your organization's audit log events. You choose t
 | Adapter | Sends each event |
 |---|---|
 | [HTTP](/platform-operations/event-destinations/http) | As a signed [CloudEvent](https://cloudevents.io) in a `POST` request to your URL. |
+| [Slack](/platform-operations/event-destinations/slack) | As a message in a Slack channel, with the bot token of your Slack app. |
 
 To manage destinations, a person or service account needs the `organization:manageEventDestinations` permission. Refer to [GraphQL permissions](/platform-operations/security/graphql-permissions#event-destination).
 
@@ -19,7 +20,7 @@ To manage destinations, a person or service account needs the `organization:mana
 
 1. Go to **Organization Settings** → **Event destinations**.
 2. Click **New destination**.
-3. Enter a **Name** and the settings of the adapter, such as the **URL** of your endpoint.
+3. Select the adapter. Enter a **Name** and the settings of the adapter, such as the **URL** of your endpoint.
 4. Optional: add the credentials of the adapter under **Credentials**, such as an `Authorization` header.
 5. Choose the **Events**. If necessary, add **Attributes** and a **Condition** under **Filters**. Refer to [Choose events](#choose-events).
 6. Click **Create destination**.
