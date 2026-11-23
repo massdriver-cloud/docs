@@ -53,7 +53,7 @@ mutation CreateEventDestination($auth: Map) {
 }
 ```
 
-To change a destination, use [`updateEventDestination`](/api/graphql/operations/mutations/update-event-destination). To delete it, use [`deleteEventDestination`](/api/graphql/operations/mutations/delete-event-destination).
+To change a destination, use [`updateEventDestination`](/api/graphql/operations/mutations/update-event-destination). To delete it, use [`deleteEventDestination`](/api/graphql/operations/mutations/delete-event-destination). Deleting a destination deletes its deliveries. Events that wait to be sent are not sent.
 
 ### Settings and credentials
 
@@ -84,7 +84,9 @@ Three settings choose the events that a destination receives. Massdriver applies
 
 Use **Attributes** for a match on one value for each key. Use the **Condition** for other logic, such as one of two values.
 
-In `updateEventDestination`, a new `attributes` map replaces the old map. To remove all the attributes, set `attributes` to `{}`. If you do not include `attributes`, the destination keeps its attributes.
+In `updateEventDestination`, a new `attributes` map replaces the old map. To remove all the attributes, set `attributes` to `{}`. If you do not include `attributes`, the destination keeps its attributes. To remove the condition, set `condition` to an empty string.
+
+New **Events** and **Attributes** apply to events recorded after the change. A new **Condition** also applies to events that wait to be sent, and to each retry.
 
 The condition gets the whole event, as shown in [The body](#the-body). The most useful fields are:
 
@@ -102,14 +104,14 @@ The condition gets the whole event, as shown in [The body](#the-body). The most 
 
 A condition must finish within 1 second on one event. Self-hosted installations can change this time with `MD_EVENT_DESTINATIONS_CONDITION_TIMEOUT_MS`. It cannot use `import`, `include`, `module`, `modulemeta`, or `get_search_list`.
 
-The UI shows recent events that match the **Events**, **Attributes**, and **Condition** while you edit them. With the API, use [`previewEventDestination`](/api/graphql/operations/queries/preview-event-destination). It returns the error `eventTypes: <type> is not an event type` for an event type that does not exist, `attributes: <message>` for attributes that are not valid, and `condition: <message>` for a condition that jq cannot run.
+The UI shows recent events that match the **Events**, **Attributes**, and **Condition** while you edit them. With the API, use [`previewEventDestination`](/api/graphql/operations/queries/preview-event-destination). It returns the error `eventTypes: <type> is not an event type` for an event type that does not exist, `attributes: <message>` for attributes that are not valid, `condition: <message>` for a condition that is not valid, and `condition: event <id>: <message>` when the condition cannot run on an event. The preview stops at that event. The condition runs on each page of events, so a page can hold fewer events than `limit`. Follow `cursor.next` to see every match.
 
 ## How delivery works
 
 1. An event occurs in your organization. Massdriver records it in the audit log.
 2. Massdriver gives the event to each destination whose **Events** match its type and whose **Attributes** its entity had, as one delivery. A new destination gets the events that occur after you create it. It does not get older events.
 3. For each delivery, Massdriver runs the destination's **Condition**. A delivery that the condition does not pass is `SKIPPED`.
-4. Massdriver sends the others to your endpoint, one at a time.
+4. Massdriver sends the others to your endpoint, one at a time for each destination.
 
 Massdriver records the event and its deliveries in one database transaction. It starts to send them when the transaction commits, usually in less than a second.
 
@@ -274,12 +276,12 @@ Massdriver waits 10 seconds for a response. Massdriver does not follow redirects
 |---|---|
 | `2xx` | The event is sent. Massdriver continues with the next event. |
 | `408`, `429`, `5xx` | Massdriver keeps the event to send again later, and stops sending to the destination for now. |
-| No response in 10 seconds, connection error, or the host does not resolve | Massdriver keeps the event to send again later, and stops sending to the destination for now. |
+| No response in 10 seconds, a connection that cannot be made, or the host does not resolve | Massdriver keeps the event to send again later, and stops sending to the destination for now. |
 | Any other status, including `3xx` redirects and other `4xx` | The event becomes a failed event at once. Massdriver continues with the next event. |
 | The host is a private address | The event becomes a failed event at once. Massdriver continues with the next event. Refer to [Private addresses](#private-addresses). |
 | The condition does not finish in time, or jq cannot run it on the event | The event becomes a failed event at once. Massdriver continues with the next event. |
 
-The destination's `lastError` field tells you why the last send failed, for example `HTTP 503`. A successful send clears it. The `lastDeliveredAt` field tells you when your endpoint last accepted an event.
+The destination's `lastError` field tells you why the last send failed, for example `HTTP 503`. A successful send clears it. Condition errors are on the delivery's `lastError`, not on the destination. The `lastDeliveredAt` field tells you when your endpoint last accepted an event.
 
 ### Retry schedule
 
@@ -296,9 +298,9 @@ After a failed attempt, Massdriver waits `30 seconds × 2^(attempt − 1)`, with
 | 7 | 32 minutes |
 | 8 | 1 hour |
 | 9 | 1 hour |
-| 10 | None. The event becomes a failed event and Massdriver continues with the next event. |
+| 10 | None. The event becomes a failed event, and Massdriver stops sending to the destination for now, as after the other attempts. |
 
-When Massdriver keeps an event to send again, it also stops sending to the destination. Within a minute, it starts again with the events that are due. Thus an endpoint that is down gets about one request each minute, not one for each event.
+When a send to the destination fails in a way that Massdriver retries, Massdriver also stops sending to the destination. It starts again within a minute, and when a new event arrives for the destination. Each time, it sends one due event. Thus an endpoint that is down gets about one request each minute, plus about one for each new event.
 
 ## Deliveries
 
@@ -306,14 +308,14 @@ The **Deliveries** tab of a destination lists each event that Massdriver gave it
 
 | Status | Meaning |
 |---|---|
-| `PENDING` | The event waits to be sent: it is new, it waits for a retry, or you sent it again. Massdriver sends it at `nextAttemptAt`. |
+| `PENDING` | The event waits to be sent: it is new, it waits for a retry, or you sent it again. Massdriver sends it at or after `nextAttemptAt`. |
 | `DELIVERED` | Your endpoint accepted the event, at `deliveredAt`. |
 | `SKIPPED` | The destination's condition did not pass the event, so Massdriver did not send it. |
 | `FAILED` | Massdriver stopped trying to send the event. |
 
 The `lastError` field of a delivery tells you why the last attempt failed. The `event` field is `null` when the audit log no longer keeps the event.
 
-Massdriver keeps `DELIVERED` and `SKIPPED` deliveries for 7 days, and `FAILED` deliveries for 30 days. A `PENDING` delivery that is not sent within 30 days, for example because its destination stayed paused, becomes `FAILED`, so that you can send it again. Self-hosted installations can change these times.
+Massdriver keeps `DELIVERED` and `SKIPPED` deliveries for 7 days, and `FAILED` deliveries for 30 days. A `PENDING` delivery that is not sent within 30 days, for example because its destination stayed paused, becomes `FAILED`, so that you can send it again, and is kept for 30 more days. Self-hosted installations can change these times.
 
 ### Send failed events again
 
@@ -322,7 +324,7 @@ On the **Deliveries** tab, send one failed event again, or send all of them agai
 - To send every failed event of a destination again, leave out `deliveryIds`.
 - To send some failed events again, give their IDs in `deliveryIds`. Massdriver does not change deliveries that are not `FAILED`.
 
-Massdriver sets each event to `PENDING`, due now, and sets its attempt count to 0. The condition runs again, so a condition that you repaired applies. Each event gets all its attempts again. If the destination is paused, Massdriver sends them after you resume it.
+Massdriver sets each event to `PENDING`, due now, and sets its attempt count to 0. The condition runs again, so a condition that you repaired applies. Each event gets all its attempts again. If the destination is paused, Massdriver sends them after you resume it. An event that the audit log no longer keeps becomes `FAILED` again.
 
 Massdriver records an `event_destination.redelivered` audit log event each time you use `redeliverEvents`.
 
@@ -334,9 +336,9 @@ To resume a destination, click **Resume**, or use [`resumeEventDestination`](/ap
 
 ### Automatic pause
 
-When a send to a destination fails, Massdriver records the time in the destination's [`failingSince`](/api/graphql/types/objects/event-destination#failing-since) field. All failures of a send count: failures that Massdriver retries, and failures that make an event fail at once. Condition errors do not count, because they are about the condition, not the endpoint. One successful send clears `failingSince`.
+When a send to a destination fails, Massdriver records the time in the destination's [`failingSince`](/api/graphql/types/objects/event-destination#failing-since) field. All failures of a send count: failures that Massdriver retries, and failures that make an event fail at once. Condition errors, and events that the audit log no longer keeps, do not count, because they are not about the endpoint. One successful send clears `failingSince`.
 
-If a send fails and `failingSince` is 24 hours or more in the past, Massdriver pauses the destination. Thus Massdriver pauses a destination that has no successful send for 24 hours. A destination that refuses every event is paused in the same way as a destination that is down. Self-hosted installations can change this time with `MD_EVENT_DESTINATIONS_PAUSE_AFTER_HOURS`.
+If a send fails and `failingSince` is 24 hours or more in the past, Massdriver pauses the destination. Thus Massdriver pauses a destination whose sends have failed for 24 hours with no success. The pause occurs at the first failed send after the 24 hours. A destination that refuses every event is paused in the same way as a destination that is down. Self-hosted installations can change this time with `MD_EVENT_DESTINATIONS_PAUSE_AFTER_HOURS`.
 
 When Massdriver pauses a destination, it records an `event_destination.paused` event. To be told when this occurs, send `event_destination.paused` events to a different destination.
 
@@ -364,7 +366,7 @@ Self-hosted installations can change event delivery with these environment varia
 | Variable | Default | What it changes |
 |---|---|---|
 | `MD_EVENT_DESTINATIONS_MAX_ATTEMPTS` | `10` | The number of attempts for each event. After this number of failed attempts, the event becomes a failed event. |
-| `MD_EVENT_DESTINATIONS_PAUSE_AFTER_HOURS` | `24` | The number of hours without a successful send after which Massdriver pauses a destination. |
+| `MD_EVENT_DESTINATIONS_PAUSE_AFTER_HOURS` | `24` | The number of hours that sends to a destination can fail with no success before the next failed send pauses it. |
 | `MD_EVENT_DESTINATIONS_DELIVERED_RETENTION_DAYS` | `7` | The number of days that Massdriver keeps delivered and skipped events. |
 | `MD_EVENT_DESTINATIONS_FAILED_RETENTION_DAYS` | `30` | The number of days that Massdriver keeps failed events. An event that is not sent within this number of days becomes a failed event. |
 | `MD_EVENT_DESTINATIONS_CONDITION_TIMEOUT_MS` | `1000` | The time in milliseconds that a condition can run on one event. A condition that runs longer makes the event fail. |
