@@ -90,6 +90,9 @@ type Instance {
   deployedVersion: String
   availableUpgrade: String
   cost: CostSummary!
+  firingAlarmCount: Int!
+  latestProvision: Deployment
+  mostRecentProposedDeployment: Deployment
   environment: Environment
   bundle: Bundle
   component: Component!
@@ -235,6 +238,28 @@ Use this field to detect when an upgrade is available.
 
 #### [<code style={{ fontWeight: 'normal' }}>Instance.<b>cost</b></code>](#cost)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CostSummary!</b></code>](/api/graphql/types/objects/cost-summary.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#cost\} 
 Cloud provider cost summary for this instance, including daily and monthly breakdowns.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Instance.<b>firingAlarmCount</b></code>](#firing-alarm-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/api/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#firing-alarm-count\} 
+Number of this instance's alarms that are currently firing.
+
+An alarm counts when its most recent reported state is `ALARM`. Alarms with
+no reported state are not counted.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Instance.<b>latestProvision</b></code>](#latest-provision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Deployment</b></code>](/api/graphql/types/objects/deployment.mdx) <Badge class="badge badge--secondary " text="object"/> \{#latest-provision\} 
+The most recent `PROVISION` deployment of this instance that completed.
+
+Compare its `params` with the instance's `params` to see whether the
+configuration has changed since the infrastructure was last provisioned.
+Null if the instance has never been provisioned.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Instance.<b>mostRecentProposedDeployment</b></code>](#most-recent-proposed-deployment)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Deployment</b></code>](/api/graphql/types/objects/deployment.mdx) <Badge class="badge badge--secondary " text="object"/> \{#most-recent-proposed-deployment\} 
+The most recent deployment of this instance that is waiting for approval.
+
+A proposed deployment does not run until someone approves it. Null if no
+deployment is waiting for approval.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Instance.<b>environment</b></code>](#environment)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Environment</b></code>](/api/graphql/types/objects/environment.mdx) <Badge class="badge badge--secondary " text="object"/> \{#environment\} 

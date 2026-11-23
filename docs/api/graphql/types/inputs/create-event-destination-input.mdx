@@ -42,16 +42,17 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Add a destination that receives the organization's audit log events that match its filter.
+Add a destination that receives the organization's audit log events.
 
 
 ```graphql
 input CreateEventDestinationInput {
   adapter: EventDestinationAdapter!
+  attributes: Map
   auth: Map
   condition: String
   config: Map!
-  filter: EventFilterInput!
+  eventTypes: [String!]
   name: String!
 }
 ```
@@ -62,7 +63,11 @@ input CreateEventDestinationInput {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>CreateEventDestinationInput.<b>adapter</b></code>](#adapter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventDestinationAdapter!</b></code>](/api/graphql/types/enums/event-destination-adapter.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#adapter\} 
-How Massdriver sends events. `eventDestinationAdapters` lists each adapter and the settings it takes.
+How the destination receives events. `eventDestinationAdapters` lists each adapter and the settings it takes.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateEventDestinationInput.<b>attributes</b></code>](#attributes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#attributes\} 
+Attribute values that the event's entity must have had when the event happened. An event must have all of them. Leave it empty to receive events of any attributes. For other logic, use the condition.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CreateEventDestinationInput.<b>auth</b></code>](#auth)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#auth\} 
@@ -70,15 +75,15 @@ Credentials used to send events, in the shape of the adapter's `authSchema` from
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CreateEventDestinationInput.<b>condition</b></code>](#condition)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#condition\} 
-A jq expression run on each CloudEvent that the filter matches. The event is sent only when it outputs `true`. Use it for checks the filter cannot express, such as comparisons, `or`, or values inside `data`. It must finish within the install's timeout (1 second by default) and cannot use `import`, `include`, `module`, `modulemeta`, or `get_search_list`.
+A jq expression run on each CloudEvent that the event types and attributes select. The event is sent only when it outputs `true`. The CloudEvent's `data` holds the `entity`, its `attributes` (such as `md-environment`), and the event's `metadata`. It must finish within the install's timeout (1 second by default) and cannot use `import`, `include`, `module`, `modulemeta`, or `get_search_list`.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CreateEventDestinationInput.<b>config</b></code>](#config)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#config\} 
 Where and how events are sent, in the shape of the adapter's `configSchema` from `eventDestinationAdapters`. The API returns it, so put credentials in `auth`.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CreateEventDestinationInput.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventFilterInput!</b></code>](/api/graphql/types/inputs/event-filter-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#filter\} 
-The events the destination receives. An empty filter matches all of the organization's events.
+#### [<code style={{ fontWeight: 'normal' }}>CreateEventDestinationInput.<b>eventTypes</b></code>](#event-types)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#event-types\} 
+The event types the destination receives, or `<entity>.*` for every event of an entity. Leave it empty to receive every event. The `eventTypes` query lists the event types.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CreateEventDestinationInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 

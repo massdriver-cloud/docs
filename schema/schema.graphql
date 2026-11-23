@@ -743,7 +743,7 @@ type RootQueryType {
   ): [String!]!
 
   """
-  List the ways Massdriver can send events, with the JSON schemas of the settings and credentials each one
+  List the ways to send events, with the JSON schemas of the settings and credentials each one
   takes.
 
   ```graphql
@@ -806,16 +806,18 @@ type RootQueryType {
   ): EventDestination
 
   """
-  List the organization's recent audit log events that a filter and a condition match, newest first. Use it to
-  check a filter and condition before you create or change a destination with them.
+  List the organization's recent audit log events of the event types and attributes that a condition passes,
+  newest first. Use it to check event types, attributes, and a condition before you create or change a
+  destination with them.
 
-  The condition runs on each page after the filter selects it, so a page can hold fewer items than `limit`.
+  The condition runs on each page after the event types and attributes select it, so a page can hold fewer
+  items than `limit`.
   Follow `cursor.next` until it is `null` to see every match. If the condition cannot run on an event, the
   preview stops at that event and returns an error that names it. Events after it are not checked.
 
   ```graphql
   query {
-    previewEventDestination(organizationId: "my-org", filter: { types: ["deployment.*"] }) {
+    previewEventDestination(organizationId: "my-org", eventTypes: ["deployment.*"]) {
       items {
         id
         type
@@ -829,10 +831,13 @@ type RootQueryType {
     "Your organization's unique identifier."
     organizationId: ID!
 
-    "The filter to check."
-    filter: EventFilterInput!
+    "Event types, or `<entity>.*` for every event of an entity. An empty list checks every event."
+    eventTypes: [String!]
 
-    "A jq expression to check with the filter. The event matches when it outputs `true`."
+    "Attribute values that each event's entity must have had, such as `{\"md-environment\": \"prod\"}`. An empty map checks events of any attributes."
+    attributes: Map
+
+    "A jq expression to check on each event. The event matches when it outputs `true`."
     condition: String
 
     "Pagination cursor from a previous response."
@@ -2361,8 +2366,8 @@ type RootMutationType {
   Add a destination that receives the organization's audit log events.
 
   `eventDestinationAdapters` lists each adapter's `configSchema` and `authSchema`. Put credentials in `auth`:
-  the API never returns them. A destination of an adapter that `signs` gets a `signingSecret`, and Massdriver
-  signs each event with it.
+  the API never returns them. A destination of an adapter that `signs` gets a `signingSecret`, which signs
+  each event.
 
   Pass `auth` as a variable. Query text can appear in request traces. Variables do not.
 
@@ -2375,7 +2380,9 @@ type RootMutationType {
         adapter: HTTP
         config: "{\"url\": \"https://hooks.example.com/massdriver\"}"
         auth: $auth
-        filter: { types: ["deployment.*"], attributes: "{\"md-environment\": \"prod\"}" }
+        eventTypes: ["deployment.*"]
+        attributes: "{\"md-environment\": \"prod\"}"
+        condition: ".data.metadata.deployment_action == \"PROVISION\""
       }
     ) {
       result { id signingSecret }
@@ -2389,14 +2396,15 @@ type RootMutationType {
     "Your organization's unique identifier."
     organizationId: ID!
 
-    "Add a destination that receives the organization's audit log events that match its filter."
+    "Add a destination that receives the organization's audit log events."
     input: CreateEventDestinationInput!
   ): EventDestinationPayload @inputs(name: "createEventDestination", schema: "\/graphql\/v2\/inputs\/createEventDestination.json", ui: "\/graphql\/v2\/inputs\/createEventDestination.ui.json")
 
   """
-  Change a destination's name, config, auth, filter, or condition. Fields you leave out do not change. A new
-  `config` or `auth` replaces the current one. An empty `condition` removes it. The new filter applies to events that happen after
-  the change. The new condition also applies to events that are waiting to be sent or retried.
+  Change a destination's name, config, auth, event types, attributes, or condition. Fields you leave out do not
+  change. A new `config`, `auth`, or `attributes` replaces the current one. An empty `condition` removes it.
+  New event types and attributes apply to events recorded after the change. A new condition also applies to
+  events that are waiting to be sent.
   """
   updateEventDestination(
     "Your organization's unique identifier."
@@ -2405,13 +2413,14 @@ type RootMutationType {
     "The destination's unique identifier."
     id: UUID!
 
-    "Change a destination's name, config, auth, filter, or condition. Fields you leave out do not change."
+    "Change a destination's name, config, auth, event types, attributes, or condition. Fields you leave out do not change."
     input: UpdateEventDestinationInput!
   ): EventDestinationPayload @inputs(name: "updateEventDestination", schema: "\/graphql\/v2\/inputs\/updateEventDestination.json", ui: "\/graphql\/v2\/inputs\/updateEventDestination.ui.json")
 
   """
-  Stop sending events to a destination. Events that happen while it is paused are not sent. Events that
-  were waiting to be sent are sent after it is resumed.
+  Stop sending events to a destination. Events recorded while it is paused wait, and are sent after it is
+  resumed. An event that waits for longer than the install's failed retention, 30 days by default, becomes
+  `FAILED`.
   """
   pauseEventDestination(
     "Your organization's unique identifier."
@@ -5025,8 +5034,8 @@ input CreateServiceAccountAccessTokenInput {
 }
 
 """
-How Massdriver sends events to a destination. `eventDestinationAdapters` lists the settings and credentials
-each adapter takes.
+How a destination receives events. `eventDestinationAdapters` lists the settings and credentials each
+adapter takes.
 """
 enum EventDestinationAdapter {
   "POST each event to a URL as a CloudEvent (`application\/cloudevents+json`), signed with [Standard Webhooks](https:\/\/www.standardwebhooks.com) headers."
@@ -5035,26 +5044,26 @@ enum EventDestinationAdapter {
 
 "Whether a destination receives events."
 enum EventDestinationStatus {
-  "The destination receives the events that match its filter."
+  "The destination receives events."
   ACTIVE
 
-  "The destination receives no events. Events that match its filter while it is paused are not sent. Massdriver pauses a destination when a send fails and no send has succeeded for the install's pause time, 24 hours by default."
+  "The destination sends nothing. When it is resumed, it sends the events recorded while it was paused. An event that waits for longer than the install's failed retention, 30 days by default, becomes `FAILED`. A destination is paused when a send fails and no send has succeeded for the install's pause time, 24 hours by default."
   PAUSED
 }
 
 "The state of one event's delivery to a destination."
 enum EventDeliveryStatus {
-  "Waiting to be sent, or waiting for a retry."
-  PENDING
-
   "The destination accepted the event."
   DELIVERED
 
-  "Massdriver stopped trying. The destination rejected the event, every retry failed, or the destination's condition could not run. Use `redeliverEvents` to send it again."
+  "The destination's condition did not pass the event, so it was not sent."
+  SKIPPED
+
+  "No more attempts. The destination rejected the event, every retry failed, or the destination's condition could not run. Use `redeliverEvents` to send it again."
   FAILED
 
-  "The destination's condition did not output `true` for the event, so it was not sent."
-  SKIPPED
+  "Waits to be sent: new, waiting for a retry, or queued again by `redeliverEvents`. The next attempt is at `nextAttemptAt`."
+  PENDING
 }
 
 "Fields to sort event destinations by."
@@ -5068,59 +5077,11 @@ enum EventDestinationsSortField {
 
 "Fields to sort a destination's deliveries by."
 enum EventDeliveriesSortField {
-  "Sort by when the event matched the destination."
+  "Sort by when the event was given to the destination."
   CREATED_AT
 
   "Sort by the last change to the delivery, such as an attempt."
   UPDATED_AT
-}
-
-"""
-Selects audit log events. An event matches when it matches every field. An empty field matches every event,
-so an empty filter matches all of the organization's events.
-
-```graphql
-{
-  types: ["deployment.*", "instance.alarm_triggered"]
-  attributes: "{\"md-environment\": \"prod\"}"
-  actorTypes: [ACCOUNT, SERVICE_ACCOUNT]
-}
-```
-"""
-input EventFilterInput {
-  "The kinds of actor whose events match."
-  actorTypes: [AuditLogActorType!]
-
-  """
-  The event's entity must have had every attribute and value in this object when the event happened, such
-  as `{"md-project": "api"}`.
-  """
-  attributes: Map
-
-  """
-  The event's metadata must contain every key and value in this object, such as
-  `{"deployment_action": "PROVISION"}`. A key that does not apply to an event is left out of its metadata, so
-  a filter on that key does not match the event.
-
-  Every event records:
-
-  - `credential`: how the actor authenticated. `session` (a person signed in to Massdriver), `access_token`
-    (a personal access token, as used by the CLI, scripts, and agents), `service_account`, `deployment`
-    (a running deployment), or `system` (Massdriver itself).
-  - `access_token_id`: ID of the access token the actor used. Only when the actor used an access token.
-
-  Some event types record more:
-
-  - `deployment_action` on every `deployment.*` event: `PROVISION`, `PLAN`, or `DECOMMISSION`.
-  - `contains_secrets` on `resource.exported`: `true` when the export revealed at least one value of a field
-    that the resource type marks as sensitive.
-
-  `eventTypes` lists the metadata fields of each event type.
-  """
-  metadata: Map
-
-  "Event types from `eventTypes`, or `<entity>.*` for every event of an entity, such as `deployment.*`."
-  types: [String!]
 }
 
 "Filter by destination status."
@@ -5158,10 +5119,10 @@ input EventDeliveryStatusFilter {
 
 "Filter options for a destination's deliveries. All filters are combined with **AND**."
 input EventDeliveriesFilter {
-  "Filter by the state of the delivery."
+  "Filter by status."
   status: EventDeliveryStatusFilter
 
-  "Filter by when the event matched the destination."
+  "Filter by when the event was given to the destination."
   createdAt: DatetimeFilter
 }
 
@@ -5174,65 +5135,58 @@ input EventDeliveriesSort {
   order: SortOrder!
 }
 
-"Add a destination that receives the organization's audit log events that match its filter."
+"Add a destination that receives the organization's audit log events."
 input CreateEventDestinationInput {
-  "How Massdriver sends events. `eventDestinationAdapters` lists each adapter and the settings it takes."
+  "How the destination receives events. `eventDestinationAdapters` lists each adapter and the settings it takes."
   adapter: EventDestinationAdapter!
+
+  "Attribute values that the event's entity must have had when the event happened. An event must have all of them. Leave it empty to receive events of any attributes. For other logic, use the condition."
+  attributes: Map
 
   "Credentials used to send events, in the shape of the adapter's `authSchema` from `eventDestinationAdapters`. The API never returns them."
   auth: Map
 
-  "A jq expression run on each CloudEvent that the filter matches. The event is sent only when it outputs `true`. Use it for checks the filter cannot express, such as comparisons, `or`, or values inside `data`. It must finish within the install's timeout (1 second by default) and cannot use `import`, `include`, `module`, `modulemeta`, or `get_search_list`."
+  "A jq expression run on each CloudEvent that the event types and attributes select. The event is sent only when it outputs `true`. The CloudEvent's `data` holds the `entity`, its `attributes` (such as `md-environment`), and the event's `metadata`. It must finish within the install's timeout (1 second by default) and cannot use `import`, `include`, `module`, `modulemeta`, or `get_search_list`."
   condition: String
 
   "Where and how events are sent, in the shape of the adapter's `configSchema` from `eventDestinationAdapters`. The API returns it, so put credentials in `auth`."
   config: Map!
 
-  "The events the destination receives. An empty filter matches all of the organization's events."
-  filter: EventFilterInput!
+  "The event types the destination receives, or `<entity>.*` for every event of an entity. Leave it empty to receive every event. The `eventTypes` query lists the event types."
+  eventTypes: [String!]
 
   "Name of the destination, unique in the organization."
   name: String!
 }
 
-"Change a destination's name, config, auth, filter, or condition. Fields you leave out do not change."
+"Change a destination's name, config, auth, event types, attributes, or condition. Fields you leave out do not change."
 input UpdateEventDestinationInput {
+  "Replaces the current attributes. Attribute values that the event's entity must have had when the event happened. An event must have all of them. Pass `{}` to receive events of any attributes. For other logic, use the condition."
+  attributes: Map
+
   "Replaces the current credentials. In the shape of the adapter's `authSchema` from `eventDestinationAdapters`. The API never returns them. Pass `null` to remove them."
   auth: Map
 
-  "A jq expression run on each CloudEvent that the filter matches. The event is sent only when it outputs `true`. Use it for checks the filter cannot express, such as comparisons, `or`, or values inside `data`. It must finish within the install's timeout (1 second by default) and cannot use `import`, `include`, `module`, `modulemeta`, or `get_search_list`. Pass an empty string to remove the condition."
+  "A jq expression run on each CloudEvent that the event types and attributes select. The event is sent only when it outputs `true`. The CloudEvent's `data` holds the `entity`, its `attributes` (such as `md-environment`), and the event's `metadata`. It must finish within the install's timeout (1 second by default) and cannot use `import`, `include`, `module`, `modulemeta`, or `get_search_list`. Pass an empty string to remove the condition."
   condition: String
 
   "Replaces the current config. Where and how events are sent, in the shape of the adapter's `configSchema` from `eventDestinationAdapters`. The API returns it, so put credentials in `auth`."
   config: Map
 
-  "The events the destination receives. Fields you leave out of the filter do not change."
-  filter: EventFilterInput
+  "The event types the destination receives, or `<entity>.*` for every event of an entity. Leave it empty to receive every event. The `eventTypes` query lists the event types. Leave the field out to keep the current event types."
+  eventTypes: [String!]
 
   "Name of the destination, unique in the organization."
   name: String
 }
 
-"The events a destination receives. An empty field matches every event."
-type EventFilter {
-  "Event types, or `<entity>.*` for every event of an entity."
-  types: [String!]!
-
-  "Metadata keys and values that the event must contain. See `EventFilterInput.metadata` for the fields Massdriver records."
-  metadata: Map!
-
-  "Attributes and values that the event's entity must have had when the event happened."
-  attributes: Map!
-
-  "The kinds of actor whose events match."
-  actorTypes: [AuditLogActorType!]!
-}
-
 """
 A place outside Massdriver that receives the organization's audit log events.
 
-Massdriver sends each event that matches the `filter`, one at a time, and retries failed sends with
-backoff. Order is not guaranteed. A receiver can drop duplicates by the event `id`.
+The destination gets one delivery for each event of its `eventTypes` and `attributes`, and sends the ones its
+`condition` passes. A failed send is retried with backoff until it succeeds or the delivery is `FAILED`.
+Events go out in any order, and one event can arrive more than once: use the event `time` when order matters,
+and the event `id` to drop duplicates.
 """
 type EventDestination {
   "Unique identifier of the destination."
@@ -5241,16 +5195,19 @@ type EventDestination {
   "Name of the destination, unique in the organization."
   name: String!
 
-  "How Massdriver sends events."
+  "How the destination receives events."
   adapter: EventDestinationAdapter!
 
   "Where and how events are sent, in the shape of the adapter's `configSchema`. The destination's `auth` credentials are never returned."
   config: Map!
 
-  "The events the destination receives."
-  filter: EventFilter!
+  "The event types the destination receives, or `<entity>.*` for every event of an entity. An empty list receives every event."
+  eventTypes: [String!]!
 
-  "A jq expression run on each CloudEvent that the filter matches. The event is sent only when it outputs `true`. `null` sends every event the filter matches."
+  "Attribute values that the event's entity must have had when the event happened, such as `{\"md-environment\": \"prod\"}`. An event must have all of them. An empty map receives events of any attributes."
+  attributes: Map!
+
+  "A jq expression run on each CloudEvent that the `eventTypes` and `attributes` select. The event is sent only when it outputs `true`. `null` sends every selected event."
   condition: String
 
   "Whether the destination receives events."
@@ -5262,13 +5219,23 @@ type EventDestination {
   "When sends to the destination started to fail. `null` when the last send succeeded."
   failingSince: DateTime
 
+  "When the destination last accepted an event (UTC)."
+  lastDeliveredAt: DateTime
+
+  "Why the endpoint did not accept the last send, such as `HTTP 503`. `null` when the last send succeeded. Condition errors are on the deliveries, not here."
+  lastError: String
+
   "When the destination was added (UTC)."
   createdAt: DateTime!
 
   "When the destination last changed (UTC)."
   updatedAt: DateTime!
 
-  "The events matched to this destination and the state of each send. Newest first by default."
+  """
+  One delivery for each event the destination selects: sent, waiting, skipped by the condition, or failed.
+  Delivered and skipped deliveries are kept for the install's retention, 7 days by default, and failed ones for
+  30 days. Newest first by default.
+  """
   deliveries(
     "Filter criteria. All filters are combined with AND."
     filter: EventDeliveriesFilter
@@ -5286,13 +5253,13 @@ type EventDelivery {
   "Unique identifier of the delivery."
   id: ID!
 
-  "The state of the delivery."
+  "Where the delivery is."
   status: EventDeliveryStatus!
 
-  "How many times Massdriver tried to send the event."
+  "Attempts to send the event."
   attempts: Int!
 
-  "When Massdriver sends the event next, while the delivery is `PENDING` (UTC)."
+  "The next attempt, while the delivery is `PENDING` (UTC)."
   nextAttemptAt: DateTime!
 
   "Why the last attempt failed, such as `HTTP 503` or `connection refused`."
@@ -5301,7 +5268,7 @@ type EventDelivery {
   "When the destination accepted the event (UTC)."
   deliveredAt: DateTime
 
-  "When the event matched the destination (UTC)."
+  "When the event was given to the destination (UTC)."
   createdAt: DateTime!
 
   "When the delivery last changed (UTC)."
@@ -5312,7 +5279,7 @@ type EventDelivery {
 }
 
 """
-A way Massdriver can send events. Use `configSchema` and `authSchema` to build the `config` and `auth` of
+A way to send events. Use `configSchema` and `authSchema` to build the `config` and `auth` of
 `createEventDestination`.
 """
 type EventDestinationAdapterInfo {
@@ -5331,7 +5298,7 @@ type EventDestinationAdapterInfo {
   "JSON schema of a destination's `auth`: the credentials used to send events. The API never returns it."
   authSchema: Map!
 
-  "Whether destinations get a `signingSecret` and Massdriver signs each event with it."
+  "Whether destinations get a `signingSecret` that signs each event."
   signs: Boolean!
 }
 
@@ -8795,6 +8762,31 @@ type Instance {
 
   "Cloud provider cost summary for this instance, including daily and monthly breakdowns."
   cost: CostSummary!
+
+  """
+  Number of this instance's alarms that are currently firing.
+
+  An alarm counts when its most recent reported state is `ALARM`. Alarms with
+  no reported state are not counted.
+  """
+  firingAlarmCount: Int!
+
+  """
+  The most recent `PROVISION` deployment of this instance that completed.
+
+  Compare its `params` with the instance's `params` to see whether the
+  configuration has changed since the infrastructure was last provisioned.
+  Null if the instance has never been provisioned.
+  """
+  latestProvision: Deployment
+
+  """
+  The most recent deployment of this instance that is waiting for approval.
+
+  A proposed deployment does not run until someone approves it. Null if no
+  deployment is waiting for approval.
+  """
+  mostRecentProposedDeployment: Deployment
 
   "The environment this instance is deployed in."
   environment: Environment
