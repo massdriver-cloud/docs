@@ -365,7 +365,7 @@ Self-hosted installations can change event delivery with these environment varia
 | `MD_EVENT_DESTINATIONS_MAX_ATTEMPTS` | `10` | The number of attempts for each event. After this number of failed attempts, the event becomes a failed event. |
 | `MD_EVENT_DESTINATIONS_PAUSE_AFTER_HOURS` | `24` | The number of hours without a successful send after which Massdriver pauses a destination. |
 | `MD_EVENT_DESTINATIONS_ENABLED` | `true` | When `false`, this Massdriver server sends no events. Set it on servers that serve web traffic to send events only from other servers. |
-| `MD_EVENT_DESTINATIONS_CONCURRENCY` | `10` | The number of destinations that one Massdriver server sends to at the same time. |
+| `MD_EVENT_DESTINATIONS_CONCURRENCY` | `20` | The number of events that one Massdriver server sends at the same time. |
 | `MD_EVENT_DESTINATIONS_DELIVERED_RETENTION_DAYS` | `30` | The number of days that Massdriver keeps delivered and skipped events. |
 | `MD_EVENT_DESTINATIONS_FAILED_RETENTION_DAYS` | not set | The number of days that Massdriver keeps failed events. When not set, Massdriver keeps them until you send them again. |
 | `MD_EVENT_DESTINATIONS_CONDITION_TIMEOUT_MS` | `1000` | The time in milliseconds that a condition can run on one event. A condition that runs longer makes the event fail. |
