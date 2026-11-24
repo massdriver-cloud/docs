@@ -138,8 +138,8 @@ Use the [preview](/platform-operations/event-destinations#choose-events) on the 
 
 | Field | Value |
 |---|---|
-| `short_description` | The event type and the instance, such as `deployment.failed: api-prod-database`. When the event has no instance, the event's `subject`. At most 160 characters. |
-| `description` | What the event type means. Then the **Project**, **Environment**, **Component**, **Instance**, **Status**, and **Message** that the event has. Then the time, the event `id`, and the `subject`. Last, a link to the page of the entity's instance, environment, or project in Massdriver, when the event is about a project. |
+| `short_description` | A headline that tells what happened, such as `Deploy of api-prod-database failed`. It is the same headline as in a [Slack message](/platform-operations/event-destinations/slack#the-message), without the emoji. At most 160 characters. |
+| `description` | The message of the deployment or of the alarm, when the event has one. Then details such as the bundle version and the person who deployed. Then the time, the event type and `id`, and the `subject`. Last, a link to the page of the entity's instance, environment, or project in Massdriver, when the event is about a project. |
 | `correlation_id` | The event `id`. |
 | `correlation_display` | `Massdriver` |
 
