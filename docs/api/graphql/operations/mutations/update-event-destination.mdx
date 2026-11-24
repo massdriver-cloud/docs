@@ -42,9 +42,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Change a destination's name, config, auth, filter, or condition. Fields you leave out do not change. A new
-`config` or `auth` replaces the current one. An empty `condition` removes it. The new filter applies to events that happen after
-the change. The new condition also applies to events that are waiting to be sent or retried.
+Change a destination's name, config, auth, event types, attributes, or condition. Fields you leave out do not
+change. A new `config`, `auth`, or `attributes` replaces the current one. An empty `condition` removes it.
+New event types and attributes apply to events recorded after the change. A new condition also applies to
+events that are waiting to be sent.
 
 
 
@@ -85,7 +86,7 @@ The destination's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>updateEventDestination.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UpdateEventDestinationInput!</b></code>](/api/graphql/types/inputs/update-event-destination-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
-Change a destination's name, config, auth, filter, or condition. Fields you leave out do not change.
+Change a destination's name, config, auth, event types, attributes, or condition. Fields you leave out do not change.
 
 
 ### Type

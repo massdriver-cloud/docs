@@ -58,11 +58,11 @@ enum EventDestinationStatus {
 ### Values
 
 #### [<code style={{ fontWeight: 'normal' }}>EventDestinationStatus.<b>ACTIVE</b></code>](#active) \{#active\} 
-The destination receives the events that match its filter.
+The destination receives events.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EventDestinationStatus.<b>PAUSED</b></code>](#paused) \{#paused\} 
-The destination receives no events. Events that match its filter while it is paused are not sent. Massdriver pauses a destination when a send fails and no send has succeeded for the install's pause time, 24 hours by default.
+The destination sends nothing. When it is resumed, it sends the events recorded while it was paused. An event that waits for longer than the install's failed retention, 30 days by default, becomes `FAILED`. A destination is paused when a send fails and no send has succeeded for the install's pause time, 24 hours by default.
 
 
 

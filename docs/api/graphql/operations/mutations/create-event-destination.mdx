@@ -45,8 +45,8 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 Add a destination that receives the organization's audit log events.
 
 `eventDestinationAdapters` lists each adapter's `configSchema` and `authSchema`. Put credentials in `auth`:
-the API never returns them. A destination of an adapter that `signs` gets a `signingSecret`, and Massdriver
-signs each event with it.
+the API never returns them. A destination of an adapter that `signs` gets a `signingSecret`, which signs
+each event.
 
 Pass `auth` as a variable. Query text can appear in request traces. Variables do not.
 
@@ -59,7 +59,9 @@ mutation CreateEventDestination($auth: Map) {
       adapter: HTTP
       config: "{\"url\": \"https://hooks.example.com/massdriver\"}"
       auth: $auth
-      filter: { types: ["deployment.*"], attributes: "{\"md-environment\": \"prod\"}" }
+      eventTypes: ["deployment.*"]
+      attributes: "{\"md-environment\": \"prod\"}"
+      condition: ".data.metadata.deployment_action == \"PROVISION\""
     }
   ) {
     result { id signingSecret }
@@ -103,7 +105,7 @@ Your organization's unique identifier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>createEventDestination.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CreateEventDestinationInput!</b></code>](/api/graphql/types/inputs/create-event-destination-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
-Add a destination that receives the organization's audit log events that match its filter.
+Add a destination that receives the organization's audit log events.
 
 
 ### Type
