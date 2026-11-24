@@ -104,6 +104,24 @@ The condition gets the whole event, as shown in [The event](#the-event). The mos
 | Events in one project | (empty) | `{"md-project": "api"}` | (empty) |
 | Events in production or staging environments | (empty) | (empty) | `.data.attributes["md-environment"] == "prod" or .data.attributes["md-environment"] == "staging"` |
 
+### Attribute keys
+
+Massdriver sets these attributes on each event about a project, environment, component, instance, deployment, resource, or alarm. Use them in **Attributes**, or in a condition as `.data.attributes["<key>"]`. Custom attributes, such as `team`, are also on the event.
+
+| Key | Example | Selects | On events about |
+|---|---|---|---|
+| `md-project` | `api` | One project | Projects, environments, components, instances, deployments, resources, alarms |
+| `md-environment` | `prod` | One environment name in every project | Environments, instances, deployments, resources, alarms |
+| `md-component` | `database` | One component in every environment | Components, instances, deployments, resources, alarms |
+| `md-instance` | `api-prod-database` | One instance | Deployments, resources, alarms |
+| `md-repo` | `aws-aurora` | Every version of one bundle | Components, instances, deployments, resources, alarms |
+| `md-bundle` | `aws-aurora@1.2.3` | One version of one bundle | Instances, deployments, resources, alarms |
+| `md-resource-type` | `aws-iam-role@0.0.0` | One version of one resource type | Resources |
+
+**Attributes** match exact values. To match every version of a resource type, use a condition, such as `.data.attributes["md-resource-type"] // "" | startswith("aws-iam-role@")`.
+
+Events about access tokens, service accounts, secrets, links, and event destinations have no attributes. A destination with **Attributes** never receives them.
+
 A condition must finish within 1 second on one event. Self-hosted installations can change this time with `MD_EVENT_DESTINATIONS_CONDITION_TIMEOUT_MS`. It cannot use `import`, `include`, `module`, `modulemeta`, or `get_search_list`.
 
 The UI shows recent events that match the **Events**, **Attributes**, and **Condition** while you edit them. With the API, use [`previewEventDestination`](/api/graphql/operations/queries/preview-event-destination). It returns the error `eventTypes: <type> is not an event type` for an event type that does not exist, `attributes: <message>` for attributes that are not valid, `condition: <message>` for a condition that is not valid, and `condition: event <id>: <message>` when the condition cannot run on an event. The preview stops at that event. The condition runs on each page of events, so a page can hold fewer events than `limit`. Follow `cursor.next` to see every match.
