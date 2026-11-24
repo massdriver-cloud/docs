@@ -74,7 +74,7 @@ The [`eventDestinationAdapters`](/api/graphql/operations/queries/event-destinati
 
 To check the settings and credentials of a destination, click **Send test event** on the destination. With the API, use `testEventDestination`. Massdriver sends one `event_destination.tested` event at once and shows if the destination accepted it, or the error, such as `HTTP 401`.
 
-The test event ignores the destination's **Events**, **Attributes**, **Condition**, and status. It is not a delivery, and it does not change `lastError` or `failingSince`. Its `data.entity` holds the `id` and `name` of the destination.
+The test event ignores the destination's **Events**, **Attributes**, **Condition**, and status. It is not a delivery, and it does not change `lastError` or `failingSince`. Its `data.entity` holds the `id` and `name` of the destination, and `data.actor` is you. `event_destination.tested` is not an event type that a destination can select. If Massdriver gets no response in 15 seconds, the test stops.
 
 ## Choose events
 
