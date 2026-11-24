@@ -108,7 +108,7 @@ Massdriver opens a new incident each time an alarm changes to `ALARM`. It does n
 
 | Setting | Value |
 |---|---|
-| Events | `access_token.created`, `access_token.revoked`, `service_account.created`, `service_account.deleted`, `group_membership.joined`, `group_membership.deleted` |
+| Events | `access_token.created`, `access_token.revoked`, `service_account.created`, `service_account.deleted`, `group_membership.added`, `group_membership.removed` |
 | Attributes | (empty). These events have no attributes, so a destination with **Attributes** never receives them. |
 | Condition | (empty) |
 | Table | A table that extends `task` and that your security team reviews |

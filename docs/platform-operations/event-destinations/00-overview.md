@@ -191,7 +191,14 @@ Massdriver adds two objects to `data`:
 - `data.metadata`: facts about the event, such as how the actor authenticated. The [`eventTypes`](/api/graphql/types/objects/event-type#metadata) query lists the metadata fields of each event type.
 - `data.attributes`: the attributes that the entity had when the event occurred, including the system attributes (`md-*`).
 
-When a person, a service account, or a deployment caused the event, `data.actor` holds the IDs of the organization and the actor. When Massdriver caused the event, `data` has no `actor`.
+When a person, a service account, or a deployment caused the event, `data.actor` holds the IDs of the organization and the actor, and the actor's `name`. For a person, `name` is the first and last name, or the email when the person has neither. For a service account, `name` is the name of the service account. For a deployment, `name` is the `deployed_by_name` of the deployment. When Massdriver caused the event, `data` has no `actor`.
+
+Some entities also have the names of the entities that they refer to:
+
+| Event type | Fields |
+|---|---|
+| `group_membership.*` | `group_name`. For a person, `account_email` and `account_name`. For a service account, `service_account_name`. |
+| `alarm_state.created` | `alarm_name`, the display name of the alarm. |
 
 The `event_destination.*` audit log events do not include the destination's `config`, `auth`, or signing secret.
 
