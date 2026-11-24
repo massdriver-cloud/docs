@@ -68,6 +68,9 @@ type EventDestination {
   updatedAt: DateTime!
   pendingCount: Int!
   lag: Int
+  deliveryCounts(
+    since: DateTime!
+  ): [EventDeliveryCount!]!
   deliveries(
     filter: EventDeliveriesFilter
     sort: EventDeliveriesSort
@@ -145,6 +148,15 @@ the destination is paused.
 #### [<code style={{ fontWeight: 'normal' }}>EventDestination.<b>lag</b></code>](#lag)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/api/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#lag\} 
 Seconds since the oldest event that waits to be sent happened. A destination that keeps up has a lag of a few
 seconds. The lag of a paused destination grows until it is resumed. `null` when no event waits.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDestination.<b>deliveryCounts</b></code>](#delivery-counts)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[EventDeliveryCount!]!</b></code>](/api/graphql/types/objects/event-delivery-count.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#delivery-counts\} 
+The destination's deliveries that finished in the hour of `since` or later, counted by hour: delivered, failed,
+and skipped.
+Hours with no finished delivery are left out. Oldest hour first. Delivered and skipped deliveries are kept for
+7 days by default, so older hours count only failed ones.
+##### [<code style={{ fontWeight: 'normal' }}>EventDestination.deliveryCounts.<b>since</b></code>](#event-destination-delivery-counts-since)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#event-destination-delivery-counts-since\} 
+A time in the first hour to count (UTC). The whole hour is counted.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EventDestination.<b>deliveries</b></code>](#deliveries)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventDeliveriesPage</b></code>](/api/graphql/types/objects/event-deliveries-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#deliveries\} 
