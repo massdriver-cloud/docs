@@ -42,7 +42,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-A way Massdriver can send events. Use `configSchema` and `authSchema` to build the `config` and `auth` of
+A way to send events. Use `configSchema` and `authSchema` to build the `config` and `auth` of
 `createEventDestination`.
 
 
@@ -83,7 +83,7 @@ JSON schema of a destination's `auth`: the credentials used to send events. The 
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EventDestinationAdapterInfo.<b>signs</b></code>](#signs)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#signs\} 
-Whether destinations get a `signingSecret` and Massdriver signs each event with it.
+Whether destinations get a `signingSecret` that signs each event.
 
 
 
