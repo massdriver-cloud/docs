@@ -260,9 +260,11 @@ Massdriver sends a `POST` request to the `url` in the destination's `config`. Th
 | Header | Value |
 |---|---|
 | `content-type` | `application/cloudevents+json` |
-| `webhook-id` | The CloudEvent `id`. It is the same for every attempt of the event. |
-| `webhook-timestamp` | The time of this attempt, in seconds since the Unix epoch. It changes for each attempt. |
+| `webhook-id` | The CloudEvent `id`. It is the same for every attempt of the event. Use it to drop duplicates. |
+| `webhook-timestamp` | The time of this attempt, in seconds since the Unix epoch. It changes for each attempt. To order events, use the event `time`. |
 | `webhook-signature` | `v1,` followed by the base64 signature of the request. Refer to [Verify the signature](#verify-the-signature). |
+
+Refer to [Order and duplicates](/platform-operations/event-destinations#order-and-duplicates).
 
 ### Custom headers
 
