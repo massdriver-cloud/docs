@@ -62,6 +62,37 @@ mutation CreateEventDestination($auth: Map) {
 
 To change a destination, use [`updateEventDestination`](/api/graphql/operations/mutations/update-event-destination). To delete it, use [`deleteEventDestination`](/api/graphql/operations/mutations/delete-event-destination). Deleting a destination deletes its deliveries. Events that wait to be sent are not sent.
 
+### With the CLI
+
+The `mass event destination` commands need [mass](/reference/cli/overview) 2.6.0 or later. Check the events of a destination before you create it:
+
+```bash
+mass event destination preview \
+  --event-type 'deployment.*' \
+  --attribute md-environment=prod \
+  --condition '.data.metadata.deployment_action == "PROVISION"'
+```
+
+Create the destination. Put credentials in `--auth`, because the API returns the headers of `--header`:
+
+```bash
+mass event destination create \
+  --name "Production deployments" \
+  --url https://hooks.example.com/massdriver \
+  --event-type 'deployment.*' \
+  --attribute md-environment=prod \
+  --auth @auth.json
+```
+
+List the failed deliveries of a destination, and send them again:
+
+```bash
+mass event destination deliveries 4f9b2c1e-8d3a-4c6e-9f1b-2a7d5e8c0b13 --status FAILED
+mass event destination redeliver 4f9b2c1e-8d3a-4c6e-9f1b-2a7d5e8c0b13
+```
+
+`mass event type list` lists the event types. Run `mass event destination --help` for the other commands.
+
 ### Settings and credentials
 
 A destination has two objects of adapter settings:
