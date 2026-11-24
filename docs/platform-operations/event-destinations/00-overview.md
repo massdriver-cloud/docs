@@ -10,6 +10,8 @@ An event destination receives your organization's audit log events. You choose t
 | Adapter | Sends each event |
 |---|---|
 | [HTTP](/platform-operations/event-destinations/http) | As a signed [CloudEvent](https://cloudevents.io) in a `POST` request to your URL. |
+| [Slack](/platform-operations/event-destinations/slack) | As a message in a Slack channel, with the bot token of your Slack app. |
+| [ServiceNow](/platform-operations/event-destinations/servicenow) | As a new record, such as an incident, in a ServiceNow table. |
 
 To manage destinations, a person or service account needs the `organization:manageEventDestinations` permission. Refer to [GraphQL permissions](/platform-operations/security/graphql-permissions#event-destination).
 
@@ -19,7 +21,7 @@ To manage destinations, a person or service account needs the `organization:mana
 
 1. Go to **Organization Settings** → **Event destinations**.
 2. Click **New destination**.
-3. Enter a **Name** and the settings of the adapter, such as the **URL** of your endpoint.
+3. Select the adapter. Enter a **Name** and the settings of the adapter, such as the **URL** of your endpoint.
 4. Optional: add the credentials of the adapter under **Credentials**, such as an `Authorization` header.
 5. Choose the **Events**. If necessary, add **Attributes** and a **Condition** under **Filters**. Refer to [Choose events](#choose-events).
 6. Click **Create destination**.
@@ -67,6 +69,12 @@ A destination has two objects of adapter settings:
 - `auth`: the credentials, such as an `Authorization` header. The API never returns `auth`. To remove the credentials, set `auth` to `null`.
 
 The [`eventDestinationAdapters`](/api/graphql/operations/queries/event-destination-adapters) query lists each adapter. For each adapter, `configSchema` and `authSchema` are the JSON schemas of `config` and `auth`, and `signs` tells you if Massdriver signs the events. The page of each adapter lists its settings.
+
+### Send a test event
+
+To check the settings and credentials of a destination, click **Send test event** on the destination. With the API, use `testEventDestination`. Massdriver sends one `event_destination.tested` event at once and shows if the destination accepted it, or the error, such as `HTTP 401`.
+
+The test event ignores the destination's **Events**, **Attributes**, **Condition**, and status. It is not a delivery, and it does not change `lastError` or `failingSince`. Its `data.entity` holds the `id` and `name` of the destination, and `data.actor` is you. `event_destination.tested` is not an event type that a destination can select. If Massdriver gets no response in 15 seconds, the test stops.
 
 ## Choose events
 
