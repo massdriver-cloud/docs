@@ -68,6 +68,72 @@ mutation CreateEventDestination($auth: Map) {
 }
 ```
 
+## Use cases
+
+Each use case is one destination. To send different events with different fields, such as a higher `urgency` for production, make one destination for each set of fields. For the attribute keys, refer to [Attribute keys](/platform-operations/event-destinations#attribute-keys).
+
+### Incidents for failed production deployments
+
+| Setting | Value |
+|---|---|
+| Events | `deployment.failed`, `deployment.aborted` |
+| Attributes | `{"md-environment": "prod"}`. To limit it to one project, add `"md-project": "api"`. To limit it to one bundle, add `"md-repo": "aws-aurora"`. |
+| Condition | `.data.metadata.deployment_action != "PLAN"`, to skip failed plans |
+| Table | `incident` |
+| Fields | `{"assignment_group": "Platform", "urgency": "2", "impact": "2", "category": "software"}` |
+
+### Incidents when a production alarm fires
+
+| Setting | Value |
+|---|---|
+| Events | `alarm_state.created` |
+| Attributes | `{"md-environment": "prod"}`. To limit it to databases, add `"md-component": "database"`. To limit it to one instance, use `"md-instance": "api-prod-database"`. |
+| Condition | `.data.entity.status == "ALARM"`, to skip the change back to `OK` |
+| Table | `incident` |
+| Fields | `{"assignment_group": "Platform", "urgency": "1", "impact": "1"}` |
+
+Massdriver opens a new incident each time an alarm changes to `ALARM`. It does not close the incident when the alarm changes back to `OK`.
+
+### Security review when a secret leaves Massdriver
+
+| Setting | Value |
+|---|---|
+| Events | `resource.exported` |
+| Attributes | (empty). To limit it to production, use `{"md-environment": "prod"}`. |
+| Condition | `.data.metadata.contains_secrets == true`. To limit it to IAM roles, add `and (.data.attributes["md-resource-type"] // "" \| startswith("aws-iam-role@"))`. |
+| Table | `incident`, or a security table that extends `task` |
+| Fields | `{"assignment_group": "Security", "category": "security"}` |
+
+### Access changes for an audit trail
+
+| Setting | Value |
+|---|---|
+| Events | `access_token.created`, `access_token.revoked`, `service_account.created`, `service_account.deleted`, `group_membership.joined`, `group_membership.deleted` |
+| Attributes | (empty). These events have no attributes, so a destination with **Attributes** never receives them. |
+| Condition | (empty) |
+| Table | A table that extends `task` and that your security team reviews |
+| Fields | `{"assignment_group": "Security"}` |
+
+### A record of each production change
+
+| Setting | Value |
+|---|---|
+| Events | `deployment.completed` |
+| Attributes | `{"md-environment": "prod"}` |
+| Condition | `.data.metadata.deployment_action != "PLAN"`. To record only removals, use `.data.metadata.deployment_action == "DECOMMISSION"`. |
+| Table | `change_request`, or another table that extends `task` |
+| Fields | The fields that your change process requires, such as `category` and `assignment_group` |
+
+Use the [preview](/platform-operations/event-destinations#choose-events) on the destination to see the recent events that a use case selects before you save it.
+
+## Limits
+
+- Massdriver only creates records. It does not update or close a record, for example when an alarm changes back to `OK`.
+- The values in `config.fields` are the same for every record of a destination. To use different values, make more than one destination.
+- Massdriver does not set `cmdb_ci` from the event. You can set one fixed `cmdb_ci` in `config.fields`.
+- The table must have a `correlation_id` field.
+- Massdriver uses basic authentication, and sends only to `https://<instance>.service-now.com`.
+
 ## The record
 
 | Field | Value |
