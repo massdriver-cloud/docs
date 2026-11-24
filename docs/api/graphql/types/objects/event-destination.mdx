@@ -66,6 +66,8 @@ type EventDestination {
   lastError: String
   createdAt: DateTime!
   updatedAt: DateTime!
+  pendingCount: Int!
+  lag: Int
   deliveries(
     filter: EventDeliveriesFilter
     sort: EventDeliveriesSort
@@ -133,6 +135,16 @@ When the destination was added (UTC).
 
 #### [<code style={{ fontWeight: 'normal' }}>EventDestination.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
 When the destination last changed (UTC).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDestination.<b>pendingCount</b></code>](#pending-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/api/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#pending-count\} 
+Events that wait to be sent to the destination, including the ones that wait for a retry. Events wait while
+the destination is paused.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDestination.<b>lag</b></code>](#lag)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/api/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#lag\} 
+Seconds since the oldest event that waits to be sent happened. A destination that keeps up has a lag of a few
+seconds. The lag of a paused destination grows until it is resumed. `null` when no event waits.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EventDestination.<b>deliveries</b></code>](#deliveries)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventDeliveriesPage</b></code>](/api/graphql/types/objects/event-deliveries-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#deliveries\} 

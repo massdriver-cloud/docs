@@ -57,6 +57,7 @@ type IntegrationTypeInfo {
   docs: String!
   configSchema: Map!
   authSchema: Map!
+  capabilities: [IntegrationCapability!]!
 }
 ```
 
@@ -87,6 +88,10 @@ JSON Schema describing the structure of the `config` field when creating this in
 
 #### [<code style={{ fontWeight: 'normal' }}>IntegrationTypeInfo.<b>authSchema</b></code>](#auth-schema)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#auth-schema\} 
 JSON Schema describing the structure of the `auth` field when creating this integration. Typically contains credential requirements like IAM role ARNs or service account keys.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationTypeInfo.<b>capabilities</b></code>](#capabilities)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[IntegrationCapability!]!</b></code>](/api/graphql/types/enums/integration-capability.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#capabilities\} 
+The kinds of data this integration provides once it is enabled.
 
 
 

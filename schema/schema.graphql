@@ -754,6 +754,8 @@ type RootQueryType {
         name
         configSchema
         authSchema
+        configUiSchema
+        authUiSchema
         signs
       }
     }
@@ -5059,6 +5061,9 @@ enum EventDestinationAdapter {
 
   "Create a ServiceNow record, such as an incident, for each event."
   SERVICE_NOW
+
+  "Trigger a PagerDuty alert for each event with an Events API v2 integration key."
+  PAGER_DUTY
 }
 
 "Whether a destination receives events."
@@ -5251,6 +5256,18 @@ type EventDestination {
   updatedAt: DateTime!
 
   """
+  Events that wait to be sent to the destination, including the ones that wait for a retry. Events wait while
+  the destination is paused.
+  """
+  pendingCount: Int!
+
+  """
+  Seconds since the oldest event that waits to be sent happened. A destination that keeps up has a lag of a few
+  seconds. The lag of a paused destination grows until it is resumed. `null` when no event waits.
+  """
+  lag: Int
+
+  """
   One delivery for each event the destination selects: sent, waiting, skipped by the condition, or failed.
   Delivered and skipped deliveries are kept for the install's retention, 7 days by default, and failed ones for
   30 days. Newest first by default.
@@ -5299,7 +5316,7 @@ type EventDelivery {
 
 """
 A way to send events. Use `configSchema` and `authSchema` to build the `config` and `auth` of
-`createEventDestination`.
+`createEventDestination`, and `configUiSchema` and `authUiSchema` to show them in a form.
 """
 type EventDestinationAdapterInfo {
   "The value to pass as `adapter`."
@@ -5316,6 +5333,28 @@ type EventDestinationAdapterInfo {
 
   "JSON schema of a destination's `auth`: the credentials used to send events. The API never returns it."
   authSchema: Map!
+
+  """
+  UI hints describing how to render the `config` form.
+
+  Follows [react-jsonschema-form](https://rjsf-team.github.io/react-jsonschema-form/)'s
+  `uiSchema` conventions: keys mirror `configSchema`'s structure and values contain
+  rendering directives. A map of string values uses `ui:field: keyValueRows`, a Massdriver
+  field that shows name and value rows. Other clients need their own field for it. Returns an
+  empty object when the adapter has no UI hints for `config`.
+  """
+  configUiSchema: Map!
+
+  """
+  UI hints describing how to render the `auth` form.
+
+  Follows [react-jsonschema-form](https://rjsf-team.github.io/react-jsonschema-form/)'s
+  `uiSchema` conventions: keys mirror `authSchema`'s structure and values contain
+  rendering directives. A secret uses `ui:widget: password`, and a map of string values uses
+  `ui:field: keyValueRows`, a Massdriver field that shows name and value rows. Returns an
+  empty object when the adapter has no UI hints for `auth`.
+  """
+  authUiSchema: Map!
 
   "Whether destinations get a `signingSecret` that signs each event."
   signs: Boolean!
@@ -5571,6 +5610,26 @@ enum IntegrationStatus {
   ENABLED
 }
 
+"""
+A kind of data an integration provides.
+
+Modules such as a cost summary appear wherever a capability is available, whichever integration or cloud
+provides the data. Read `Organization.capabilities` to find the capabilities your organization has.
+"""
+enum IntegrationCapability {
+  "Cloud spend per instance, environment and project."
+  COST
+}
+
+"The outcome of one scheduled run of an integration."
+enum IntegrationRunStatus {
+  "The run finished and its data was saved."
+  SUCCEEDED
+
+  "The run stopped with an error. `message` holds the error."
+  FAILED
+}
+
 "Available fields for sorting the integrations list."
 enum IntegrationsSortField {
   "Sort by creation date."
@@ -5664,6 +5723,9 @@ type IntegrationTypeInfo {
 
   "JSON Schema describing the structure of the `auth` field when creating this integration. Typically contains credential requirements like IAM role ARNs or service account keys."
   authSchema: Map!
+
+  "The kinds of data this integration provides once it is enabled."
+  capabilities: [IntegrationCapability!]!
 }
 
 type IntegrationTypesPage {
@@ -5672,6 +5734,37 @@ type IntegrationTypesPage {
 
   "A list of type integration_type_info."
   items: [IntegrationTypeInfo]
+}
+
+"""
+One scheduled run of an integration.
+
+Runs are kept for the install's retention, 90 days by default. The data a run collects, such as costs,
+is kept separately and is not deleted with the run.
+"""
+type IntegrationRun {
+  "Unique identifier for this run."
+  id: ID!
+
+  "Whether the run succeeded or failed."
+  status: IntegrationRunStatus!
+
+  "The error that stopped a failed run. `null` when the run succeeded."
+  message: String
+
+  "When the run started (UTC)."
+  startedAt: DateTime!
+
+  "When the run finished (UTC)."
+  finishedAt: DateTime!
+}
+
+type IntegrationRunsPage {
+  "Pagination cursors for navigating between pages."
+  cursor: PaginationCursor!
+
+  "A list of type integration_run."
+  items: [IntegrationRun]
 }
 
 """
@@ -5701,6 +5794,15 @@ type Integration {
 
   "When this integration is next scheduled to execute (UTC). Only present for integrations that run on a periodic schedule. `null` if the integration is disabled or does not have scheduled runs."
   nextRunAt: DateTime
+
+  "The most recent scheduled run. `null` until the integration has run once."
+  lastRun: IntegrationRun
+
+  "Scheduled runs of this integration, newest first."
+  runs(
+    "Pagination cursor from a previous response."
+    cursor: Cursor
+  ): IntegrationRunsPage
 }
 
 """
@@ -6594,6 +6696,12 @@ type Organization {
   payment, seat, and invoice data live behind the admin-only `billing` field.
   """
   subscriptionStatus: OrganizationSubscriptionStatus!
+
+  """
+  The kinds of data the organization's enabled integrations provide. Visible to every member, so the UI
+  can show a module such as a cost summary only when an integration provides its data.
+  """
+  capabilities: [IntegrationCapability!]!
 
   """
   When the current free trial expires (UTC).

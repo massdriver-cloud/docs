@@ -43,7 +43,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 A way to send events. Use `configSchema` and `authSchema` to build the `config` and `auth` of
-`createEventDestination`.
+`createEventDestination`, and `configUiSchema` and `authUiSchema` to show them in a form.
 
 
 ```graphql
@@ -53,6 +53,8 @@ type EventDestinationAdapterInfo {
   description: String!
   configSchema: Map!
   authSchema: Map!
+  configUiSchema: Map!
+  authUiSchema: Map!
   signs: Boolean!
 }
 ```
@@ -80,6 +82,26 @@ JSON schema of a destination's `config`: where and how events are sent. The API 
 
 #### [<code style={{ fontWeight: 'normal' }}>EventDestinationAdapterInfo.<b>authSchema</b></code>](#auth-schema)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#auth-schema\} 
 JSON schema of a destination's `auth`: the credentials used to send events. The API never returns it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDestinationAdapterInfo.<b>configUiSchema</b></code>](#config-ui-schema)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#config-ui-schema\} 
+UI hints describing how to render the `config` form.
+
+Follows [react-jsonschema-form](https://rjsf-team.github.io/react-jsonschema-form/)'s
+`uiSchema` conventions: keys mirror `configSchema`'s structure and values contain
+rendering directives. A map of string values uses `ui:field: keyValueRows`, a Massdriver
+field that shows name and value rows. Other clients need their own field for it. Returns an
+empty object when the adapter has no UI hints for `config`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDestinationAdapterInfo.<b>authUiSchema</b></code>](#auth-ui-schema)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#auth-ui-schema\} 
+UI hints describing how to render the `auth` form.
+
+Follows [react-jsonschema-form](https://rjsf-team.github.io/react-jsonschema-form/)'s
+`uiSchema` conventions: keys mirror `authSchema`'s structure and values contain
+rendering directives. A secret uses `ui:widget: password`, and a map of string values uses
+`ui:field: keyValueRows`, a Massdriver field that shows name and value rows. Returns an
+empty object when the adapter has no UI hints for `auth`.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EventDestinationAdapterInfo.<b>signs</b></code>](#signs)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#signs\} 
