@@ -49,6 +49,7 @@ adapter takes.
 ```graphql
 enum EventDestinationAdapter {
   HTTP
+  SLACK
 }
 ```
 
@@ -59,6 +60,10 @@ enum EventDestinationAdapter {
 
 #### [<code style={{ fontWeight: 'normal' }}>EventDestinationAdapter.<b>HTTP</b></code>](#http) \{#http\} 
 POST each event to a URL as a CloudEvent (`application/cloudevents+json`), signed with [Standard Webhooks](https://www.standardwebhooks.com) headers.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDestinationAdapter.<b>SLACK</b></code>](#slack) \{#slack\} 
+Post each event to a Slack channel with your Slack app's bot token.
 
 
 

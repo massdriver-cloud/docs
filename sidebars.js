@@ -205,7 +205,7 @@ module.exports = {
       type: "category",
       label: "Deprecations",
       link: { type: "doc", id: "deprecations/deprecations-overview" },
-      items: ["deprecations/deprecations-service-account-secrets"],
+      items: ["deprecations/deprecations-service-account-secrets", "deprecations/deprecations-secret-sha256"],
     },
   ],
 };

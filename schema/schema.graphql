@@ -2439,6 +2439,19 @@ type RootMutationType {
     id: UUID!
   ): EventDestinationPayload
 
+  """
+  Send one sample `event_destination.tested` event to a destination now, to check its settings and
+  credentials. The test ignores the destination's events, attributes, condition, and status. It makes no
+  delivery, and does not change `lastError` or `failingSince`.
+  """
+  testEventDestination(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The destination's unique identifier."
+    id: UUID!
+  ): EventDestinationTestPayload
+
   "Delete a destination and its deliveries. Events waiting to be sent are not sent."
   deleteEventDestination(
     "Your organization's unique identifier."
@@ -5040,6 +5053,9 @@ adapter takes.
 enum EventDestinationAdapter {
   "POST each event to a URL as a CloudEvent (`application\/cloudevents+json`), signed with [Standard Webhooks](https:\/\/www.standardwebhooks.com) headers."
   HTTP
+
+  "Post each event to a Slack channel with your Slack app's bot token."
+  SLACK
 }
 
 "Whether a destination receives events."
@@ -5335,6 +5351,26 @@ type EventDestinationPayload {
 
   "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
   result: EventDestination
+}
+
+"The result of sending a test event to a destination."
+type EventDestinationTest {
+  "Whether the destination accepted the test event."
+  delivered: Boolean!
+
+  "Why the destination did not accept the test event, such as `HTTP 401`. Null when it did."
+  error: String
+}
+
+type EventDestinationTestPayload {
+  "Indicates if the mutation completed successfully or not."
+  successful: Boolean!
+
+  "A list of failed validations. May be blank or null if mutation succeeded."
+  messages: [ValidationMessage]
+
+  "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
+  result: EventDestinationTest
 }
 
 """
@@ -8457,7 +8493,7 @@ type InstanceSecret {
   name: String!
 
   "Lowercase hex SHA-256 of the stored value."
-  sha256: String! @deprecated(reason: "Use `isSet` on `Instance.secretFields`. Massdriver will stop storing a hash of secret values.")
+  sha256: String! @deprecated(reason: "Use `isSet` on `Instance.secretFields`. Removed on February 1, 2027.")
 
   "When this secret was first created (UTC)."
   createdAt: DateTime!
@@ -8489,7 +8525,7 @@ type InstanceSecretField {
   isSet: Boolean!
 
   "Lowercase hex SHA-256 of the stored value, or null when no value has been set."
-  sha256: String @deprecated(reason: "Use `isSet`. Massdriver will stop storing a hash of secret values.")
+  sha256: String @deprecated(reason: "Use `isSet`. Removed on February 1, 2027.")
 }
 
 type InstancePayload {
