@@ -754,6 +754,8 @@ type RootQueryType {
         name
         configSchema
         authSchema
+        configUiSchema
+        authUiSchema
         signs
       }
     }
@@ -1979,6 +1981,19 @@ type RootMutationType {
     "The invitation's unique identifier."
     id: UUID!
   ): InviteViewerPayload
+
+  """
+  Update your first and last name.
+
+  Fields you leave out keep their current value. If an organization provisions your
+  account through SCIM, your identity provider owns your name and this mutation
+  returns an error; change your name in the identity provider instead. Check
+  `scimManaged` on the viewer to know in advance.
+  """
+  updateAccount(
+    "Update your name. Accounts provisioned through SCIM get their name from the identity provider and cannot change it here."
+    input: UpdateAccountInput!
+  ): AccountViewerPayload @inputs(name: "updateAccount", schema: "\/graphql\/v2\/inputs\/updateAccount.json", ui: "\/graphql\/v2\/inputs\/updateAccount.ui.json")
 
   """
   Upload or replace your profile avatar.
@@ -5299,7 +5314,7 @@ type EventDelivery {
 
 """
 A way to send events. Use `configSchema` and `authSchema` to build the `config` and `auth` of
-`createEventDestination`.
+`createEventDestination`, and `configUiSchema` and `authUiSchema` to show them in a form.
 """
 type EventDestinationAdapterInfo {
   "The value to pass as `adapter`."
@@ -5316,6 +5331,28 @@ type EventDestinationAdapterInfo {
 
   "JSON schema of a destination's `auth`: the credentials used to send events. The API never returns it."
   authSchema: Map!
+
+  """
+  UI hints describing how to render the `config` form.
+
+  Follows [react-jsonschema-form](https://rjsf-team.github.io/react-jsonschema-form/)'s
+  `uiSchema` conventions: keys mirror `configSchema`'s structure and values contain
+  rendering directives. A map of string values uses `ui:field: keyValueRows`, a Massdriver
+  field that shows name and value rows. Other clients need their own field for it. Returns an
+  empty object when the adapter has no UI hints for `config`.
+  """
+  configUiSchema: Map!
+
+  """
+  UI hints describing how to render the `auth` form.
+
+  Follows [react-jsonschema-form](https://rjsf-team.github.io/react-jsonschema-form/)'s
+  `uiSchema` conventions: keys mirror `authSchema`'s structure and values contain
+  rendering directives. A secret uses `ui:widget: password`, and a map of string values uses
+  `ui:field: keyValueRows`, a Massdriver field that shows name and value rows. Returns an
+  empty object when the adapter has no UI hints for `auth`.
+  """
+  authUiSchema: Map!
 
   "Whether destinations get a `signingSecret` that signs each event."
   signs: Boolean!
@@ -7221,6 +7258,26 @@ type AvatarViewerPayload {
   result: AvatarViewer
 }
 
+type AccountViewerPayload {
+  "Indicates if the mutation completed successfully or not."
+  successful: Boolean!
+
+  "A list of failed validations. May be blank or null if mutation succeeded."
+  messages: [ValidationMessage]
+
+  "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
+  result: AccountViewer
+}
+
+"Update your name. Accounts provisioned through SCIM get their name from the identity provider and cannot change it here."
+input UpdateAccountInput {
+  "Your first name. Up to 255 characters."
+  firstName: String
+
+  "Your last name. Up to 255 characters."
+  lastName: String
+}
+
 """
 The authenticated human user (account).
 
@@ -7249,6 +7306,13 @@ type AccountViewer {
 
   "When this account's profile was last modified (UTC)."
   updatedAt: DateTime!
+
+  """
+  Whether an organization provisions this account through SCIM. When `true`, your
+  identity provider (Okta, Azure AD, etc.) owns your first and last name, and
+  `updateAccount` rejects changes to them.
+  """
+  scimManaged: Boolean!
 
   "The user's profile avatar image, or `null` if none has been uploaded."
   avatar: AvatarViewer

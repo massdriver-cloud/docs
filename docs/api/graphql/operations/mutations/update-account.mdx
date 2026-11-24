@@ -1,0 +1,86 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: update-account
+title: updateAccount
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+<Badge class="badge badge--secondary badge--primary" text="form schema"/>
+
+
+
+Update your first and last name.
+
+Fields you leave out keep their current value. If an organization provisions your
+account through SCIM, your identity provider owns your name and this mutation
+returns an error; change your name in the identity provider instead. Check
+`scimManaged` on the viewer to know in advance.
+
+
+
+
+```graphql
+updateAccount(
+  input: UpdateAccountInput!
+): AccountViewerPayload
+```
+
+
+
+
+
+### Form Schema
+
+This mutation supports dynamic form generation using JSON Schema.
+
+- [JSON Schema](https://api.massdriver.cloud/graphql/v2/inputs/updateAccount.json)
+- [UI Schema](https://api.massdriver.cloud/graphql/v2/inputs/updateAccount.ui.json)
+
+<SchemaForm
+  schemaUrl="https://api.massdriver.cloud/graphql/v2/inputs/updateAccount.json"
+  uiSchemaUrl="https://api.massdriver.cloud/graphql/v2/inputs/updateAccount.ui.json"
+  name="updateAccount"
+/>
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>updateAccount.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UpdateAccountInput!</b></code>](/api/graphql/types/inputs/update-account-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Update your name. Accounts provisioned through SCIM get their name from the identity provider and cannot change it here.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AccountViewerPayload</b></code>](/api/graphql/types/objects/account-viewer-payload.mdx) <Badge class="badge badge--secondary " text="object"/>
