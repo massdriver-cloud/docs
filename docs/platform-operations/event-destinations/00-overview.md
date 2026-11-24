@@ -167,7 +167,7 @@ sequenceDiagram
 
 ### Order and duplicates
 
-Massdriver sends events in any order. Use the event `time` when order matters.
+Massdriver sends events in any order. Use the event `time` when order matters. It is the time that the event occurred, with microsecond precision. Two events can have the same `time`. To get one stable order, sort by `time`, then by `id`.
 
 Massdriver delivers each event at least once. Your endpoint can receive the same event more than one time. For example, this occurs when your endpoint accepts an event but the response does not get back to Massdriver. Each event has a unique `id`. Every attempt for an event sends the same `id`. Use the `id` to find and drop duplicates.
 
