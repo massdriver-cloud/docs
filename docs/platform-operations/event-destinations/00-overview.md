@@ -126,6 +126,18 @@ A condition must finish within 1 second on one event. Self-hosted installations 
 
 The UI shows recent events that match the **Events**, **Attributes**, and **Condition** while you edit them. With the API, use [`previewEventDestination`](/api/graphql/operations/queries/preview-event-destination). It returns the error `eventTypes: <type> is not an event type` for an event type that does not exist, `attributes: <message>` for attributes that are not valid, `condition: <message>` for a condition that is not valid, and `condition: event <id>: <message>` when the condition cannot run on an event. The preview stops at that event. The condition runs on each page of events, so a page can hold fewer events than `limit`. Follow `cursor.next` to see every match.
 
+### Events when a dependency changes
+
+A dependency of an instance is filled from one of three sources. Refer to [What fills a slot](/bundle-development/dependencies-resources/version-resolution#what-fills-a-slot). Each source has its own events. No one event tells you that a dependency was filled. To follow every change to an instance's dependencies, select the events of all three sources.
+
+| Source | Events |
+|---|---|
+| A remote reference on the instance | `remote_reference.assigned`, `remote_reference.unset` |
+| A connection drawn on the project blueprint | `link.created` and `link.deleted` when someone draws or removes the line. `connection.created` and `connection.deleted` for each instance that the line fills or stops filling. |
+| An environment default | `environment_default.created`, `environment_default.deleted` |
+
+These events have no attributes, so a destination with **Attributes** never receives them. To select one instance, use a condition on the event's `data.entity`, such as `.data.entity.package_id`.
+
 ## How delivery works
 
 1. An event occurs in your organization. Massdriver records it in the audit log.
