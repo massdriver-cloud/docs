@@ -51,6 +51,7 @@ enum EventDestinationAdapter {
   HTTP
   SLACK
   SERVICE_NOW
+  PAGER_DUTY
 }
 ```
 
@@ -69,6 +70,10 @@ Post each event to a Slack channel with your Slack app's bot token.
 
 #### [<code style={{ fontWeight: 'normal' }}>EventDestinationAdapter.<b>SERVICE&#x005F;NOW</b></code>](#service-now) \{#service-now\} 
 Create a ServiceNow record, such as an incident, for each event.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDestinationAdapter.<b>PAGER&#x005F;DUTY</b></code>](#pager-duty) \{#pager-duty\} 
+Trigger a PagerDuty alert for each event with an Events API v2 integration key.
 
 
 

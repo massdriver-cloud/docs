@@ -324,6 +324,8 @@ The **Deliveries** tab of a destination lists each event that Massdriver gave it
 | `SKIPPED` | The destination's condition did not pass the event, so Massdriver did not send it. |
 | `FAILED` | Massdriver stopped trying to send the event. |
 
+To see if a destination keeps up, query its `pendingCount` and `lag` fields. `pendingCount` is the number of events that wait to be sent, retries included. `lag` is the number of seconds since the oldest of them happened, or `null` when no event waits. The lag of a paused destination grows until you resume it.
+
 The `lastError` field of a delivery tells you why the last attempt failed. The `event` field is `null` when the audit log no longer keeps the event.
 
 Massdriver keeps `DELIVERED` and `SKIPPED` deliveries for 7 days, and `FAILED` deliveries for 30 days. A `PENDING` delivery that is not sent within 30 days, for example because its destination stayed paused, becomes `FAILED`, so that you can send it again, and is kept for 30 more days. Self-hosted installations can change these times.
