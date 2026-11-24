@@ -18,7 +18,7 @@ Each organization has its own keys. Each key has two parts, and they are stored 
 
 Secret values are encrypted with the data key and stored in Postgres. A secret can only be decrypted when Massdriver can read both Postgres and the Massdriver bucket.
 
-Massdriver makes a new key for each organization every week (Sunday 03:23 UTC) and moves the organization's secrets to it. It deletes a retired key 30 days after it was retired, when no secret still uses it.
+Massdriver makes a new key for each organization every week and moves the organization's secrets to it. It deletes a retired key 30 days after it was retired, when no secret still uses it.
 
 ## Backups
 
