@@ -91,6 +91,7 @@ type Instance {
   availableUpgrade: String
   cost: CostSummary!
   firingAlarmCount: Int!
+  latestDeployment: Deployment
   latestProvision: Deployment
   mostRecentProposedDeployment: Deployment
   environment: Environment
@@ -244,6 +245,12 @@ Number of this instance's alarms that are currently firing.
 
 An alarm counts when its most recent reported state is `ALARM`. Alarms with
 no reported state are not counted.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Instance.<b>latestDeployment</b></code>](#latest-deployment)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Deployment</b></code>](/api/graphql/types/objects/deployment.mdx) <Badge class="badge badge--secondary " text="object"/> \{#latest-deployment\} 
+The most recent deployment of this instance, of any action and status.
+
+Null if the instance has never been deployed.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Instance.<b>latestProvision</b></code>](#latest-provision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Deployment</b></code>](/api/graphql/types/objects/deployment.mdx) <Badge class="badge badge--secondary " text="object"/> \{#latest-provision\} 
