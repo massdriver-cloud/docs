@@ -85,11 +85,51 @@ Each message has:
 
 The notification text is the event type and the instance, such as `deployment.failed: api-prod-database`. When the event has no instance, it is the event's `subject`.
 
-| To post | Events | Attributes | Condition |
-|---|---|---|---|
-| Alarms that fire in production | `alarm_state.created` | `{"md-environment": "prod"}` | `.data.entity.status == "ALARM"` |
-| Deployments that fail | `deployment.failed` | (empty) | (empty) |
-| Production deployments that complete | `deployment.completed` | `{"md-environment": "prod"}` | (empty) |
+## Use cases
+
+Each use case is one destination, and each destination posts to one channel. To post different events to different channels, make one destination for each channel. For the attribute keys, refer to [Attribute keys](/platform-operations/event-destinations#attribute-keys).
+
+### A team's deployments in the team's channel
+
+| Setting | Value |
+|---|---|
+| Events | `deployment.completed`, `deployment.failed`, `deployment.aborted` |
+| Attributes | `{"md-project": "api"}`. To limit it to production, add `"md-environment": "prod"`. To use a custom attribute, such as a team, use `{"team": "payments"}`. |
+| Condition | `.data.metadata.deployment_action != "PLAN"`, to skip plans |
+
+### Production alarms in the on-call channel
+
+| Setting | Value |
+|---|---|
+| Events | `alarm_state.created` |
+| Attributes | `{"md-environment": "prod"}`. To limit it to databases, add `"md-component": "database"`. |
+| Condition | `.data.entity.status == "ALARM"`, to skip the change back to `OK`. To post both changes, leave it empty. |
+
+### Deployments that wait for approval
+
+| Setting | Value |
+|---|---|
+| Events | `deployment.proposed`, `deployment.approved`, `deployment.rejected` |
+| Attributes | `{"md-environment": "prod"}` |
+| Condition | (empty) |
+
+Reviewers see each proposed deployment, and the **View in Massdriver** button opens the instance.
+
+### Security events in a security channel
+
+| Setting | Value |
+|---|---|
+| Events | `resource.exported`, `access_token.created`, `service_account.created`, `group_membership.joined` |
+| Attributes | (empty). Access token, service account, and group events have no attributes, so a destination with **Attributes** never receives them. |
+| Condition | `.type != "resource.exported" or .data.metadata.contains_secrets == true`, to post only the exports that reveal a secret |
+
+### New bundle versions
+
+| Setting | Value |
+|---|---|
+| Events | `repo.published` |
+| Attributes | `{"md-repo": "aws-aurora"}` for one bundle, or empty for every bundle |
+| Condition | (empty) |
 
 ## Responses
 

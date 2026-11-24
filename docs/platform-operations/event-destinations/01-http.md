@@ -209,6 +209,50 @@ To see a retry, stop the receiver and create one more project. The tunnel cannot
 
 If your receiver responds with `401`, the signing secret is not correct. Copy it again from the **Overview** tab.
 
+## Use cases
+
+Each use case is one destination. For the attribute keys, refer to [Attribute keys](/platform-operations/event-destinations#attribute-keys).
+
+### Send the whole audit log to a SIEM or a data warehouse
+
+| Setting | Value |
+|---|---|
+| Events | (empty), for every event |
+| Attributes | (empty). Any attribute removes the events that have no attributes, such as access token events. |
+| Condition | (empty) |
+
+The receiver stores each event as it comes. Use the event `id` to drop duplicates, and the event `time` to sort.
+
+### Start a pipeline after a deployment
+
+| Setting | Value |
+|---|---|
+| Events | `deployment.completed` |
+| Attributes | `{"md-environment": "staging", "md-component": "api"}`, for the deployments of one component in one environment |
+| Condition | `.data.metadata.deployment_action == "PROVISION"`, to skip plans and removals |
+
+For example, the receiver starts the integration tests for the staging API. `data.attributes["md-instance"]` names the instance, and `data.attributes["md-bundle"]` names the bundle version that was deployed.
+
+### Keep an inventory or a CMDB up to date
+
+| Setting | Value |
+|---|---|
+| Events | `instance.*`, `resource.*` |
+| Attributes | `{"md-environment": "prod"}`, or empty for every environment |
+| Condition | (empty) |
+
+`instance.created`, `instance.deleted`, `resource.stored`, and `resource.deleted` tell the receiver which instances and resources exist. Resource events carry `md-resource-type`.
+
+### Page on-call with your own tool
+
+| Setting | Value |
+|---|---|
+| Events | `alarm_state.created`, `deployment.failed` |
+| Attributes | `{"md-environment": "prod"}` |
+| Condition | `.type != "alarm_state.created" or .data.entity.status == "ALARM"` |
+
+The receiver opens a page for each event and uses the event `id` as the key that drops duplicates.
+
 ## The request
 
 Massdriver sends a `POST` request to the `url` in the destination's `config`. The body is one [CloudEvent](/platform-operations/event-destinations#the-event) in JSON structured mode.
