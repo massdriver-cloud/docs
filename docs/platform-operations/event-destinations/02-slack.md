@@ -77,13 +77,23 @@ mutation CreateEventDestination($auth: Map) {
 
 Each message has:
 
-- The event type, such as `deployment.failed`, and what the event type means.
-- The **Project**, **Environment**, **Component**, and **Instance** of the entity, from the event's `data.attributes`. The message shows only the ones that the event has.
-- The **Status** and **Message** of the entity, when the event has them. For `alarm_state.created`, these are the state of the alarm, such as `ALARM`, and the alarm message. Alarm events have the attributes of the alarm's instance.
-- The time of the event and its `id`.
-- A **View in Massdriver** button that opens the page of the entity's instance, environment, or project. Events that are not about a project, such as organization events, have no button.
+- A headline that tells what happened, with an emoji. For example, `⏳ Jane Doe wants to deploy api-prod-database`, `✅ api-prod-database deployed`, or `🔴 api-prod-database is in alarm`.
+- An **Open in Massdriver** button that opens the page of the entity's instance, environment, or project. Events that are not about a project, such as organization events, have no button.
+- A colored bar. Green is for events that went well, such as a completed deployment. Red is for failures, such as a failed deployment or an alarm. Yellow is for events that wait for a person, such as a proposed deployment. Gray is for all other events.
+- The message of the deployment or of the alarm, when the event has one.
+- Details that the headline does not give, such as the bundle version and the person who deployed. Then the time of the event, in the time zone of each reader.
 
-The notification text is the event type and the instance, such as `deployment.failed: api-prod-database`. When the event has no instance, it is the event's `subject`.
+| Event | Headline |
+|---|---|
+| `deployment.proposed` | ⏳ Jane Doe wants to deploy api-prod-database |
+| `deployment.approved` | 👍 Deploy of api-prod-database approved |
+| `deployment.completed` | ✅ api-prod-database deployed |
+| `deployment.failed` | ❌ Deploy of api-prod-database failed |
+| `alarm_state.created` | 🔴 api-prod-database is in alarm, or 🟢 api-prod-database is back to OK |
+| `resource.exported` | 🔐 The secrets of resource writer were exported, when the export reveals a secret |
+| `repo.published` | 🎉 New version of aws-aurora published |
+
+The notification text is the emoji and the headline.
 
 ## Use cases
 
@@ -113,7 +123,7 @@ Each use case is one destination, and each destination posts to one channel. To 
 | Attributes | `{"md-environment": "prod"}` |
 | Condition | (empty) |
 
-Reviewers see each proposed deployment, and the **View in Massdriver** button opens the instance.
+Reviewers see each proposed deployment, and the **Open in Massdriver** button opens the instance.
 
 ### Security events in a security channel
 
