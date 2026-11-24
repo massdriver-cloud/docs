@@ -200,6 +200,8 @@ MASSDRIVER_SIGNING_SECRET='whsec_...' node receiver.mjs
 
 ### 4. Send an event
 
+To check the connection first, click **Send test event** on the destination. Your receiver prints an `event_destination.tested` event.
+
 1. Create a project. Massdriver records a `project.created` event.
 2. Your receiver prints the `id`, `type`, and `subject` of the event. On the **Deliveries** tab, the event is **Delivered**.
 

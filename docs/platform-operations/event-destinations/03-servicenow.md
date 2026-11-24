@@ -73,7 +73,7 @@ mutation CreateEventDestination($auth: Map) {
 | Field | Value |
 |---|---|
 | `short_description` | The event type and the instance, such as `deployment.failed: api-prod-database`. When the event has no instance, the event's `subject`. At most 160 characters. |
-| `description` | What the event type means. Then the **Project**, **Environment**, **Component**, **Instance**, **Status**, and **Message** that the event has. Then the time, the event `id`, and the `subject`. |
+| `description` | What the event type means. Then the **Project**, **Environment**, **Component**, **Instance**, **Status**, and **Message** that the event has. Then the time, the event `id`, and the `subject`. Last, a link to the page of the entity's instance, environment, or project in Massdriver, when the event is about a project. |
 | `correlation_id` | The event `id`. |
 | `correlation_display` | `Massdriver` |
 

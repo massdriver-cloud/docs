@@ -70,6 +70,12 @@ A destination has two objects of adapter settings:
 
 The [`eventDestinationAdapters`](/api/graphql/operations/queries/event-destination-adapters) query lists each adapter. For each adapter, `configSchema` and `authSchema` are the JSON schemas of `config` and `auth`, and `signs` tells you if Massdriver signs the events. The page of each adapter lists its settings.
 
+### Send a test event
+
+To check the settings and credentials of a destination, click **Send test event** on the destination. With the API, use `testEventDestination`. Massdriver sends one `event_destination.tested` event at once and shows if the destination accepted it, or the error, such as `HTTP 401`.
+
+The test event ignores the destination's **Events**, **Attributes**, **Condition**, and status. It is not a delivery, and it does not change `lastError` or `failingSince`. Its `data.entity` holds the `id` and `name` of the destination.
+
 ## Choose events
 
 Three settings choose the events that a destination receives. Massdriver applies them in this order:

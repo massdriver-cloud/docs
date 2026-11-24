@@ -79,14 +79,15 @@ Each message has:
 
 - The event type, such as `deployment.failed`, and what the event type means.
 - The **Project**, **Environment**, **Component**, and **Instance** of the entity, from the event's `data.attributes`. The message shows only the ones that the event has.
-- The **Status** and **Message** of the entity, when the event has them. For `alarm_state.created`, these are the state of the alarm, such as `ALARM`, and the alarm message.
+- The **Status** and **Message** of the entity, when the event has them. For `alarm_state.created`, these are the state of the alarm, such as `ALARM`, and the alarm message. Alarm events have the attributes of the alarm's instance.
 - The time of the event and its `id`.
+- A **View in Massdriver** button that opens the page of the entity's instance, environment, or project. Events that are not about a project, such as organization events, have no button.
 
 The notification text is the event type and the instance, such as `deployment.failed: api-prod-database`. When the event has no instance, it is the event's `subject`.
 
 | To post | Events | Attributes | Condition |
 |---|---|---|---|
-| Alarms that fire | `alarm_state.created` | (empty) | `.data.entity.status == "ALARM"` |
+| Alarms that fire in production | `alarm_state.created` | `{"md-environment": "prod"}` | `.data.entity.status == "ALARM"` |
 | Deployments that fail | `deployment.failed` | (empty) | (empty) |
 | Production deployments that complete | `deployment.completed` | `{"md-environment": "prod"}` | (empty) |
 
