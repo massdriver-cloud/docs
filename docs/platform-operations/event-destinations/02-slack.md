@@ -77,11 +77,11 @@ mutation CreateEventDestination($auth: Map) {
 
 Each message has:
 
-- A headline that tells what happened, with an emoji. For example, `⏳ Jane Doe wants to deploy api-prod-database`, `✅ api-prod-database deployed`, or `🔴 api-prod-database is in alarm`.
+- A headline that tells what happened, with an emoji. For example, `⏳ Jane Doe wants to deploy api-prod-database`, `✅ api-prod-database deployed`, or `🔴 High CPU on api-prod-database is in alarm`.
 - An **Open in Massdriver** button that opens the page of the entity's instance, environment, or project. Events that are not about a project, such as organization events, have no button.
 - A colored bar. Green is for events that went well, such as a completed deployment. Red is for failures, such as a failed deployment or an alarm. Yellow is for events that wait for a person, such as a proposed deployment. Gray is for all other events.
 - The message of the deployment or of the alarm, when the event has one.
-- Details that the headline does not give, such as the bundle version and the person who deployed. Then the time of the event, in the time zone of each reader.
+- Details that the headline does not give, such as the bundle version and the person or service account that caused the event. Then the time of the event, in the time zone of each reader.
 
 | Event | Headline |
 |---|---|
@@ -89,7 +89,8 @@ Each message has:
 | `deployment.approved` | 👍 Deploy of api-prod-database approved |
 | `deployment.completed` | ✅ api-prod-database deployed |
 | `deployment.failed` | ❌ Deploy of api-prod-database failed |
-| `alarm_state.created` | 🔴 api-prod-database is in alarm, or 🟢 api-prod-database is back to OK |
+| `alarm_state.created` | 🔴 High CPU on api-prod-database is in alarm, or 🟢 High CPU on api-prod-database is back to OK |
+| `group_membership.added` | 👥 Jane Doe was added to group Platform, or 👥 Service account ci-bot was added to group Platform |
 | `resource.exported` | 🔐 The secrets of resource writer were exported, when the export reveals a secret |
 | `repo.published` | 🎉 New version of aws-aurora published |
 
@@ -129,7 +130,7 @@ Reviewers see each proposed deployment, and the **Open in Massdriver** button op
 
 | Setting | Value |
 |---|---|
-| Events | `resource.exported`, `access_token.created`, `service_account.created`, `group_membership.joined` |
+| Events | `resource.exported`, `access_token.created`, `service_account.created`, `group_membership.added` |
 | Attributes | (empty). Access token, service account, and group events have no attributes, so a destination with **Attributes** never receives them. |
 | Condition | `.type != "resource.exported" or .data.metadata.contains_secrets == true`, to post only the exports that reveal a secret |
 
