@@ -44,8 +44,10 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 A place outside Massdriver that receives the organization's audit log events.
 
-Massdriver sends each event that matches the `filter`, one at a time, and retries failed sends with
-backoff. Order is not guaranteed. A receiver can drop duplicates by the event `id`.
+The destination gets one delivery for each event of its `eventTypes` and `attributes`, and sends the ones its
+`condition` passes. A failed send is retried with backoff until it succeeds or the delivery is `FAILED`.
+Events go out in any order, and one event can arrive more than once: use the event `time` when order matters,
+and the event `id` to drop duplicates.
 
 
 ```graphql
@@ -54,11 +56,14 @@ type EventDestination {
   name: String!
   adapter: EventDestinationAdapter!
   config: Map!
-  filter: EventFilter!
+  eventTypes: [String!]!
+  attributes: Map!
   condition: String
   status: EventDestinationStatus!
   signingSecret: String
   failingSince: DateTime
+  lastDeliveredAt: DateTime
+  lastError: String
   createdAt: DateTime!
   updatedAt: DateTime!
   deliveries(
@@ -83,19 +88,23 @@ Name of the destination, unique in the organization.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EventDestination.<b>adapter</b></code>](#adapter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventDestinationAdapter!</b></code>](/api/graphql/types/enums/event-destination-adapter.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#adapter\} 
-How Massdriver sends events.
+How the destination receives events.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EventDestination.<b>config</b></code>](#config)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#config\} 
 Where and how events are sent, in the shape of the adapter's `configSchema`. The destination's `auth` credentials are never returned.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>EventDestination.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventFilter!</b></code>](/api/graphql/types/objects/event-filter.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#filter\} 
-The events the destination receives.
+#### [<code style={{ fontWeight: 'normal' }}>EventDestination.<b>eventTypes</b></code>](#event-types)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#event-types\} 
+The event types the destination receives, or `<entity>.*` for every event of an entity. An empty list receives every event.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDestination.<b>attributes</b></code>](#attributes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#attributes\} 
+Attribute values that the event's entity must have had when the event happened, such as `{"md-environment": "prod"}`. An event must have all of them. An empty map receives events of any attributes.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EventDestination.<b>condition</b></code>](#condition)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#condition\} 
-A jq expression run on each CloudEvent that the filter matches. The event is sent only when it outputs `true`. `null` sends every event the filter matches.
+A jq expression run on each CloudEvent that the `eventTypes` and `attributes` select. The event is sent only when it outputs `true`. `null` sends every selected event.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EventDestination.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventDestinationStatus!</b></code>](/api/graphql/types/enums/event-destination-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
@@ -110,6 +119,14 @@ The secret that signs each request, in Standard Webhooks form (`whsec_` followed
 When sends to the destination started to fail. `null` when the last send succeeded.
 
 
+#### [<code style={{ fontWeight: 'normal' }}>EventDestination.<b>lastDeliveredAt</b></code>](#last-delivered-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#last-delivered-at\} 
+When the destination last accepted an event (UTC).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDestination.<b>lastError</b></code>](#last-error)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#last-error\} 
+Why the endpoint did not accept the last send, such as `HTTP 503`. `null` when the last send succeeded. Condition errors are on the deliveries, not here.
+
+
 #### [<code style={{ fontWeight: 'normal' }}>EventDestination.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
 When the destination was added (UTC).
 
@@ -119,7 +136,9 @@ When the destination last changed (UTC).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EventDestination.<b>deliveries</b></code>](#deliveries)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventDeliveriesPage</b></code>](/api/graphql/types/objects/event-deliveries-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#deliveries\} 
-The events matched to this destination and the state of each send. Newest first by default.
+One delivery for each event the destination selects: sent, waiting, skipped by the condition, or failed.
+Delivered and skipped deliveries are kept for the install's retention, 7 days by default, and failed ones for
+30 days. Newest first by default.
 ##### [<code style={{ fontWeight: 'normal' }}>EventDestination.deliveries.<b>filter</b></code>](#event-destination-deliveries-filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventDeliveriesFilter</b></code>](/api/graphql/types/inputs/event-deliveries-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#event-destination-deliveries-filter\} 
 Filter criteria. All filters are combined with AND.
 

@@ -115,6 +115,7 @@ module.exports = {
             "platform-operations/self-hosted/self-hosted-custom-provisioners",
             "platform-operations/self-hosted/self-hosted-deployment-identity-tokens",
             "platform-operations/self-hosted/self-hosted-provisioner-workload-identity",
+            "platform-operations/self-hosted/self-hosted-secret-encryption",
             {
               type: "category",
               label: "Runbooks",

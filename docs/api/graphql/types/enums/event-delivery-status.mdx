@@ -47,10 +47,10 @@ The state of one event's delivery to a destination.
 
 ```graphql
 enum EventDeliveryStatus {
-  PENDING
   DELIVERED
-  FAILED
   SKIPPED
+  FAILED
+  PENDING
 }
 ```
 
@@ -59,20 +59,20 @@ enum EventDeliveryStatus {
 
 ### Values
 
-#### [<code style={{ fontWeight: 'normal' }}>EventDeliveryStatus.<b>PENDING</b></code>](#pending) \{#pending\} 
-Waiting to be sent, or waiting for a retry.
-
-
 #### [<code style={{ fontWeight: 'normal' }}>EventDeliveryStatus.<b>DELIVERED</b></code>](#delivered) \{#delivered\} 
 The destination accepted the event.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>EventDeliveryStatus.<b>FAILED</b></code>](#failed) \{#failed\} 
-Massdriver stopped trying. The destination rejected the event, every retry failed, or the destination's condition could not run. Use `redeliverEvents` to send it again.
-
-
 #### [<code style={{ fontWeight: 'normal' }}>EventDeliveryStatus.<b>SKIPPED</b></code>](#skipped) \{#skipped\} 
-The destination's condition did not output `true` for the event, so it was not sent.
+The destination's condition did not pass the event, so it was not sent.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDeliveryStatus.<b>FAILED</b></code>](#failed) \{#failed\} 
+No more attempts. The destination rejected the event, every retry failed, or the destination's condition could not run. Use `redeliverEvents` to send it again.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDeliveryStatus.<b>PENDING</b></code>](#pending) \{#pending\} 
+Waits to be sent: new, waiting for a retry, or queued again by `redeliverEvents`. The next attempt is at `nextAttemptAt`.
 
 
 

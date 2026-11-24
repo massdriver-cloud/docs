@@ -69,15 +69,15 @@ Unique identifier of the delivery.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EventDelivery.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventDeliveryStatus!</b></code>](/api/graphql/types/enums/event-delivery-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
-The state of the delivery.
+Where the delivery is.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EventDelivery.<b>attempts</b></code>](#attempts)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/api/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#attempts\} 
-How many times Massdriver tried to send the event.
+Attempts to send the event.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EventDelivery.<b>nextAttemptAt</b></code>](#next-attempt-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#next-attempt-at\} 
-When Massdriver sends the event next, while the delivery is `PENDING` (UTC).
+The next attempt, while the delivery is `PENDING` (UTC).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EventDelivery.<b>lastError</b></code>](#last-error)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#last-error\} 
@@ -89,7 +89,7 @@ When the destination accepted the event (UTC).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EventDelivery.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
-When the event matched the destination (UTC).
+When the event was given to the destination (UTC).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EventDelivery.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
