@@ -50,6 +50,7 @@ adapter takes.
 enum EventDestinationAdapter {
   HTTP
   SLACK
+  SERVICE_NOW
 }
 ```
 
@@ -64,6 +65,10 @@ POST each event to a URL as a CloudEvent (`application/cloudevents+json`), signe
 
 #### [<code style={{ fontWeight: 'normal' }}>EventDestinationAdapter.<b>SLACK</b></code>](#slack) \{#slack\} 
 Post each event to a Slack channel with your Slack app's bot token.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDestinationAdapter.<b>SERVICE&#x005F;NOW</b></code>](#service-now) \{#service-now\} 
+Create a ServiceNow record, such as an incident, for each event.
 
 
 

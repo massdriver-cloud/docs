@@ -5056,6 +5056,9 @@ enum EventDestinationAdapter {
 
   "Post each event to a Slack channel with your Slack app's bot token."
   SLACK
+
+  "Create a ServiceNow record, such as an incident, for each event."
+  SERVICE_NOW
 }
 
 "Whether a destination receives events."
@@ -8805,6 +8808,13 @@ type Instance {
   no reported state are not counted.
   """
   firingAlarmCount: Int!
+
+  """
+  The most recent deployment of this instance, of any action and status.
+
+  Null if the instance has never been deployed.
+  """
+  latestDeployment: Deployment
 
   """
   The most recent `PROVISION` deployment of this instance that completed.
