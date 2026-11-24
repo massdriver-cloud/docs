@@ -85,6 +85,7 @@ module.exports = {
             "platform-operations/event-destinations/event-destinations-http",
             "platform-operations/event-destinations/event-destinations-slack",
             "platform-operations/event-destinations/event-destinations-servicenow",
+            "platform-operations/event-destinations/event-destinations-pagerduty",
           ],
         },
         {

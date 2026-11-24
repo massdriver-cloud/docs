@@ -12,6 +12,7 @@ An event destination receives your organization's audit log events. You choose t
 | [HTTP](/platform-operations/event-destinations/http) | As a signed [CloudEvent](https://cloudevents.io) in a `POST` request to your URL. |
 | [Slack](/platform-operations/event-destinations/slack) | As a message in a Slack channel, with the bot token of your Slack app. |
 | [ServiceNow](/platform-operations/event-destinations/servicenow) | As a new record, such as an incident, in a ServiceNow table. |
+| [PagerDuty](/platform-operations/event-destinations/pagerduty) | As an alert on a PagerDuty service, with the Events API v2. |
 
 To manage destinations, a person or service account needs the `organization:manageEventDestinations` permission. Refer to [GraphQL permissions](/platform-operations/security/graphql-permissions#event-destination).
 
