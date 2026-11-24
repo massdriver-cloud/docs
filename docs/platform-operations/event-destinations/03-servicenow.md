@@ -14,9 +14,9 @@ For the events that a destination receives, retries, deliveries, and pause, refe
 | Object | Field | Value |
 |---|---|---|
 | `config` | `instance` | The name of your instance: `acme` for `https://acme.service-now.com`. Required. |
-| `config` | `table` | The table that gets a record for each event. The default is `incident`. |
+| `config` | `table` | The table that gets a record for each event. The default is `incident`. The table must have a `correlation_id` field, as `incident` and the other tables that extend `task` have. |
 | `config` | `fields` | Field names and values that each record gets, such as `assignment_group` or `urgency`. Each value is a string. |
-| `auth` | `username` | A ServiceNow user that can read and create records in the table. Required. |
+| `auth` | `username` | A ServiceNow user that can read and create records in the table. It cannot contain `:`. Required. |
 | `auth` | `password` | The password of that user. Required. |
 
 Massdriver sends requests only to `https://<instance>.service-now.com`. An instance on a custom domain is not supported.
@@ -79,7 +79,7 @@ mutation CreateEventDestination($auth: Map) {
 
 The record also gets each field in `config.fields`. If `config.fields` has `short_description`, `description`, `correlation_id`, or `correlation_display`, Massdriver uses its own value.
 
-Before Massdriver creates a record, it looks for a record in the table with the event `id` as `correlation_id`. If one exists, Massdriver does not create a second record. Thus a retry does not make a duplicate record.
+Before Massdriver creates a record, it looks for a record in the table with the event `id` as `correlation_id`. If one exists, Massdriver does not create a second record. Thus a retry does not make a duplicate record. If the user cannot read the table, ServiceNow returns no records, and a retry can make a duplicate.
 
 ## Responses
 
