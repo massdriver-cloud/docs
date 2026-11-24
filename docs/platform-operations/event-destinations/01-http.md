@@ -241,7 +241,7 @@ For example, the receiver starts the integration tests for the staging API. `dat
 | Attributes | `{"md-environment": "prod"}`, or empty for every environment |
 | Condition | (empty) |
 
-`instance.created`, `instance.deleted`, `resource.stored`, and `resource.deleted` tell the receiver which instances and resources exist. Resource events carry `md-resource-type`.
+`instance.created`, `instance.deleted`, `resource.provisioned`, and `resource.deleted` tell the receiver which instances and resources exist. Resource events carry `md-resource-type`.
 
 ### Page on-call with your own tool
 

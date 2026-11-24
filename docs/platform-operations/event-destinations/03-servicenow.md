@@ -108,7 +108,7 @@ Massdriver opens a new incident each time an alarm changes to `ALARM`. It does n
 
 | Setting | Value |
 |---|---|
-| Events | `access_token.created`, `access_token.revoked`, `service_account.created`, `service_account.deleted`, `group_membership.joined`, `group_membership.deleted` |
+| Events | `access_token.created`, `access_token.revoked`, `service_account.created`, `service_account.deleted`, `group_membership.added`, `group_membership.removed` |
 | Attributes | (empty). These events have no attributes, so a destination with **Attributes** never receives them. |
 | Condition | (empty) |
 | Table | A table that extends `task` and that your security team reviews |
@@ -139,7 +139,7 @@ Use the [preview](/platform-operations/event-destinations#choose-events) on the 
 | Field | Value |
 |---|---|
 | `short_description` | A headline that tells what happened, such as `Deploy of api-prod-database failed`. It is the same headline as in a [Slack message](/platform-operations/event-destinations/slack#the-message), without the emoji. At most 160 characters. |
-| `description` | The message of the deployment or of the alarm, when the event has one. Then details such as the bundle version and the person who deployed. Then the time, the event type and `id`, and the `subject`. Last, a link to the page of the entity's instance, environment, or project in Massdriver, when the event is about a project. |
+| `description` | The message of the deployment or of the alarm, when the event has one. Then the **Project**, **Environment**, **Component**, **Instance**, and **Status** that the event has, and details such as the bundle version and the person who deployed. Then the time, the event type and `id`, and the `subject`. Last, a link to the page of the entity's instance, environment, or project in Massdriver, when the event is about a project. |
 | `correlation_id` | The event `id`. |
 | `correlation_display` | `Massdriver` |
 

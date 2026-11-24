@@ -78,9 +78,10 @@ mutation CreateEventDestination($auth: Map) {
 Each message has:
 
 - A headline that tells what happened, with an emoji. For example, `⏳ Jane Doe wants to deploy api-prod-database`, `✅ api-prod-database deployed`, or `🔴 api-prod-database is in alarm`.
-- An **Open in Massdriver** button that opens the page of the entity's instance, environment, or project. Events that are not about a project, such as organization events, have no button.
+- An **Open in Massdriver** button that opens the page of the entity's instance, environment, or project. For a deployment event, it opens the deployment in the instance's history. Events that are not about a project, such as organization events, have no button.
 - A colored bar. Green is for events that went well, such as a completed deployment. Red is for failures, such as a failed deployment or an alarm. Yellow is for events that wait for a person, such as a proposed deployment. Gray is for all other events.
 - The message of the deployment or of the alarm, when the event has one.
+- The **Project**, **Environment**, **Component**, **Instance**, and **Status** of the entity, from the event. The message shows only the ones that the event has.
 - Details that the headline does not give, such as the bundle version and the person who deployed. Then the time of the event, in the time zone of each reader.
 
 | Event | Headline |
@@ -129,7 +130,7 @@ Reviewers see each proposed deployment, and the **Open in Massdriver** button op
 
 | Setting | Value |
 |---|---|
-| Events | `resource.exported`, `access_token.created`, `service_account.created`, `group_membership.joined` |
+| Events | `resource.exported`, `access_token.created`, `service_account.created`, `group_membership.added` |
 | Attributes | (empty). Access token, service account, and group events have no attributes, so a destination with **Attributes** never receives them. |
 | Condition | `.type != "resource.exported" or .data.metadata.contains_secrets == true`, to post only the exports that reveal a secret |
 
