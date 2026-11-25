@@ -98,7 +98,7 @@ mass event destination redeliver 4f9b2c1e-8d3a-4c6e-9f1b-2a7d5e8c0b13
 A destination has two objects of adapter settings:
 
 - `config`: the settings, such as the URL. The API returns `config`.
-- `auth`: the credentials, such as an `Authorization` header. The API never returns `auth`. To remove the credentials, set `auth` to `null`.
+- `auth`: the credentials, such as an `Authorization` header. The API never returns `auth`. You cannot remove the credentials. To send events without credentials, delete the destination and create it again.
 
 The [`eventDestinationAdapters`](/api/graphql/operations/queries/event-destination-adapters) query lists each adapter. For each adapter, `configSchema` and `authSchema` are the JSON schemas of `config` and `auth`, and `signs` tells you if Massdriver signs the events. The page of each adapter lists its settings.
 
