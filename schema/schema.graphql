@@ -3555,6 +3555,9 @@ enum EventMetadataType {
 
   "A JSON boolean."
   BOOLEAN
+
+  "A JSON number with no fraction."
+  INTEGER
 }
 
 """
@@ -9032,6 +9035,16 @@ type Instance {
   dependencies: [InstanceDependency!]!
 
   """
+  Names of the dependency fields that changed since this instance was last provisioned, sorted alphabetically.
+
+  A dependency changed when a link, remote reference, or environment default
+  added or removed it, or when its resource now holds different data than the
+  last provision used. The next deployment uses the current dependencies.
+  Empty when no dependency changed or the instance has never been provisioned.
+  """
+  changedDependencies: [String!]!
+
+  """
   Whether this instance can be safely decommissioned right now. Check `constraints` for blocking conditions.
 
   Decommissioning tears down the instance's provisioned cloud infrastructure and
@@ -9870,6 +9883,15 @@ enum BundleCapability {
   RUNTIME
 }
 
+"How many resources a bundle dependency takes."
+enum BundleDependencyCardinality {
+  "The dependency takes exactly one resource."
+  ONE
+
+  "The dependency takes any number of resources of its type. The IaC receives a map from resource ID to resource."
+  MANY
+}
+
 """
 An input that a bundle requires from another bundle's output.
 
@@ -9887,6 +9909,9 @@ type BundleDependency {
 
   "When `true`, this dependency must be connected before the bundle can be deployed."
   required: Boolean!
+
+  "How many resources this dependency takes. `ONE` takes exactly one resource. `MANY` takes any number of resources of the type, and the IaC receives a map from resource ID to resource."
+  cardinality: BundleDependencyCardinality!
 
   """
   The version range this slot accepts, as declared in the bundle — an exact
