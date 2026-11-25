@@ -66,7 +66,7 @@ Replaces the current attributes. Attribute values that the event's entity must h
 
 
 #### [<code style={{ fontWeight: 'normal' }}>UpdateEventDestinationInput.<b>auth</b></code>](#auth)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#auth\} 
-Replaces the current credentials. In the shape of the adapter's `authSchema` from `eventDestinationAdapters`. The API never returns them. Pass `null` to remove them.
+Replaces the current credentials. In the shape of the adapter's `authSchema` from `eventDestinationAdapters`. The API never returns them. They cannot be removed: to send events without credentials, delete the destination and create it again.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>UpdateEventDestinationInput.<b>condition</b></code>](#condition)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#condition\} 

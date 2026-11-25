@@ -57,6 +57,7 @@ type's connection orientation is `ENVIRONMENT_DEFAULT`.
 type BundleDependency {
   name: String!
   required: Boolean!
+  cardinality: BundleDependencyCardinality!
   versionConstraint: String!
   resourceType: ResourceType
 }
@@ -73,6 +74,10 @@ Handle name for this dependency slot (e.g., `aws_authentication`, `vpc`).
 
 #### [<code style={{ fontWeight: 'normal' }}>BundleDependency.<b>required</b></code>](#required)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#required\} 
 When `true`, this dependency must be connected before the bundle can be deployed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundleDependency.<b>cardinality</b></code>](#cardinality)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BundleDependencyCardinality!</b></code>](/api/graphql/types/enums/bundle-dependency-cardinality.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#cardinality\} 
+How many resources this dependency takes. `ONE` takes exactly one resource. `MANY` takes any number of resources of the type, and the IaC receives a map from resource ID to resource.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>BundleDependency.<b>versionConstraint</b></code>](#version-constraint)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version-constraint\} 

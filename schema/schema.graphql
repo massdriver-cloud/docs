@@ -3555,6 +3555,9 @@ enum EventMetadataType {
 
   "A JSON boolean."
   BOOLEAN
+
+  "A JSON number with no fraction."
+  INTEGER
 }
 
 """
@@ -4625,6 +4628,61 @@ type ResourceType {
 
   "Timestamp when this resource type was last modified (UTC)."
   updatedAt: DateTime!
+
+  """
+  Bundles in your organization whose resources are of this resource type.
+  Each bundle appears once, at its newest stable version. A bundle whose
+  newest stable version no longer declares a resource of this type does not
+  appear, and development versions are never used. Only bundles you can view
+  are listed. Sorted by bundle name.
+
+  Use this before a breaking change to a resource type to find every bundle
+  that creates resources of this type.
+  """
+  producers(
+    "Cursor from a previous page's `cursor.next` or `cursor.previous`."
+    cursor: Cursor
+  ): BundlesPage
+
+  """
+  Bundles in your organization with a dependency that accepts this resource
+  type, with the dependency field and the version range it accepts. Each
+  bundle is read at its newest stable version, so a bundle whose newest stable
+  version dropped the dependency does not appear, and development versions are
+  never used. A bundle that accepts this type through two fields appears once
+  per field. Only bundles you can view are listed. Sorted by bundle name, then
+  field.
+
+  Use this before a breaking change to a resource type to find every bundle
+  that must be updated.
+  """
+  consumers(
+    "Cursor from a previous page's `cursor.next` or `cursor.previous`."
+    cursor: Cursor
+  ): ResourceTypeConsumersPage
+}
+
+"""
+A bundle with a dependency that accepts a resource type, and the dependency
+field that accepts it.
+"""
+type ResourceTypeConsumer {
+  "The bundle, at its newest stable version."
+  bundle: Bundle!
+
+  "The name of the dependency field that accepts the resource type (e.g., `database`)."
+  field: String!
+
+  "When `true`, the dependency must be connected before the bundle can be deployed."
+  required: Boolean!
+
+  """
+  The version range of the resource type this dependency accepts, as declared
+  in the bundle: an exact version (`1.2.3`), a tilde range (`~1`, `~1.2`), or a
+  channel (`latest`, `latest+dev`). `null` for bundles published before
+  dependencies declared a version range.
+  """
+  versionConstraint: String
 }
 
 type ResourceTypesPage {
@@ -4633,6 +4691,14 @@ type ResourceTypesPage {
 
   "A list of type resource_type."
   items: [ResourceType]
+}
+
+type ResourceTypeConsumersPage {
+  "Pagination cursors for navigating between pages."
+  cursor: PaginationCursor!
+
+  "A list of type resource_type_consumer."
+  items: [ResourceTypeConsumer]
 }
 
 type ResourceTypePayload {
@@ -5188,7 +5254,7 @@ input UpdateEventDestinationInput {
   "Replaces the current attributes. Attribute values that the event's entity must have had when the event happened. An event must have all of them. Pass `{}` to receive events of any attributes. For other logic, use the condition."
   attributes: Map
 
-  "Replaces the current credentials. In the shape of the adapter's `authSchema` from `eventDestinationAdapters`. The API never returns them. Pass `null` to remove them."
+  "Replaces the current credentials. In the shape of the adapter's `authSchema` from `eventDestinationAdapters`. The API never returns them. They cannot be removed: to send events without credentials, delete the destination and create it again."
   auth: Map
 
   "A jq expression run on each CloudEvent that the event types and attributes select. The event is sent only when it outputs `true`. The CloudEvent's `data` holds the `entity`, its `attributes` (such as `md-environment`), and the event's `metadata`. It must finish within the install's timeout (1 second by default) and cannot use `import`, `include`, `module`, `modulemeta`, or `get_search_list`. Pass an empty string to remove the condition."
@@ -9032,6 +9098,17 @@ type Instance {
   dependencies: [InstanceDependency!]!
 
   """
+  Names of the dependency fields that changed since this instance was last provisioned, sorted alphabetically.
+
+  A dependency changed when a link, remote reference, or environment default
+  added or removed it, or when its resource now holds different data than the
+  last provision used. The next deployment uses the current dependencies.
+  Empty when no dependency changed, the instance has never been provisioned, or
+  the instance is decommissioned.
+  """
+  changedDependencies: [String!]!
+
+  """
   Whether this instance can be safely decommissioned right now. Check `constraints` for blocking conditions.
 
   Decommissioning tears down the instance's provisioned cloud infrastructure and
@@ -9870,6 +9947,15 @@ enum BundleCapability {
   RUNTIME
 }
 
+"How many resources a bundle dependency takes."
+enum BundleDependencyCardinality {
+  "The dependency takes exactly one resource."
+  ONE
+
+  "The dependency takes any number of resources of its type. The IaC receives a map from resource ID to resource."
+  MANY
+}
+
 """
 An input that a bundle requires from another bundle's output.
 
@@ -9887,6 +9973,9 @@ type BundleDependency {
 
   "When `true`, this dependency must be connected before the bundle can be deployed."
   required: Boolean!
+
+  "How many resources this dependency takes. `ONE` takes exactly one resource. `MANY` takes any number of resources of the type, and the IaC receives a map from resource ID to resource."
+  cardinality: BundleDependencyCardinality!
 
   """
   The version range this slot accepts, as declared in the bundle — an exact
@@ -10039,6 +10128,14 @@ type Bundle {
 
   "Resources (outputs) this bundle produces when deployed. Each entry names a slot and the resource type it creates. Sorted alphabetically by name."
   resources: [BundleResource!]!
+}
+
+type BundlesPage {
+  "Pagination cursors for navigating between pages."
+  cursor: PaginationCursor!
+
+  "A list of type bundle."
+  items: [Bundle]
 }
 
 """
