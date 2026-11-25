@@ -104,6 +104,7 @@ type Instance {
     cursor: Cursor
   ): AlarmsPage
   dependencies: [InstanceDependency!]!
+  changedDependencies: [String!]!
   decommissionable: Deletable!
 }
 ```
@@ -327,6 +328,16 @@ Each entry is one filled slot from the bundle's `connections_schema` along
 with the source object that filled it — a blueprint `Connection`, a
 per-instance `RemoteReference`, or an `EnvironmentDefault` from the
 environment. Unfilled slots are not included.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Instance.<b>changedDependencies</b></code>](#changed-dependencies)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#changed-dependencies\} 
+Names of the dependency fields that changed since this instance was last provisioned, sorted alphabetically.
+
+A dependency changed when a link, remote reference, or environment default
+added or removed it, or when its resource now holds different data than the
+last provision used. The next deployment uses the current dependencies.
+Empty when no dependency changed, the instance has never been provisioned, or
+the instance is decommissioned.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Instance.<b>decommissionable</b></code>](#decommissionable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Deletable!</b></code>](/api/graphql/types/objects/deletable.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#decommissionable\} 

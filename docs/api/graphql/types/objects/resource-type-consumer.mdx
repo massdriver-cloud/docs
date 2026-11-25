@@ -1,0 +1,88 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: resource-type-consumer
+title: ResourceTypeConsumer
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A bundle with a dependency that accepts a resource type, and the dependency
+field that accepts it.
+
+
+```graphql
+type ResourceTypeConsumer {
+  bundle: Bundle!
+  field: String!
+  required: Boolean!
+  versionConstraint: String
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ResourceTypeConsumer.<b>bundle</b></code>](#bundle)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Bundle!</b></code>](/api/graphql/types/objects/bundle.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#bundle\} 
+The bundle, at its newest stable version.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ResourceTypeConsumer.<b>field</b></code>](#field)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#field\} 
+The name of the dependency field that accepts the resource type (e.g., `database`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ResourceTypeConsumer.<b>required</b></code>](#required)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#required\} 
+When `true`, the dependency must be connected before the bundle can be deployed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ResourceTypeConsumer.<b>versionConstraint</b></code>](#version-constraint)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#version-constraint\} 
+The version range of the resource type this dependency accepts, as declared
+in the bundle: an exact version (`1.2.3`), a tilde range (`~1`, `~1.2`), or a
+channel (`latest`, `latest+dev`). `null` for bundles published before
+dependencies declared a version range.
+
+
+
+
+
+
+### Member Of
+
+[`ResourceTypeConsumersPage`](/api/graphql/types/objects/resource-type-consumers-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
