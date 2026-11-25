@@ -38,7 +38,7 @@ Massdriver records `deployment.enqueued`, `deployment.started`, `deployment.comp
 | `deployed_by_name` | string | The name of the person or service account that started the deployment. |
 | `deployed_by_account_id` | UUID or null | The person that started the deployment. |
 | `deployed_by_service_account_id` | UUID or null | The service account that started the deployment. |
-| `package_id` | UUID | The ID of the instance. |
+| `instance_id` | UUID | The ID of the instance. |
 | `bundle_id` | UUID | The ID of the bundle version. |
 | `rollback_of_deployment_id` | UUID or null | The deployment that this deployment rolls back. `null` when it is not a rollback. |
 | `last_transitioned_at` | time or null | When `status` last changed. |
@@ -71,7 +71,7 @@ The event does not include the parameters of the deployment.
       "deployed_by_name": "github-actions",
       "deployed_by_account_id": null,
       "deployed_by_service_account_id": "c3e9a7b2-5d1f-4a8e-b6c0-9f2d4e7a1b85",
-      "package_id": "e4a7b2c9-15d3-4f86-a0b1-9c3e5d7f2a68",
+      "instance_id": "e4a7b2c9-15d3-4f86-a0b1-9c3e5d7f2a68",
       "bundle_id": "3f9a6c1e-8b2d-4e7a-b5c4-0d1e2f3a4b5c",
       "rollback_of_deployment_id": null,
       "last_transitioned_at": "2026-11-19T15:04:11Z",
@@ -129,8 +129,8 @@ An instance is a component in one environment.
 | `name_prefix` | string or null | The name prefix that the organization's naming convention gave the instance. |
 | `tags` | map | The tags of the instance. |
 | `attributes` | map | The custom attributes set on the instance. |
-| `manifest_id` | UUID | The ID of the component. |
-| `target_id` | UUID | The ID of the environment. |
+| `component_id` | UUID | The ID of the component. |
+| `environment_id` | UUID | The ID of the environment. |
 | `bundle_id` | UUID | The ID of the bundle version. |
 | `previous_identifier` | string | Only on `instance.moved`: the identifier of the instance before the move. |
 | `created_at`, `updated_at` | time | |
@@ -156,8 +156,8 @@ An instance is a component in one environment.
       "name_prefix": "api-prod-database",
       "tags": {},
       "attributes": {},
-      "manifest_id": "08c33afd-b40a-419b-8c32-5c976a90681e",
-      "target_id": "2b7e4d1a-6c3f-4e8b-9a5d-0f1c2e3d4b6a",
+      "component_id": "08c33afd-b40a-419b-8c32-5c976a90681e",
+      "environment_id": "2b7e4d1a-6c3f-4e8b-9a5d-0f1c2e3d4b6a",
       "bundle_id": "3f9a6c1e-8b2d-4e7a-b5c4-0d1e2f3a4b5c",
       "created_at": "2026-10-02T09:12:44Z",
       "updated_at": "2026-11-19T15:04:11Z"
@@ -198,8 +198,8 @@ A connection fills a dependency of an instance with a resource of another instan
 | Field | Type | Value |
 |---|---|---|
 | `id` | UUID | The ID of the connection. |
-| `package_field` | string | The name of the dependency on the instance. |
-| `package_id` | UUID | The ID of the instance that has the dependency. |
+| `to_field` | string | The name of the dependency on the instance. |
+| `to_instance_id` | UUID | The ID of the instance that has the dependency. |
 | `resource_id` | UUID | The ID of the resource that fills the dependency. |
 | `link_id` | UUID or null | The ID of the link. |
 | `created_at`, `updated_at` | time | |
@@ -210,7 +210,7 @@ Connection events have no attributes and no actor.
 
 | To send | Events | Condition |
 |---|---|---|
-| Changes to one dependency of one instance | `connection.*` | `.data.entity.package_id == "e4a7b2c9-15d3-4f86-a0b1-9c3e5d7f2a68" and .data.entity.package_field == "database"` |
+| Changes to one dependency of one instance | `connection.*` | `.data.entity.to_instance_id == "e4a7b2c9-15d3-4f86-a0b1-9c3e5d7f2a68" and .data.entity.to_field == "database"` |
 
 ## Remote reference
 
@@ -227,8 +227,8 @@ A remote reference fills a dependency of an instance with a resource that you ch
 |---|---|---|
 | `id` | UUID | The ID of the remote reference. |
 | `field` | string | The name of the dependency on the instance. |
-| `package_id` | UUID | The ID of the instance. |
-| `remote_resource_id` | UUID | The ID of the resource. |
+| `instance_id` | UUID | The ID of the instance. |
+| `resource_id` | UUID | The ID of the resource. |
 | `created_at`, `updated_at` | time | |
 
 Remote reference events have no attributes.

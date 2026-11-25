@@ -30,7 +30,7 @@ A deployment provisions a resource, or a person or service account imports one.
 | `tags` | map | The tags of the resource. |
 | `attributes` | map | The custom attributes set on the resource. |
 | `resource_type_id` | UUID | The ID of the resource type. |
-| `package_id` | UUID or null | The ID of the instance that provisioned the resource. `null` for an imported resource. |
+| `instance_id` | UUID or null | The ID of the instance that provisioned the resource. `null` for an imported resource. |
 | `deployment_id` | UUID or null | The ID of the deployment that provisioned the resource. `null` for an imported resource. |
 | `organization_id` | UUID | The ID of the organization. |
 | `created_at`, `updated_at` | time | |
@@ -63,7 +63,7 @@ On `resource.exported`, `contains_secrets` is `true` when the export revealed a 
       "tags": {},
       "attributes": {},
       "resource_type_id": "9b1d3f5a-7c2e-4a6b-8d0f-1e3c5a7b9d24",
-      "package_id": "e4a7b2c9-15d3-4f86-a0b1-9c3e5d7f2a68",
+      "instance_id": "e4a7b2c9-15d3-4f86-a0b1-9c3e5d7f2a68",
       "deployment_id": "5c1de0a7-92b4-4f1e-8d3a-6e27c9f0b815",
       "organization_id": "5a2c8e4f-1b7d-4e3a-9c6f-8d0b2a4e6c17",
       "created_at": "2026-11-19T15:04:11Z",
@@ -95,7 +95,7 @@ On `resource.exported`, `contains_secrets` is `true` when the export revealed a 
 |---|---|---|
 | Exports that reveal a secret | `resource.exported` | `.data.metadata.contains_secrets == true` |
 | Exports of every version of one resource type | `resource.exported` | `.data.attributes["md-resource-type"] // "" \| startswith("aws-iam-role@")` |
-| Imported resources only | `resource.*` | `.data.entity.package_id == null` |
+| Imported resources only | `resource.*` | `.data.entity.instance_id == null` |
 | Resources with an ARN in one AWS account | `resource.provisioned` | `.data.entity.payload.arn // "" \| contains(":123456789012:")` |
 
 ## Resource type
