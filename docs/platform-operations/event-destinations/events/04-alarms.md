@@ -30,7 +30,7 @@ An alarm is a cloud alarm that a bundle registered on an instance.
 | `threshold` | number or null | The value that sets off the alarm. |
 | `period` | integer or null | The length of the evaluation period, in seconds. |
 | `metric` | object or null | The metric of the alarm: `namespace`, `name`, `statistic`, `region`, and `dimensions`, a list of `name` and `value` pairs. |
-| `package_id` | UUID | The ID of the instance. |
+| `instance_id` | UUID | The ID of the instance. |
 | `created_at`, `updated_at` | time | |
 
 ### Example conditions
@@ -59,7 +59,7 @@ An alarm state is a change of the state of an alarm that the cloud sent to Massd
 | `occurred_at` | time | When the change occurred in the cloud. |
 | `provider_notification_id` | string | The ID of the notification in the cloud. |
 | `notification` | map | The notification as the cloud sent it. Its fields change with the cloud. |
-| `package_alarm_id` | UUID | The ID of the alarm. |
+| `alarm_id` | UUID | The ID of the alarm. |
 | `created_at`, `updated_at` | time | |
 
 ### Example
@@ -76,7 +76,7 @@ An alarm state is a change of the state of an alarm that the cloud sent to Massd
       "occurred_at": "2026-11-19T15:04:11Z",
       "provider_notification_id": "b7e2f0c4-9d1a-4e3b-8f5c-2a6d0e4b8c13",
       "notification": { "AlarmName": "api-prod-database-high-cpu", "NewStateValue": "ALARM" },
-      "package_alarm_id": "4d6f8a0c-3e5b-4a7d-9f1c-6b8d0a2c4e57",
+      "alarm_id": "4d6f8a0c-3e5b-4a7d-9f1c-6b8d0a2c4e57",
       "created_at": "2026-11-19T15:04:12Z",
       "updated_at": "2026-11-19T15:04:12Z"
     },

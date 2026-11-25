@@ -58,7 +58,7 @@ For the fields that every event has, refer to [Event Reference](/platform-operat
 | `description` | string or null | The description of the environment. |
 | `decommission_protection` | boolean | `true` when Massdriver blocks decommissions in the environment. |
 | `separation_of_duty` | boolean | `true` when the person or service account that proposes a deployment cannot approve it. |
-| `parent_target_id` | UUID or null | The ID of the environment that this environment was forked from. `null` when it is not a fork. |
+| `parent_environment_id` | UUID or null | The ID of the environment that this environment was forked from. `null` when it is not a fork. |
 | `tags` | map | The tags of the environment. |
 | `attributes` | map | The custom attributes set on the environment. |
 | `project_id` | UUID | The ID of the project. |
@@ -81,7 +81,7 @@ For the fields that every event has, refer to [Event Reference](/platform-operat
       "description": null,
       "decommission_protection": false,
       "separation_of_duty": false,
-      "parent_target_id": "7f3a1c9e-2d4b-4e6a-8c1f-5b0d3e7a9c24",
+      "parent_environment_id": "7f3a1c9e-2d4b-4e6a-8c1f-5b0d3e7a9c24",
       "tags": {},
       "attributes": {},
       "project_id": "1a9d6e3f-4b2c-4d7e-8f0a-6c5b3e2d1f90",
@@ -103,7 +103,7 @@ For the fields that every event has, refer to [Event Reference](/platform-operat
 
 | To send | Events | Condition |
 |---|---|---|
-| Forked environments only | `environment.created` | `.data.entity.parent_target_id != null` |
+| Forked environments only | `environment.created` | `.data.entity.parent_environment_id != null` |
 | Environments where decommission protection is off | `environment.updated` | `.data.entity.decommission_protection == false` |
 | Preview environments that a person deletes | `environment.deleted` | `(.data.attributes["md-environment"] \| startswith("pr")) and .data.actor.account_id != null` |
 
@@ -121,7 +121,7 @@ An environment default is a resource, such as a cloud credential or a network, t
 | Field | Type | Value |
 |---|---|---|
 | `id` | UUID | The ID of the environment default. |
-| `target_id` | UUID | The ID of the environment. |
+| `environment_id` | UUID | The ID of the environment. |
 | `resource_id` | UUID | The ID of the resource. |
 | `resource_type_id` | UUID | The ID of the resource type. |
 | `created_at`, `updated_at` | time | |
@@ -132,7 +132,7 @@ Environment default events have no attributes.
 
 | To send | Events | Condition |
 |---|---|---|
-| Changes to the defaults of one environment | `environment_default.*` | `.data.entity.target_id == "2b7e4d1a-6c3f-4e8b-9a5d-0f1c2e3d4b6a"` |
+| Changes to the defaults of one environment | `environment_default.*` | `.data.entity.environment_id == "2b7e4d1a-6c3f-4e8b-9a5d-0f1c2e3d4b6a"` |
 
 ## Component
 
@@ -185,10 +185,10 @@ A link is a line between two components on the project blueprint. It connects a 
 | Field | Type | Value |
 |---|---|---|
 | `id` | UUID | The ID of the link. |
-| `src_manifest_id` | UUID | The ID of the component that has the resource. |
-| `src_field` | string | The name of the resource on that component. |
-| `dest_manifest_id` | UUID | The ID of the component that has the dependency. |
-| `dest_field` | string | The name of the dependency on that component. |
+| `from_component_id` | UUID | The ID of the component that has the resource. |
+| `from_field` | string | The name of the resource on that component. |
+| `to_component_id` | UUID | The ID of the component that has the dependency. |
+| `to_field` | string | The name of the dependency on that component. |
 | `from_version_constraint` | string or null | The versions of the source bundle that the link works with. |
 | `to_version_constraint` | string or null | The versions of the destination bundle that the link works with. |
 | `created_at`, `updated_at` | time | |
@@ -199,7 +199,7 @@ Link events have no attributes.
 
 | To send | Events | Condition |
 |---|---|---|
-| Links that change a network dependency | `link.*` | `.data.entity.dest_field == "network"` |
+| Links that change a network dependency | `link.*` | `.data.entity.to_field == "network"` |
 
 ## Secret
 
@@ -216,11 +216,10 @@ A secret is a value that you set on an instance. The event never includes the va
 |---|---|---|
 | `id` | UUID | The ID of the secret. |
 | `name` | string | The name of the secret, such as `DB_PASSWORD`. |
-| `package_id` | UUID | The ID of the instance. |
-| `encrypted_at` | time or null | When Massdriver encrypted the value. |
+| `instance_id` | UUID | The ID of the instance. |
 | `created_at`, `updated_at` | time | |
 
-Secret events have no attributes. To select one instance, use `package_id`.
+Secret events have no attributes. To select one instance, use `instance_id`.
 
 ### Example conditions
 
