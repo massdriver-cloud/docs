@@ -5268,6 +5268,17 @@ type EventDestination {
   lag: Int
 
   """
+  The destination's deliveries that finished in the hour of `since` or later, counted by hour: delivered, failed,
+  and skipped.
+  Hours with no finished delivery are left out. Oldest hour first. Delivered and skipped deliveries are kept for
+  7 days by default, so older hours count only failed ones.
+  """
+  deliveryCounts(
+    "A time in the first hour to count (UTC). The whole hour is counted."
+    since: DateTime!
+  ): [EventDeliveryCount!]!
+
+  """
   One delivery for each event the destination selects: sent, waiting, skipped by the condition, or failed.
   Delivered and skipped deliveries are kept for the install's retention, 7 days by default, and failed ones for
   30 days. Newest first by default.
@@ -5282,6 +5293,21 @@ type EventDestination {
     "Pagination cursor from a previous response."
     cursor: Cursor
   ): EventDeliveriesPage
+}
+
+"The deliveries of a destination that finished in one hour."
+type EventDeliveryCount {
+  "The start of the hour (UTC)."
+  hour: DateTime!
+
+  "Deliveries that the destination accepted."
+  delivered: Int!
+
+  "Deliveries marked `FAILED`, with no more attempts scheduled."
+  failed: Int!
+
+  "Deliveries that the destination's condition skipped."
+  skipped: Int!
 }
 
 "One event's delivery to a destination."
