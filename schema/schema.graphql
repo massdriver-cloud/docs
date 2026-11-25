@@ -3555,6 +3555,9 @@ enum EventMetadataType {
 
   "A JSON boolean."
   BOOLEAN
+
+  "A JSON number with no fraction."
+  INTEGER
 }
 
 """
