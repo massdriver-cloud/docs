@@ -315,18 +315,18 @@ Massdriver defines 39 permissions using an `entity:verb` format.
 
 | Permission | Description |
 |---|---|
-| `project:view` | View a project and all its children |
+| `project:view` | View a project and all its children. Read stash entries on the project and its children. Sensitive values stay hidden. |
 | `project:create` | Create a project |
-| `project:update` | Update project name, description, and attributes |
+| `project:update` | Update project name, description, and attributes. Set, delete, and read sensitive values in the project's stash. |
 | `project:delete` | Delete a project |
-| `project:design` | Modify the project blueprint — add/remove components, create/delete links |
+| `project:design` | Modify the project blueprint — add/remove components, create/delete links. Set, delete, and read sensitive values in a component's stash. |
 
 ### Environment
 
 | Permission | Description |
 |---|---|
 | `environment:create` | Create an environment in a project |
-| `environment:update` | Update environment name, description, and attributes |
+| `environment:update` | Update environment name, description, and attributes. Set, delete, and read sensitive values in the environment's stash. |
 | `environment:delete` | Delete an empty environment — instances must be decommissioned first |
 | `environment:configure` | Set or remove environment-level resource defaults |
 | `environment:deploy` | Deploy every instance in an environment, in dependency order. Re-triggering an in-flight environment deployment cancels and replaces the prior run. |
@@ -336,7 +336,7 @@ Massdriver defines 39 permissions using an `entity:verb` format.
 
 | Permission | Description |
 |---|---|
-| `instance:configure` | Set parameters, secrets, version, and remote references |
+| `instance:configure` | Set parameters, secrets, version, and remote references. Set, delete, and read sensitive values in the stash of the instance and of its deployments. |
 | `instance:deploy` | Deploy infrastructure. Also approves or rejects proposed deployments — anyone who can deploy an instance can decide a proposal for it. |
 | `instance:plan` | Run an infrastructure plan without deploying |
 | `instance:decommission` | Tear down infrastructure |
