@@ -122,7 +122,7 @@ In `updateEventDestination`, a new `attributes` map replaces the old map. To rem
 
 New **Events** and **Attributes** apply to events recorded after the change. A new **Condition** also applies to events that wait to be sent, and to each retry.
 
-The condition gets the whole event, as shown in [The event](#the-event). The most useful fields are:
+The condition gets the whole event, as shown in [The event](#the-event). For the fields of each entity, and more example conditions, refer to [Event Reference](/platform-operations/event-destinations/events). The most useful fields are:
 
 - `.data.attributes`: the attributes that the entity had when the event occurred, including the system attributes (`md-*`), such as `md-project` and `md-environment`.
 - `.data.metadata`: facts about the event, such as how the actor authenticated. Each event type lists its metadata fields in the `metadata` field of the [`eventTypes`](/api/graphql/types/objects/event-type#metadata) query.
@@ -216,7 +216,7 @@ Massdriver gives each event to the adapter as one [CloudEvent](https://cloudeven
 | `subject` | The Massdriver resource identifier of the entity that the event is about. |
 | `time` | When the event occurred (UTC, ISO 8601). |
 | `datacontenttype` | `application/json` |
-| `data` | `entity`, the entity that the event is about, and `actor`, the actor that caused the event. |
+| `data` | `entity`, the entity that the event is about, and `actor`, the actor that caused the event. [Event Reference](/platform-operations/event-destinations/events) lists the fields of each entity. |
 
 Massdriver adds two objects to `data`:
 

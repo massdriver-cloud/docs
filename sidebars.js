@@ -86,6 +86,18 @@ module.exports = {
             "platform-operations/event-destinations/event-destinations-slack",
             "platform-operations/event-destinations/event-destinations-servicenow",
             "platform-operations/event-destinations/event-destinations-pagerduty",
+            {
+              type: "category",
+              label: "Event Reference",
+              link: { type: "doc", id: "platform-operations/event-destinations/events/event-reference" },
+              items: [
+                "platform-operations/event-destinations/events/event-reference-deployments-instances",
+                "platform-operations/event-destinations/events/event-reference-projects-environments",
+                "platform-operations/event-destinations/events/event-reference-resources-bundles",
+                "platform-operations/event-destinations/events/event-reference-alarms",
+                "platform-operations/event-destinations/events/event-reference-organization-access",
+              ],
+            },
           ],
         },
         {
