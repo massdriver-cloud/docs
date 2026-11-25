@@ -49,6 +49,7 @@ Set the value of a key in a stash. Setting a key that has a value replaces the v
 input SetStashEntryInput {
   format: StashFormat
   immutable: Boolean
+  label: String
   sensitive: Boolean
   ttl: Int
   value: String!
@@ -66,6 +67,10 @@ TEXT stores any string. JSON requires a JSON object, and the entry's `data` fiel
 
 #### [<code style={{ fontWeight: 'normal' }}>SetStashEntryInput.<b>immutable</b></code>](#immutable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#immutable\} 
 When true, the key cannot be set again until the entry expires or is deleted. Setting an immutable entry fails if the key already has a value.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetStashEntryInput.<b>label</b></code>](#label)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#label\} 
+A human-readable name for the entry, shown in the Massdriver UI. Up to 255 characters. An empty label is the same as no label. The label is not encrypted and is shown even when the entry is sensitive, so do not put secrets in it.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SetStashEntryInput.<b>sensitive</b></code>](#sensitive)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#sensitive\} 

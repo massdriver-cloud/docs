@@ -49,6 +49,7 @@ value and returns it as written. It does not read the value or act on it.
 ```graphql
 type StashEntry {
   key: String!
+  label: String
   value: String
   data: Map
   format: StashFormat!
@@ -66,6 +67,10 @@ type StashEntry {
 
 #### [<code style={{ fontWeight: 'normal' }}>StashEntry.<b>key</b></code>](#key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#key\} 
 The entry's key. Letters, digits, and the characters `_`, `.`, `/`, and `-`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>StashEntry.<b>label</b></code>](#label)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#label\} 
+A human-readable name for the entry, shown in the Massdriver UI. Null when the entry has no label. The label is not encrypted and is returned even when the entry is sensitive, so do not put secrets in it.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>StashEntry.<b>value</b></code>](#value)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#value\} 

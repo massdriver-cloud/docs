@@ -3679,6 +3679,9 @@ input SetStashEntryInput {
   "When true, the key cannot be set again until the entry expires or is deleted. Setting an immutable entry fails if the key already has a value."
   immutable: Boolean
 
+  "A human-readable name for the entry, shown in the Massdriver UI. Up to 255 characters. An empty label is the same as no label. The label is not encrypted and is shown even when the entry is sensitive, so do not put secrets in it."
+  label: String
+
   "When true, the value is encrypted and is returned only to callers who can change the stash."
   sensitive: Boolean
 
@@ -3696,6 +3699,9 @@ value and returns it as written. It does not read the value or act on it.
 type StashEntry {
   "The entry's key. Letters, digits, and the characters `_`, `.`, `\/`, and `-`."
   key: String!
+
+  "A human-readable name for the entry, shown in the Massdriver UI. Null when the entry has no label. The label is not encrypted and is returned even when the entry is sensitive, so do not put secrets in it."
+  label: String
 
   "The value exactly as it was written. Null when the entry is sensitive and you cannot change this stash."
   value: String
