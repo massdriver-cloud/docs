@@ -37,3 +37,43 @@ massdriver:
   additionalEnvs:
     MD_ENCRYPTION_KEY_RETENTION_DAYS: "90"
 ```
+
+## Rolling back to a version from before encryption
+
+A version from before encryption reads only the plaintext columns. The current version clears those columns for instance secrets, event destination credentials and integration credentials. If you roll back without a restore, the older version reads empty values:
+
+- Deployments get empty secrets.
+- Event destinations have no credentials.
+- Integrations have no credentials.
+
+Restore the plaintext values before you roll back.
+
+### Restore the plaintext values
+
+Run the restore on the current version, while it still runs, just before the rollback. Replace `<namespace>` with the namespace of the Massdriver release and `<release>` with the Helm release name. The Helm chart names the deployment `{{ fullname }}-massdriver`.
+
+```bash
+kubectl exec -n <namespace> deploy/<release>-massdriver -- \
+  /app/bin/massdriver rpc 'IO.inspect(Massdriver.Encryption.restore_plaintext())'
+```
+
+| Output | Meaning | Next step |
+|---|---|---|
+| `:ok` | Massdriver restored every value. | Roll back. |
+| `{:error, ...}` | Some values did not decrypt. | Do not roll back. Make sure that Massdriver can read the `row-level-encryption/` prefix in the Massdriver bucket. |
+
+### Timing
+
+The current version encrypts the values again in some conditions, and clears the plaintext each time:
+
+- Roll back right after the restore.
+- Do not run the restore near 04:41 UTC. At this time, a daily sweep encrypts the values.
+- Do not run the restore near 03:23 UTC on Sunday. At this time, the weekly key rotation encrypts the values.
+- A pod of the current version that restarts runs the same sweep at boot.
+- Between the restore and the end of the rollback, do not change instance secrets, event destinations or integrations. The current version writes them encrypted only, and the older version cannot read those changes.
+
+### After the rollback
+
+After the rollback is complete, you do not need to do more. When you upgrade again, Massdriver encrypts the values again at boot.
+
+A rollback from one version with encryption to a different version with encryption does not need a restore.
