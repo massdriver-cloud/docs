@@ -104,6 +104,16 @@
       "source": "/bundle-development/connections-artifacts/version-resolution",
       "destination": "/bundle-development/dependencies-resources/version-resolution",
       "permanent": true
+    },
+    {
+      "source": "/workflows",
+      "destination": "/continuous-delivery",
+      "permanent": true
+    },
+    {
+      "source": "/workflows/:path*",
+      "destination": "/continuous-delivery/:path*",
+      "permanent": true
     }
   ]
 }

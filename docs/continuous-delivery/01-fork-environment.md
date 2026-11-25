@@ -1,6 +1,6 @@
 ---
 id: workflow-fork-environment
-slug: /workflows/fork-environment
+slug: /continuous-delivery/fork-environment
 title: Fork an Environment
 sidebar_label: Fork an Environment
 ---
@@ -99,7 +99,7 @@ instance: params (minus bundle-marked non-copyable fields), version, and
 release channel. Secrets and remote references stay opt-in via the two
 flags. If you need finer control — different secrets per instance,
 specific remote references — combine `fork` with [per-instance
-promotes](/workflows/promote).
+promotes](/continuous-delivery/promote).
 
 ## When `fork` is the wrong tool
 
@@ -112,6 +112,12 @@ promotes](/workflows/promote).
   parent. To duplicate infrastructure across projects, the right tool is
   [Clone Project](/cli/commands/mass_project) (different command, same
   pattern).
+
+## Fork a sandbox for each developer
+
+The [sandbox-on-join](/continuous-delivery/automations/sandbox-on-join)
+automation forks a template environment when a person joins a group,
+and decommissions the fork when they leave.
 
 ## Reference
 

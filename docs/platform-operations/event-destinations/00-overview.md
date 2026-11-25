@@ -16,6 +16,8 @@ An event destination receives your organization's audit log events. You choose t
 
 To manage destinations, a person or service account needs the `organization:manageEventDestinations` permission. Refer to [GraphQL permissions](/platform-operations/security/graphql-permissions#event-destination).
 
+To act on events, such as to approve proposals from Slack or roll back a failed deployment, run an [automation](/continuous-delivery/automations) behind an HTTP destination.
+
 ## Add a destination
 
 ### In the Massdriver UI
