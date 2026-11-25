@@ -168,7 +168,7 @@ A dependency of an instance is filled from one of three sources. Refer to [What 
 | A connection drawn on the project blueprint | `link.created` and `link.deleted` when someone draws or removes the line. `connection.created` and `connection.deleted` for each instance that the line fills or stops filling. |
 | An environment default | `environment_default.created`, `environment_default.deleted` |
 
-These events have no attributes, so a destination with **Attributes** never receives them. To select one instance, use a condition on the event's `data.entity`, such as `.data.entity.package_id`.
+These events have no attributes, so a destination with **Attributes** never receives them. To select one instance, use a condition on the event's `data.entity`, such as `.data.entity.to_instance_id` for a connection or `.data.entity.instance_id` for a remote reference.
 
 ## How delivery works
 
@@ -256,7 +256,7 @@ This is a `deployment.completed` event:
       "deployed_by_name": "Jane Doe",
       "deployed_by_account_id": "8d2f4c61-7a0e-4b9d-9c53-1f6a2e8b4d07",
       "deployed_by_service_account_id": null,
-      "package_id": "e4a7b2c9-15d3-4f86-a0b1-9c3e5d7f2a68",
+      "instance_id": "e4a7b2c9-15d3-4f86-a0b1-9c3e5d7f2a68",
       "bundle_id": "3f9a6c1e-8b2d-4e7a-b5c4-0d1e2f3a4b5c",
       "rollback_of_deployment_id": null,
       "last_transitioned_at": "2026-11-19T15:04:11Z",
