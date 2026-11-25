@@ -1,0 +1,128 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: set-stash-entry
+title: setStashEntry
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+<Badge class="badge badge--secondary badge--primary" text="form schema"/>
+
+
+
+Set the value of a key in a stash. Setting a key that has a value replaces the value and every other setting
+of the entry.
+
+The permission you need depends on the stash:
+
+| Stash       | Permission                                         |
+|-------------|----------------------------------------------------|
+| Project     | `project:update`                                   |
+| Environment | `environment:update`                               |
+| Component   | `project:design`                                   |
+| Instance    | `instance:configure`                               |
+| Deployment  | `instance:configure` on the deployment's instance  |
+
+A deployment's own credentials can set keys on that deployment and on its instance, environment, component,
+and project.
+
+The mutation fails when the key has an immutable entry that has not expired, or when the stash already has
+its maximum number of keys (1000 unless your installation sets another).
+
+```graphql
+mutation {
+  setStashEntry(
+    organizationId: "my-org"
+    scope: { instance: "ecomm-prod-database" }
+    key: "schema.version"
+    input: { value: "42", ttl: 86400 }
+  ) {
+    successful
+    result { key value expiresAt }
+    messages { field message }
+  }
+}
+```
+
+
+
+
+```graphql
+setStashEntry(
+  organizationId: ID!
+  scope: StashScope!
+  key: String!
+  input: SetStashEntryInput!
+): StashEntryPayload
+```
+
+
+
+
+
+### Form Schema
+
+This mutation supports dynamic form generation using JSON Schema.
+
+- [JSON Schema](https://api.massdriver.cloud/graphql/v2/inputs/setStashEntry.json)
+- [UI Schema](https://api.massdriver.cloud/graphql/v2/inputs/setStashEntry.ui.json)
+
+<SchemaForm
+  schemaUrl="https://api.massdriver.cloud/graphql/v2/inputs/setStashEntry.json"
+  uiSchemaUrl="https://api.massdriver.cloud/graphql/v2/inputs/setStashEntry.ui.json"
+  name="setStashEntry"
+/>
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setStashEntry.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>setStashEntry.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>StashScope!</b></code>](/api/graphql/types/inputs/stash-scope.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#scope\} 
+The stash to write.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>setStashEntry.<b>key</b></code>](#key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#key\} 
+The key to set. Letters, digits, and the characters `_`, `.`, `/`, and `-`, up to 255 characters.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>setStashEntry.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetStashEntryInput!</b></code>](/api/graphql/types/inputs/set-stash-entry-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Set the value of a key in a stash. Setting a key that has a value replaces the value and every other setting of the entry.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>StashEntryPayload</b></code>](/api/graphql/types/objects/stash-entry-payload.mdx) <Badge class="badge badge--secondary " text="object"/>

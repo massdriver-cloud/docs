@@ -1,0 +1,89 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: stash-entry
+title: stashEntry
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Get one entry from a stash. Expired entries are not returned.
+
+You need `project:view` on the stash's project. A sensitive value is null unless you can change the stash.
+
+```graphql
+query {
+  stashEntry(organizationId: "my-org", scope: { instance: "ecomm-prod-database" }, key: "schema.version") {
+    key
+    value
+    expiresAt
+  }
+}
+```
+
+
+```graphql
+stashEntry(
+  organizationId: ID!
+  scope: StashScope!
+  key: String!
+): StashEntry
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>stashEntry.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>stashEntry.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>StashScope!</b></code>](/api/graphql/types/inputs/stash-scope.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#scope\} 
+The stash to read.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>stashEntry.<b>key</b></code>](#key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#key\} 
+The key to get.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>StashEntry</b></code>](/api/graphql/types/objects/stash-entry.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A key and value stored on a project, environment, component, instance, or deployment. Massdriver stores the
+value and returns it as written. It does not read the value or act on it.

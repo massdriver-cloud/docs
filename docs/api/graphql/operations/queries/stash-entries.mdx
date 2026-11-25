@@ -1,0 +1,86 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: stash-entries
+title: stashEntries
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+List the entries in a stash, ordered by key. Expired entries are not returned.
+
+You need `project:view` on the stash's project. Sensitive values are null unless you can change the stash.
+
+```graphql
+query {
+  stashEntries(organizationId: "my-org", scope: { environment: "ecomm-prod" }) {
+    items { key value format }
+    cursor { next }
+  }
+}
+```
+
+
+```graphql
+stashEntries(
+  organizationId: ID!
+  scope: StashScope!
+  cursor: Cursor
+): StashEntriesPage
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>stashEntries.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>stashEntries.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>StashScope!</b></code>](/api/graphql/types/inputs/stash-scope.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#scope\} 
+The stash to list.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>stashEntries.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#cursor\} 
+Pagination cursor returned by a previous page.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>StashEntriesPage</b></code>](/api/graphql/types/objects/stash-entries-page.mdx) <Badge class="badge badge--secondary " text="object"/>

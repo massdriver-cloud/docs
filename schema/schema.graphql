@@ -1387,6 +1387,57 @@ type RootQueryType {
     "The custom attribute's key (matches `customAttribute.key`)."
     key: String!
   ): [String!]!
+
+  """
+  Get one entry from a stash. Expired entries are not returned.
+
+  You need `project:view` on the stash's project. A sensitive value is null unless you can change the stash.
+
+  ```graphql
+  query {
+    stashEntry(organizationId: "my-org", scope: { instance: "ecomm-prod-database" }, key: "schema.version") {
+      key
+      value
+      expiresAt
+    }
+  }
+  ```
+  """
+  stashEntry(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The stash to read."
+    scope: StashScope!
+
+    "The key to get."
+    key: String!
+  ): StashEntry
+
+  """
+  List the entries in a stash, ordered by key. Expired entries are not returned.
+
+  You need `project:view` on the stash's project. Sensitive values are null unless you can change the stash.
+
+  ```graphql
+  query {
+    stashEntries(organizationId: "my-org", scope: { environment: "ecomm-prod" }) {
+      items { key value format }
+      cursor { next }
+    }
+  }
+  ```
+  """
+  stashEntries(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The stash to list."
+    scope: StashScope!
+
+    "Pagination cursor returned by a previous page."
+    cursor: Cursor
+  ): StashEntriesPage
 }
 
 type RootSubscriptionType {
@@ -3513,6 +3564,178 @@ type RootMutationType {
     "The grant's unique identifier."
     id: UUID!
   ): GrantPayload
+
+  """
+  Set the value of a key in a stash. Setting a key that has a value replaces the value and every other setting
+  of the entry.
+
+  The permission you need depends on the stash:
+
+  | Stash       | Permission                                         |
+  |-------------|----------------------------------------------------|
+  | Project     | `project:update`                                   |
+  | Environment | `environment:update`                               |
+  | Component   | `project:design`                                   |
+  | Instance    | `instance:configure`                               |
+  | Deployment  | `instance:configure` on the deployment's instance  |
+
+  A deployment's own credentials can set keys on that deployment and on its instance, environment, component,
+  and project.
+
+  The mutation fails when the key has an immutable entry that has not expired, or when the stash already has
+  its maximum number of keys (1000 unless your installation sets another).
+
+  ```graphql
+  mutation {
+    setStashEntry(
+      organizationId: "my-org"
+      scope: { instance: "ecomm-prod-database" }
+      key: "schema.version"
+      input: { value: "42", ttl: 86400 }
+    ) {
+      successful
+      result { key value expiresAt }
+      messages { field message }
+    }
+  }
+  ```
+  """
+  setStashEntry(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The stash to write."
+    scope: StashScope!
+
+    "The key to set. Letters, digits, and the characters `_`, `.`, `\/`, and `-`, up to 255 characters."
+    key: String!
+
+    "Set the value of a key in a stash. Setting a key that has a value replaces the value and every other setting of the entry."
+    input: SetStashEntryInput!
+  ): StashEntryPayload @inputs(name: "setStashEntry", schema: "\/graphql\/v2\/inputs\/setStashEntry.json", ui: "\/graphql\/v2\/inputs\/setStashEntry.ui.json")
+
+  """
+  Delete a key from a stash. Needs the same permission as `setStashEntry`. Immutable entries can be deleted.
+  The result has the deleted entry. Its value is null when the entry is sensitive.
+
+  ```graphql
+  mutation {
+    deleteStashEntry(organizationId: "my-org", scope: { project: "ecomm" }, key: "release") {
+      successful
+      result { key }
+    }
+  }
+  ```
+  """
+  deleteStashEntry(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The stash to delete from."
+    scope: StashScope!
+
+    "The key to delete."
+    key: String!
+  ): StashEntryPayload
+}
+
+"How a stash value is stored and returned."
+enum StashFormat {
+  "Any string."
+  TEXT
+
+  "A JSON object. The entry's `data` field returns it parsed."
+  JSON
+}
+
+"""
+The project, environment, component, instance, or deployment that owns a stash. Set exactly one field.
+
+Each one has its own stash. A key set on an environment is not returned when you read the stash of an
+instance in that environment.
+"""
+input StashScope {
+  "A project ID, for example `ecomm`."
+  project: ID
+
+  "An environment ID, for example `ecomm-prod`."
+  environment: ID
+
+  "A component ID, for example `ecomm-database`."
+  component: ID
+
+  "An instance ID, for example `ecomm-prod-database`."
+  instance: ID
+
+  "A deployment ID (a UUID)."
+  deployment: ID
+}
+
+"Set the value of a key in a stash. Setting a key that has a value replaces the value and every other setting of the entry."
+input SetStashEntryInput {
+  "TEXT stores any string. JSON requires a JSON object, and the entry's `data` field returns it parsed. Defaults to TEXT."
+  format: StashFormat
+
+  "When true, the key cannot be set again until the entry expires or is deleted. Setting an immutable entry fails if the key already has a value."
+  immutable: Boolean
+
+  "When true, the value is encrypted and is returned only to callers who can change the stash."
+  sensitive: Boolean
+
+  "Seconds until the entry expires. An expired entry is not returned and is deleted soon after. At most 315360000 (10 years). Leave empty to keep the entry until you delete it."
+  ttl: Int
+
+  "The value to store. Massdriver returns it exactly as written. The size limit is 65536 bytes unless your installation sets another."
+  value: String!
+}
+
+"""
+A key and value stored on a project, environment, component, instance, or deployment. Massdriver stores the
+value and returns it as written. It does not read the value or act on it.
+"""
+type StashEntry {
+  "The entry's key. Letters, digits, and the characters `_`, `.`, `\/`, and `-`."
+  key: String!
+
+  "The value exactly as it was written. Null when the entry is sensitive and you cannot change this stash."
+  value: String
+
+  "The value parsed as a JSON object when the format is `JSON`. Null for `TEXT` entries."
+  data: Map
+
+  "How the value is stored and returned."
+  format: StashFormat!
+
+  "When true, the key cannot be set again until the entry expires or is deleted."
+  immutable: Boolean!
+
+  "When true, the value is encrypted and is returned only to callers who can change this stash."
+  sensitive: Boolean!
+
+  "When the entry expires (UTC). Null when the entry does not expire."
+  expiresAt: DateTime
+
+  "When the value was last set (UTC)."
+  updatedAt: DateTime!
+}
+
+type StashEntryPayload {
+  "Indicates if the mutation completed successfully or not."
+  successful: Boolean!
+
+  "A list of failed validations. May be blank or null if mutation succeeded."
+  messages: [ValidationMessage]
+
+  "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
+  result: StashEntry
+}
+
+type StashEntriesPage {
+  "Pagination cursors for navigating between pages."
+  cursor: PaginationCursor!
+
+  "A list of type stash_entry."
+  items: [StashEntry]
 }
 
 """
