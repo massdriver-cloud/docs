@@ -79,6 +79,26 @@ Things that exist once for the whole company.
 - **Environments:** One.
 - **Connects:** Other projects use its resources by remote reference. Anything every environment needs, such as the registry, is set as an environment default in each of them.
 
+<details>
+<summary>Example <code>blueprint.yaml</code></summary>
+
+```yaml
+version: 1
+project: org
+components:
+  dns:      { bundle: root-dns-zone, name: Root DNS Zone }
+  sso:      { bundle: sso-identity, name: SSO and Roles }
+  registry: { bundle: container-registry, name: Container Registry }
+  runners:  { bundle: ci-runners, name: CI Runners }
+  audit:    { bundle: audit-log-archive, name: Audit Log Archive }
+links:
+  - sso.identity      -> registry.identity
+  - sso.identity      -> runners.identity
+  - registry.registry -> runners.registry
+```
+
+</details>
+
 ### Network {#network}
 
 <Canvas id="network" />
@@ -88,6 +108,23 @@ The address space everything else is deployed into.
 - **Bundles:** VPC or VNet with subnets, private DNS zone, VPN or dedicated interconnect.
 - **Environments:** One per region, split by account tier: `nonuseast`, `produseast`, `prodeuwest`. Stages do not each need a network, and dev and staging usually share the non-production one. A transit hub is its own project, because there are fewer hubs than networks.
 - **Connects:** Each network is set as the environment default in the environments deployed into it, so it never appears on an application canvas.
+
+<details>
+<summary>Example <code>blueprint.yaml</code></summary>
+
+```yaml
+version: 1
+project: network
+components:
+  vpc:        { bundle: aws-vpc, name: VPC }
+  privatedns: { bundle: private-dns-zone, name: Private DNS Zone }
+  vpn:        { bundle: site-to-site-vpn, name: VPN }
+links:
+  - vpc.network -> privatedns.network
+  - vpc.network -> vpn.network
+```
+
+</details>
 
 ### Compute Platform {#compute-platform}
 
@@ -99,6 +136,26 @@ Clusters, and what has to be installed in them before a workload can run.
 - **Environments:** The same as the network when each network has one cluster, and then the two can share a canvas if one team owns both. More environments when a network holds several clusters.
 - **Connects:** The cluster is an environment default for application environments. Add-ons such as the ingress controller are connected to the cluster on this canvas.
 
+<details>
+<summary>Example <code>blueprint.yaml</code></summary>
+
+```yaml
+version: 1
+project: compute
+# No network component: each environment sets its network as an environment default.
+components:
+  cluster: { bundle: aws-eks-cluster, name: Kubernetes Cluster }
+  ingress: { bundle: ingress-nginx, name: Ingress Controller }
+  certs:   { bundle: cert-manager, name: Cert Manager }
+  dns:     { bundle: external-dns, name: External DNS }
+links:
+  - cluster.kubernetes -> ingress.kubernetes
+  - cluster.kubernetes -> certs.kubernetes
+  - cluster.kubernetes -> dns.kubernetes
+```
+
+</details>
+
 ### Shared Services {#shared-services}
 
 <Canvas id="shared-services" />
@@ -108,6 +165,26 @@ Services that many applications use and no single application owns.
 - **Bundles:** Event bus, metrics, logs, and tracing backend, key management and secrets store, database used by several services.
 - **Environments:** One per account tier, or one per region and tier when traffic has to stay in its region.
 - **Connects:** Environment default when an environment has exactly one of the resource type, such as the metrics endpoint. Remote reference when the consumer has to pick one, such as a specific database.
+
+<details>
+<summary>Example <code>blueprint.yaml</code></summary>
+
+```yaml
+version: 1
+project: shared
+components:
+  eventbus:  { bundle: aws-eventbridge-bus, name: Event Bus }
+  telemetry: { bundle: observability-stack, name: "Metrics, Logs, and Traces" }
+  kms:       { bundle: aws-kms-key, name: Encryption Key }
+  secrets:   { bundle: secrets-store, name: Secrets Store }
+  sharedb:   { bundle: aws-aurora-postgres, name: Shared Database }
+links:
+  - kms.key -> secrets.encryption
+  - kms.key -> sharedb.encryption
+  - kms.key -> eventbus.encryption
+```
+
+</details>
 
 ### Edge {#edge}
 
@@ -119,6 +196,27 @@ Where traffic enters and is steered.
 - **Environments:** One per stage. There is one production edge no matter how many regions sit behind it.
 - **Connects:** It consumes and is not consumed. Its instances have remote references to the application environments behind it, which makes it the traffic switch for blue/green and failover.
 
+<details>
+<summary>Example <code>blueprint.yaml</code></summary>
+
+```yaml
+version: 1
+project: edge
+# The application endpoints behind the load balancer are remote references,
+# set on each edge environment.
+components:
+  waf:     { bundle: aws-waf, name: Web Application Firewall }
+  lb:      { bundle: global-load-balancer, name: Global Load Balancer }
+  cdn:     { bundle: cloudfront-cdn, name: CDN }
+  records: { bundle: public-dns-records, name: Public DNS Records }
+links:
+  - waf.firewall     -> cdn.firewall
+  - lb.loadbalancer  -> cdn.origin
+  - cdn.distribution -> records.target
+```
+
+</details>
+
 ### Application {#application}
 
 <Canvas id="application" />
@@ -128,6 +226,33 @@ One service or one product, and the things only it uses.
 - **Bundles:** API or web service, workers and scheduled jobs, database owned by one service, cache, queue, or bucket owned by one service, service alarms and dashboards, tenant control plane.
 - **Environments:** One per stage, and one per region in production when the service runs in several: `dev`, `staging`, `produseast`, `prodeuwest`. Previews and workspaces are forks of these.
 - **Connects:** Components are connected to each other on the canvas. The network, cluster, and credentials arrive as environment defaults.
+
+<details>
+<summary>Example <code>blueprint.yaml</code></summary>
+
+```yaml
+version: 1
+project: billing
+# No network or cluster components: both arrive as environment defaults.
+components:
+  api:    { bundle: web-service, name: Billing API }
+  worker: { bundle: worker-service, name: Invoice Worker }
+  cron:   { bundle: scheduled-job, name: Nightly Reconciliation }
+  db:     { bundle: aws-rds-postgres, name: Billing Database }
+  cache:  { bundle: aws-elasticache-redis, name: Cache }
+  queue:  { bundle: aws-sqs-queue, name: Invoice Queue }
+  alarms: { bundle: service-alarms, name: Alarms and Dashboards }
+links:
+  - db.database -> api.database
+  - db.database -> worker.database
+  - db.database -> cron.database
+  - cache.redis -> api.cache
+  - queue.queue -> api.jobs
+  - queue.queue -> worker.jobs
+  - api.service -> alarms.service
+```
+
+</details>
 
 ### Data Platform {#data-platform}
 
@@ -139,6 +264,26 @@ Warehouse, lake, pipelines, and reporting.
 - **Environments:** Usually two: dev and prod.
 - **Connects:** Pipelines read application databases by remote reference. Applications do not depend on it.
 
+<details>
+<summary>Example <code>blueprint.yaml</code></summary>
+
+```yaml
+version: 1
+project: data
+# Pipelines read application databases through remote references,
+# set on each data environment.
+components:
+  lake:      { bundle: s3-data-lake, name: Data Lake }
+  warehouse: { bundle: redshift-serverless, name: Warehouse }
+  pipelines: { bundle: managed-airflow, name: Pipelines }
+links:
+  - lake.bucket         -> warehouse.lake
+  - lake.bucket         -> pipelines.lake
+  - warehouse.warehouse -> pipelines.warehouse
+```
+
+</details>
+
 ### Tenant Stack {#tenant-stack}
 
 <Canvas id="tenant-stack" />
@@ -148,3 +293,20 @@ The part of the product that each customer gets a private copy of.
 - **Bundles:** Customer runtime and database.
 - **Environments:** One per customer or per cell.
 - **Connects:** Each tenant environment has a remote reference to the shared control plane, which is an application canvas with one environment per stage.
+
+<details>
+<summary>Example <code>blueprint.yaml</code></summary>
+
+```yaml
+version: 1
+project: tenant
+# runtime.controlplane is a remote reference to the control plane,
+# set on each tenant environment.
+components:
+  runtime: { bundle: tenant-runtime, name: Tenant Runtime }
+  db:      { bundle: aws-rds-postgres, name: Tenant Database }
+links:
+  - db.database -> runtime.database
+```
+
+</details>
