@@ -76,4 +76,4 @@ Every change above writes an event to the audit log. [Automations](/continuous-d
 | Deploy | [autodeploy-downstream](/continuous-delivery/automations/autodeploy-downstream), [github-deployments](/continuous-delivery/automations/github-deployments) |
 | Recover | [rollback-on-failure](/continuous-delivery/automations/rollback-on-failure), [drift](/continuous-delivery/automations/drift) |
 | Report | [statuspage](/continuous-delivery/automations/statuspage), [audit-archiver](/continuous-delivery/automations/audit-archiver) |
-| Anything else | [router](/continuous-delivery/automations/router), or [write your own](/continuous-delivery/automations#write-an-automation) |
+| Anything else | [build your own with router](/continuous-delivery/automations#build-your-own-with-router), or [write your own](/continuous-delivery/automations#write-an-automation) |

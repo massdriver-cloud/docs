@@ -35,6 +35,10 @@ docker run -p 8080:8080 \
 
 Each automation's page has its settings, the permissions of its service account, and the `mass event destination create` command that sends it only the events it uses.
 
+## Build your own with router
+
+When none of these automations does what you need, build your own destination with [router](/continuous-delivery/automations/router). A route selects events by type, attributes, and an expression, then runs HTTP requests, commands, and Massdriver API calls in order. You write YAML, not Go. Examples and the full configuration reference are in [`automations/router`](https://github.com/massdriver-cloud/massdriver-automations/tree/main/automations/router).
+
 ## How an automation acts
 
 An automation has the access of its service account and nothing more. Policies decide what the service account can do in each environment, the same as for a person. An automation that proposes a deployment in an environment with [separation of duty](/concepts/deployments#separation-of-duty) cannot approve its own proposal, so a person approves it. A [freeze window](/continuous-delivery/automations/freeze-guard) denies the service accounts in frozen groups like the people in them.
@@ -142,7 +146,7 @@ It prints the status code. Each automation drops an event id it has already hand
 
 ## Write an automation
 
-For a reaction that needs no code, such as an HTTP request, a script, or one GraphQL call, configure a route in [router](/continuous-delivery/automations/router).
+For a reaction that needs no code, such as an HTTP request, a script, or one GraphQL call, configure a route in [router](/continuous-delivery/automations/router). See [Build your own with router](#build-your-own-with-router).
 
 Otherwise, an automation is a Go package that implements one method:
 

@@ -10,6 +10,9 @@ Runs HTTP requests, commands, and Massdriver API calls when an event matches a r
 type, attributes, and an optional expression, and runs a list of steps in order. Use it for small reactions that
 need no code: page someone, post a message, call a cleanup endpoint, run a script, or plan an instance.
 
+Use router to build your own event destinations without writing an automation. The source and example route
+files are in [`automations/router`](https://github.com/massdriver-cloud/massdriver-automations/tree/main/automations/router).
+
 ## Configuration file
 
 ```yaml
