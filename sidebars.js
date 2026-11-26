@@ -71,6 +71,17 @@ module.exports = {
         "continuous-delivery/workflow-rollback",
         {
           type: "category",
+          label: "Environment Topologies",
+          link: { type: "doc", id: "continuous-delivery/topologies/topologies-overview" },
+          items: [
+            "continuous-delivery/topologies/topologies-canvas-design",
+            "continuous-delivery/topologies/topologies-environments",
+            "continuous-delivery/topologies/topologies-short-lived",
+            "continuous-delivery/topologies/topologies-projects",
+          ],
+        },
+        {
+          type: "category",
           label: "Automations",
           link: { type: "doc", id: "continuous-delivery/automations/automations-overview" },
           items: [
