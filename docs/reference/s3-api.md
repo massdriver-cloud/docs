@@ -41,6 +41,8 @@ S3 clients sign each request with an access key ID and a secret access key (AWS 
 
 The credentials belong to the access token. They work only in the organization of the access token, and they stop working when the access token expires or is revoked.
 
+On a self-hosted installation, a new `PHX_SECRET_KEY_BASE` changes the secret access key of every access token. Get the credentials again after you change it. The `credential_process` setting gets them again on each call.
+
 ### With the Massdriver CLI
 
 [`mass credentials s3`](/cli/commands/mass_credentials_s3) prints the credentials for the access token in your active profile.
