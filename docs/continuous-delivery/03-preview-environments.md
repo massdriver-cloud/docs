@@ -1,6 +1,6 @@
 ---
 id: workflow-preview-environments
-slug: /workflows/preview
+slug: /continuous-delivery/preview
 title: Preview Environments from the CLI
 sidebar_label: Preview Environments
 ---
@@ -181,6 +181,6 @@ Same APIs. Same outcomes. Same idempotency guarantees.
 - CLI command: [`mass environment preview`](/cli/commands/mass_environment) — see the `preview` subcommand.
 - Full schema reference: [Applications → Preview
   Environments](/applications/preview_environments/overview).
-- Primitives this composes: [`fork`](/workflows/fork-environment),
-  [`promote`](/workflows/promote), `setEnvironmentDefault`,
+- Primitives this composes: [`fork`](/continuous-delivery/fork-environment),
+  [`promote`](/continuous-delivery/promote), `setEnvironmentDefault`,
   `deployEnvironment`, `decommissionEnvironment`.

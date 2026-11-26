@@ -1,6 +1,6 @@
 ---
 id: workflow-promote
-slug: /workflows/promote
+slug: /continuous-delivery/promote
 title: Promote Configs Across Environments
 sidebar_label: Promote
 ---
@@ -119,5 +119,5 @@ Massdriver's opinion.
 
 - CLI command: [`mass instance copy`](/cli/commands/mass_instance) (alias `promote`).
 - API mutation: `copyInstance` in the V2 schema.
-- Related: [Fork an environment](/workflows/fork-environment) when you
+- Related: [Fork an environment](/continuous-delivery/fork-environment) when you
   want to clone a whole env, not just push one config.

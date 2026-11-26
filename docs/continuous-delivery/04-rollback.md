@@ -1,6 +1,6 @@
 ---
 id: workflow-rollback
-slug: /workflows/rollback
+slug: /continuous-delivery/rollback
 title: Roll Back a Deployment
 sidebar_label: Roll Back
 ---
@@ -194,6 +194,15 @@ one-shot patch rather than a return to a known state.
 For one-shot behavior — apply this snapshot once, keep the current
 pinned version — use `proposeDeployment` directly instead of
 `rollbackDeployment`.
+
+## Roll back when a deployment fails
+
+The [rollback-on-failure](/continuous-delivery/automations/rollback-on-failure)
+automation calls `rollbackDeployment` and `approveDeployment` when a
+`PROVISION` deployment of an opted-in instance fails. It returns the
+instance to its most recent `COMPLETED` `PROVISION` deployment. In an
+environment with separation of duty, the proposal waits for a person to
+approve it.
 
 ## Reference
 
