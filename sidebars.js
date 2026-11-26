@@ -74,10 +74,10 @@ module.exports = {
           label: "Environment Topologies",
           link: { type: "doc", id: "continuous-delivery/topologies/topologies-overview" },
           items: [
+            "continuous-delivery/topologies/topologies-canvas-design",
             "continuous-delivery/topologies/topologies-environments",
             "continuous-delivery/topologies/topologies-short-lived",
             "continuous-delivery/topologies/topologies-projects",
-            "continuous-delivery/topologies/topologies-canvas-design",
           ],
         },
         {

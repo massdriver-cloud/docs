@@ -51,7 +51,7 @@ Most organizations have several projects, each with its own topology.
 
 No project has a copy of the components below it. Billing never puts a network or a cluster on its blueprint, so adding a region means adding an environment to the network, compute, and billing projects, with no change to any blueprint.
 
-[Canvas Design](/continuous-delivery/topologies/canvas-design) covers how to decide which bundles share a project.
+Start with [Canvas Design](/continuous-delivery/topologies/canvas-design), which covers how to decide which bundles share a project. The topology of each project follows from that decision.
 
 ## Reading the diagrams
 
@@ -61,7 +61,7 @@ No project has a copy of the components below it. Billing never puts a network o
 
 | Page | Question | Topologies |
 |---|---|---|
+| [Canvas Design](/continuous-delivery/topologies/canvas-design) | Which bundles go in which project? | |
 | [Environments in a Project](/continuous-delivery/topologies/environments) | What does each environment of one project stand for? | Stages, Regions, Standby, Blue/Green, Customers, Pool and Dedicated, Cells, Sites |
 | [Short-Lived Environments](/continuous-delivery/topologies/short-lived) | Which environments are forked for a while and then removed? | Pull Request Preview, Workspace, Purpose Fork |
 | [Projects That Work Together](/continuous-delivery/topologies/projects) | How do separate projects share resources? | Singleton, Platform Layer, Migration Pair, Multi-Cloud, Isolated Boundary |
-| [Canvas Design](/continuous-delivery/topologies/canvas-design) | Which bundles go in which project? | |
