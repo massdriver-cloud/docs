@@ -3,6 +3,7 @@ id: workflow-fork-environment
 slug: /continuous-delivery/fork-environment
 title: Fork an Environment
 sidebar_label: Fork an Environment
+image: /img/og/fork-environment.png
 ---
 
 # Fork an Environment

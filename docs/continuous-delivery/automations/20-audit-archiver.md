@@ -4,6 +4,7 @@ slug: /continuous-delivery/automations/audit-archiver
 title: audit-archiver
 sidebar_label: audit-archiver
 description: Archive every Massdriver event in S3, Splunk, or Datadog.
+image: /img/og/automation-audit-archiver.png
 ---
 
 Store every Massdriver event in one or more sinks: S3 (or an S3-compatible store), Splunk, and Datadog.

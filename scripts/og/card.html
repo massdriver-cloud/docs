@@ -28,6 +28,9 @@
       .title.long {
         font-size: 116px;
       }
+      .title.xlong {
+        font-size: 96px;
+      }
       .hexes {
         position: absolute;
         right: -90px;
@@ -61,14 +64,15 @@
     </div>
     <script>
       const p = new URLSearchParams(location.search);
-      const kicker = (p.get("kicker") || "docs").split("/").map((s) => s.trim());
+      const kicker = (p.get("kicker") || "docs").split(" / ").map((s) => s.trim());
       document.getElementById("kicker").innerHTML = kicker
         .map((s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;"))
         .join('<span class="sep">/</span>');
       const title = p.get("title") || "Massdriver Docs";
       const t = document.getElementById("title");
       t.textContent = title;
-      if (title.length > 18) t.classList.add("long");
+      if (title.length > 26) t.classList.add("xlong");
+      else if (title.length > 18) t.classList.add("long");
       document.getElementById("url").textContent = "docs.massdriver.cloud";
 
       const rings = document.getElementById("rings");

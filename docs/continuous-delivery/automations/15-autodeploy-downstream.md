@@ -4,6 +4,7 @@ slug: /continuous-delivery/automations/autodeploy-downstream
 title: autodeploy-downstream
 sidebar_label: autodeploy-downstream
 description: Deploy the dependents of an instance after it deploys.
+image: /img/og/automation-autodeploy-downstream.png
 ---
 
 When an instance finishes a `PROVISION` deployment, deploy each instance that depends on it and has the

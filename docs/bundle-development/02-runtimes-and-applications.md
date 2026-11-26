@@ -3,6 +3,7 @@ id: runtimes-and-applications
 slug: /bundle-development/runtimes-and-applications
 title: Runtimes and Applications
 sidebar_label: Runtimes and Applications
+image: /img/og/runtimes-and-applications.png
 ---
 
 # Runtimes and Applications

@@ -3,6 +3,7 @@ id: concepts-components-instances-deployments
 slug: /concepts/components-instances-deployments
 title: Components, Instances & Deployments
 sidebar_label: Components, Instances & Deployments
+image: /img/og/concepts-components-instances.png
 ---
 
 This page covers the lifecycle of infrastructure from blueprint to deployed resources.

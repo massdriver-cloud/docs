@@ -4,6 +4,7 @@ slug: /continuous-delivery/automations/proposal-chatops
 title: proposal-chatops
 sidebar_label: proposal-chatops
 description: Approve or reject proposed deployments from Slack.
+image: /img/og/automation-proposal-chatops.png
 ---
 
 When somebody proposes a deployment, post it to Slack with **Approve** and **Reject** buttons. The message shows

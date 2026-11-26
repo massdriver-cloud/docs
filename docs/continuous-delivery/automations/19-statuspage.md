@@ -4,6 +4,7 @@ slug: /continuous-delivery/automations/statuspage
 title: statuspage
 sidebar_label: statuspage
 description: Serve a public status page from alarms, instances, and deployments.
+image: /img/og/automation-statuspage.png
 ---
 
 A public status site for your Massdriver environments. It needs no login.

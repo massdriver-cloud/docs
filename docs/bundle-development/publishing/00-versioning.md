@@ -3,6 +3,7 @@ id: bundle-versioning
 slug: /bundle-development/publishing/versioning
 title: Bundle Versioning
 sidebar_label: Versioning
+image: /img/og/bundle-versioning.png
 ---
 
 # Versions

@@ -3,6 +3,7 @@ id: applications-overview
 slug: /applications
 title: Applications
 sidebar_label: Overview
+image: /img/og/applications.png
 ---
 
 An application in Massdriver is a bundle that runs on a **runtime**.

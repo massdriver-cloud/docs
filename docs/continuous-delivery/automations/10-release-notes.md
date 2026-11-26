@@ -4,6 +4,7 @@ slug: /continuous-delivery/automations/release-notes
 title: release-notes
 sidebar_label: release-notes
 description: Post new bundle versions, and the instances that can upgrade, to Slack and Teams.
+image: /img/og/automation-release-notes.png
 ---
 
 When a new bundle version is published, post it to Slack, Microsoft Teams, or both. The message has:

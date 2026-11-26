@@ -4,6 +4,7 @@ slug: /continuous-delivery/automations/rollback-on-failure
 title: rollback-on-failure
 sidebar_label: rollback-on-failure
 description: Roll an instance back to its last completed deployment when a deployment fails.
+image: /img/og/automation-rollback-on-failure.png
 ---
 
 When a `PROVISION` deployment of an instance with the attribute `autorollback=true` fails, roll the instance back

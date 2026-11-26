@@ -3,6 +3,7 @@ id: event-destinations-slack
 slug: /platform-operations/event-destinations/slack
 title: Slack Event Destinations
 sidebar_label: Slack
+image: /img/og/event-destinations-slack.png
 ---
 
 The `SLACK` adapter posts each event to a Slack channel as a message. Massdriver posts with the bot token of a Slack app that you make in your Slack workspace.

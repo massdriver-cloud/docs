@@ -3,6 +3,7 @@ id: bootstrap-platform
 slug: /guides/bootstrap-platform
 title: Bootstrap Your Platform
 sidebar_label: Bootstrap Your Platform
+image: /img/og/guide-bootstrap-platform.png
 ---
 
 # Bootstrap Your Platform

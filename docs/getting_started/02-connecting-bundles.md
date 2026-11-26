@@ -3,6 +3,7 @@ id: getting-started-connecting-bundles
 slug: /getting-started/connecting-bundles
 title: Connecting Bundles
 sidebar_label: Connecting Bundles
+image: /img/og/getting-started-connecting-bundles.png
 ---
 
 Welcome to part 2 of the Massdriver getting started guide! In part 1, you learned how to publish, configure, and deploy a bundle. Now you'll learn how to connect bundles together to share information between them using **resources** - one of Massdriver's most powerful features.

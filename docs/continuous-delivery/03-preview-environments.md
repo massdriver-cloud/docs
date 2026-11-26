@@ -3,6 +3,7 @@ id: workflow-preview-environments
 slug: /continuous-delivery/preview
 title: Preview Environments from the CLI
 sidebar_label: Preview Environments
+image: /img/og/preview-environments.png
 ---
 
 # Preview Environments from the CLI

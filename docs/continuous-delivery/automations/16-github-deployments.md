@@ -4,6 +4,7 @@ slug: /continuous-delivery/automations/github-deployments
 title: github-deployments
 sidebar_label: github-deployments
 description: Show Massdriver deployments as GitHub Deployments.
+image: /img/og/automation-github-deployments.png
 ---
 
 Show Massdriver deployments as [GitHub Deployments](https://docs.github.com/en/rest/deployments/deployments) in the

@@ -3,6 +3,7 @@ id: import-artifact
 slug: /guides/import-resource
 title: Import a Resource
 sidebar_label: Import Resource
+image: /img/og/guide-import-resource.png
 ---
 
 This guide walks through importing a custom resource into your organization. The page slug retains `/guides/import-artifact` for backwards compatibility, but the workflow itself uses the new GraphQL nouns (`createResource`, `Resource`, `resourceTypeId`).

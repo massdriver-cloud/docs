@@ -3,6 +3,7 @@ id: self-hosted-secret-encryption
 slug: /platform-operations/self-hosted/secret-encryption
 title: Encryption at Rest
 sidebar_label: Encryption at Rest
+image: /img/og/self-hosted-encryption.png
 ---
 
 Massdriver encrypts instance secrets, event destination credentials, integration credentials and resource payloads at rest. You do not need to configure anything.

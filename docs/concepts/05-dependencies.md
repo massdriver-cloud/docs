@@ -3,6 +3,7 @@ id: concepts-dependencies
 slug: /concepts/dependencies
 title: Dependencies
 sidebar_label: Dependencies
+image: /img/og/concepts-dependencies.png
 ---
 
 Dependencies are the lines between [components](/concepts/components-instances-deployments#components) in the Massdriver UI. They indicate other application and infrastructure bundles that a bundle depends on. Drawing one fills a slot the consuming bundle declared with another instance's resource.
