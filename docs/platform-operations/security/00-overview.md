@@ -3,6 +3,7 @@ id: security-overview
 slug: /platform-operations/security/overview
 title: Security
 sidebar_label: Overview
+image: /img/og/security.png
 ---
 
 # Overview

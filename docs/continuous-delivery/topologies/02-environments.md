@@ -4,6 +4,7 @@ slug: /continuous-delivery/topologies/environments
 title: Environments in a Project
 sidebar_label: Environments in a Project
 description: What the environments of one project can stand for.
+image: /img/og/topologies-environments.png
 ---
 
 # Environments in a Project

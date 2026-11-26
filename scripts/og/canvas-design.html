@@ -1,0 +1,218 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="og.css" />
+    <style>
+      .frame {
+        background:
+          radial-gradient(700px 520px at 78% 52%, rgba(45, 212, 191, 0.13), transparent 62%),
+          var(--bg);
+      }
+      .text {
+        position: absolute;
+        left: 80px;
+        top: 150px;
+        width: 480px;
+      }
+      .title {
+        font-size: 136px;
+        margin: 14px 0 24px;
+      }
+      .lede {
+        font-size: 22px;
+      }
+      .lede b {
+        color: var(--ink);
+        font-weight: 500;
+      }
+      svg.stack {
+        position: absolute;
+        right: 10px;
+        top: 0;
+        width: 680px;
+        height: 630px;
+      }
+      .plate {
+        fill: rgba(255, 255, 255, 0.025);
+        stroke: rgba(255, 255, 255, 0.28);
+        stroke-width: 1.2;
+        stroke-dasharray: 3 4;
+      }
+      .side {
+        fill: rgba(45, 212, 191, 0.05);
+      }
+      .env {
+        fill: #0b0b0d;
+        stroke: #9a9aa3;
+        stroke-width: 1.4;
+      }
+      .prod {
+        fill: #0b2a27;
+        stroke: var(--accent);
+        stroke-width: 2;
+      }
+      .tileside {
+        fill: #16161a;
+      }
+      .tileside.prod {
+        fill: #0f3d38;
+        stroke: none;
+      }
+      .link {
+        stroke: var(--accent);
+        stroke-width: 1.6;
+        stroke-dasharray: 3 3;
+        opacity: 0.75;
+      }
+      .plabel {
+        font: 500 13px "JetBrains Mono", monospace;
+        fill: #8b8b93;
+        letter-spacing: 0.02em;
+      }
+      .tlabel {
+        font: 500 11.5px "JetBrains Mono", monospace;
+        fill: #e6e6ea;
+      }
+      .tlabel.prod {
+        fill: #a7f3e9;
+        stroke: none;
+      }
+      .dot {
+        fill: #c9c9cf;
+      }
+      .dot.prod {
+        fill: var(--accent);
+        stroke: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="frame">
+      <div class="grid"></div>
+      <img class="logo" src="../../static/img/logo-white.svg" />
+      <div class="text">
+        <div class="kicker">environment topologies</div>
+        <div class="title">Canvas<br />Design</div>
+        <div class="lede">Which bundles share a project.<br />Ask what <b>one copy</b> of each is for.</div>
+      </div>
+      <svg class="stack" viewBox="0 0 680 630" aria-hidden="true">
+        <g id="scene"></g>
+      </svg>
+      <div class="url">docs.massdriver.cloud</div>
+      <div class="bar"></div>
+    </div>
+    <script>
+      const NS = "http://www.w3.org/2000/svg";
+      const scene = document.getElementById("scene");
+      const S = 1.0;
+      const AX = [Math.cos(0.36), Math.sin(0.36)];
+      const AY = [-Math.cos(0.72), Math.sin(0.72)];
+      const ORIGIN = [170, 408];
+      const LAYER = 94;
+      const P = (x, y, z) => [
+        ORIGIN[0] + S * (x * AX[0] + y * AY[0]),
+        ORIGIN[1] + S * (x * AX[1] + y * AY[1]) - z,
+      ];
+      const pts = (a) => a.map((p) => p.map((n) => n.toFixed(1)).join(",")).join(" ");
+      const el = (tag, attrs, parent = scene) => {
+        const e = document.createElementNS(NS, tag);
+        for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+        parent.appendChild(e);
+        return e;
+      };
+      const onPlane = (x, y, z) => {
+        const [ox, oy] = P(x, y, z);
+        return `matrix(${AX[0]},${AX[1]},${AY[0]},${AY[1]},${ox},${oy})`;
+      };
+
+      const PW = 420;
+      const PD = 96;
+      const TW = 86;
+      const TD = 46;
+      const TH = 7;
+
+      const layers = [
+        { label: "edge project", tiles: [["staging", 120, "env", 2], ["prod", 262, "prod", 2]] },
+        {
+          label: "billing project",
+          tiles: [["dev", 22, "env", 3], ["staging", 120, "env", 3], ["produseast", 218, "prod", 3], ["prodeuwest", 316, "prod", 3]],
+        },
+        {
+          label: "compute platform project",
+          tiles: [["nonuseast", 71, "env", 3], ["produseast", 218, "prod", 3], ["prodeuwest", 316, "prod", 3]],
+        },
+        {
+          label: "network project",
+          tiles: [["nonuseast", 71, "env", 2], ["produseast", 218, "prod", 2], ["prodeuwest", 316, "prod", 2]],
+        },
+        { label: "organization project", tiles: [["global", 167, "prod", 3]] },
+      ];
+      const links = [
+        [0, "staging", 1, "staging"],
+        [0, "prod", 1, "produseast"],
+        [0, "prod", 1, "prodeuwest"],
+        [1, "dev", 2, "nonuseast"],
+        [1, "staging", 2, "nonuseast"],
+        [1, "produseast", 2, "produseast"],
+        [1, "prodeuwest", 2, "prodeuwest"],
+        [2, "nonuseast", 3, "nonuseast"],
+        [2, "produseast", 3, "produseast"],
+        [2, "prodeuwest", 3, "prodeuwest"],
+        [3, "nonuseast", 4, "global"],
+        [3, "produseast", 4, "global"],
+        [3, "prodeuwest", 4, "global"],
+      ];
+
+      const z = (i) => (layers.length - 1 - i) * LAYER;
+      const ty = 10;
+      const center = (i, name) => {
+        const t = layers[i].tiles.find((t) => t[0] === name);
+        return [t[1] + TW / 2, ty + TD / 2, z(i) + TH];
+      };
+
+      const drawLinks = (upper) => {
+        for (const [a, an, b, bn] of links) {
+          if (a !== upper) continue;
+          const from = P(...center(b, bn));
+          const to = P(...center(a, an));
+          el("line", { class: "link", x1: from[0], y1: from[1], x2: to[0], y2: to[1] });
+        }
+      };
+
+      for (let i = layers.length - 1; i >= 0; i--) {
+        const L = layers[i];
+        const zz = z(i);
+        el("polygon", { class: "side", points: pts([P(0, PD, zz), P(PW, PD, zz), P(PW, PD, zz - 4), P(0, PD, zz - 4)]) });
+        el("polygon", { class: "plate", points: pts([P(0, 0, zz), P(PW, 0, zz), P(PW, PD, zz), P(0, PD, zz)]) });
+        el("text", { class: "plabel", transform: onPlane(8, PD - 12, zz) }).textContent = L.label;
+
+        for (const [name, x, kind, comps] of L.tiles) {
+          el("polygon", {
+            class: `tileside ${kind}`,
+            points: pts([P(x, ty + TD, zz), P(x + TW, ty + TD, zz), P(x + TW, ty + TD, zz + TH), P(x, ty + TD, zz + TH)]),
+          });
+          el("polygon", {
+            class: `tileside ${kind}`,
+            points: pts([P(x + TW, ty, zz), P(x + TW, ty + TD, zz), P(x + TW, ty + TD, zz + TH), P(x + TW, ty, zz + TH)]),
+          });
+          el("polygon", {
+            class: kind,
+            points: pts([P(x, ty, zz + TH), P(x + TW, ty, zz + TH), P(x + TW, ty + TD, zz + TH), P(x, ty + TD, zz + TH)]),
+          });
+          el("text", { class: `tlabel ${kind}`, transform: onPlane(x + 7, ty + 17, zz + TH) }).textContent = name;
+          for (let c = 0; c < comps; c++) {
+            el("rect", {
+              class: `dot ${kind}`,
+              width: 9,
+              height: 9,
+              rx: 1.5,
+              transform: onPlane(x + 8 + c * 14, ty + 27, zz + TH),
+            });
+          }
+        }
+        if (i > 0) drawLinks(i - 1);
+      }
+    </script>
+  </body>
+</html>

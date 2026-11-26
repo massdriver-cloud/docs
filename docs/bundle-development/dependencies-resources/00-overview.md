@@ -3,6 +3,7 @@ id: dependencies-resources-overview
 slug: /bundle-development/dependencies-resources/overview
 title: Dependencies & Resources
 sidebar_label: Overview
+image: /img/og/dependencies-resources.png
 ---
 
 Dependencies and resources enable type-safe composition of infrastructure components in Massdriver.

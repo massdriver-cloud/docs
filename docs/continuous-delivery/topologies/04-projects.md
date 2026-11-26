@@ -4,6 +4,7 @@ slug: /continuous-delivery/topologies/projects
 title: Projects That Work Together
 sidebar_label: Projects That Work Together
 description: Separate projects that share resources through environment defaults and remote references.
+image: /img/og/topologies-projects.png
 ---
 
 # Projects That Work Together
