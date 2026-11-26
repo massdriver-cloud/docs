@@ -58,6 +58,7 @@ type Deployment {
   status: DeploymentStatus!
   action: DeploymentAction!
   version: String!
+  bundle: Bundle!
   params: Map
   message: String
   createdAt: DateTime!
@@ -90,6 +91,11 @@ The infrastructure operation this deployment performs.
 
 #### [<code style={{ fontWeight: 'normal' }}>Deployment.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version\} 
 The bundle version used for this deployment (e.g., `1.2.0`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Deployment.<b>bundle</b></code>](#bundle)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Bundle!</b></code>](/api/graphql/types/objects/bundle.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#bundle\} 
+The bundle version this deployment ran. Can differ from the instance's
+current bundle when the instance's version changed after this deployment.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Deployment.<b>params</b></code>](#params)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#params\} 
