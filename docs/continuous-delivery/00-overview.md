@@ -21,6 +21,8 @@ A change reaches production by moving from one environment to the next. It can b
 
 Policies with an `md-environment` condition set what each group can do in each environment. A common setup lets developers deploy to `dev` and `staging` and propose in `prod`, where a release manager approves. Refer to [Access control](/platform-operations/security/access-control#common-patterns).
 
+What the environments of a project stand for, such as stages, regions, customers, or pull requests, is its topology. Most organizations combine several. Refer to [Environment Topologies](/continuous-delivery/topologies).
+
 ## How a change moves
 
 ```mermaid

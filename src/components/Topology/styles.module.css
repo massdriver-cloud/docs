@@ -1,0 +1,196 @@
+.figure {
+  --tp-plate: var(--ifm-color-emphasis-100);
+  --tp-surface: var(--ifm-background-color);
+  --tp-ink: var(--ifm-font-color-base);
+  --tp-muted: var(--ifm-color-emphasis-600);
+  --tp-line: var(--ifm-color-emphasis-700);
+  --tp-rule: var(--ifm-color-emphasis-300);
+  --tp-chip: var(--ifm-color-emphasis-200);
+  --tp-live: var(--ifm-color-primary-darker);
+  --tp-dev: #c65d0a;
+  margin: 1.25rem 0 1.25rem;
+  background: var(--tp-plate);
+  border-radius: 8px;
+  padding: 14px 10px;
+  display: flex;
+  justify-content: center;
+}
+
+:global([data-theme="dark"]) .figure {
+  --tp-live: var(--ifm-color-primary-lighter);
+  --tp-dev: #f2a154;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  max-width: 520px;
+  height: auto;
+}
+
+.svgWide {
+  max-width: 440px;
+}
+
+.project {
+  fill: none;
+  stroke: var(--tp-muted);
+  stroke-width: 1;
+  stroke-dasharray: 1.5 3;
+}
+
+.projectLabel,
+.label,
+.version,
+.edgeLabel {
+  font-family: var(--ifm-font-family-monospace);
+}
+
+.projectLabel {
+  font-size: 9.5px;
+  fill: var(--tp-muted);
+  paint-order: stroke;
+  stroke: var(--tp-plate);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+
+.projectTopology {
+  fill: var(--tp-live);
+  font-weight: 600;
+}
+
+.node {
+  stroke-width: 1.3;
+}
+
+.env {
+  fill: var(--tp-surface);
+  stroke: var(--tp-line);
+}
+
+.eph {
+  fill: var(--tp-surface);
+  stroke: var(--tp-line);
+  stroke-dasharray: 4 3;
+}
+
+.prod {
+  fill: color-mix(in srgb, var(--tp-live) 14%, var(--tp-surface));
+  stroke: var(--tp-live);
+  stroke-width: 1.8;
+}
+
+.ext {
+  fill: var(--tp-chip);
+}
+
+.label {
+  font-size: 11px;
+  dominant-baseline: central;
+  fill: var(--tp-ink);
+}
+
+.extLabel {
+  text-anchor: middle;
+  font-size: 10.5px;
+}
+
+.version {
+  font-size: 9.5px;
+  text-anchor: end;
+  fill: var(--tp-muted);
+}
+
+.cOn {
+  fill: var(--tp-ink);
+}
+
+.cDev {
+  fill: var(--tp-dev);
+}
+
+.cRef {
+  fill: none;
+  stroke: var(--tp-muted);
+  stroke-width: 1.1;
+  stroke-dasharray: 2 1.6;
+}
+
+.cOff {
+  fill: var(--tp-rule);
+}
+
+.edge {
+  stroke: var(--tp-line);
+  stroke-width: 1.3;
+  fill: none;
+}
+
+.dash {
+  stroke-dasharray: 4 3;
+}
+
+.head {
+  fill: var(--tp-line);
+}
+
+.edgeLabel {
+  font-size: 9.5px;
+  text-anchor: middle;
+  dominant-baseline: central;
+  fill: var(--tp-muted);
+  paint-order: stroke;
+  stroke: var(--tp-plate);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+
+.dot {
+  fill: var(--tp-live);
+}
+
+.pulse {
+  fill: none;
+  stroke: var(--tp-live);
+  stroke-width: 2.5;
+}
+
+.legend {
+  list-style: none;
+  margin: 1rem 0 1.5rem;
+  padding: 0;
+  display: grid;
+  gap: 8px 28px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.legend li {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin: 0;
+}
+
+.legend svg {
+  flex: none;
+}
+
+.legendFigure {
+  --tp-plate: var(--ifm-color-emphasis-100);
+  --tp-surface: var(--ifm-background-color);
+  --tp-ink: var(--ifm-font-color-base);
+  --tp-muted: var(--ifm-color-emphasis-600);
+  --tp-line: var(--ifm-color-emphasis-700);
+  --tp-rule: var(--ifm-color-emphasis-300);
+  --tp-chip: var(--ifm-color-emphasis-200);
+  --tp-live: var(--ifm-color-primary-darker);
+  --tp-dev: #c65d0a;
+}
+
+:global([data-theme="dark"]) .legendFigure {
+  --tp-live: var(--ifm-color-primary-lighter);
+  --tp-dev: #f2a154;
+}
