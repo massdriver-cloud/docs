@@ -34,7 +34,7 @@ flowchart LR
 
 The split follows who consumes a dependency and when. The runtime owns provision-time dependencies, the ones its IaC uses while it runs: the IAM role, the VPC, the cluster, the cloud credential. The application owns run-time dependencies, the ones its process talks to after deploy: Postgres, Redis, a queue, another service's endpoint.
 
-Each application is still a complete, versioned bundle. It appears in the catalog under its own name, deploys like any other bundle, and records exactly which runtime release it was built from.
+Each application is still a complete, versioned bundle. It appears in the catalog under its own name, deploys like any other bundle, and records exactly which runtime version it was built from.
 
 ## Use cases
 
@@ -111,9 +111,9 @@ app:
 | `lambda@~1.2` | the newest `1.2.x` |
 | `lambda@~1` | the newest `1.x` |
 | `lambda@latest` or `lambda` | the newest stable version |
-| `lambda@~1.2+dev` | the newest `1.2.x`, including development releases |
+| `lambda@~1.2+dev` | the newest `1.2.x`, including development versions |
 
-The constraint resolves each time you build, so a new runtime release reaches the application the next time the application is published. Existing application releases keep the runtime code they were built with.
+The constraint resolves each time you build, so a new runtime version reaches the application the next time the application is published. Existing application versions keep the runtime code they were built with.
 
 The published `massdriver.yaml` pins `app.runtime` to the exact runtime version it was built on:
 
@@ -195,7 +195,7 @@ The template renders after that step applies. It can read the step's IaC outputs
 - Every application resource needs exactly one template, and every template must belong to a declared resource.
 - An application resource must not reuse a runtime resource name.
 
-Output names belong to the runtime's IaC. If a runtime release renames an output, the template breaks at deploy time, so pin the runtime to a range that keeps its outputs stable.
+Output names belong to the runtime's IaC. If a runtime version renames an output, the template breaks at deploy time, so pin the runtime to a range that keeps its outputs stable.
 
 ## Building and publishing
 

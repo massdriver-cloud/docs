@@ -101,7 +101,7 @@ app:
     POSTGRES_USERNAME: .dependencies.postgres.authentication.username
 ```
 
-While secrets are automatically converted to environment variables, they can also be parsed if necessary. More on secrets [below](#secret-examples).
+Secrets are automatically converted to environment variables. More on secrets [below](#secret-examples).
 
 :::info
 
@@ -121,16 +121,11 @@ app:
 
 Secrets can be defined in your `massdriver.yaml` file. This will create forms in the Massdriver UI where 3rd party secrets can be set for your application.
 
-Secrets will be turned into environment variables at deploy time and are also exposed to the `envs` section for JQ parsing similar to `.params` and `.dependencies` [above](#environment-variable-examples).
+Secrets will be turned into environment variables at deploy time. The environment variable has the same name as the secret. The `envs` jq queries can read only `.params` and `.dependencies` [above](#environment-variable-examples). They cannot read secrets.
 
 
-```yaml title="Parsing secrets into an environment variable"
+```yaml title="Defining a secret"
 app:
-  envs:
-    FOO: bar
-    # SOME_SECRET is automatically created, but if you needed to map to a different var or perform parsing on the secret, you can do so
-    SOME_SECRET_RENAMED: .secret.SOME_SECRET
-    SOME_SECRET_UPCASED: .secret.SOME_SECRET | ascii_upcase
   secrets:
     SOME_SECRET: # This is env var name this will be converted to
       required: true # if a secret is required, Massdriver will block deployments that are missing this secret
