@@ -8130,6 +8130,12 @@ type Deployment {
   "The bundle version used for this deployment (e.g., `1.2.0`)."
   version: String!
 
+  """
+  The bundle version this deployment ran. Can differ from the instance's
+  current bundle when the instance's version changed after this deployment.
+  """
+  bundle: Bundle!
+
   "Snapshot of the instance configuration at the time this deployment was enqueued. Independent of the instance's current `params` — later edits do not mutate this record."
   params: Map
 
@@ -8608,6 +8614,16 @@ input InstancesFilter {
 
   "Match by a specific bundle version (`name@version`) or release channel (`name@~1`, `name@latest`). Use `ociRepoName` instead to match every version of a bundle."
   bundleId: BundleIdFilter
+
+  """
+  Match instances whose infrastructure runs on a runtime: the application bundle
+  from the instance's latest completed provision was built on a runtime version
+  this value resolves to. Accepts the same forms as `bundleId`: `lambda` matches
+  every runtime version, and `lambda@1.2.7` matches one.
+  Instances that were never provisioned, or whose latest completed deployment
+  decommissioned them, do not match.
+  """
+  runtime: BundleIdFilter
 
   "Filter by configuration parameter values. Each entry targets a specific param field; multiple entries are combined with AND."
   paramDimension: [ParamDimensionFilter!]
@@ -9956,6 +9972,45 @@ enum BundleDependencyCardinality {
   MANY
 }
 
+"An environment variable the bundle sets on its workload."
+type BundleAppEnv {
+  "Environment variable name (e.g., `DB_HOST`)."
+  name: String!
+
+  "jq expression that computes the value from params and dependencies (e.g., `.dependencies.db.host`)."
+  value: String!
+
+  "`true` when the application gets this variable from its runtime. Only the runtime can change it."
+  inherited: Boolean!
+}
+
+"A secret the bundle reads. Values are set per instance."
+type BundleAppSecret {
+  "Secret name (e.g., `STRIPE_KEY`)."
+  name: String!
+
+  "When `true`, the secret must be set before the instance can deploy."
+  required: Boolean!
+
+  "Human-readable name for the secret."
+  title: String
+
+  "Explanation of what the secret is used for."
+  description: String
+
+  "`true` when the application gets this secret from its runtime. Only the runtime can change it."
+  inherited: Boolean!
+}
+
+"The environment variables and secrets a bundle passes to its workload."
+type BundleApp {
+  "Environment variables, sorted by name."
+  envs: [BundleAppEnv!]!
+
+  "Secrets, sorted by name."
+  secrets: [BundleAppSecret!]!
+}
+
 """
 An input that a bundle requires from another bundle's output.
 
@@ -9985,6 +10040,9 @@ type BundleDependency {
   """
   versionConstraint: String!
 
+  "`true` when the application gets this dependency from its runtime. Only the runtime can change it."
+  inherited: Boolean!
+
   "The resource type this dependency accepts, resolved to the newest version its `versionConstraint` accepts. `null` if no published version of the type satisfies the range, or the field is not pinned to a resource type at all."
   resourceType: ResourceType
 }
@@ -10011,6 +10069,9 @@ type BundleResource {
   current version of the type they point at.
   """
   versionConstraint: String!
+
+  "`true` when the application gets this resource from its runtime. Only the runtime can change it."
+  inherited: Boolean!
 
   "The resource type this output produces, resolved to the newest version its `versionConstraint` accepts. `null` if no published version of the type satisfies the range, or the field is not pinned to a resource type at all."
   resourceType: ResourceType
@@ -10122,6 +10183,15 @@ type Bundle {
   can host application bundles.
   """
   provides: [BundleCapability!]
+
+  """
+  The runtime version this application bundle was built from. `null` when the
+  bundle is not an application.
+  """
+  runtime: Bundle
+
+  "The environment variables and secrets this bundle passes to its workload."
+  app: BundleApp!
 
   "Dependencies (inputs) this bundle requires. Each entry names a slot and the resource type it accepts. Sorted alphabetically by name."
   dependencies: [BundleDependency!]!

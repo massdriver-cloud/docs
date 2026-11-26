@@ -142,6 +142,8 @@ The runtime owns everything that shapes the infrastructure: `steps`, `params`, `
 
 Any other key, such as `params` or `ui`, fails the build. An application cannot be a runtime, so applications cannot run on other applications.
 
+The dependencies, resources, envs, and secrets that an application gets from its runtime are **inherited**. Only the runtime can change them. The GraphQL API marks each of them with `inherited: true`, and `Bundle.runtime` returns the runtime version that the application was built from.
+
 ## Adding dependencies
 
 Application dependencies are added alongside the runtime's and become inputs to the runtime's IaC like any other dependency. Use them from `app.envs`:
