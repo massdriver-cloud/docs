@@ -3,6 +3,7 @@ id: continuous-delivery-overview
 slug: /continuous-delivery
 title: Continuous Delivery
 sidebar_label: Overview
+image: /img/og/continuous-delivery.png
 ---
 
 Massdriver models continuous delivery around the environment. A project's blueprint defines the components. Each environment of the project has one instance of each component, and the environment decides what reaches those instances: which bundle versions, which configuration, who can deploy, whether a change needs approval, and when changes are frozen.

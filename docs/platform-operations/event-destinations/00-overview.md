@@ -3,6 +3,7 @@ id: event-destinations-overview
 slug: /platform-operations/event-destinations
 title: Event Destinations
 sidebar_label: Overview
+image: /img/og/event-destinations.png
 ---
 
 An event destination receives your organization's audit log events. You choose the events that the destination receives. Each destination has an adapter. The adapter sets where and how Massdriver sends the events.

@@ -4,6 +4,7 @@ slug: /continuous-delivery/topologies/short-lived
 title: Short-Lived Environments
 sidebar_label: Short-Lived Environments
 description: Environments forked for a while and then removed.
+image: /img/og/topologies-short-lived.png
 ---
 
 # Short-Lived Environments

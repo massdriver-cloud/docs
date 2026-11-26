@@ -4,6 +4,7 @@ slug: /continuous-delivery/automations
 title: Automations
 sidebar_label: Overview
 description: Services that act on Massdriver events with a service account.
+image: /img/og/automations.png
 ---
 
 An automation is a service that acts on [Massdriver events](/platform-operations/event-destinations). It receives events from an [HTTP event destination](/platform-operations/event-destinations/http), verifies the [Standard Webhooks](https://www.standardwebhooks.com) signature, and calls the Massdriver API as a service account, or calls another service such as Slack or GitHub.

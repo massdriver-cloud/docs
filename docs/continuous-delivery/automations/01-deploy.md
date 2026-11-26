@@ -4,6 +4,7 @@ slug: /continuous-delivery/automations/deploy
 title: Deploy the Automations
 sidebar_label: Deploy
 description: Run any set of the automations on Kubernetes or Amazon ECS with a Massdriver bundle.
+image: /img/og/automations-deploy.png
 ---
 
 Two bundles in [massdriver-automations](https://github.com/massdriver-cloud/massdriver-automations) run any set of the automations. Turn on the automations you want in the instance's params. For each one, the bundle runs one container and creates a Massdriver event destination that sends the container only the events it uses.

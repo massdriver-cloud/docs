@@ -3,6 +3,7 @@ id: provisioners-overview
 slug: /bundle-development/provisioners/overview
 title: Provisioners Overview
 sidebar_label: Overview
+image: /img/og/provisioners.png
 ---
 
 # Provisioner Specification

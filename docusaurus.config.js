@@ -20,8 +20,7 @@ module.exports = {
   organizationName: 'massdriver-cloud',
   projectName: 'docs',
   themeConfig: {
-    image: 'img/opengraph-md.png',
-    metadata: [{ name: 'twitter:card', content: 'summary' }],
+    image: 'img/og/default.png',
     announcementBar: {
       id: 'agentic_infra',
       content:
@@ -31,6 +30,7 @@ module.exports = {
       isCloseable: false
     },
     metadata: [
+      { name: 'twitter:card', content: 'summary_large_image' },
       {
         name: 'keywords',
         content: 'massdriver, mass driver, internal developer platform, '

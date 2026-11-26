@@ -3,6 +3,7 @@ id: event-reference
 slug: /platform-operations/event-destinations/events
 title: Event Reference
 sidebar_label: Overview
+image: /img/og/event-reference.png
 ---
 
 Each event has the same [CloudEvent](/platform-operations/event-destinations#the-event) fields. The fields of `data.entity` change with the entity that the event is about. The pages of this section list the fields of each entity, so that you can write a [condition](/platform-operations/event-destinations#choose-events) on them.

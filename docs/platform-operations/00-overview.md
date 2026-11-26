@@ -3,6 +3,7 @@ id: platform-operations-overview
 slug: /platform-operations/overview
 title: Platform Operations
 sidebar_label: Overview
+image: /img/og/platform-operations.png
 ---
 
 This section covers operating and administering the Massdriver platform.

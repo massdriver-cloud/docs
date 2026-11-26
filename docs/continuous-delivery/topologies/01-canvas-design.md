@@ -4,6 +4,7 @@ slug: /continuous-delivery/topologies/canvas-design
 title: Canvas Design
 sidebar_label: Canvas Design
 description: Deciding which bundles share a project.
+image: /img/og/canvas-design.png
 ---
 
 # Canvas Design

@@ -4,6 +4,7 @@ slug: /continuous-delivery/topologies
 title: Environment Topologies
 sidebar_label: Overview
 description: The shapes projects and environments take, and how they share resources.
+image: /img/og/topologies.png
 ---
 
 # Environment Topologies

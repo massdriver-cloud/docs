@@ -1,0 +1,98 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;500;700&display=block");
+
+:root {
+  --bg: #050506;
+  --ink: #fafafa;
+  --muted: #8b8b93;
+  --dim: #2a2a30;
+  --accent: #2dd4bf;
+  --accent-soft: rgba(45, 212, 191, 0.14);
+  --prod: #f59e0b;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  width: 1200px;
+  height: 630px;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "JetBrains Mono", monospace;
+}
+
+.frame {
+  position: relative;
+  width: 1200px;
+  height: 630px;
+  overflow: hidden;
+  background:
+    radial-gradient(900px 500px at 85% 40%, rgba(45, 212, 191, 0.10), transparent 60%),
+    linear-gradient(var(--bg), var(--bg));
+}
+
+.grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse 80% 90% at 70% 50%, #000 30%, transparent 80%);
+}
+
+.logo {
+  position: absolute;
+  top: 56px;
+  left: 80px;
+  height: 34px;
+}
+
+.kicker {
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  text-transform: lowercase;
+}
+
+.kicker .sep {
+  color: var(--muted);
+  padding: 0 10px;
+}
+
+.title {
+  font-family: "Bebas Neue", sans-serif;
+  font-weight: 400;
+  line-height: 0.92;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.lede {
+  font-size: 24px;
+  line-height: 1.45;
+  color: #c9c9cf;
+}
+
+.url {
+  position: absolute;
+  left: 80px;
+  bottom: 50px;
+  font-size: 22px;
+  color: var(--muted);
+}
+
+.bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 8px;
+  background: var(--accent);
+}
