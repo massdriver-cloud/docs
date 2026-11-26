@@ -80,7 +80,7 @@ Things that exist once for the whole company.
 - **Connects:** Other projects use its resources by remote reference. Anything every environment needs, such as the registry, is set as an environment default in each of them.
 
 <details>
-<summary>Example <code>blueprint.yaml</code></summary>
+<summary>Example <code>blueprint.yaml</code> <span className="badge badge--warning">alpha</span></summary>
 
 ```yaml
 version: 1
@@ -110,7 +110,7 @@ The address space everything else is deployed into.
 - **Connects:** Each network is set as the environment default in the environments deployed into it, so it never appears on an application canvas.
 
 <details>
-<summary>Example <code>blueprint.yaml</code></summary>
+<summary>Example <code>blueprint.yaml</code> <span className="badge badge--warning">alpha</span></summary>
 
 ```yaml
 version: 1
@@ -137,7 +137,7 @@ Clusters, and what has to be installed in them before a workload can run.
 - **Connects:** The cluster is an environment default for application environments. Add-ons such as the ingress controller are connected to the cluster on this canvas.
 
 <details>
-<summary>Example <code>blueprint.yaml</code></summary>
+<summary>Example <code>blueprint.yaml</code> <span className="badge badge--warning">alpha</span></summary>
 
 ```yaml
 version: 1
@@ -167,7 +167,7 @@ Services that many applications use and no single application owns.
 - **Connects:** Environment default when an environment has exactly one of the resource type, such as the metrics endpoint. Remote reference when the consumer has to pick one, such as a specific database.
 
 <details>
-<summary>Example <code>blueprint.yaml</code></summary>
+<summary>Example <code>blueprint.yaml</code> <span className="badge badge--warning">alpha</span></summary>
 
 ```yaml
 version: 1
@@ -197,7 +197,7 @@ Where traffic enters and is steered.
 - **Connects:** It consumes and is not consumed. Its instances have remote references to the application environments behind it, which makes it the traffic switch for blue/green and failover.
 
 <details>
-<summary>Example <code>blueprint.yaml</code></summary>
+<summary>Example <code>blueprint.yaml</code> <span className="badge badge--warning">alpha</span></summary>
 
 ```yaml
 version: 1
@@ -228,7 +228,7 @@ One service or one product, and the things only it uses.
 - **Connects:** Components are connected to each other on the canvas. The network, cluster, and credentials arrive as environment defaults.
 
 <details>
-<summary>Example <code>blueprint.yaml</code></summary>
+<summary>Example <code>blueprint.yaml</code> <span className="badge badge--warning">alpha</span></summary>
 
 ```yaml
 version: 1
@@ -265,7 +265,7 @@ Warehouse, lake, pipelines, and reporting.
 - **Connects:** Pipelines read application databases by remote reference. Applications do not depend on it.
 
 <details>
-<summary>Example <code>blueprint.yaml</code></summary>
+<summary>Example <code>blueprint.yaml</code> <span className="badge badge--warning">alpha</span></summary>
 
 ```yaml
 version: 1
@@ -295,7 +295,7 @@ The part of the product that each customer gets a private copy of.
 - **Connects:** Each tenant environment has a remote reference to the shared control plane, which is an application canvas with one environment per stage.
 
 <details>
-<summary>Example <code>blueprint.yaml</code></summary>
+<summary>Example <code>blueprint.yaml</code> <span className="badge badge--warning">alpha</span></summary>
 
 ```yaml
 version: 1
