@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="og.css" />
+    <style>
+      .text {
+        position: absolute;
+        left: 80px;
+        top: 190px;
+        width: 600px;
+      }
+      .title {
+        font-size: 150px;
+        margin: 14px 0 26px;
+      }
+      .lede {
+        font-size: 22px;
+        width: 520px;
+      }
+      .hexes {
+        position: absolute;
+        right: -150px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 620px;
+        height: 680px;
+        opacity: 0.55;
+      }
+      .tree {
+        position: absolute;
+        left: 735px;
+        top: 150px;
+        font-size: 21px;
+        line-height: 1.68;
+        color: #8d8d95;
+        white-space: pre;
+        padding: 26px 34px;
+        border: 1px solid #26262c;
+        border-radius: 10px;
+        background: rgba(11, 11, 14, 0.88);
+        box-shadow: 0 0 60px rgba(45, 212, 191, 0.08);
+      }
+      .tree .root {
+        color: var(--accent);
+        font-weight: 700;
+      }
+      .tree .b {
+        color: #3f3f47;
+      }
+      .tree .n {
+        color: #e6e6ea;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="frame">
+      <div class="grid"></div>
+      <img class="logo" src="../../static/img/logo-white.svg" />
+      <svg class="hexes" viewBox="-300 -330 600 660" aria-hidden="true">
+        <g fill="none" id="rings"></g>
+      </svg>
+      <div class="text">
+        <div class="kicker">documentation</div>
+        <div class="title">Massdriver<br />Docs</div>
+      </div>
+      <div class="tree" id="tree"></div>
+      <div class="url">docs.massdriver.cloud</div>
+      <div class="bar"></div>
+    </div>
+    <script>
+      const SECTIONS = [
+        "getting-started",
+        "bundle-development",
+        "continuous-delivery",
+        "applications",
+        "platform-operations",
+        "concepts",
+        "reference",
+      ];
+      document.getElementById("tree").innerHTML =
+        '<span class="root">docs/</span>\n' +
+        SECTIONS.map((s, i) => `<span class="b">${i === SECTIONS.length - 1 ? "└─" : "├─"}</span> <span class="n">${s}</span>`).join("\n");
+
+      const rings = document.getElementById("rings");
+      const hex = (r) =>
+        Array.from({ length: 6 }, (_, i) => {
+          const a = (Math.PI / 3) * i - Math.PI / 2;
+          return `${(r * Math.cos(a)).toFixed(1)},${(r * Math.sin(a)).toFixed(1)}`;
+        }).join(" ");
+      for (let i = 0; i < 7; i++) {
+        const el = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+        el.setAttribute("points", hex(300 - i * 40));
+        el.setAttribute("stroke", "#2dd4bf");
+        el.setAttribute("stroke-width", i === 1 ? 4 : 1.5);
+        el.setAttribute("opacity", i === 1 ? 0.9 : 0.12 + i * 0.04);
+        rings.appendChild(el);
+      }
+    </script>
+  </body>
+</html>

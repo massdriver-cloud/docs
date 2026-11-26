@@ -3,6 +3,7 @@ id: security-service-accounts
 slug: /platform-operations/security/service-accounts
 title: Service Accounts
 sidebar_label: Service Accounts
+image: /img/og/service-accounts.png
 ---
 
 Service accounts are a special type of non-human privileged account used to execute publish bundles, deploy applications, and other functions in our [API](/api/graphql). In some cases, they may have administrative privileges.

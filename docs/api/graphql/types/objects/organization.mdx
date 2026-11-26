@@ -74,6 +74,7 @@ type Organization {
   createdAt: DateTime!
   updatedAt: DateTime!
   subscriptionStatus: OrganizationSubscriptionStatus!
+  capabilities: [IntegrationCapability!]!
   trialEndsAt: DateTime
   planExpiresOn: Date
   logo: LogoOrganization
@@ -119,6 +120,11 @@ When this organization was last modified (UTC).
 Subscription status of the organization. Visible to every member so the UI can
 surface billing warnings or lock down features for delinquent accounts. Detailed
 payment, seat, and invoice data live behind the admin-only `billing` field.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Organization.<b>capabilities</b></code>](#capabilities)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[IntegrationCapability!]!</b></code>](/api/graphql/types/enums/integration-capability.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#capabilities\} 
+The kinds of data the organization's enabled integrations provide. Visible to every member, so the UI
+can show a module such as a cost summary only when an integration provides its data.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Organization.<b>trialEndsAt</b></code>](#trial-ends-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#trial-ends-at\} 

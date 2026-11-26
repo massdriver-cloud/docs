@@ -17,6 +17,8 @@ Massdriver is an internal developer platform that turns infrastructure-as-code i
 
 **Ephemeral pipelines** run IaC automatically when developers deploy. No pipeline code to maintain. Massdriver orchestrates the workflow, manages state, and runs compliance checks on every deployment.
 
+**Continuous delivery** is modeled around the environment. Changes move from one environment to the next by release channel, promotion, or fork, and each environment's policies, approvals, and freeze windows decide what reaches it. Refer to [Continuous Delivery](/continuous-delivery).
+
 ## Core Principles
 
 - **Proactive guardrails** — Invalid, insecure, or out-of-policy configurations are impossible to express. Issues are prevented, not caught in review.

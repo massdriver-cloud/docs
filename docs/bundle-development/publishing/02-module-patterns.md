@@ -3,6 +3,7 @@ id: module-patterns
 slug: /bundle-development/publishing/module-patterns
 title: Mapping Terraform and OpenTofu Module Patterns to Massdriver
 sidebar_label: Module Patterns
+image: /img/og/module-patterns.png
 ---
 
 If your team has an existing library of Terraform or OpenTofu modules — naming utilities, diagnostic configurations, RBAC helpers, VM extensions, and other shared modules — this guide explains how each pattern maps to Massdriver and where your modules should live after migration.

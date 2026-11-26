@@ -3,6 +3,7 @@ id: cli-overview
 slug: /reference/cli/overview
 title: Mass CLI Overview
 sidebar_label: Overview
+image: /img/og/cli.png
 ---
 
 The Mass CLI is a powerful command line interface for interacting with the Massdriver platform. It is used to build and publish bundles, manage deployments, and more.

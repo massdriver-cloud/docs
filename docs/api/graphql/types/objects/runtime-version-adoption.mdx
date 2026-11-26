@@ -1,0 +1,85 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: runtime-version-adoption
+title: RuntimeVersionAdoption
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+How many applications and instances use one version of a runtime.
+
+An application counts toward the runtime version that its newest version is
+built on. An instance counts toward the runtime version that its
+infrastructure runs: the runtime of the bundle from its latest completed
+provision. The instance count for a version is the number of instances that
+`instances(filter: { runtime: { eq: "name@version" } })` returns.
+
+
+```graphql
+type RuntimeVersionAdoption {
+  version: Semver!
+  applicationCount: Int!
+  instanceCount: Int!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>RuntimeVersionAdoption.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Semver!</b></code>](/api/graphql/types/scalars/semver.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version\} 
+The runtime version (e.g., `1.2.8`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RuntimeVersionAdoption.<b>applicationCount</b></code>](#application-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/api/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#application-count\} 
+Applications you can view whose newest version is built on this runtime version.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RuntimeVersionAdoption.<b>instanceCount</b></code>](#instance-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/api/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#instance-count\} 
+Instances you can view whose infrastructure runs on this runtime version.
+
+
+
+
+
+
+### Member Of
+
+[`Runtime`](/api/graphql/types/objects/runtime.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

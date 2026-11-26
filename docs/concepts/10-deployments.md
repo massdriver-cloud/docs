@@ -3,6 +3,7 @@ id: concepts-deployments
 slug: /concepts/deployments
 title: Deployments
 sidebar_label: Deployments
+image: /img/og/concepts-deployments.png
 ---
 
 A **deployment** is a queued attempt to make running infrastructure match an [instance's](/concepts/components-instances-deployments#instances) saved configuration. Deployments are immutable records: they capture what was tried, with what params, when, and what happened.

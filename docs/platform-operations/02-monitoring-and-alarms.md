@@ -3,6 +3,7 @@ id: monitoring-and-alarms
 slug: /platform-operations/monitoring-and-alarms
 title: Integrating Cloud Monitoring Alarms into Massdriver
 sidebar_label: Monitoring & Alarms
+image: /img/og/monitoring-and-alarms.png
 ---
 
 An **instance alarm** is a monitoring mechanism that allows you to track the health and performance of your cloud resources managed through a Massdriver instance. Instance alarms are directly associated with instances and provide real-time visibility into the state of your infrastructure.

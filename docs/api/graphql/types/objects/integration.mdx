@@ -57,6 +57,10 @@ type Integration {
   createdAt: DateTime!
   updatedAt: DateTime!
   nextRunAt: DateTime
+  lastRun: IntegrationRun
+  runs(
+    cursor: Cursor
+  ): IntegrationRunsPage
 }
 ```
 
@@ -91,6 +95,16 @@ When this integration was last modified (UTC).
 
 #### [<code style={{ fontWeight: 'normal' }}>Integration.<b>nextRunAt</b></code>](#next-run-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#next-run-at\} 
 When this integration is next scheduled to execute (UTC). Only present for integrations that run on a periodic schedule. `null` if the integration is disabled or does not have scheduled runs.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Integration.<b>lastRun</b></code>](#last-run)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IntegrationRun</b></code>](/api/graphql/types/objects/integration-run.mdx) <Badge class="badge badge--secondary " text="object"/> \{#last-run\} 
+The most recent scheduled run. `null` until the integration has run once.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Integration.<b>runs</b></code>](#runs)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IntegrationRunsPage</b></code>](/api/graphql/types/objects/integration-runs-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#runs\} 
+Scheduled runs of this integration, newest first.
+##### [<code style={{ fontWeight: 'normal' }}>Integration.runs.<b>cursor</b></code>](#integration-runs-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#integration-runs-cursor\} 
+Pagination cursor from a previous response.
 
 
 
