@@ -1,0 +1,79 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: bundle-app-env
+title: BundleAppEnv
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+An environment variable the bundle sets on its workload.
+
+
+```graphql
+type BundleAppEnv {
+  name: String!
+  value: String!
+  inherited: Boolean!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>BundleAppEnv.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Environment variable name (e.g., `DB_HOST`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundleAppEnv.<b>value</b></code>](#value)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#value\} 
+jq expression that computes the value from params and dependencies (e.g., `.dependencies.db.host`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundleAppEnv.<b>inherited</b></code>](#inherited)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#inherited\} 
+`true` when the application gets this variable from its runtime. Only the runtime can change it.
+
+
+
+
+
+
+### Member Of
+
+[`BundleApp`](/api/graphql/types/objects/bundle-app.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
