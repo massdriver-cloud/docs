@@ -118,15 +118,36 @@ function Once({ at, dur = 0.45 }) {
   );
 }
 
-const versionsOf = (v) => {
-  if (v === undefined || v === null) return [];
-  if (typeof v === "string") return [[v, 0]];
-  return v;
-};
+
+const TAB_H = 13;
+
+// An environment is drawn as a folder: a tab carrying its name over a body
+// holding one square per blueprint component, so it never reads as a component.
+function envPath(b, label) {
+  const r = 4;
+  const tab = Math.min(b.w - 6, Math.round(label.length * 6.1 + 14));
+  const { x, y, w, h } = b;
+  const t = y + TAB_H;
+  return [
+    `M${x + r} ${y}`,
+    `H${x + tab - r}`,
+    `Q${x + tab} ${y} ${x + tab} ${y + r}`,
+    `V${t}`,
+    `H${x + w - r}`,
+    `Q${x + w} ${t} ${x + w} ${t + r}`,
+    `V${y + h - r}`,
+    `Q${x + w} ${y + h} ${x + w - r} ${y + h}`,
+    `H${x + r}`,
+    `Q${x} ${y + h} ${x} ${y + h - r}`,
+    `V${y + r}`,
+    `Q${x} ${y} ${x + r} ${y}`,
+    "Z",
+  ].join(" ");
+}
 
 const stepsOf = (e) => (e.step === undefined ? [] : [].concat(e.step));
 
-const COMP_CLASS = { on: s.cOn, dev: s.cDev, ref: s.cRef, off: s.cOff };
+const COMP_CLASS = { on: s.cOn, ref: s.cRef };
 const NODE_CLASS = { env: s.env, eph: s.eph, prod: s.prod, ext: s.ext };
 
 // Each SVG has its own animation clock. Hold it at zero until the diagram
@@ -328,49 +349,27 @@ export function Diagram({ d, uid, label, reduced, className }) {
             </g>
           );
         }
-        const versions = versionsOf(n.v);
         const live = n.live || [];
         return (
           <g key={n.id} opacity={pr.initial}>
             {pr.children}
-            <rect className={`${s.node} ${NODE_CLASS[n.kind] || s.env}`} x={b.x} y={b.y} width={b.w} height={b.h} rx={6} />
+            <path className={`${s.node} ${NODE_CLASS[n.kind] || s.env}`} d={envPath(b, n.label)} />
             {live.map(([from, to], j) => {
               if (!animate) {
-                return from <= 0 ? (
-                  <rect key={`l${j}`} className={`${s.node} ${s.prod}`} x={b.x} y={b.y} width={b.w} height={b.h} rx={6} />
-                ) : null;
+                return from <= 0 ? <path key={`l${j}`} className={`${s.node} ${s.prod}`} d={envPath(b, n.label)} /> : null;
               }
               return (
-                <rect key={`l${j}`} className={`${s.node} ${s.prod}`} x={b.x} y={b.y} width={b.w} height={b.h} rx={6} opacity={from <= 0 ? 1 : 0}>
+                <path key={`l${j}`} className={`${s.node} ${s.prod}`} d={envPath(b, n.label)} opacity={from <= 0 ? 1 : 0}>
                   <Anim spec={windowSpec(from, to)} dur={dur} begin={begin} mode="discrete" />
-                </rect>
+                </path>
               );
             })}
-            <text className={s.label} x={b.x + 8} y={b.y + 13}>
+            <text className={`${s.label} ${s.envLabel}`} x={b.x + 7} y={b.y + 7.5}>
               {n.label}
             </text>
             {(n.c || []).map((c, j) => (
-              <rect key={`c${j}`} className={COMP_CLASS[c]} x={b.x + 8 + j * 12} y={b.y + 25} width={9} height={9} rx={2} />
+              <rect key={`c${j}`} className={COMP_CLASS[c]} x={b.x + 9 + j * 14} y={b.y + TAB_H + (b.h - TAB_H) / 2 - 5} width={10} height={10} rx={2} />
             ))}
-            {versions.map(([text, from], j) => {
-              const to = j + 1 < versions.length ? versions[j + 1][1] : N + 1;
-              if (!animate || versions.length === 1) {
-                if (animate || j === versions.length - 1) {
-                  return (
-                    <text key={`v${j}`} className={s.version} x={b.x + b.w - 8} y={b.y + 30}>
-                      {text}
-                    </text>
-                  );
-                }
-                return null;
-              }
-              return (
-                <text key={`v${j}`} className={s.version} x={b.x + b.w - 8} y={b.y + 30} opacity={from <= 0 ? 1 : 0}>
-                  <Anim spec={windowSpec(from, to)} dur={dur} begin={begin} mode="discrete" />
-                  {text}
-                </text>
-              );
-            })}
             {animate ? (pulses[n.id] || []).map((k, j) => pulseRect(b, k, `pu${j}`)) : null}
           </g>
         );

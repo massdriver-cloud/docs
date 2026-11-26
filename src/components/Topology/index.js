@@ -31,7 +31,7 @@ export function OrganizationTopology() {
       <Diagram
         d={ORGANIZATION}
         uid="organization"
-        label="Five projects stacked by layer: an organization singleton, a multi-region network, a compute platform, a billing API with dev, staging, and two production regions, and an edge with staging and prod. Each project uses resources from the one below it."
+        label="Five projects stacked by layer: an organization project with one environment, a network project with one environment per region, a compute platform project, a billing project with dev, staging, and two production regions, and an edge project with staging and prod. Each project uses resources from the one below it."
         reduced={reduced}
         className={s.svgWide}
       />
@@ -40,94 +40,77 @@ export function OrganizationTopology() {
 }
 
 const Swatch = ({ children }) => (
-  <svg viewBox="0 0 64 26" width="64" height="26" aria-hidden="true">
+  <svg viewBox="0 0 64 30" width="64" height="30" aria-hidden="true">
     {children}
   </svg>
 );
+
+const FOLDER = "M6 2 H24 Q27 2 27 5 V9 H59 Q62 9 62 12 V25 Q62 28 59 28 H5 Q2 28 2 25 V5 Q2 2 6 2 Z";
 
 export function TopologyLegend() {
   return (
     <ul className={`${s.legend} ${s.legendFigure}`}>
       <li>
         <Swatch>
-          <rect className={s.project} x="2" y="3" width="60" height="20" rx="6" />
+          <rect className={s.project} x="2" y="4" width="60" height="22" rx="6" />
         </Swatch>
-        <span>A project. Everything inside it shares one blueprint.</span>
+        <span>A project. Every environment inside it has the same blueprint.</span>
       </li>
       <li>
         <Swatch>
-          <rect className={`${s.node} ${s.env}`} x="2" y="3" width="60" height="20" rx="5" />
+          <path className={`${s.node} ${s.env}`} d={FOLDER} />
         </Swatch>
-        <span>Long-lived environment</span>
+        <span>An environment</span>
       </li>
       <li>
         <Swatch>
-          <rect className={`${s.node} ${s.eph}`} x="2" y="3" width="60" height="20" rx="5" />
+          <path className={`${s.node} ${s.eph}`} d={FOLDER} />
         </Swatch>
-        <span>Short-lived environment</span>
+        <span>A short-lived environment, such as a fork</span>
       </li>
       <li>
         <Swatch>
-          <rect className={`${s.node} ${s.prod}`} x="2" y="3" width="60" height="20" rx="5" />
+          <path className={`${s.node} ${s.prod}`} d={FOLDER} />
         </Swatch>
-        <span>Production environment, or the one taking traffic</span>
+        <span>A production environment, or the one taking traffic</span>
       </li>
       <li>
         <Swatch>
-          <rect className={s.cOn} x="27" y="8" width="10" height="10" rx="2" />
+          <rect className={s.cOn} x="27" y="10" width="10" height="10" rx="2" />
         </Swatch>
-        <span>Component deployed in this environment</span>
+        <span>One component of the blueprint, deployed in this environment</span>
       </li>
       <li>
         <Swatch>
-          <rect className={s.cDev} x="27" y="8" width="10" height="10" rx="2" />
+          <rect className={s.cRef} x="27" y="10" width="10" height="10" rx="2" />
         </Swatch>
-        <span>Component deployed from a development release</span>
+        <span>A component left undeployed. What depends on it uses a resource from another environment instead.</span>
       </li>
       <li>
         <Swatch>
-          <rect className={s.cRef} x="27" y="8" width="10" height="10" rx="2" />
+          <line className={`${s.edge} ${s.dash}`} x1="4" y1="15" x2="60" y2="15" />
         </Swatch>
-        <span>Component not deployed here. Its consumers are filled by a remote reference or an environment default.</span>
+        <span>Provides resources, through an environment default or a remote reference</span>
       </li>
       <li>
         <Swatch>
-          <rect className={s.cOff} x="27" y="8" width="10" height="10" rx="2" />
+          <line className={`${s.edge} ${s.dash}`} x1="4" y1="15" x2="52" y2="15" />
+          <path className={s.head} d="M52 11.5 59 15 52 18.5z" />
         </Swatch>
-        <span>Component not deployed</span>
+        <span>Fork: a new environment seeded from this one</span>
       </li>
       <li>
         <Swatch>
-          <line className={s.edge} x1="4" y1="13" x2="52" y2="13" />
-          <path className={s.head} d="M52 9.5 59 13 52 16.5z" />
+          <line className={s.edge} x1="4" y1="15" x2="52" y2="15" />
+          <path className={s.head} d="M52 11.5 59 15 52 18.5z" />
         </Swatch>
-        <span>Promote, release, or traffic</span>
+        <span>Traffic</span>
       </li>
       <li>
         <Swatch>
-          <line className={`${s.edge} ${s.dash}`} x1="4" y1="13" x2="52" y2="13" />
-          <path className={s.head} d="M52 9.5 59 13 52 16.5z" />
+          <rect className={s.ext} x="2" y="4" width="60" height="22" rx="11" />
         </Swatch>
-        <span>Fork</span>
-      </li>
-      <li>
-        <Swatch>
-          <line className={`${s.edge} ${s.dash}`} x1="4" y1="13" x2="60" y2="13" />
-        </Swatch>
-        <span>Uses resources from, by environment default or remote reference</span>
-      </li>
-      <li>
-        <Swatch>
-          <rect className={s.ext} x="2" y="3" width="60" height="20" rx="10" />
-        </Swatch>
-        <span>Not an environment: a branch, a release, traffic</span>
-      </li>
-      <li>
-        <Swatch>
-          <line className={s.edge} x1="4" y1="13" x2="60" y2="13" />
-          <circle className={s.dot} cx="32" cy="13" r="3.6" />
-        </Swatch>
-        <span>A change on its way. The version beside the components updates when it arrives.</span>
+        <span>Not an environment, such as traffic or a credential</span>
       </li>
     </ul>
   );

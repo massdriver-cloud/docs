@@ -3,66 +3,65 @@ id: topologies-overview
 slug: /continuous-delivery/topologies
 title: Environment Topologies
 sidebar_label: Overview
-description: The shapes environments take around a project, and how organizations combine them.
+description: The shapes projects and environments take, and how they share resources.
 ---
 
 # Environment Topologies
 
-An environment topology is the shape of the environments around a project: what each environment stands for, which components it deploys, which versions it runs, and how a change moves between them.
+A topology is the shape of your projects and environments. It answers three questions:
 
-Most organizations run several topologies at once. A network is needed once per region, a billing API once per stage, and the root DNS zone once for the whole company. Each of those becomes its own project with its own topology, and the projects connect through [environment defaults and remote references](/bundle-development/dependencies-resources/version-resolution#what-fills-a-slot).
+1. Which projects exist?
+2. What does each environment of a project stand for: a stage, a region, a customer, a pull request?
+3. Where does an environment get the resources it does not deploy itself?
 
-## How topologies combine
+How a change moves from one environment to another is a separate decision. Refer to [Promote](/continuous-delivery/promote) and [release channels](/bundle-development/publishing/versioning#release-channels).
+
+## The rules
+
+**A project is one blueprint.** Every environment in a project has the same components, connected the same way. If two environments need different components, they belong in different projects.
+
+**An environment has one instance of every component.** Params and secrets are set per instance, so the environments of a project can differ in size, region, and credentials and still have the same architecture. An instance does not have to be deployed.
+
+**A dependency is filled from one of three places.** Massdriver checks them in this order on every deploy and uses the first that matches:
+
+1. A **remote reference**, set on one slot of one instance. It points at a specific resource in another environment, in the same project or a different one.
+2. A **connection** drawn on the blueprint. It fills the slot from the connected component in the same environment, once that component has deployed.
+3. An **environment default**, set on the environment for a resource type. It fills any slot of that type that the first two did not fill.
+
+So an environment can use a resource it does not deploy in two ways:
+
+- **The component is not on the blueprint.** The environment sets the resource as an environment default. Networks, clusters, and cloud credentials usually arrive this way.
+- **The component is on the blueprint but left undeployed in this environment.** Each instance that depends on it gets a remote reference to the resource in another environment.
+
+Either way, the resource needs a [resource grant](/guides/share-resources) that covers the consuming environment. [What fills a slot](/bundle-development/dependencies-resources/version-resolution#what-fills-a-slot) has the details.
+
+**A fork is a new environment in the same project.** It starts with the params of the environment it was forked from. Environment defaults, secrets, and remote references are copied only when you ask for them. Refer to [Fork an Environment](/continuous-delivery/fork-environment).
+
+## How projects combine
+
+Most organizations have several projects, each with its own topology.
 
 <OrganizationTopology />
 
-Five projects, each with environments that mean something different:
+- **Organization** has one environment, `global`, for the root DNS zone, identity, and the container registry. This is a [Singleton](/continuous-delivery/topologies/projects#singleton).
+- **Network** has one environment per region: `nonuseast` for dev and staging, and `produseast` and `prodeuwest` for production. This is [Regions](/continuous-delivery/topologies/environments#regions).
+- **Compute platform** has one cluster environment on each network. Each cluster is the environment default for the billing environments that run on it. This is a [Platform Layer](/continuous-delivery/topologies/projects#platform-layer).
+- **Billing** has `dev` and `staging`, then one production environment per region. Dev and staging share the non-production cluster. This combines [Stages](/continuous-delivery/topologies/environments#stages) and [Regions](/continuous-delivery/topologies/environments#regions).
+- **Edge** has `staging` and `prod`. The one production edge holds remote references to both regional billing environments.
 
-- **Organization** is a [Singleton](/continuous-delivery/topologies/layer#singleton): one `global` environment for the root DNS zone, identity, the container registry, and CI runners.
-- **Network** is [Multi-Region](/continuous-delivery/topologies/place#multi-region), split by account tier. Dev and staging share `nonuseast`. Each production region gets its own network.
-- **Compute platform** is a [Platform Layer](/continuous-delivery/topologies/layer#platform-layer). Each cluster sits on one network and is the environment default for the application environments deployed to it.
-- **Billing API** is [Linear Promotion](/continuous-delivery/topologies/stage#linear-promotion) through `dev` and `staging`, and production is [Multi-Region](/continuous-delivery/topologies/place#multi-region): `produseast` and `prodeuwest`. Previews and developer workspaces fork from it.
-- **Edge** is Linear Promotion with one environment per stage. There is one production edge, no matter how many regions sit behind it, and it holds remote references to the regional billing environments.
-
-The billing API has four environments, the network under it has three, and the edge in front of it has two. A release moves through billing one stage at a time. A network change in `produseast` reaches the cluster on it, then the billing environment on that cluster, then the edge in front of it. No project needs a copy of the components below it.
+No project has a copy of the components below it. Billing never puts a network or a cluster on its blueprint, so adding a region means adding an environment to the network, compute, and billing projects, with no change to any blueprint.
 
 [Canvas Design](/continuous-delivery/topologies/canvas-design) covers how to decide which bundles share a project.
 
-## What a topology is made of
-
-Every topology in this guide is described at four scopes.
-
-**Bundle.** A bundle is published once to the organization catalog, and any instance in any project can run it. Each instance chooses its own version: an exact version, a [release channel](/bundle-development/publishing/versioning#release-channels) such as `~1` or `~1.4`, or a channel with `+dev` to include development releases. Publishing a bundle deploys it to every instance whose channel matches, in every project.
-
-**Project.** A project is one blueprint, and it is the parity boundary. Every environment in a project has the same components and the same links. A topology whose environments need different components spans more than one project.
-
-**Environment.** An environment has one instance of every component, and an instance does not have to be deployed. Each dependency of an instance is filled by a remote reference, a link on the canvas, or an environment default, in that order. An environment can use a resource from another environment or another project instead of deploying its own.
-
-**Parity.** The blueprint is shared. Params, versions, secrets, and credentials belong to each environment, and [Compare](/concepts/projects-and-environments#environment-comparison) shows the difference between two environments of a project. Each topology says which differences are expected.
-
-A change moves in one of three ways:
-
-- A **publish** reaches instances through their release channels.
-- A **[promote](/continuous-delivery/promote)** copies params and the version from one instance to another instance of the same component, and leaves a plan on the destination.
-- A **[fork](/continuous-delivery/fork-environment)** creates a new environment from a parent. Forking again resets it to the parent.
-
 ## Reading the diagrams
-
-The squares in an environment are the components of the project blueprint, so every environment in a project has the same row of squares. The text beside them is the version or release channel that most instances in that environment hold.
 
 <TopologyLegend />
 
-## Catalog
+## Topologies
 
-The topologies are grouped by what an environment stands for.
-
-| Group | An environment is | Topologies |
+| Page | Question | Topologies |
 |---|---|---|
-| [Stage](/continuous-delivery/topologies/stage) | A step in a sequence | Linear Promotion, Branch-Mapped Promotion, Shared Integration |
-| [Change](/continuous-delivery/topologies/change) | One piece of work in progress | Pull Request Preview, Staged Preview, Feature Environment, Hotfix Environment |
-| [Version](/continuous-delivery/topologies/version) | One of several live versions | Blue/Green, Canary Rings, Release Lines, Migration Pair |
-| [Place](/continuous-delivery/topologies/place) | A location | Multi-Region, Hub and Spoke, Disaster Recovery Standby, Multi-Cloud, Site Fleet |
-| [Tenant](/continuous-delivery/topologies/tenant) | A customer or a group of customers | Single-Tenant, Cells, Tiered Tenancy, Compliance Partition |
-| [Person](/continuous-delivery/topologies/person) | Someone's workspace | Developer Workspace, Team Environment, Agent Workspace, Training Environment |
-| [Purpose](/continuous-delivery/topologies/purpose) | One job | Load Test, Security and Chaos Target, Demo, Partner Sandbox, Spike, Scheduled |
-| [Layer](/continuous-delivery/topologies/layer) | A foundation other projects use | Singleton, Platform Layer |
+| [Environments in a Project](/continuous-delivery/topologies/environments) | What does each environment of one project stand for? | Stages, Regions, Standby, Blue/Green, Customers, Pool and Dedicated, Cells, Sites |
+| [Short-Lived Environments](/continuous-delivery/topologies/short-lived) | Which environments are forked for a while and then removed? | Pull Request Preview, Workspace, Purpose Fork |
+| [Projects That Work Together](/continuous-delivery/topologies/projects) | How do separate projects share resources? | Singleton, Platform Layer, Migration Pair, Multi-Cloud, Isolated Boundary |
+| [Canvas Design](/continuous-delivery/topologies/canvas-design) | Which bundles go in which project? | |
