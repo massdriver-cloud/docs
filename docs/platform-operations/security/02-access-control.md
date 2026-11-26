@@ -3,6 +3,7 @@ id: security-access-control
 slug: /platform-operations/security/access-control
 title: Access Control (ABAC)
 sidebar_label: Access Control
+image: /img/og/access-control.png
 ---
 
 # Access Control

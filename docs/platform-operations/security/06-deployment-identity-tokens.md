@@ -3,6 +3,7 @@ id: security-deployment-identity-tokens
 slug: /platform-operations/security/deployment-identity-tokens
 title: Deployment Identity Tokens
 sidebar_label: Deployment Identity Tokens
+image: /img/og/deployment-identity-tokens.png
 ---
 
 Massdriver is an OpenID Connect (OIDC) identity provider for your deployments. Every deployment gets signed tokens that state which organization, project, environment, and instance it deploys. Your cloud accounts trust these tokens through workload identity federation, so a bundle can get short-lived cloud credentials without a stored secret.

@@ -3,6 +3,7 @@ id: overview
 slug: /reference/integrations/overview
 title: Integrations
 sidebar_label: Overview
+image: /img/og/integrations.png
 ---
 
 # Integrations

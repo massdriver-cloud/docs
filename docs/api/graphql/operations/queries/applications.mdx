@@ -1,0 +1,95 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: applications
+title: applications
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+List the applications in your organization's catalog.
+
+The list holds the applications whose bundle repository you can view. Use
+`filter.runtimeId` for the applications on one runtime.
+
+```graphql
+query {
+  applications(organizationId: "your-org-id", filter: { runtimeId: { eq: "lambda" } }) {
+    items {
+      id
+      latest { version runtime { version } }
+    }
+    cursor { next }
+  }
+}
+```
+
+
+```graphql
+applications(
+  organizationId: ID!
+  filter: ApplicationsFilter
+  sort: ApplicationsSort
+  cursor: Cursor
+): ApplicationsPage!
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>applications.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>applications.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ApplicationsFilter</b></code>](/api/graphql/types/inputs/applications-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#filter\} 
+Narrow results by application or runtime.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>applications.<b>sort</b></code>](#sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ApplicationsSort</b></code>](/api/graphql/types/inputs/applications-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#sort\} 
+Sort field and direction. Defaults to `name` ascending.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>applications.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#cursor\} 
+Pagination cursor returned by a previous page.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ApplicationsPage</b></code>](/api/graphql/types/objects/applications-page.mdx) <Badge class="badge badge--secondary " text="object"/>

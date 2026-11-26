@@ -5,6 +5,7 @@ import SchemaForm from "@site/src/components/SchemaForm";
 import VersionedConnections from "@site/src/components/Diagrams/VersionedConnections";
 import SlotResolution from "@site/src/components/Diagrams/SlotResolution";
 import SeparationOfDuty from "@site/src/components/Diagrams/SeparationOfDuty";
+import { Topology, TopologyLegend, OrganizationTopology, Canvas } from "@site/src/components/Topology";
 
 export default {
   // Re-use the default mapping
@@ -14,4 +15,8 @@ export default {
   VersionedConnections,
   SlotResolution,
   SeparationOfDuty,
+  Topology,
+  TopologyLegend,
+  OrganizationTopology,
+  Canvas,
 };

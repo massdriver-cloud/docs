@@ -336,7 +336,8 @@ Names of the dependency fields that changed since this instance was last provisi
 A dependency changed when a link, remote reference, or environment default
 added or removed it, or when its resource now holds different data than the
 last provision used. The next deployment uses the current dependencies.
-Empty when no dependency changed or the instance has never been provisioned.
+Empty when no dependency changed, the instance has never been provisioned, or
+the instance is decommissioned.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Instance.<b>decommissionable</b></code>](#decommissionable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Deletable!</b></code>](/api/graphql/types/objects/deletable.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#decommissionable\} 

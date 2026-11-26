@@ -3,6 +3,7 @@ id: provisioners-opentofu
 slug: /bundle-development/provisioners/opentofu
 title: OpenTofu Provisioner
 sidebar_label: OpenTofu
+image: /img/og/provisioners-opentofu.png
 ---
 
 # OpenTofu Provisioner

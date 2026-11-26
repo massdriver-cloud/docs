@@ -3,6 +3,7 @@ id: event-destinations-overview
 slug: /platform-operations/event-destinations
 title: Event Destinations
 sidebar_label: Overview
+image: /img/og/event-destinations.png
 ---
 
 An event destination receives your organization's audit log events. You choose the events that the destination receives. Each destination has an adapter. The adapter sets where and how Massdriver sends the events.
@@ -15,6 +16,8 @@ An event destination receives your organization's audit log events. You choose t
 | [PagerDuty](/platform-operations/event-destinations/pagerduty) | As an alert on a PagerDuty service, with the Events API v2. |
 
 To manage destinations, a person or service account needs the `organization:manageEventDestinations` permission. Refer to [GraphQL permissions](/platform-operations/security/graphql-permissions#event-destination).
+
+To act on events, such as to approve proposals from Slack or roll back a failed deployment, run an [automation](/continuous-delivery/automations) behind an HTTP destination.
 
 ## Add a destination
 
@@ -98,7 +101,7 @@ mass event destination redeliver 4f9b2c1e-8d3a-4c6e-9f1b-2a7d5e8c0b13
 A destination has two objects of adapter settings:
 
 - `config`: the settings, such as the URL. The API returns `config`.
-- `auth`: the credentials, such as an `Authorization` header. The API never returns `auth`. To remove the credentials, set `auth` to `null`.
+- `auth`: the credentials, such as an `Authorization` header. The API never returns `auth`. You cannot remove the credentials. To send events without credentials, delete the destination and create it again.
 
 The [`eventDestinationAdapters`](/api/graphql/operations/queries/event-destination-adapters) query lists each adapter. For each adapter, `configSchema` and `authSchema` are the JSON schemas of `config` and `auth`, and `signs` tells you if Massdriver signs the events. The page of each adapter lists its settings.
 
@@ -122,7 +125,7 @@ In `updateEventDestination`, a new `attributes` map replaces the old map. To rem
 
 New **Events** and **Attributes** apply to events recorded after the change. A new **Condition** also applies to events that wait to be sent, and to each retry.
 
-The condition gets the whole event, as shown in [The event](#the-event). The most useful fields are:
+The condition gets the whole event, as shown in [The event](#the-event). For the fields of each entity, and more example conditions, refer to [Event Reference](/platform-operations/event-destinations/events). The most useful fields are:
 
 - `.data.attributes`: the attributes that the entity had when the event occurred, including the system attributes (`md-*`), such as `md-project` and `md-environment`.
 - `.data.metadata`: facts about the event, such as how the actor authenticated. Each event type lists its metadata fields in the `metadata` field of the [`eventTypes`](/api/graphql/types/objects/event-type#metadata) query.
@@ -168,7 +171,7 @@ A dependency of an instance is filled from one of three sources. Refer to [What 
 | A connection drawn on the project blueprint | `link.created` and `link.deleted` when someone draws or removes the line. `connection.created` and `connection.deleted` for each instance that the line fills or stops filling. |
 | An environment default | `environment_default.created`, `environment_default.deleted` |
 
-These events have no attributes, so a destination with **Attributes** never receives them. To select one instance, use a condition on the event's `data.entity`, such as `.data.entity.package_id`.
+These events have no attributes, so a destination with **Attributes** never receives them. To select one instance, use a condition on the event's `data.entity`, such as `.data.entity.to_instance_id` for a connection or `.data.entity.instance_id` for a remote reference.
 
 ## How delivery works
 
@@ -216,7 +219,9 @@ Massdriver gives each event to the adapter as one [CloudEvent](https://cloudeven
 | `subject` | The Massdriver resource identifier of the entity that the event is about. |
 | `time` | When the event occurred (UTC, ISO 8601). |
 | `datacontenttype` | `application/json` |
-| `data` | `entity`, the entity that the event is about, and `actor`, the actor that caused the event. |
+| `data` | `entity`, the entity that the event is about, and `actor`, the actor that caused the event. [Event Reference](/platform-operations/event-destinations/events) lists the fields of each entity. |
+| `traceparent` | The trace of the work that caused the event, in [W3C Trace Context](https://www.w3.org/TR/trace-context/#traceparent-header) format. Refer to [Trace context](#trace-context). |
+| `tracestate` | Vendor data for the trace, in [W3C Trace Context](https://www.w3.org/TR/trace-context/#tracestate-header) format. Refer to [Trace context](#trace-context). |
 
 Massdriver adds two objects to `data`:
 
@@ -256,7 +261,7 @@ This is a `deployment.completed` event:
       "deployed_by_name": "Jane Doe",
       "deployed_by_account_id": "8d2f4c61-7a0e-4b9d-9c53-1f6a2e8b4d07",
       "deployed_by_service_account_id": null,
-      "package_id": "e4a7b2c9-15d3-4f86-a0b1-9c3e5d7f2a68",
+      "instance_id": "e4a7b2c9-15d3-4f86-a0b1-9c3e5d7f2a68",
       "bundle_id": "3f9a6c1e-8b2d-4e7a-b5c4-0d1e2f3a4b5c",
       "rollback_of_deployment_id": null,
       "last_transitioned_at": "2026-11-19T15:04:11Z",
@@ -280,6 +285,12 @@ This is a `deployment.completed` event:
   }
 }
 ```
+
+### Trace context
+
+Massdriver sets `traceparent` and `tracestate` from the [CloudEvents distributed tracing extension](https://github.com/cloudevents/spec/blob/main/cloudevents/extensions/distributed-tracing.md). They identify the trace of the request or job that caused the event, such as the API request that created a project. An event has `traceparent` only when Massdriver recorded a trace for that work. An event has `tracestate` only when the trace has vendor data.
+
+Every attempt of an event sends the same `traceparent` and `tracestate`. To show the work of your receiver in the same trace as the work in Massdriver, make the span of your receiver a child of `traceparent` or link it to `traceparent`.
 
 ## Failures and retries
 

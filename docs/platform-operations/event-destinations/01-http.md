@@ -3,6 +3,7 @@ id: event-destinations-http
 slug: /platform-operations/event-destinations/http
 title: HTTP Event Destinations
 sidebar_label: HTTP
+image: /img/og/event-destinations-http.png
 ---
 
 import Tabs from '@theme/Tabs';
@@ -263,6 +264,8 @@ Massdriver sends a `POST` request to the `url` in the destination's `config`. Th
 | `webhook-id` | The CloudEvent `id`. It is the same for every attempt of the event. Use it to drop duplicates. |
 | `webhook-timestamp` | The time of this attempt, in seconds since the Unix epoch. It changes for each attempt. To order events, use the event `time`. |
 | `webhook-signature` | `v1,` followed by the base64 signature of the request. Refer to [Verify the signature](#verify-the-signature). |
+| `traceparent` | The CloudEvent `traceparent`, when the event has one. Refer to [Trace context](/platform-operations/event-destinations#trace-context). |
+| `tracestate` | The CloudEvent `tracestate`, when the event has one. |
 
 Refer to [Order and duplicates](/platform-operations/event-destinations#order-and-duplicates).
 

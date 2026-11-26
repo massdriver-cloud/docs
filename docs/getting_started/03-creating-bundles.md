@@ -3,6 +3,7 @@ id: getting-started-creating-bundles
 slug: /getting-started/creating-bundles
 title: Creating Your Own Bundle
 sidebar_label: Creating Your Own Bundle
+image: /img/og/getting-started-creating-bundles.png
 ---
 
 Welcome to part 3 of the Massdriver getting started guide! In the previous guides, you learned how to [deploy bundles](01-deploying-first-bundle.md) (part 1) and [connect them together](02-connecting-bundles.md) (part 2). Now you'll learn how to create your own Massdriver bundle from an existing OpenTofu/Terraform module - a common workflow when adopting Massdriver with existing infrastructure code.

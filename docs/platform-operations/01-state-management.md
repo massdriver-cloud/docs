@@ -3,6 +3,7 @@ id: state-management
 slug: /platform-operations/state-management
 title: Managing OpenTofu and Terraform State in Massdriver
 sidebar_label: State Management
+image: /img/og/state-management.png
 ---
 
 import Tabs from '@theme/Tabs';

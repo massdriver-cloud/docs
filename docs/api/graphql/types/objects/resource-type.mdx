@@ -68,6 +68,12 @@ type ResourceType {
   effectiveAttributes: Map!
   createdAt: DateTime!
   updatedAt: DateTime!
+  producers(
+    cursor: Cursor
+  ): BundlesPage
+  consumers(
+    cursor: Cursor
+  ): ResourceTypeConsumersPage
 }
 ```
 
@@ -135,6 +141,34 @@ Timestamp when this resource type was created (UTC).
 
 #### [<code style={{ fontWeight: 'normal' }}>ResourceType.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
 Timestamp when this resource type was last modified (UTC).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ResourceType.<b>producers</b></code>](#producers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BundlesPage</b></code>](/api/graphql/types/objects/bundles-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#producers\} 
+Bundles in your organization whose resources are of this resource type.
+Each bundle appears once, at its newest stable version. A bundle whose
+newest stable version no longer declares a resource of this type does not
+appear, and development versions are never used. Only bundles you can view
+are listed. Sorted by bundle name.
+
+Use this before a breaking change to a resource type to find every bundle
+that creates resources of this type.
+##### [<code style={{ fontWeight: 'normal' }}>ResourceType.producers.<b>cursor</b></code>](#resource-type-producers-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#resource-type-producers-cursor\} 
+Cursor from a previous page's `cursor.next` or `cursor.previous`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ResourceType.<b>consumers</b></code>](#consumers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ResourceTypeConsumersPage</b></code>](/api/graphql/types/objects/resource-type-consumers-page.mdx) <Badge class="badge badge--secondary " text="object"/> \{#consumers\} 
+Bundles in your organization with a dependency that accepts this resource
+type, with the dependency field and the version range it accepts. Each
+bundle is read at its newest stable version, so a bundle whose newest stable
+version dropped the dependency does not appear, and development versions are
+never used. A bundle that accepts this type through two fields appears once
+per field. Only bundles you can view are listed. Sorted by bundle name, then
+field.
+
+Use this before a breaking change to a resource type to find every bundle
+that must be updated.
+##### [<code style={{ fontWeight: 'normal' }}>ResourceType.consumers.<b>cursor</b></code>](#resource-type-consumers-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#resource-type-consumers-cursor\} 
+Cursor from a previous page's `cursor.next` or `cursor.previous`.
 
 
 

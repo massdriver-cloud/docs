@@ -3,6 +3,7 @@ id: getting-started-overview
 slug: /getting-started/overview
 title: Getting Started with Massdriver
 sidebar_label: Overview
+image: /img/og/getting-started.png
 ---
 
 Welcome to Massdriver! This guide walks you through setting up your platform and building your first bundles.

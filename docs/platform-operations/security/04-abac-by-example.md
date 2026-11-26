@@ -3,6 +3,7 @@ id: security-abac-by-example
 slug: /platform-operations/security/abac-by-example
 title: ABAC by Example
 sidebar_label: ABAC by Example
+image: /img/og/abac-by-example.png
 ---
 
 # ABAC by Example

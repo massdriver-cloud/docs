@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="og.css" />
+    <style>
+      .text {
+        position: absolute;
+        left: 80px;
+        top: 190px;
+        width: 720px;
+      }
+      .rule {
+        position: absolute;
+        left: 80px;
+        top: 190px;
+        bottom: 150px;
+        width: 6px;
+        background: var(--accent);
+      }
+      .text {
+        padding-left: 40px;
+      }
+      .title {
+        font-size: 150px;
+        margin-top: 18px;
+      }
+      .title.long {
+        font-size: 116px;
+      }
+      .title.xlong {
+        font-size: 96px;
+      }
+      .hexes {
+        position: absolute;
+        right: -90px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 560px;
+        height: 620px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="frame">
+      <div class="grid"></div>
+      <img class="logo" src="../../static/img/logo-white.svg" />
+      <svg class="hexes" viewBox="-300 -330 600 660" aria-hidden="true">
+        <defs>
+          <linearGradient id="fade" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#2dd4bf" stop-opacity="0.9" />
+            <stop offset="1" stop-color="#2dd4bf" stop-opacity="0.15" />
+          </linearGradient>
+        </defs>
+        <g fill="none" stroke-linejoin="round" id="rings"></g>
+      </svg>
+      <div class="rule"></div>
+      <div class="text">
+        <div class="kicker" id="kicker"></div>
+        <div class="title" id="title"></div>
+      </div>
+      <div class="url" id="url"></div>
+      <div class="bar"></div>
+    </div>
+    <script>
+      const p = new URLSearchParams(location.search);
+      const kicker = (p.get("kicker") || "docs").split(" / ").map((s) => s.trim());
+      document.getElementById("kicker").innerHTML = kicker
+        .map((s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;"))
+        .join('<span class="sep">/</span>');
+      const title = p.get("title") || "Massdriver Docs";
+      const t = document.getElementById("title");
+      t.textContent = title;
+      if (title.length > 26) t.classList.add("xlong");
+      else if (title.length > 18) t.classList.add("long");
+      document.getElementById("url").textContent = "docs.massdriver.cloud";
+
+      const rings = document.getElementById("rings");
+      const hex = (r) =>
+        Array.from({ length: 6 }, (_, i) => {
+          const a = (Math.PI / 3) * i - Math.PI / 2;
+          return `${(r * Math.cos(a)).toFixed(1)},${(r * Math.sin(a)).toFixed(1)}`;
+        }).join(" ");
+      for (let i = 0; i < 7; i++) {
+        const r = 300 - i * 40;
+        const el = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+        el.setAttribute("points", hex(r));
+        el.setAttribute("stroke", i === 3 ? "#2dd4bf" : "url(#fade)");
+        el.setAttribute("stroke-width", i === 3 ? 4 : 1.5);
+        el.setAttribute("opacity", i === 3 ? 1 : 0.18 + i * 0.06);
+        rings.appendChild(el);
+      }
+    </script>
+  </body>
+</html>

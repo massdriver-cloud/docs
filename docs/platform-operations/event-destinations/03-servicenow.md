@@ -3,6 +3,7 @@ id: event-destinations-servicenow
 slug: /platform-operations/event-destinations/servicenow
 title: ServiceNow Event Destinations
 sidebar_label: ServiceNow
+image: /img/og/event-destinations-servicenow.png
 ---
 
 The `SERVICE_NOW` adapter creates one record in a ServiceNow table for each event, with the [Table API](https://www.servicenow.com/docs/bundle/latest-api-reference/page/integrate/inbound-rest/concept/c_TableAPI.html). The default table is `incident`.
