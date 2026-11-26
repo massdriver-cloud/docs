@@ -1,0 +1,113 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: create-event-destination
+title: createEventDestination
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+<Badge class="badge badge--secondary badge--primary" text="form schema"/>
+
+
+
+Add a destination that receives the organization's audit log events.
+
+`eventDestinationAdapters` lists each adapter's `configSchema` and `authSchema`. Put credentials in `auth`:
+the API never returns them. A destination of an adapter that `signs` gets a `signingSecret`, which signs
+each event.
+
+Pass `auth` as a variable. Query text can appear in request traces. Variables do not.
+
+```graphql
+mutation CreateEventDestination($auth: Map) {
+  createEventDestination(
+    organizationId: "my-org"
+    input: {
+      name: "Production deployments"
+      adapter: HTTP
+      config: "{\"url\": \"https://hooks.example.com/massdriver\"}"
+      auth: $auth
+      eventTypes: ["deployment.*"]
+      attributes: "{\"md-environment\": \"prod\"}"
+      condition: ".data.metadata.deployment_action == \"PROVISION\""
+    }
+  ) {
+    result { id signingSecret }
+    successful
+    messages { field message }
+  }
+}
+```
+
+
+
+
+```graphql
+createEventDestination(
+  organizationId: ID!
+  input: CreateEventDestinationInput!
+): EventDestinationPayload
+```
+
+
+
+
+
+### Form Schema
+
+This mutation supports dynamic form generation using JSON Schema.
+
+- [JSON Schema](https://api.massdriver.cloud/graphql/v2/inputs/createEventDestination.json)
+- [UI Schema](https://api.massdriver.cloud/graphql/v2/inputs/createEventDestination.ui.json)
+
+<SchemaForm
+  schemaUrl="https://api.massdriver.cloud/graphql/v2/inputs/createEventDestination.json"
+  uiSchemaUrl="https://api.massdriver.cloud/graphql/v2/inputs/createEventDestination.ui.json"
+  name="createEventDestination"
+/>
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>createEventDestination.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>createEventDestination.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CreateEventDestinationInput!</b></code>](/api/graphql/types/inputs/create-event-destination-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Add a destination that receives the organization's audit log events.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>EventDestinationPayload</b></code>](/api/graphql/types/objects/event-destination-payload.mdx) <Badge class="badge badge--secondary " text="object"/>

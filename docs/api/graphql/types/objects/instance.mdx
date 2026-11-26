@@ -90,6 +90,10 @@ type Instance {
   deployedVersion: String
   availableUpgrade: String
   cost: CostSummary!
+  firingAlarmCount: Int!
+  latestDeployment: Deployment
+  latestProvision: Deployment
+  mostRecentProposedDeployment: Deployment
   environment: Environment
   bundle: Bundle
   component: Component!
@@ -100,6 +104,7 @@ type Instance {
     cursor: Cursor
   ): AlarmsPage
   dependencies: [InstanceDependency!]!
+  changedDependencies: [String!]!
   decommissionable: Deletable!
 }
 ```
@@ -156,9 +161,8 @@ Returns an empty object when the bundle does not provide UI hints.
 Definitions of the secrets this instance's bundle expects, sorted by name.
 
 Each entry pairs the bundle's declared field (name, required flag, optional title /
-description) with the stored value's `sha256` fingerprint when one has been set.
-Use null vs non-null `sha256` to render set/unset state. Secret values are never
-returned by the API.
+description) with `isSet`, which tells whether a value has been stored. Secret values
+are never returned by the API.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Instance.<b>operatorGuide</b></code>](#operator-guide)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#operator-guide\} 
@@ -237,6 +241,34 @@ Use this field to detect when an upgrade is available.
 Cloud provider cost summary for this instance, including daily and monthly breakdowns.
 
 
+#### [<code style={{ fontWeight: 'normal' }}>Instance.<b>firingAlarmCount</b></code>](#firing-alarm-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/api/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#firing-alarm-count\} 
+Number of this instance's alarms that are currently firing.
+
+An alarm counts when its most recent reported state is `ALARM`. Alarms with
+no reported state are not counted.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Instance.<b>latestDeployment</b></code>](#latest-deployment)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Deployment</b></code>](/api/graphql/types/objects/deployment.mdx) <Badge class="badge badge--secondary " text="object"/> \{#latest-deployment\} 
+The most recent deployment of this instance, of any action and status.
+
+Null if the instance has never been deployed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Instance.<b>latestProvision</b></code>](#latest-provision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Deployment</b></code>](/api/graphql/types/objects/deployment.mdx) <Badge class="badge badge--secondary " text="object"/> \{#latest-provision\} 
+The most recent `PROVISION` deployment of this instance that completed.
+
+Compare its `params` with the instance's `params` to see whether the
+configuration has changed since the infrastructure was last provisioned.
+Null if the instance has never been provisioned.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Instance.<b>mostRecentProposedDeployment</b></code>](#most-recent-proposed-deployment)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Deployment</b></code>](/api/graphql/types/objects/deployment.mdx) <Badge class="badge badge--secondary " text="object"/> \{#most-recent-proposed-deployment\} 
+The most recent deployment of this instance that is waiting for approval.
+
+A proposed deployment does not run until someone approves it. Null if no
+deployment is waiting for approval.
+
+
 #### [<code style={{ fontWeight: 'normal' }}>Instance.<b>environment</b></code>](#environment)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Environment</b></code>](/api/graphql/types/objects/environment.mdx) <Badge class="badge badge--secondary " text="object"/> \{#environment\} 
 The environment this instance is deployed in.
 
@@ -296,6 +328,16 @@ Each entry is one filled slot from the bundle's `connections_schema` along
 with the source object that filled it — a blueprint `Connection`, a
 per-instance `RemoteReference`, or an `EnvironmentDefault` from the
 environment. Unfilled slots are not included.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Instance.<b>changedDependencies</b></code>](#changed-dependencies)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#changed-dependencies\} 
+Names of the dependency fields that changed since this instance was last provisioned, sorted alphabetically.
+
+A dependency changed when a link, remote reference, or environment default
+added or removed it, or when its resource now holds different data than the
+last provision used. The next deployment uses the current dependencies.
+Empty when no dependency changed, the instance has never been provisioned, or
+the instance is decommissioned.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Instance.<b>decommissionable</b></code>](#decommissionable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Deletable!</b></code>](/api/graphql/types/objects/deletable.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#decommissionable\} 

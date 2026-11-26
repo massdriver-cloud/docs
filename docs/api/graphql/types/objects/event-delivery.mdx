@@ -1,0 +1,109 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: event-delivery
+title: EventDelivery
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+One event's delivery to a destination.
+
+
+```graphql
+type EventDelivery {
+  id: ID!
+  status: EventDeliveryStatus!
+  attempts: Int!
+  nextAttemptAt: DateTime!
+  lastError: String
+  deliveredAt: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  event: AuditLog
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDelivery.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+Unique identifier of the delivery.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDelivery.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventDeliveryStatus!</b></code>](/api/graphql/types/enums/event-delivery-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
+Where the delivery is.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDelivery.<b>attempts</b></code>](#attempts)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/api/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#attempts\} 
+Attempts to send the event.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDelivery.<b>nextAttemptAt</b></code>](#next-attempt-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#next-attempt-at\} 
+The next attempt, while the delivery is `PENDING` (UTC).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDelivery.<b>lastError</b></code>](#last-error)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#last-error\} 
+Why the last attempt failed, such as `HTTP 503` or `connection refused`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDelivery.<b>deliveredAt</b></code>](#delivered-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#delivered-at\} 
+When the destination accepted the event (UTC).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDelivery.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When the event was given to the destination (UTC).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDelivery.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+When the delivery last changed (UTC).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EventDelivery.<b>event</b></code>](#event)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AuditLog</b></code>](/api/graphql/types/objects/audit-log.mdx) <Badge class="badge badge--secondary " text="object"/> \{#event\} 
+The audit log event. `null` when the event is older than the audit log retention.
+
+
+
+
+
+
+### Member Of
+
+[`EventDeliveriesPage`](/api/graphql/types/objects/event-deliveries-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

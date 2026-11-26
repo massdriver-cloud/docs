@@ -57,7 +57,9 @@ type's connection orientation is `ENVIRONMENT_DEFAULT`.
 type BundleDependency {
   name: String!
   required: Boolean!
+  cardinality: BundleDependencyCardinality!
   versionConstraint: String!
+  inherited: Boolean!
   resourceType: ResourceType
 }
 ```
@@ -75,11 +77,19 @@ Handle name for this dependency slot (e.g., `aws_authentication`, `vpc`).
 When `true`, this dependency must be connected before the bundle can be deployed.
 
 
+#### [<code style={{ fontWeight: 'normal' }}>BundleDependency.<b>cardinality</b></code>](#cardinality)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BundleDependencyCardinality!</b></code>](/api/graphql/types/enums/bundle-dependency-cardinality.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#cardinality\} 
+How many resources this dependency takes. `ONE` takes exactly one resource. `MANY` takes any number of resources of the type, and the IaC receives a map from resource ID to resource.
+
+
 #### [<code style={{ fontWeight: 'normal' }}>BundleDependency.<b>versionConstraint</b></code>](#version-constraint)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version-constraint\} 
 The version range this slot accepts, as declared in the bundle — an exact
 version (`1.2.3`), a tilde range (`~1`, `~1.2`), or a channel (`latest`,
 `latest+dev`). Bundles published before versioned dependencies report the
 current version of the type they point at.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BundleDependency.<b>inherited</b></code>](#inherited)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#inherited\} 
+`true` when the application gets this dependency from its runtime. Only the runtime can change it.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>BundleDependency.<b>resourceType</b></code>](#resource-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ResourceType</b></code>](/api/graphql/types/objects/resource-type.mdx) <Badge class="badge badge--secondary " text="object"/> \{#resource-type\} 

@@ -377,7 +377,7 @@ type RootQueryType {
         items { tag createdAt }
         cursor { next }
       }
-      releaseChannels(filter: { stable: true }) {
+      releaseChannels(filter: { channel: STABLE }) {
         items { name tag }
       }
     }
@@ -743,6 +743,110 @@ type RootQueryType {
   ): [String!]!
 
   """
+  List the ways to send events, with the JSON schemas of the settings and credentials each one
+  takes.
+
+  ```graphql
+  query {
+    eventDestinationAdapters(organizationId: "my-org") {
+      items {
+        id
+        name
+        configSchema
+        authSchema
+        configUiSchema
+        authUiSchema
+        signs
+      }
+    }
+  }
+  ```
+  """
+  eventDestinationAdapters(
+    "Your organization's unique identifier."
+    organizationId: ID!
+  ): EventDestinationAdaptersPage
+
+  """
+  List the organization's event destinations.
+
+  ```graphql
+  query {
+    eventDestinations(organizationId: "my-org", filter: { status: { eq: PAUSED } }) {
+      items {
+        id
+        name
+        status
+        failingSince
+      }
+      cursor { next }
+    }
+  }
+  ```
+  """
+  eventDestinations(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "Filter criteria. All filters are combined with AND."
+    filter: EventDestinationsFilter
+
+    "Sort order. Defaults to `name` ascending."
+    sort: EventDestinationsSort
+
+    "Pagination cursor from a previous response."
+    cursor: Cursor
+  ): EventDestinationsPage
+
+  "Get one of the organization's event destinations."
+  eventDestination(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The destination's unique identifier."
+    id: UUID!
+  ): EventDestination
+
+  """
+  List the organization's recent audit log events of the event types and attributes that a condition passes,
+  newest first. Use it to check event types, attributes, and a condition before you create or change a
+  destination with them.
+
+  The condition runs on each page after the event types and attributes select it, so a page can hold fewer
+  items than `limit`.
+  Follow `cursor.next` until it is `null` to see every match. If the condition cannot run on an event, the
+  preview stops at that event and returns an error that names it. Events after it are not checked.
+
+  ```graphql
+  query {
+    previewEventDestination(organizationId: "my-org", eventTypes: ["deployment.*"]) {
+      items {
+        id
+        type
+        occurredAt
+      }
+    }
+  }
+  ```
+  """
+  previewEventDestination(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "Event types, or `<entity>.*` for every event of an entity. An empty list checks every event."
+    eventTypes: [String!]
+
+    "Attribute values that each event's entity must have had, such as `{\"md-environment\": \"prod\"}`. An empty map checks events of any attributes."
+    attributes: Map
+
+    "A jq expression to check on each event. The event matches when it outputs `true`."
+    condition: String
+
+    "Pagination cursor from a previous response."
+    cursor: Cursor
+  ): AuditLogsPage
+
+  """
   List resource types available to your organization.
 
   Returns both public resource types provided by Massdriver and any private
@@ -937,6 +1041,29 @@ type RootQueryType {
     "Cursor from a previous page to fetch the next set of results."
     cursor: Cursor
   ): AccessTokensPage
+
+  """
+  Get AWS credentials for the Massdriver S3 API.
+
+  Only requests authenticated with an access token can call this query. The credentials
+  belong to that access token.
+
+  **Example:**
+
+  ```graphql
+  query {
+    s3Credentials(organizationId: "my-org") {
+      accessKeyId
+      secretAccessKey
+      endpointUrl
+    }
+  }
+  ```
+  """
+  s3Credentials(
+    "Your organization's unique identifier."
+    organizationId: ID!
+  ): S3Credentials!
 
   """
   Fetch a single ABAC group policy by its unique identifier.
@@ -2261,6 +2388,121 @@ type RootMutationType {
   ): IntegrationPayload
 
   """
+  Add a destination that receives the organization's audit log events.
+
+  `eventDestinationAdapters` lists each adapter's `configSchema` and `authSchema`. Put credentials in `auth`:
+  the API never returns them. A destination of an adapter that `signs` gets a `signingSecret`, which signs
+  each event.
+
+  Pass `auth` as a variable. Query text can appear in request traces. Variables do not.
+
+  ```graphql
+  mutation CreateEventDestination($auth: Map) {
+    createEventDestination(
+      organizationId: "my-org"
+      input: {
+        name: "Production deployments"
+        adapter: HTTP
+        config: "{\"url\": \"https://hooks.example.com/massdriver\"}"
+        auth: $auth
+        eventTypes: ["deployment.*"]
+        attributes: "{\"md-environment\": \"prod\"}"
+        condition: ".data.metadata.deployment_action == \"PROVISION\""
+      }
+    ) {
+      result { id signingSecret }
+      successful
+      messages { field message }
+    }
+  }
+  ```
+  """
+  createEventDestination(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "Add a destination that receives the organization's audit log events."
+    input: CreateEventDestinationInput!
+  ): EventDestinationPayload @inputs(name: "createEventDestination", schema: "\/graphql\/v2\/inputs\/createEventDestination.json", ui: "\/graphql\/v2\/inputs\/createEventDestination.ui.json")
+
+  """
+  Change a destination's name, config, auth, event types, attributes, or condition. Fields you leave out do not
+  change. A new `config`, `auth`, or `attributes` replaces the current one. An empty `condition` removes it.
+  New event types and attributes apply to events recorded after the change. A new condition also applies to
+  events that are waiting to be sent.
+  """
+  updateEventDestination(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The destination's unique identifier."
+    id: UUID!
+
+    "Change a destination's name, config, auth, event types, attributes, or condition. Fields you leave out do not change."
+    input: UpdateEventDestinationInput!
+  ): EventDestinationPayload @inputs(name: "updateEventDestination", schema: "\/graphql\/v2\/inputs\/updateEventDestination.json", ui: "\/graphql\/v2\/inputs\/updateEventDestination.ui.json")
+
+  """
+  Stop sending events to a destination. Events recorded while it is paused wait, and are sent after it is
+  resumed. An event that waits for longer than the install's failed retention, 30 days by default, becomes
+  `FAILED`.
+  """
+  pauseEventDestination(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The destination's unique identifier."
+    id: UUID!
+  ): EventDestinationPayload
+
+  "Start sending events to a paused destination again, beginning with the events that were waiting."
+  resumeEventDestination(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The destination's unique identifier."
+    id: UUID!
+  ): EventDestinationPayload
+
+  """
+  Send one sample `event_destination.tested` event to a destination now, to check its settings and
+  credentials. The test ignores the destination's events, attributes, condition, and status. It makes no
+  delivery, and does not change `lastError` or `failingSince`.
+  """
+  testEventDestination(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The destination's unique identifier."
+    id: UUID!
+  ): EventDestinationTestPayload
+
+  "Delete a destination and its deliveries. Events waiting to be sent are not sent."
+  deleteEventDestination(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The destination's unique identifier."
+    id: UUID!
+  ): EventDestinationPayload
+
+  """
+  Send a destination's `FAILED` deliveries again, with a new set of retries. Leave out `deliveryIds` to send
+  every failed delivery again. `deliveryIds: null` is an error. A paused destination sends them after it is
+  resumed.
+  """
+  redeliverEvents(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The destination's unique identifier."
+    eventDestinationId: UUID!
+
+    "The failed deliveries to send again. Deliveries that are not `FAILED` are left as they are."
+    deliveryIds: [UUID!]
+  ): EventDestinationPayload
+
+  """
   Create a scoped, time-limited personal access token for the authenticated account.
 
   Only human accounts can call this mutation — service accounts should use
@@ -3336,6 +3578,9 @@ enum EventMetadataType {
 
   "A JSON boolean."
   BOOLEAN
+
+  "A JSON number with no fraction."
+  INTEGER
 }
 
 """
@@ -4406,6 +4651,61 @@ type ResourceType {
 
   "Timestamp when this resource type was last modified (UTC)."
   updatedAt: DateTime!
+
+  """
+  Bundles in your organization whose resources are of this resource type.
+  Each bundle appears once, at its newest stable version. A bundle whose
+  newest stable version no longer declares a resource of this type does not
+  appear, and development versions are never used. Only bundles you can view
+  are listed. Sorted by bundle name.
+
+  Use this before a breaking change to a resource type to find every bundle
+  that creates resources of this type.
+  """
+  producers(
+    "Cursor from a previous page's `cursor.next` or `cursor.previous`."
+    cursor: Cursor
+  ): BundlesPage
+
+  """
+  Bundles in your organization with a dependency that accepts this resource
+  type, with the dependency field and the version range it accepts. Each
+  bundle is read at its newest stable version, so a bundle whose newest stable
+  version dropped the dependency does not appear, and development versions are
+  never used. A bundle that accepts this type through two fields appears once
+  per field. Only bundles you can view are listed. Sorted by bundle name, then
+  field.
+
+  Use this before a breaking change to a resource type to find every bundle
+  that must be updated.
+  """
+  consumers(
+    "Cursor from a previous page's `cursor.next` or `cursor.previous`."
+    cursor: Cursor
+  ): ResourceTypeConsumersPage
+}
+
+"""
+A bundle with a dependency that accepts a resource type, and the dependency
+field that accepts it.
+"""
+type ResourceTypeConsumer {
+  "The bundle, at its newest stable version."
+  bundle: Bundle!
+
+  "The name of the dependency field that accepts the resource type (e.g., `database`)."
+  field: String!
+
+  "When `true`, the dependency must be connected before the bundle can be deployed."
+  required: Boolean!
+
+  """
+  The version range of the resource type this dependency accepts, as declared
+  in the bundle: an exact version (`1.2.3`), a tilde range (`~1`, `~1.2`), or a
+  channel (`latest`, `latest+dev`). `null` for bundles published before
+  dependencies declared a version range.
+  """
+  versionConstraint: String
 }
 
 type ResourceTypesPage {
@@ -4414,6 +4714,14 @@ type ResourceTypesPage {
 
   "A list of type resource_type."
   items: [ResourceType]
+}
+
+type ResourceTypeConsumersPage {
+  "Pagination cursors for navigating between pages."
+  cursor: PaginationCursor!
+
+  "A list of type resource_type_consumer."
+  items: [ResourceTypeConsumer]
 }
 
 type ResourceTypePayload {
@@ -4669,6 +4977,24 @@ input UpdateServiceAccountInput {
 }
 
 """
+AWS credentials for the Massdriver S3 API.
+
+S3 tools such as the AWS CLI, the AWS SDKs, and rclone sign requests with these credentials.
+They belong to the access token that requested them: they work only in its organization,
+and they stop working when the access token expires or is revoked.
+"""
+type S3Credentials {
+  "The AWS access key ID."
+  accessKeyId: String!
+
+  "The AWS secret access key. Keep it secret: it signs requests as the access token."
+  secretAccessKey: String!
+
+  "The S3 endpoint URL. S3 tools must use path-style addressing with this endpoint."
+  endpointUrl: String!
+}
+
+"""
 An access token with the raw token value included.
 
 This type is only returned by token-creating mutations (`createPersonalAccessToken` and
@@ -4830,6 +5156,399 @@ input CreateServiceAccountAccessTokenInput {
 }
 
 """
+How a destination receives events. `eventDestinationAdapters` lists the settings and credentials each
+adapter takes.
+"""
+enum EventDestinationAdapter {
+  "POST each event to a URL as a CloudEvent (`application\/cloudevents+json`), signed with [Standard Webhooks](https:\/\/www.standardwebhooks.com) headers."
+  HTTP
+
+  "Post each event to a Slack channel with your Slack app's bot token."
+  SLACK
+
+  "Create a ServiceNow record, such as an incident, for each event."
+  SERVICE_NOW
+
+  "Trigger a PagerDuty alert for each event with an Events API v2 integration key."
+  PAGER_DUTY
+}
+
+"Whether a destination receives events."
+enum EventDestinationStatus {
+  "The destination receives events."
+  ACTIVE
+
+  "The destination sends nothing. When it is resumed, it sends the events recorded while it was paused. An event that waits for longer than the install's failed retention, 30 days by default, becomes `FAILED`. A destination is paused when a send fails and no send has succeeded for the install's pause time, 24 hours by default."
+  PAUSED
+}
+
+"The state of one event's delivery to a destination."
+enum EventDeliveryStatus {
+  "The destination accepted the event."
+  DELIVERED
+
+  "The destination's condition did not pass the event, so it was not sent."
+  SKIPPED
+
+  "No more attempts. The destination rejected the event, every retry failed, or the destination's condition could not run. Use `redeliverEvents` to send it again."
+  FAILED
+
+  "Waits to be sent: new, waiting for a retry, or queued again by `redeliverEvents`. The next attempt is at `nextAttemptAt`."
+  PENDING
+}
+
+"Fields to sort event destinations by."
+enum EventDestinationsSortField {
+  "Sort alphabetically by name."
+  NAME
+
+  "Sort by when the destination was added."
+  CREATED_AT
+}
+
+"Fields to sort a destination's deliveries by."
+enum EventDeliveriesSortField {
+  "Sort by when the event was given to the destination."
+  CREATED_AT
+
+  "Sort by the last change to the delivery, such as an attempt."
+  UPDATED_AT
+}
+
+"Filter by destination status."
+input EventDestinationStatusFilter {
+  "Return only destinations with this status."
+  eq: EventDestinationStatus
+
+  "Return destinations with any of these statuses."
+  in: [EventDestinationStatus!]
+}
+
+"Filter options for the `eventDestinations` query. All filters are combined with **AND**."
+input EventDestinationsFilter {
+  "Filter by whether the destination receives events."
+  status: EventDestinationStatusFilter
+}
+
+"Sorting options for the `eventDestinations` query."
+input EventDestinationsSort {
+  "The field to sort by."
+  field: EventDestinationsSortField!
+
+  "`ASC` for A-Z \/ oldest first, `DESC` for Z-A \/ newest first."
+  order: SortOrder!
+}
+
+"Filter by delivery status."
+input EventDeliveryStatusFilter {
+  "Return only deliveries with this status."
+  eq: EventDeliveryStatus
+
+  "Return deliveries with any of these statuses."
+  in: [EventDeliveryStatus!]
+}
+
+"Filter options for a destination's deliveries. All filters are combined with **AND**."
+input EventDeliveriesFilter {
+  "Filter by status."
+  status: EventDeliveryStatusFilter
+
+  "Filter by when the event was given to the destination."
+  createdAt: DatetimeFilter
+}
+
+"Sorting options for a destination's deliveries."
+input EventDeliveriesSort {
+  "The field to sort by."
+  field: EventDeliveriesSortField!
+
+  "`ASC` for oldest first, `DESC` for newest first."
+  order: SortOrder!
+}
+
+"Add a destination that receives the organization's audit log events."
+input CreateEventDestinationInput {
+  "How the destination receives events. `eventDestinationAdapters` lists each adapter and the settings it takes."
+  adapter: EventDestinationAdapter!
+
+  "Attribute values that the event's entity must have had when the event happened. An event must have all of them. Leave it empty to receive events of any attributes. For other logic, use the condition."
+  attributes: Map
+
+  "Credentials used to send events, in the shape of the adapter's `authSchema` from `eventDestinationAdapters`. The API never returns them."
+  auth: Map
+
+  "A jq expression run on each CloudEvent that the event types and attributes select. The event is sent only when it outputs `true`. The CloudEvent's `data` holds the `entity`, its `attributes` (such as `md-environment`), and the event's `metadata`. It must finish within the install's timeout (1 second by default) and cannot use `import`, `include`, `module`, `modulemeta`, or `get_search_list`."
+  condition: String
+
+  "Where and how events are sent, in the shape of the adapter's `configSchema` from `eventDestinationAdapters`. The API returns it, so put credentials in `auth`."
+  config: Map!
+
+  "The event types the destination receives, or `<entity>.*` for every event of an entity. Leave it empty to receive every event. The `eventTypes` query lists the event types."
+  eventTypes: [String!]
+
+  "Name of the destination, unique in the organization."
+  name: String!
+}
+
+"Change a destination's name, config, auth, event types, attributes, or condition. Fields you leave out do not change."
+input UpdateEventDestinationInput {
+  "Replaces the current attributes. Attribute values that the event's entity must have had when the event happened. An event must have all of them. Pass `{}` to receive events of any attributes. For other logic, use the condition."
+  attributes: Map
+
+  "Replaces the current credentials. In the shape of the adapter's `authSchema` from `eventDestinationAdapters`. The API never returns them. They cannot be removed: to send events without credentials, delete the destination and create it again."
+  auth: Map
+
+  "A jq expression run on each CloudEvent that the event types and attributes select. The event is sent only when it outputs `true`. The CloudEvent's `data` holds the `entity`, its `attributes` (such as `md-environment`), and the event's `metadata`. It must finish within the install's timeout (1 second by default) and cannot use `import`, `include`, `module`, `modulemeta`, or `get_search_list`. Pass an empty string to remove the condition."
+  condition: String
+
+  "Replaces the current config. Where and how events are sent, in the shape of the adapter's `configSchema` from `eventDestinationAdapters`. The API returns it, so put credentials in `auth`."
+  config: Map
+
+  "The event types the destination receives, or `<entity>.*` for every event of an entity. Leave it empty to receive every event. The `eventTypes` query lists the event types. Leave the field out to keep the current event types."
+  eventTypes: [String!]
+
+  "Name of the destination, unique in the organization."
+  name: String
+}
+
+"""
+A place outside Massdriver that receives the organization's audit log events.
+
+The destination gets one delivery for each event of its `eventTypes` and `attributes`, and sends the ones its
+`condition` passes. A failed send is retried with backoff until it succeeds or the delivery is `FAILED`.
+Events go out in any order, and one event can arrive more than once: use the event `time` when order matters,
+and the event `id` to drop duplicates.
+"""
+type EventDestination {
+  "Unique identifier of the destination."
+  id: ID!
+
+  "Name of the destination, unique in the organization."
+  name: String!
+
+  "How the destination receives events."
+  adapter: EventDestinationAdapter!
+
+  "Where and how events are sent, in the shape of the adapter's `configSchema`. The destination's `auth` credentials are never returned."
+  config: Map!
+
+  "The event types the destination receives, or `<entity>.*` for every event of an entity. An empty list receives every event."
+  eventTypes: [String!]!
+
+  "Attribute values that the event's entity must have had when the event happened, such as `{\"md-environment\": \"prod\"}`. An event must have all of them. An empty map receives events of any attributes."
+  attributes: Map!
+
+  "A jq expression run on each CloudEvent that the `eventTypes` and `attributes` select. The event is sent only when it outputs `true`. `null` sends every selected event."
+  condition: String
+
+  "Whether the destination receives events."
+  status: EventDestinationStatus!
+
+  "The secret that signs each request, in Standard Webhooks form (`whsec_` followed by base64). Use it to check the `webhook-signature` header. Treat it as a credential. `null` for adapters that do not sign."
+  signingSecret: String
+
+  "When sends to the destination started to fail. `null` when the last send succeeded."
+  failingSince: DateTime
+
+  "When the destination last accepted an event (UTC)."
+  lastDeliveredAt: DateTime
+
+  "Why the endpoint did not accept the last send, such as `HTTP 503`. `null` when the last send succeeded. Condition errors are on the deliveries, not here."
+  lastError: String
+
+  "When the destination was added (UTC)."
+  createdAt: DateTime!
+
+  "When the destination last changed (UTC)."
+  updatedAt: DateTime!
+
+  """
+  Events that wait to be sent to the destination, including the ones that wait for a retry. Events wait while
+  the destination is paused.
+  """
+  pendingCount: Int!
+
+  """
+  Seconds since the oldest event that waits to be sent happened. A destination that keeps up has a lag of a few
+  seconds. The lag of a paused destination grows until it is resumed. `null` when no event waits.
+  """
+  lag: Int
+
+  """
+  The destination's deliveries that finished in the hour of `since` or later, counted by hour: delivered, failed,
+  and skipped.
+  Hours with no finished delivery are left out. Oldest hour first. Delivered and skipped deliveries are kept for
+  7 days by default, so older hours count only failed ones.
+  """
+  deliveryCounts(
+    "A time in the first hour to count (UTC). The whole hour is counted."
+    since: DateTime!
+  ): [EventDeliveryCount!]!
+
+  """
+  One delivery for each event the destination selects: sent, waiting, skipped by the condition, or failed.
+  Delivered and skipped deliveries are kept for the install's retention, 7 days by default, and failed ones for
+  30 days. Newest first by default.
+  """
+  deliveries(
+    "Filter criteria. All filters are combined with AND."
+    filter: EventDeliveriesFilter
+
+    "Sort order. Defaults to `createdAt` descending."
+    sort: EventDeliveriesSort
+
+    "Pagination cursor from a previous response."
+    cursor: Cursor
+  ): EventDeliveriesPage
+}
+
+"The deliveries of a destination that finished in one hour."
+type EventDeliveryCount {
+  "The start of the hour (UTC)."
+  hour: DateTime!
+
+  "Deliveries that the destination accepted."
+  delivered: Int!
+
+  "Deliveries marked `FAILED`, with no more attempts scheduled."
+  failed: Int!
+
+  "Deliveries that the destination's condition skipped."
+  skipped: Int!
+}
+
+"One event's delivery to a destination."
+type EventDelivery {
+  "Unique identifier of the delivery."
+  id: ID!
+
+  "Where the delivery is."
+  status: EventDeliveryStatus!
+
+  "Attempts to send the event."
+  attempts: Int!
+
+  "The next attempt, while the delivery is `PENDING` (UTC)."
+  nextAttemptAt: DateTime!
+
+  "Why the last attempt failed, such as `HTTP 503` or `connection refused`."
+  lastError: String
+
+  "When the destination accepted the event (UTC)."
+  deliveredAt: DateTime
+
+  "When the event was given to the destination (UTC)."
+  createdAt: DateTime!
+
+  "When the delivery last changed (UTC)."
+  updatedAt: DateTime!
+
+  "The audit log event. `null` when the event is older than the audit log retention."
+  event: AuditLog
+}
+
+"""
+A way to send events. Use `configSchema` and `authSchema` to build the `config` and `auth` of
+`createEventDestination`, and `configUiSchema` and `authUiSchema` to show them in a form.
+"""
+type EventDestinationAdapterInfo {
+  "The value to pass as `adapter`."
+  id: EventDestinationAdapter!
+
+  "Display name."
+  name: String!
+
+  "What the adapter does with each event."
+  description: String!
+
+  "JSON schema of a destination's `config`: where and how events are sent. The API returns it."
+  configSchema: Map!
+
+  "JSON schema of a destination's `auth`: the credentials used to send events. The API never returns it."
+  authSchema: Map!
+
+  """
+  UI hints describing how to render the `config` form.
+
+  Follows [react-jsonschema-form](https://rjsf-team.github.io/react-jsonschema-form/)'s
+  `uiSchema` conventions: keys mirror `configSchema`'s structure and values contain
+  rendering directives. A map of string values uses `ui:field: keyValueRows`, a Massdriver
+  field that shows name and value rows. Other clients need their own field for it. Returns an
+  empty object when the adapter has no UI hints for `config`.
+  """
+  configUiSchema: Map!
+
+  """
+  UI hints describing how to render the `auth` form.
+
+  Follows [react-jsonschema-form](https://rjsf-team.github.io/react-jsonschema-form/)'s
+  `uiSchema` conventions: keys mirror `authSchema`'s structure and values contain
+  rendering directives. A secret uses `ui:widget: password`, and a map of string values uses
+  `ui:field: keyValueRows`, a Massdriver field that shows name and value rows. Returns an
+  empty object when the adapter has no UI hints for `auth`.
+  """
+  authUiSchema: Map!
+
+  "Whether destinations get a `signingSecret` that signs each event."
+  signs: Boolean!
+}
+
+type EventDestinationAdaptersPage {
+  "Pagination cursors for navigating between pages."
+  cursor: PaginationCursor!
+
+  "A list of type event_destination_adapter_info."
+  items: [EventDestinationAdapterInfo]
+}
+
+type EventDestinationsPage {
+  "Pagination cursors for navigating between pages."
+  cursor: PaginationCursor!
+
+  "A list of type event_destination."
+  items: [EventDestination]
+}
+
+type EventDeliveriesPage {
+  "Pagination cursors for navigating between pages."
+  cursor: PaginationCursor!
+
+  "A list of type event_delivery."
+  items: [EventDelivery]
+}
+
+type EventDestinationPayload {
+  "Indicates if the mutation completed successfully or not."
+  successful: Boolean!
+
+  "A list of failed validations. May be blank or null if mutation succeeded."
+  messages: [ValidationMessage]
+
+  "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
+  result: EventDestination
+}
+
+"The result of sending a test event to a destination."
+type EventDestinationTest {
+  "Whether the destination accepted the test event."
+  delivered: Boolean!
+
+  "Why the destination did not accept the test event, such as `HTTP 401`. Null when it did."
+  error: String
+}
+
+type EventDestinationTestPayload {
+  "Indicates if the mutation completed successfully or not."
+  successful: Boolean!
+
+  "A list of failed validations. May be blank or null if mutation succeeded."
+  messages: [ValidationMessage]
+
+  "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
+  result: EventDestinationTest
+}
+
+"""
 The type of actor that performed an audit-logged action.
 
 Every audit log event records who (or what) triggered it. The actor type tells you
@@ -4982,7 +5701,7 @@ type AuditLog {
   "The affected resource in MRI format (e.g., `mri:\/\/organization\/my-org\/project\/backend`). May be `null` for organization-wide events."
   subject: String
 
-  "Event payload containing context-specific details about the action. The structure varies by event type."
+  "The event body. `actor` holds the ids of the account, service account, or deployment that caused the event, and the organization. `entity` holds a copy of the entity the event is about, as it was when the event happened. The fields in `entity` depend on the entity type."
   data: Map
 
   "Facts recorded with the event that you can filter on, such as how the actor authenticated (`credential`) or whether a resource export revealed a secret (`contains_secrets`). `eventTypes` lists the metadata each event type records."
@@ -5022,6 +5741,26 @@ enum IntegrationStatus {
 
   "Integration is active and running on its configured schedule."
   ENABLED
+}
+
+"""
+A kind of data an integration provides.
+
+Modules such as a cost summary appear wherever a capability is available, whichever integration or cloud
+provides the data. Read `Organization.capabilities` to find the capabilities your organization has.
+"""
+enum IntegrationCapability {
+  "Cloud spend per instance, environment and project."
+  COST
+}
+
+"The outcome of one scheduled run of an integration."
+enum IntegrationRunStatus {
+  "The run finished and its data was saved."
+  SUCCEEDED
+
+  "The run stopped with an error. `message` holds the error."
+  FAILED
 }
 
 "Available fields for sorting the integrations list."
@@ -5117,6 +5856,9 @@ type IntegrationTypeInfo {
 
   "JSON Schema describing the structure of the `auth` field when creating this integration. Typically contains credential requirements like IAM role ARNs or service account keys."
   authSchema: Map!
+
+  "The kinds of data this integration provides once it is enabled."
+  capabilities: [IntegrationCapability!]!
 }
 
 type IntegrationTypesPage {
@@ -5125,6 +5867,37 @@ type IntegrationTypesPage {
 
   "A list of type integration_type_info."
   items: [IntegrationTypeInfo]
+}
+
+"""
+One scheduled run of an integration.
+
+Runs are kept for the install's retention, 90 days by default. The data a run collects, such as costs,
+is kept separately and is not deleted with the run.
+"""
+type IntegrationRun {
+  "Unique identifier for this run."
+  id: ID!
+
+  "Whether the run succeeded or failed."
+  status: IntegrationRunStatus!
+
+  "The error that stopped a failed run. `null` when the run succeeded."
+  message: String
+
+  "When the run started (UTC)."
+  startedAt: DateTime!
+
+  "When the run finished (UTC)."
+  finishedAt: DateTime!
+}
+
+type IntegrationRunsPage {
+  "Pagination cursors for navigating between pages."
+  cursor: PaginationCursor!
+
+  "A list of type integration_run."
+  items: [IntegrationRun]
 }
 
 """
@@ -5154,6 +5927,15 @@ type Integration {
 
   "When this integration is next scheduled to execute (UTC). Only present for integrations that run on a periodic schedule. `null` if the integration is disabled or does not have scheduled runs."
   nextRunAt: DateTime
+
+  "The most recent scheduled run. `null` until the integration has run once."
+  lastRun: IntegrationRun
+
+  "Scheduled runs of this integration, newest first."
+  runs(
+    "Pagination cursor from a previous response."
+    cursor: Cursor
+  ): IntegrationRunsPage
 }
 
 """
@@ -6047,6 +6829,12 @@ type Organization {
   payment, seat, and invoice data live behind the admin-only `billing` field.
   """
   subscriptionStatus: OrganizationSubscriptionStatus!
+
+  """
+  The kinds of data the organization's enabled integrations provide. Visible to every member, so the UI
+  can show a module such as a cost summary only when an integration provides its data.
+  """
+  capabilities: [IntegrationCapability!]!
 
   """
   When the current free trial expires (UTC).
@@ -7383,6 +8171,12 @@ type Deployment {
   "The bundle version used for this deployment (e.g., `1.2.0`)."
   version: String!
 
+  """
+  The bundle version this deployment ran. Can differ from the instance's
+  current bundle when the instance's version changed after this deployment.
+  """
+  bundle: Bundle!
+
   "Snapshot of the instance configuration at the time this deployment was enqueued. Independent of the instance's current `params` — later edits do not mutate this record."
   params: Map
 
@@ -7862,6 +8656,16 @@ input InstancesFilter {
   "Match by a specific bundle version (`name@version`) or release channel (`name@~1`, `name@latest`). Use `ociRepoName` instead to match every version of a bundle."
   bundleId: BundleIdFilter
 
+  """
+  Match instances whose infrastructure runs on a runtime: the application bundle
+  from the instance's latest completed provision was built on a runtime version
+  this value resolves to. Accepts the same forms as `bundleId`: `lambda` matches
+  every runtime version, and `lambda@1.2.7` matches one.
+  Instances that were never provisioned, or whose latest completed deployment
+  decommissioned them, do not match.
+  """
+  runtime: BundleIdFilter
+
   "Filter by configuration parameter values. Each entry targets a specific param field; multiple entries are combined with AND."
   paramDimension: [ParamDimensionFilter!]
 
@@ -7940,15 +8744,16 @@ input MoveInstanceInput {
 """
 Metadata about an encrypted secret attached to an instance.
 
-Secrets are encrypted key-value pairs injected at deploy time. The API
-never returns secret values -- only the name, fingerprint, and timestamps are exposed.
+Secrets are encrypted key-value pairs injected at deploy time. Each organization's secrets are
+encrypted with keys that belong only to that organization, and Massdriver replaces the keys every
+week. The API never returns secret values -- only the name and timestamps are exposed.
 """
 type InstanceSecret {
   "The secret's key name, used to reference it in deployment configuration."
   name: String!
 
-  "Lowercase hex SHA-256 of the stored value. Use as a stable fingerprint to detect changes without exposing the secret itself."
-  sha256: String!
+  "Lowercase hex SHA-256 of the stored value."
+  sha256: String! @deprecated(reason: "Use `isSet` on `Instance.secretFields`. Removed on February 1, 2027.")
 
   "When this secret was first created (UTC)."
   createdAt: DateTime!
@@ -7958,14 +8763,10 @@ type InstanceSecret {
 }
 
 """
-Definition of a secret expected by an instance's bundle, with the stored value's
-fingerprint when one has been set.
+Definition of a secret expected by an instance's bundle, and whether a value has been set.
 
 Bundles declare the secrets they consume in their `app.secrets` manifest. Each
-field describes one expected secret. The `sha256` fingerprint is null when no
-value has been stored, and the lowercase hex SHA-256 of the stored value otherwise --
-use it to render set/unset state and to dirty-check edits client-side. Secret values
-themselves are never returned by the API.
+field describes one expected secret. Secret values themselves are never returned by the API.
 """
 type InstanceSecretField {
   "The secret's key name (typically an environment variable name like `DATABASE_PASSWORD`). Use this name when calling `setInstanceSecret`."
@@ -7980,8 +8781,11 @@ type InstanceSecretField {
   "Explanation of what this secret is used for."
   description: String
 
-  "Lowercase hex SHA-256 of the stored value, or null when no value has been set. Use null vs non-null to detect whether the secret is set."
-  sha256: String
+  "Whether a value has been set for this secret."
+  isSet: Boolean!
+
+  "Lowercase hex SHA-256 of the stored value, or null when no value has been set."
+  sha256: String @deprecated(reason: "Use `isSet`. Removed on February 1, 2027.")
 }
 
 type InstancePayload {
@@ -8174,9 +8978,8 @@ type Instance {
   Definitions of the secrets this instance's bundle expects, sorted by name.
 
   Each entry pairs the bundle's declared field (name, required flag, optional title /
-  description) with the stored value's `sha256` fingerprint when one has been set.
-  Use null vs non-null `sha256` to render set/unset state. Secret values are never
-  returned by the API.
+  description) with `isSet`, which tells whether a value has been stored. Secret values
+  are never returned by the API.
   """
   secretFields: [InstanceSecretField!]!
 
@@ -8255,6 +9058,38 @@ type Instance {
   "Cloud provider cost summary for this instance, including daily and monthly breakdowns."
   cost: CostSummary!
 
+  """
+  Number of this instance's alarms that are currently firing.
+
+  An alarm counts when its most recent reported state is `ALARM`. Alarms with
+  no reported state are not counted.
+  """
+  firingAlarmCount: Int!
+
+  """
+  The most recent deployment of this instance, of any action and status.
+
+  Null if the instance has never been deployed.
+  """
+  latestDeployment: Deployment
+
+  """
+  The most recent `PROVISION` deployment of this instance that completed.
+
+  Compare its `params` with the instance's `params` to see whether the
+  configuration has changed since the infrastructure was last provisioned.
+  Null if the instance has never been provisioned.
+  """
+  latestProvision: Deployment
+
+  """
+  The most recent deployment of this instance that is waiting for approval.
+
+  A proposed deployment does not run until someone approves it. Null if no
+  deployment is waiting for approval.
+  """
+  mostRecentProposedDeployment: Deployment
+
   "The environment this instance is deployed in."
   environment: Environment
 
@@ -8318,6 +9153,17 @@ type Instance {
   environment. Unfilled slots are not included.
   """
   dependencies: [InstanceDependency!]!
+
+  """
+  Names of the dependency fields that changed since this instance was last provisioned, sorted alphabetically.
+
+  A dependency changed when a link, remote reference, or environment default
+  added or removed it, or when its resource now holds different data than the
+  last provision used. The next deployment uses the current dependencies.
+  Empty when no dependency changed, the instance has never been provisioned, or
+  the instance is decommissioned.
+  """
+  changedDependencies: [String!]!
 
   """
   Whether this instance can be safely decommissioned right now. Check `constraints` for blocking conditions.
@@ -9158,6 +10004,54 @@ enum BundleCapability {
   RUNTIME
 }
 
+"How many resources a bundle dependency takes."
+enum BundleDependencyCardinality {
+  "The dependency takes exactly one resource."
+  ONE
+
+  "The dependency takes any number of resources of its type. The IaC receives a map from resource ID to resource."
+  MANY
+}
+
+"An environment variable the bundle sets on its workload."
+type BundleAppEnv {
+  "Environment variable name (e.g., `DB_HOST`)."
+  name: String!
+
+  "jq expression that computes the value from params and dependencies (e.g., `.dependencies.db.host`)."
+  value: String!
+
+  "`true` when the application gets this variable from its runtime. Only the runtime can change it."
+  inherited: Boolean!
+}
+
+"A secret the bundle reads. Values are set per instance."
+type BundleAppSecret {
+  "Secret name (e.g., `STRIPE_KEY`)."
+  name: String!
+
+  "When `true`, the secret must be set before the instance can deploy."
+  required: Boolean!
+
+  "Human-readable name for the secret."
+  title: String
+
+  "Explanation of what the secret is used for."
+  description: String
+
+  "`true` when the application gets this secret from its runtime. Only the runtime can change it."
+  inherited: Boolean!
+}
+
+"The environment variables and secrets a bundle passes to its workload."
+type BundleApp {
+  "Environment variables, sorted by name."
+  envs: [BundleAppEnv!]!
+
+  "Secrets, sorted by name."
+  secrets: [BundleAppSecret!]!
+}
+
 """
 An input that a bundle requires from another bundle's output.
 
@@ -9176,6 +10070,9 @@ type BundleDependency {
   "When `true`, this dependency must be connected before the bundle can be deployed."
   required: Boolean!
 
+  "How many resources this dependency takes. `ONE` takes exactly one resource. `MANY` takes any number of resources of the type, and the IaC receives a map from resource ID to resource."
+  cardinality: BundleDependencyCardinality!
+
   """
   The version range this slot accepts, as declared in the bundle — an exact
   version (`1.2.3`), a tilde range (`~1`, `~1.2`), or a channel (`latest`,
@@ -9183,6 +10080,9 @@ type BundleDependency {
   current version of the type they point at.
   """
   versionConstraint: String!
+
+  "`true` when the application gets this dependency from its runtime. Only the runtime can change it."
+  inherited: Boolean!
 
   "The resource type this dependency accepts, resolved to the newest version its `versionConstraint` accepts. `null` if no published version of the type satisfies the range, or the field is not pinned to a resource type at all."
   resourceType: ResourceType
@@ -9210,6 +10110,9 @@ type BundleResource {
   current version of the type they point at.
   """
   versionConstraint: String!
+
+  "`true` when the application gets this resource from its runtime. Only the runtime can change it."
+  inherited: Boolean!
 
   "The resource type this output produces, resolved to the newest version its `versionConstraint` accepts. `null` if no published version of the type satisfies the range, or the field is not pinned to a resource type at all."
   resourceType: ResourceType
@@ -9322,11 +10225,28 @@ type Bundle {
   """
   provides: [BundleCapability!]
 
+  """
+  The runtime version this application bundle was built from. `null` when the
+  bundle is not an application.
+  """
+  runtime: Bundle
+
+  "The environment variables and secrets this bundle passes to its workload."
+  app: BundleApp!
+
   "Dependencies (inputs) this bundle requires. Each entry names a slot and the resource type it accepts. Sorted alphabetically by name."
   dependencies: [BundleDependency!]!
 
   "Resources (outputs) this bundle produces when deployed. Each entry names a slot and the resource type it creates. Sorted alphabetically by name."
   resources: [BundleResource!]!
+}
+
+type BundlesPage {
+  "Pagination cursors for navigating between pages."
+  cursor: PaginationCursor!
+
+  "A list of type bundle."
+  items: [Bundle]
 }
 
 """
@@ -9382,6 +10302,15 @@ enum OciRepoTagsSortField {
 enum OciRepoReleaseChannelsSortField {
   "Sort by channel name. Channels are ordered: `latest` first, then `~major` channels numerically, then `~major.minor` channels numerically. Dev (`+dev`) variants sort after their stable counterpart."
   NAME
+}
+
+"The release line a version or release channel belongs to."
+enum OciRepoChannel {
+  "Stable releases. For tags, versions with no pre-release suffix (e.g., `1.2.3`). For release channels, `latest`, `~1`, and `~1.2`."
+  STABLE
+
+  "Development builds. For tags, pre-release versions (e.g., `1.2.4-dev.20260101T120000Z`). For release channels, `latest+dev`, `~1+dev`, and `~1.2+dev`."
+  DEV
 }
 
 "Fields available for ordering files within a tagged version of an OCI artifact."
@@ -9467,6 +10396,9 @@ All filters are combined with AND logic.
 input OciRepoTagsFilter {
   "Return only the tag with this exact version (e.g., `1.3.3`). When set, the result is at most one item."
   version: Semver
+
+  "Return only versions in this channel: `STABLE` for releases, `DEV` for pre-release builds. Pagination counts only matching versions. Omit to return every version."
+  channel: OciRepoChannel
 }
 
 "Controls the sort order of files in a tagged version of an OCI artifact."
@@ -9480,8 +10412,11 @@ input OciFilesSort {
 
 "Filters for narrowing the release channels list."
 input OciRepoReleaseChannelsFilter {
-  "Controls whether stable or development channels are returned. `true` returns only stable channels (`latest`, `~1`, `~1.2`). `false` returns only development channels (`latest+dev`, `~1+dev`, `~1.2+dev`). Omit to return both. A development channel is listed even when it currently resolves to the same version as its stable counterpart, because the two track future releases differently."
-  stable: Boolean
+  "Return only stable channels (`STABLE`: `latest`, `~1`, `~1.2`) or only development channels (`DEV`: `latest+dev`, `~1+dev`, `~1.2+dev`). Omit to return both. A development channel is listed even when it currently resolves to the same version as its stable counterpart, because the two track future releases differently."
+  channel: OciRepoChannel
+
+  "`true` returns only stable channels and `false` returns only development channels. Ignored when `channel` is set."
+  stable: Boolean @deprecated(reason: "Use `channel` instead.")
 }
 
 "Controls the sort order of release channels."
@@ -9665,8 +10600,9 @@ type OciRepo {
 
   """
   Short summary of what this repository provisions, taken from the latest
-  published release. `null` when the repository has no releases yet or the
-  author omitted the description.
+  published release. For a resource-type repository it is the schema
+  `description` of the type's newest published version. `null` when the
+  repository has no releases yet or the author omitted the description.
   """
   description: String
 
@@ -9680,7 +10616,8 @@ type OciRepo {
   cookie automatically; programmatic clients must include an `Authorization`
   header.
 
-  For a resource-type repository it is the icon URL the type declares.
+  For a resource-type repository it is the icon URL declared by the type's
+  newest published version.
   """
   icon: String
 
@@ -9710,7 +10647,7 @@ type OciRepo {
   Paginated list of release channels for this repository.
 
   Each channel is a version constraint that auto-resolves to the latest matching
-  tag. Use the `stable` filter to show only stable or only development channels.
+  tag. Use the `channel` filter to show only stable or only development channels.
   """
   releaseChannels(
     "Filter by stable or development channels."
@@ -9730,7 +10667,7 @@ type OciRepo {
   version first (`version` descending).
   """
   tags(
-    "Narrow results to a specific version."
+    "Narrow results to a specific version or channel."
     filter: OciRepoTagsFilter
 
     "Sort order for tags. Defaults to `version` descending (newest first)."

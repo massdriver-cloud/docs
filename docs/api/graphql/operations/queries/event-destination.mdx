@@ -1,0 +1,76 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: event-destination
+title: eventDestination
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Get one of the organization's event destinations.
+
+
+```graphql
+eventDestination(
+  organizationId: ID!
+  id: UUID!
+): EventDestination
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>eventDestination.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>eventDestination.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UUID!</b></code>](/api/graphql/types/scalars/uuid.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+The destination's unique identifier.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>EventDestination</b></code>](/api/graphql/types/objects/event-destination.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A place outside Massdriver that receives the organization's audit log events.
+
+The destination gets one delivery for each event of its `eventTypes` and `attributes`, and sends the ones its
+`condition` passes. A failed send is retried with backoff until it succeeds or the delivery is `FAILED`.
+Events go out in any order, and one event can arrive more than once: use the event `time` when order matters,
+and the event `id` to drop duplicates.

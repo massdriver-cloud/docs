@@ -1,0 +1,92 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: integration-run
+title: IntegrationRun
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+One scheduled run of an integration.
+
+Runs are kept for the install's retention, 90 days by default. The data a run collects, such as costs,
+is kept separately and is not deleted with the run.
+
+
+```graphql
+type IntegrationRun {
+  id: ID!
+  status: IntegrationRunStatus!
+  message: String
+  startedAt: DateTime!
+  finishedAt: DateTime!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationRun.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+Unique identifier for this run.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationRun.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IntegrationRunStatus!</b></code>](/api/graphql/types/enums/integration-run-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
+Whether the run succeeded or failed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationRun.<b>message</b></code>](#message)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#message\} 
+The error that stopped a failed run. `null` when the run succeeded.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationRun.<b>startedAt</b></code>](#started-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#started-at\} 
+When the run started (UTC).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>IntegrationRun.<b>finishedAt</b></code>](#finished-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#finished-at\} 
+When the run finished (UTC).
+
+
+
+
+
+
+### Member Of
+
+[`Integration`](/api/graphql/types/objects/integration.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`IntegrationRunsPage`](/api/graphql/types/objects/integration-runs-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

@@ -84,6 +84,8 @@ type Bundle {
   effectiveAttributes: Map!
   repo: String!
   provides: [BundleCapability!]
+  runtime: Bundle
+  app: BundleApp!
   dependencies: [BundleDependency!]!
   resources: [BundleResource!]!
 }
@@ -178,6 +180,15 @@ Capabilities this bundle provides, in the order its author listed them.
 can host application bundles.
 
 
+#### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>runtime</b></code>](#runtime)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Bundle</b></code>](/api/graphql/types/objects/bundle.mdx) <Badge class="badge badge--secondary " text="object"/> \{#runtime\} 
+The runtime version this application bundle was built from. `null` when the
+bundle is not an application.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>app</b></code>](#app)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BundleApp!</b></code>](/api/graphql/types/objects/bundle-app.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#app\} 
+The environment variables and secrets this bundle passes to its workload.
+
+
 #### [<code style={{ fontWeight: 'normal' }}>Bundle.<b>dependencies</b></code>](#dependencies)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[BundleDependency!]!</b></code>](/api/graphql/types/objects/bundle-dependency.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#dependencies\} 
 Dependencies (inputs) this bundle requires. Each entry names a slot and the resource type it accepts. Sorted alphabetically by name.
 
@@ -196,4 +207,4 @@ Resources (outputs) this bundle produces when deployed. Each entry names a slot 
 
 ### Member Of
 
-[`BundleEvent`](/api/graphql/types/objects/bundle-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Instance`](/api/graphql/types/objects/instance.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`Bundle`](/api/graphql/types/objects/bundle.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`BundleEvent`](/api/graphql/types/objects/bundle-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`BundlesPage`](/api/graphql/types/objects/bundles-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Deployment`](/api/graphql/types/objects/deployment.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Instance`](/api/graphql/types/objects/instance.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ResourceTypeConsumer`](/api/graphql/types/objects/resource-type-consumer.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
