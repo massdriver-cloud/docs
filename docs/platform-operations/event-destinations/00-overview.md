@@ -217,6 +217,8 @@ Massdriver gives each event to the adapter as one [CloudEvent](https://cloudeven
 | `time` | When the event occurred (UTC, ISO 8601). |
 | `datacontenttype` | `application/json` |
 | `data` | `entity`, the entity that the event is about, and `actor`, the actor that caused the event. [Event Reference](/platform-operations/event-destinations/events) lists the fields of each entity. |
+| `traceparent` | The trace of the work that caused the event, in [W3C Trace Context](https://www.w3.org/TR/trace-context/#traceparent-header) format. Refer to [Trace context](#trace-context). |
+| `tracestate` | Vendor data for the trace, in [W3C Trace Context](https://www.w3.org/TR/trace-context/#tracestate-header) format. Refer to [Trace context](#trace-context). |
 
 Massdriver adds two objects to `data`:
 
@@ -280,6 +282,12 @@ This is a `deployment.completed` event:
   }
 }
 ```
+
+### Trace context
+
+Massdriver sets `traceparent` and `tracestate` from the [CloudEvents distributed tracing extension](https://github.com/cloudevents/spec/blob/main/cloudevents/extensions/distributed-tracing.md). They identify the trace of the request or job that caused the event, such as the API request that created a project. An event has `traceparent` only when Massdriver recorded a trace for that work. An event has `tracestate` only when the trace has vendor data.
+
+Every attempt of an event sends the same `traceparent` and `tracestate`. To show the work of your receiver in the same trace as the work in Massdriver, make the span of your receiver a child of `traceparent` or link it to `traceparent`.
 
 ## Failures and retries
 
