@@ -285,7 +285,7 @@ This is a `deployment.completed` event:
 
 ### Trace context
 
-Massdriver sets `traceparent` and `tracestate` from the [CloudEvents distributed tracing extension](https://github.com/cloudevents/spec/blob/main/cloudevents/extensions/distributed-tracing.md). They identify the trace of the request or job that caused the event, such as the API request that started a deployment. An event has `traceparent` only when Massdriver recorded a trace for that work. An event has `tracestate` only when the trace has vendor data.
+Massdriver sets `traceparent` and `tracestate` from the [CloudEvents distributed tracing extension](https://github.com/cloudevents/spec/blob/main/cloudevents/extensions/distributed-tracing.md). They identify the trace of the request or job that caused the event, such as the API request that created a project. An event has `traceparent` only when Massdriver recorded a trace for that work. An event has `tracestate` only when the trace has vendor data.
 
 Every attempt of an event sends the same `traceparent` and `tracestate`. To show the work of your receiver in the same trace as the work in Massdriver, make the span of your receiver a child of `traceparent` or link it to `traceparent`.
 
