@@ -3,6 +3,7 @@ id: ci-cd-azure-devops
 slug: /platform-operations/ci-cd/azure-devops
 title: Azure DevOps Pipeline
 sidebar_label: Azure DevOps Pipeline
+image: /img/og/ci-cd-azure-devops.png
 ---
 
 # Azure DevOps Pipeline

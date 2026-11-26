@@ -4,6 +4,7 @@ slug: /continuous-delivery/automations/router
 title: router
 sidebar_label: router
 description: Run HTTP requests, commands, and Massdriver API calls for events that match configured routes.
+image: /img/og/automation-router.png
 ---
 
 Runs HTTP requests, commands, and Massdriver API calls when an event matches a route. Each route selects events by

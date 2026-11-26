@@ -3,6 +3,7 @@ id: provisioners-helm
 slug: /bundle-development/provisioners/helm
 title: Helm Provisioner
 sidebar_label: Helm
+image: /img/og/provisioners-helm.png
 ---
 
 # Helm Provisioner

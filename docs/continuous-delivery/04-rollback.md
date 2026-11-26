@@ -3,6 +3,7 @@ id: workflow-rollback
 slug: /continuous-delivery/rollback
 title: Roll Back a Deployment
 sidebar_label: Roll Back
+image: /img/og/rollback.png
 ---
 
 # Roll Back a Deployment

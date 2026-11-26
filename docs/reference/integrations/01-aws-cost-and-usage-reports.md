@@ -3,6 +3,7 @@ id: aws-cost-and-usage-reports
 slug: /reference/integrations/aws-cost-and-usage-reports
 title: AWS Cost and Usage Reports
 sidebar_label: AWS Cost Reports
+image: /img/og/integration-aws-cur.png
 ---
 
 # AWS Cost and Usage Reports

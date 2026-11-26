@@ -4,6 +4,7 @@ slug: /continuous-delivery/automations/sandbox-on-join
 title: sandbox-on-join
 sidebar_label: sandbox-on-join
 description: Fork a sandbox environment for each new member of a group, and remove it when they leave.
+image: /img/og/automation-sandbox-on-join.png
 ---
 
 When a person joins a configured group, fork a template environment for them. When they leave, decommission

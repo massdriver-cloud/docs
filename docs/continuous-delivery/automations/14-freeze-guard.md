@@ -4,6 +4,7 @@ slug: /continuous-delivery/automations/freeze-guard
 title: freeze-guard
 sidebar_label: freeze-guard
 description: Block deployments during change freeze windows with deny policies.
+image: /img/og/automation-freeze-guard.png
 ---
 
 Blocks deployments during change freeze windows with [access policies](/platform-operations/security/access-control#policies). When a window starts, freeze-guard adds a

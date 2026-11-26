@@ -1,0 +1,229 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="og.css" />
+    <style>
+      .frame {
+        background:
+          radial-gradient(640px 520px at 76% 52%, rgba(45, 212, 191, 0.12), transparent 65%),
+          var(--bg);
+      }
+      .text {
+        position: absolute;
+        left: 80px;
+        top: 186px;
+        width: 500px;
+      }
+      .text.stacked {
+        top: 150px;
+      }
+      .text.stacked .title {
+        font-size: 104px;
+      }
+      .title {
+        font-size: 118px;
+        margin: 14px 0 24px;
+      }
+      .lede {
+        font-size: 22px;
+      }
+      .lede b {
+        color: var(--ink);
+        font-weight: 500;
+      }
+      .event {
+        position: absolute;
+        left: 640px;
+        top: 62px;
+        width: 500px;
+        padding: 18px 22px;
+        font-size: 16px;
+        line-height: 1.6;
+        white-space: pre;
+        color: #8d8d95;
+        border: 1px solid #2c2c33;
+        border-radius: 10px;
+        background: rgba(11, 11, 14, 0.92);
+        box-shadow: 0 0 50px rgba(45, 212, 191, 0.08);
+      }
+      .event .tag {
+        position: absolute;
+        top: -12px;
+        right: 18px;
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 3px 10px;
+        border-radius: 999px;
+        background: #050506;
+        border: 1px solid #2c2c33;
+        color: var(--muted);
+      }
+      .k {
+        color: #9fb4ff;
+      }
+      .s {
+        color: #e6e6ea;
+      }
+      .s.hot {
+        color: var(--accent);
+      }
+      .filters {
+        position: absolute;
+        left: 640px;
+        top: 322px;
+        width: 500px;
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+      }
+      .f {
+        font-size: 14px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        border: 1px solid var(--accent);
+        color: var(--accent);
+        background: #08201d;
+        white-space: nowrap;
+      }
+      .f span {
+        color: var(--muted);
+        margin-right: 6px;
+      }
+      .adapters {
+        position: absolute;
+        left: 610px;
+        top: 452px;
+        width: 560px;
+        display: flex;
+        justify-content: space-between;
+      }
+      .a {
+        width: 128px;
+        padding: 14px 12px;
+        border-radius: 8px;
+        border: 1px solid #2c2c33;
+        background: #0b0b0e;
+        text-align: center;
+      }
+      .a .name {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 27px;
+        letter-spacing: 0.02em;
+        color: #8d8d95;
+        line-height: 1;
+      }
+      .a .as {
+        margin-top: 6px;
+        font-size: 13px;
+        color: #5d5d66;
+      }
+      .a.hot {
+        border-color: var(--accent);
+        background: #0a2622;
+        box-shadow: 0 0 26px rgba(45, 212, 191, 0.3);
+      }
+      .a.hot .name {
+        color: #f2fffd;
+      }
+      .a.hot .as {
+        color: var(--accent);
+      }
+      svg.wires {
+        position: absolute;
+        inset: 0;
+        width: 1200px;
+        height: 630px;
+      }
+      .w {
+        fill: none;
+        stroke: #34343b;
+        stroke-width: 1.4;
+      }
+      .w.hot {
+        stroke: var(--accent);
+        stroke-width: 2;
+        filter: drop-shadow(0 0 4px rgba(45, 212, 191, 0.7));
+      }
+    </style>
+  </head>
+  <body>
+    <div class="frame">
+      <div class="grid"></div>
+      <img class="logo" src="../../static/img/logo-white.svg" />
+      <div class="text">
+        <div class="kicker" id="kicker"></div>
+        <div class="title" id="title"></div>
+        <div class="lede" id="lede"></div>
+      </div>
+      <svg class="wires" id="wires" aria-hidden="true"></svg>
+      <div class="event" id="event"><span class="tag">cloudevent</span>{
+  <span class="k">"type"</span>: <span class="s hot">"deployment.failed"</span>,
+  <span class="k">"subject"</span>: <span class="s">"mri:acme:api:prod:deployment:…"</span>,
+  <span class="k">"data"</span>: {
+    <span class="k">"attributes"</span>: { <span class="k">"md-environment"</span>: <span class="s hot">"prod"</span> }
+  }
+}</div>
+      <div class="filters" id="filters">
+        <div class="f"><span>events</span>deployment.*</div>
+        <div class="f"><span>attributes</span>md-environment=prod</div>
+      </div>
+      <div class="adapters" id="adapters"></div>
+      <div class="url">docs.massdriver.cloud</div>
+      <div class="bar"></div>
+    </div>
+    <script>
+      const ADAPTERS = [
+        ["http", "HTTP", "signed POST"],
+        ["slack", "Slack", "message"],
+        ["servicenow", "ServiceNow", "incident"],
+        ["pagerduty", "PagerDuty", "alert"],
+      ];
+      const LEDES = {
+        "": "Send the <b>audit log events</b><br />you choose to HTTP, Slack,<br />ServiceNow, and PagerDuty.",
+        http: "Each event as a <b>signed<br />CloudEvent</b> in a POST<br />to your URL.",
+        slack: "Each event as a <b>message</b><br />in a Slack channel.",
+        servicenow: "Each event as a <b>new record</b>,<br />such as an incident,<br />in a ServiceNow table.",
+        pagerduty: "Each event as an <b>alert</b><br />on a PagerDuty service.",
+      };
+      const p = new URLSearchParams(location.search);
+      const focus = p.get("focus") || "";
+      document.getElementById("kicker").textContent = p.get("kicker") || "platform operations";
+      const title = p.get("title") || "Event<br />Destinations";
+      document.getElementById("title").innerHTML = title;
+      if (title.includes("<br")) document.querySelector(".text").classList.add("stacked");
+      document.getElementById("lede").innerHTML = LEDES[focus];
+
+      const box = document.getElementById("adapters");
+      for (const [id, name, as] of ADAPTERS) {
+        const d = document.createElement("div");
+        d.className = "a" + (!focus || focus === id ? " hot" : "");
+        d.dataset.id = id;
+        d.innerHTML = `<div class="name">${name}</div><div class="as">${as}</div>`;
+        box.appendChild(d);
+      }
+
+      document.fonts.ready.then(() => {
+        const svg = document.getElementById("wires");
+        const ev = document.getElementById("event").getBoundingClientRect();
+        const fl = document.getElementById("filters").getBoundingClientRect();
+        const cx = fl.left + fl.width / 2;
+        const path = (d, hot) => {
+          const el = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          el.setAttribute("d", d);
+          el.setAttribute("class", "w" + (hot ? " hot" : ""));
+          svg.appendChild(el);
+        };
+        path(`M${cx},${ev.bottom} L${cx},${fl.top}`, true);
+        const items = [...document.querySelectorAll(".a")].sort((a, b) => a.classList.contains("hot") - b.classList.contains("hot"));
+        for (const a of items) {
+          const r = a.getBoundingClientRect();
+          const x = r.left + r.width / 2;
+          const my = (fl.bottom + r.top) / 2;
+          path(`M${cx},${fl.bottom} C${cx},${my} ${x},${my} ${x},${r.top}`, a.classList.contains("hot"));
+        }
+      });
+    </script>
+  </body>
+</html>

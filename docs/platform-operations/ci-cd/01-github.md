@@ -3,6 +3,7 @@ id: ci-cd-github-action
 slug: /platform-operations/ci-cd/github-action
 title: GitHub Action
 sidebar_label: GitHub Action
+image: /img/og/ci-cd-github-action.png
 ---
 
 # GitHub Action

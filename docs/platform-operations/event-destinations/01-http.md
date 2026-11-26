@@ -3,6 +3,7 @@ id: event-destinations-http
 slug: /platform-operations/event-destinations/http
 title: HTTP Event Destinations
 sidebar_label: HTTP
+image: /img/og/event-destinations-http.png
 ---
 
 import Tabs from '@theme/Tabs';

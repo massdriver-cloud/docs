@@ -3,6 +3,7 @@ id: provisioners-terraform
 slug: /bundle-development/provisioners/terraform
 title: Terraform Provisioner
 sidebar_label: Terraform
+image: /img/og/provisioners-terraform.png
 ---
 
 # Terraform Provisioner

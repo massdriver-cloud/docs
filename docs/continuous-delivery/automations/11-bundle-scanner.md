@@ -4,6 +4,7 @@ slug: /continuous-delivery/automations/bundle-scanner
 title: bundle-scanner
 sidebar_label: bundle-scanner
 description: Scan each new bundle version with Trivy and Checkov.
+image: /img/og/automation-bundle-scanner.png
 ---
 
 When a new bundle version is published, pull it from the Massdriver OCI registry and scan its IaC with

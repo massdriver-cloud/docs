@@ -3,6 +3,7 @@ id: workflow-promote
 slug: /continuous-delivery/promote
 title: Promote Configs Across Environments
 sidebar_label: Promote
+image: /img/og/promote.png
 ---
 
 # Promote Configs Across Environments

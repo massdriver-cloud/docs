@@ -3,6 +3,7 @@ id: resource-type-spec
 slug: /bundle-development/dependencies-resources/resource-type-spec
 title: Resource Type Specification
 sidebar_label: Resource Type Spec
+image: /img/og/resource-type-spec.png
 ---
 
 # Resource Type YAML Specification

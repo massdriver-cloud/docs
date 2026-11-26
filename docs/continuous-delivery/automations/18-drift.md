@@ -4,6 +4,7 @@ slug: /continuous-delivery/automations/drift
 title: drift
 sidebar_label: drift
 description: Plan instances on a schedule, alert on drift, and optionally re-apply the deployed configuration.
+image: /img/og/automation-drift.png
 ---
 
 On a schedule, plan every provisioned instance that matches a set of attributes. Read each plan's logs for
