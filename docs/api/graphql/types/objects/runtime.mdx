@@ -1,0 +1,118 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: runtime
+title: Runtime
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A bundle that applications run on.
+
+A runtime holds the infrastructure-as-code, params, and the dependencies its
+infrastructure needs. Its massdriver.yaml lists `runtime` under `provides`.
+Applications build on one exact runtime version and add their own
+dependencies, resources, environment variables, and secrets.
+
+
+```graphql
+type Runtime {
+  id: ID!
+  latest: Bundle!
+  versions(
+    cursor: Cursor
+  ): BundlesPage!
+  applications(
+    filter: ApplicationsFilter
+    sort: ApplicationsSort
+    cursor: Cursor
+  ): ApplicationsPage!
+  adoption: [RuntimeVersionAdoption!]!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>Runtime.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+The runtime name, which is the name of its bundle repository (e.g., `lambda`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Runtime.<b>latest</b></code>](#latest)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Bundle!</b></code>](/api/graphql/types/objects/bundle.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#latest\} 
+The newest published version: the highest stable version, or the highest development version when no stable version exists.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Runtime.<b>versions</b></code>](#versions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BundlesPage!</b></code>](/api/graphql/types/objects/bundles-page.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#versions\} 
+Every published version of the runtime, newest first.
+##### [<code style={{ fontWeight: 'normal' }}>Runtime.versions.<b>cursor</b></code>](#runtime-versions-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#runtime-versions-cursor\} 
+Pagination cursor returned by a previous page.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Runtime.<b>applications</b></code>](#applications)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ApplicationsPage!</b></code>](/api/graphql/types/objects/applications-page.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#applications\} 
+The applications you can view whose newest version is built on this runtime.
+##### [<code style={{ fontWeight: 'normal' }}>Runtime.applications.<b>filter</b></code>](#runtime-applications-filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ApplicationsFilter</b></code>](/api/graphql/types/inputs/applications-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#runtime-applications-filter\} 
+Narrow results by application.
+
+
+##### [<code style={{ fontWeight: 'normal' }}>Runtime.applications.<b>sort</b></code>](#runtime-applications-sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ApplicationsSort</b></code>](/api/graphql/types/inputs/applications-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#runtime-applications-sort\} 
+Sort field and direction. Defaults to `name` ascending.
+
+
+##### [<code style={{ fontWeight: 'normal' }}>Runtime.applications.<b>cursor</b></code>](#runtime-applications-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#runtime-applications-cursor\} 
+Pagination cursor returned by a previous page.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Runtime.<b>adoption</b></code>](#adoption)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[RuntimeVersionAdoption!]!</b></code>](/api/graphql/types/objects/runtime-version-adoption.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#adoption\} 
+One entry for each runtime version that at least one application is built
+on or at least one instance runs, newest version first. Use it to see how
+far applications and instances are behind the newest runtime version.
+
+
+
+
+
+
+### Returned By
+
+[`runtime`](/api/graphql/operations/queries/runtime.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+
+### Member Of
+
+[`Application`](/api/graphql/types/objects/application.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`RuntimesPage`](/api/graphql/types/objects/runtimes-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

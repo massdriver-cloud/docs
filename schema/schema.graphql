@@ -361,6 +361,116 @@ type RootQueryType {
   ): Bundle
 
   """
+  List the runtimes in your organization's catalog.
+
+  The list holds the runtimes whose bundle repository you can view.
+
+  ```graphql
+  query {
+    runtimes(organizationId: "your-org-id") {
+      items {
+        id
+        latest { version description icon }
+        adoption { version applicationCount instanceCount }
+      }
+      cursor { next }
+    }
+  }
+  ```
+  """
+  runtimes(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "Narrow results by runtime."
+    filter: RuntimesFilter
+
+    "Sort field and direction. Defaults to `name` ascending."
+    sort: RuntimesSort
+
+    "Pagination cursor returned by a previous page."
+    cursor: Cursor
+  ): RuntimesPage!
+
+  """
+  Fetch a single runtime by name. Returns `null` with a `NOT_FOUND` error if
+  no runtime with that name exists or you cannot view its repository.
+
+  ```graphql
+  query {
+    runtime(organizationId: "your-org-id", id: "lambda") {
+      latest { version createdAt }
+      applications(sort: { field: RUNTIME_VERSION, order: ASC }) {
+        items { id latest { version runtime { version } } }
+      }
+    }
+  }
+  ```
+  """
+  runtime(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The runtime name (e.g., `lambda`)."
+    id: ID!
+  ): Runtime
+
+  """
+  List the applications in your organization's catalog.
+
+  The list holds the applications whose bundle repository you can view. Use
+  `filter.runtimeId` for the applications on one runtime.
+
+  ```graphql
+  query {
+    applications(organizationId: "your-org-id", filter: { runtimeId: { eq: "lambda" } }) {
+      items {
+        id
+        latest { version runtime { version } }
+      }
+      cursor { next }
+    }
+  }
+  ```
+  """
+  applications(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "Narrow results by application or runtime."
+    filter: ApplicationsFilter
+
+    "Sort field and direction. Defaults to `name` ascending."
+    sort: ApplicationsSort
+
+    "Pagination cursor returned by a previous page."
+    cursor: Cursor
+  ): ApplicationsPage!
+
+  """
+  Fetch a single application by name. Returns `null` with a `NOT_FOUND` error
+  if no application with that name exists or you cannot view its repository.
+
+  ```graphql
+  query {
+    application(organizationId: "your-org-id", id: "payments-api") {
+      id
+      runtime { id }
+      latest { version runtime { version } }
+      instances { items { id deployedVersion } }
+    }
+  }
+  ```
+  """
+  application(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The application name (e.g., `payments-api`)."
+    id: ID!
+  ): Application
+
+  """
   Fetch a single OCI repository by name.
 
   Returns the repository along with its nested `tags` and `releaseChannels`
@@ -9862,6 +9972,194 @@ type ProjectPayload {
 
   "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
   result: Project
+}
+
+"Fields available for ordering applications."
+enum ApplicationsSortField {
+  "Alphabetical by application name."
+  NAME
+
+  "By the runtime that the newest version of the application is built on: runtime name first, then runtime version."
+  RUNTIME_VERSION
+}
+
+"Sorting options for the applications list."
+input ApplicationsSort {
+  "The field to sort by."
+  field: ApplicationsSortField!
+
+  "Ascending (`ASC`) or descending (`DESC`)."
+  order: SortOrder!
+}
+
+"Filter which applications to return. All filters are combined with AND."
+input ApplicationsFilter {
+  "Match by application name (e.g., `payments-api`)."
+  id: IdFilter
+
+  "Match applications whose newest version is built on this runtime (e.g., `lambda`)."
+  runtimeId: IdFilter
+}
+
+"""
+A bundle that runs on a runtime.
+
+An application adds its own dependencies, resources, environment variables,
+and secrets to a runtime. Its massdriver.yaml sets `app.runtime`, and each
+published version is built on one exact runtime version.
+"""
+type Application {
+  "The application name, which is the name of its bundle repository (e.g., `payments-api`)."
+  id: ID!
+
+  """
+  The newest published version: the highest stable version, or the highest
+  development version when no stable version exists. `latest.runtime` is the
+  exact runtime version it is built on.
+  """
+  latest: Bundle!
+
+  """
+  The runtime that the newest version is built on.
+
+  `null` when you cannot view the runtime's repository. `runtimeAccessGroups`
+  then lists the groups that can.
+  """
+  runtime: Runtime
+
+  """
+  The groups whose members can view the runtime's repository. You can read
+  this field even when you cannot view the runtime. When `runtime` is null for
+  you, ask a member of one of these groups for access.
+  """
+  runtimeAccessGroups(
+    "Sort field and direction. Defaults to name ascending."
+    sort: GroupsSort
+
+    "Pagination cursor returned from a previous response to fetch the next page."
+    cursor: Cursor
+  ): GroupsPage!
+
+  "Every published version of the application, newest first."
+  versions(
+    "Pagination cursor returned by a previous page."
+    cursor: Cursor
+  ): BundlesPage!
+
+  """
+  The instances of the application's components that you can view, whatever
+  version each instance runs. The filters and sort work as on the top-level
+  `instances` query, so `runtime` matches the runtime that each instance's
+  latest completed provision runs.
+  """
+  instances(
+    "Narrow results by project, environment, status, bundle, or params."
+    filter: InstancesFilter
+
+    "Sort field and direction. Defaults to `name` ascending."
+    sort: InstancesSort
+
+    "Pagination cursor returned by a previous page."
+    cursor: Cursor
+  ): InstancesPage!
+}
+
+type ApplicationsPage {
+  "Pagination cursors for navigating between pages."
+  cursor: PaginationCursor!
+
+  "A list of type application."
+  items: [Application]
+}
+
+"Fields available for ordering runtimes."
+enum RuntimesSortField {
+  "Alphabetical by runtime name."
+  NAME
+}
+
+"Sorting options for the runtimes list."
+input RuntimesSort {
+  "The field to sort by."
+  field: RuntimesSortField!
+
+  "Ascending (`ASC`) or descending (`DESC`)."
+  order: SortOrder!
+}
+
+"Filter which runtimes to return."
+input RuntimesFilter {
+  "Match by runtime name (e.g., `lambda`)."
+  id: IdFilter
+}
+
+"""
+How many applications and instances use one version of a runtime.
+
+An application counts toward the runtime version that its newest version is
+built on. An instance counts toward the runtime version that its
+infrastructure runs: the runtime of the bundle from its latest completed
+provision. The instance count for a version is the number of instances that
+`instances(filter: { runtime: { eq: "name@version" } })` returns.
+"""
+type RuntimeVersionAdoption {
+  "The runtime version (e.g., `1.2.8`)."
+  version: Semver!
+
+  "Applications you can view whose newest version is built on this runtime version."
+  applicationCount: Int!
+
+  "Instances you can view whose infrastructure runs on this runtime version."
+  instanceCount: Int!
+}
+
+"""
+A bundle that applications run on.
+
+A runtime holds the infrastructure-as-code, params, and the dependencies its
+infrastructure needs. Its massdriver.yaml lists `runtime` under `provides`.
+Applications build on one exact runtime version and add their own
+dependencies, resources, environment variables, and secrets.
+"""
+type Runtime {
+  "The runtime name, which is the name of its bundle repository (e.g., `lambda`)."
+  id: ID!
+
+  "The newest published version: the highest stable version, or the highest development version when no stable version exists."
+  latest: Bundle!
+
+  "Every published version of the runtime, newest first."
+  versions(
+    "Pagination cursor returned by a previous page."
+    cursor: Cursor
+  ): BundlesPage!
+
+  "The applications you can view whose newest version is built on this runtime."
+  applications(
+    "Narrow results by application."
+    filter: ApplicationsFilter
+
+    "Sort field and direction. Defaults to `name` ascending."
+    sort: ApplicationsSort
+
+    "Pagination cursor returned by a previous page."
+    cursor: Cursor
+  ): ApplicationsPage!
+
+  """
+  One entry for each runtime version that at least one application is built
+  on or at least one instance runs, newest version first. Use it to see how
+  far applications and instances are behind the newest runtime version.
+  """
+  adoption: [RuntimeVersionAdoption!]!
+}
+
+type RuntimesPage {
+  "Pagination cursors for navigating between pages."
+  cursor: PaginationCursor!
+
+  "A list of type runtime."
+  items: [Runtime]
 }
 
 """
