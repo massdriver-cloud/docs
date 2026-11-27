@@ -227,3 +227,38 @@ Secret events have no attributes. To select one instance, use `instance_id`.
 |---|---|---|
 | Changes to secrets with names that end in `_PASSWORD` | `secret.*` | `.data.entity.name \| endswith("_PASSWORD")` |
 | Secrets set with the CLI or a script | `secret.set` | `.data.metadata.credential == "access_token"` |
+
+## Stash entry
+
+A [stash](/guides/stash) entry is a key and value on a project, environment, component, instance, or deployment. An event for a sensitive entry never includes the value.
+
+| Event type | Occurs when |
+|---|---|
+| `stash_entry.set` | A stash entry was set. |
+| `stash_entry.deleted` | A stash entry was deleted. An entry that expires sends no event. |
+
+### `data.entity`
+
+| Field | Type | Value |
+|---|---|---|
+| `id` | UUID | The ID of the entry. |
+| `key` | string | The key, such as `md/v1/health`. |
+| `label` | string or null | The entry's label. |
+| `format` | string | `text` or `json`. |
+| `immutable` | boolean | Whether the key can be set again before the entry expires. |
+| `sensitive` | boolean | Whether the value is encrypted. |
+| `scope.kind` | string | `project`, `environment`, `component`, `instance`, or `deployment`. |
+| `scope.id` | string | The identifier of the entity that holds the entry, such as `api-prod-database`. For a deployment, its UUID. |
+| `value` | string or null | The value. Null when the entry is sensitive. |
+| `data` | object or null | The parsed value of a `json` entry. Null for a `text` entry and for a sensitive entry. |
+| `expires_at` | time or null | When the entry expires. |
+| `updated_at` | time | |
+
+The attributes are the attributes of the entity that holds the entry.
+
+### Example conditions
+
+| To send | Events | Condition |
+|---|---|---|
+| Health changes on every instance | `stash_entry.set` | `.data.entity.key == "md/v1/health"` |
+| Changes to one environment's stash | `stash_entry.*` | `.data.entity.scope.kind == "environment" and .data.entity.scope.id == "api-prod"` |

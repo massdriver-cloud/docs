@@ -11,7 +11,7 @@ sidebar_label: Well-Known Keys
 This feature is alpha. Names, fields, and behavior can change or be removed at any time without notice.
 :::
 
-Keys that start with `md/` are reserved. Each one shows a [widget](/guides/annotations/widgets) to everyone who can view the project.
+Keys that start with `md/` are reserved. Each one shows a [widget](/guides/annotations/widgets) to everyone with `stash:view` on the stash.
 
 | Key | Set on | Format | Widget |
 |---|---|---|---|

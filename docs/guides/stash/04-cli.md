@@ -39,7 +39,7 @@ An environment and a component have the same shape. The CLI looks up both. When 
 
 ## get
 
-Prints the value exactly as it is stored, with no trailing newline. A sensitive value is printed only for callers who can write its stash. Other callers get an error.
+Prints the value exactly as it is stored, with no trailing newline. A sensitive value is printed only for callers who have `stash:export` on its stash. Other callers get an error.
 
 ```bash
 DB_HOST=$(mass alpha stash get "billing-dev-app.db/hostname")
@@ -63,7 +63,7 @@ mass alpha stash set <scope>.<key> <value> [flags]
 | `--label` | A name for the entry, up to 255 characters. It is not encrypted. |
 | `--ttl` | Delete the entry this many seconds after the write. |
 | `--immutable` | Keep the first value. Later writes fail. |
-| `--sensitive` | Encrypt the value and hide it from callers who cannot write the stash. |
+| `--sensitive` | Encrypt the value and hide it from callers without `stash:export`. |
 
 Each set replaces the whole entry, including the label, the format, the TTL, and the flags.
 
@@ -83,7 +83,7 @@ mass alpha stash delete "billing-dev-app.ami-id" --force
 
 ## list
 
-Lists the entries in one stash. A sensitive value shows as `(sensitive)` unless you can write the stash. Use `-o json` for JSON output.
+Lists the entries in one stash. A sensitive value shows as `(sensitive)` unless you have `stash:export`. Use `-o json` for JSON output.
 
 ```bash
 mass alpha stash list billing-dev

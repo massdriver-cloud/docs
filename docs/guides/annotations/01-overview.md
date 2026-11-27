@@ -30,7 +30,7 @@ A note shows on the canvas node, line, legend, or project header that it is pinn
 
 Only you can see the notes and widgets that you pin. Other members of your organization do not see them, and you do not see theirs. Service accounts cannot pin annotations. You need `project:view` on the project to pin one. You can pin up to 200 annotations in each project.
 
-Automatic widgets are different. When a stash has a well-known `md/` key with a valid value, everyone who can view the project sees its widget.
+Automatic widgets are different. When a stash has a well-known `md/` key with a valid value, everyone with `stash:view` on the stash sees its widget.
 
 When you pin a widget in the same spot as an automatic one, you see your widget instead. If your widget has no value, you see the automatic one.
 
@@ -60,4 +60,4 @@ mass alpha stash set billing-dev-app.owner "payments-team"
 
 Sensitive stash values are never available to annotations. A sensitive key renders as empty in a note, and a widget input that points to a sensitive key is not found.
 
-Stash entries that have a label also show as [metadata](/guides/annotations/metadata) to everyone who can view the project.
+Stash entries that have a label also show as [metadata](/guides/annotations/metadata) to everyone with `stash:view` on the stash.
