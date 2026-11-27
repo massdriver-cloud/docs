@@ -96,3 +96,4 @@ These places update when a stash value changes. You do not need to reload the pa
 - [GraphQL API](/guides/stash/api)
 - [CLI](/guides/stash/cli)
 - [Recipes](/guides/stash/recipes)
+- [For provisioners](/guides/stash/provisioners)

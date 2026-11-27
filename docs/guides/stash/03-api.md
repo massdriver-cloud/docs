@@ -126,6 +126,7 @@ query {
     name
     entity
     key
+    keySegments
     version
     scope
     format
@@ -137,7 +138,7 @@ query {
 
 ## alphaWidgetsForScopes
 
-Lists the widgets of up to 200 stashes in one project. You need `stash:view` on every scope. It returns a widget for each well-known key that has a valid value. When a stash has more than one version of a key, it uses the highest version. A page can have fewer widgets than its limit, or none. Read pages until `cursor.next` is null.
+Lists the widgets of up to 200 stashes in one project. You need `stash:view` on every scope. It returns a widget for each well-known key that has a valid value. When a stash has more than one version of a key, it uses the highest version. An instance scope also returns the [deployment results](/guides/stash/well-known-keys#results-on-the-instance) of the instance's latest deployment that has a well-known key. The `scope` of each of those widgets is that deployment. A page can have fewer widgets than its limit, or none. Read pages until `cursor.next` is null.
 
 ```graphql
 query {
@@ -148,6 +149,7 @@ query {
     items {
       name
       scope { kind id }
+      segments
       values
       expiresAt
     }
@@ -156,4 +158,4 @@ query {
 }
 ```
 
-`values` has the widget's inputs by name, for example `{"value": 37, "max": 100}`.
+`values` has the widget's inputs by name, for example `{"value": 37, "max": 100}`. `segments` has the values of the key's named segments, for example `{"step": "src"}` for `md/v1/step/src`.
