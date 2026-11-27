@@ -21,7 +21,7 @@ This feature is alpha. Names, fields, and behavior can change or be removed at a
 | `--palette` | `night` | Colors and backdrop: `night`, `rain`, or `blueprint` |
 | `--refresh` | `30s` | How often to read the environments in view. `0` reads them once. |
 | `--events` | `5s` | How often to read new audit log events. `0` turns the ticker off. |
-| `--stash` | `3s` | How often to read the stash. `0` reads it with each refresh. |
+| `--stash` | `3s` | How often to read the stash when it cannot be streamed: with a service account, or while a stream reconnects. `0` reads it with each refresh. |
 | `--watch` | Off | Jump to any alarm that starts firing, and send a desktop notification |
 | `--profile` | The active profile | The configuration profile to sign in with |
 

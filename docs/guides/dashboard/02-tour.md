@@ -78,18 +78,18 @@ mass dashboard --theme radar --palette rain
 
 ## 6. Write to the stash and watch it land
 
-The dashboard reads the stash every few seconds. Open a second terminal and set a few [well-known keys](/guides/stash/well-known-keys):
+The dashboard streams the stash, so each key shows the moment it is set. Open a second terminal and set a few [well-known keys](/guides/stash/well-known-keys):
 
 ```bash
-mass stash set billing-dev-app.md/health degraded
+mass stash set billing-dev-app.md/v1/health degraded
 ```
 
-Within a few seconds, a yellow line lands on the ticker, `billing-dev` ripples, and `md/health` floats up out of it. Under `app` in the side panel, the dot turns amber and the word **degraded** appears.
+Within a few seconds, a yellow line lands on the ticker, `billing-dev` ripples, and `md/v1/health` floats up out of it. Under `app` in the side panel, the dot turns amber and the word **degraded** appears.
 
 Give the instance some traffic:
 
 ```bash
-mass stash set billing-dev-app.md/traffic '{"rps": 1200, "errors_5m": 12, "p95_ms": 340}' --format json
+mass stash set billing-dev-app.md/v1/traffic '{"rps": 1200, "errors_5m": 12, "p95_ms": 340}' --format json
 ```
 
 The links that leave `billing-dev` pick up a label like `1.2k/s 340ms ✕12`. The sparks speed up, and some turn red, because 10 or more errors is many. With 1 to 9 errors they turn amber.
@@ -97,8 +97,8 @@ The links that leave `billing-dev` pick up a label like `1.2k/s 340ms ✕12`. Th
 Put up a banner and some links:
 
 ```bash
-mass stash set billing-dev.md/banner '{"message": "Ledger failover test tonight", "level": "warning"}' --format json
-mass stash set billing-dev.md/links '{"links": [{"label": "Grafana", "url": "https://grafana.example.com"}]}' --format json
+mass stash set billing-dev.md/v1/banner '{"message": "Ledger failover test tonight", "level": "warning"}' --format json
+mass stash set billing-dev.md/v1/links '{"links": [{"label": "Grafana", "url": "https://grafana.example.com"}]}' --format json
 ```
 
 The banner runs across the top of the map in amber, and a ⚑ appears next to `billing-dev`. `↗ Grafana` appears under the environment's name in the side panel. In terminals that support links, such as iTerm2, Ghostty, WezTerm, and kitty, you can click it.
@@ -106,7 +106,7 @@ The banner runs across the top of the map in amber, and a ⚑ appears next to `b
 Show a usage bar:
 
 ```bash
-mass stash set billing-dev-app.md/usage '{"value": 86, "max": 100, "label": "connections"}' --format json
+mass stash set billing-dev-app.md/v1/usage '{"value": 86, "max": 100, "label": "connections"}' --format json
 ```
 
 The bar is amber from 80% and red from 95%.
@@ -114,7 +114,7 @@ The bar is amber from 80% and red from 95%.
 Set the health back when you are done:
 
 ```bash
-mass stash set billing-dev-app.md/health healthy
+mass stash set billing-dev-app.md/v1/health healthy
 ```
 
 See [Stash and annotations](/guides/dashboard/stash-and-annotations) for every widget, and for the notes and widgets you pin yourself.

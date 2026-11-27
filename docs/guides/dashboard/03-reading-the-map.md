@@ -31,7 +31,7 @@ The focus moves when a selection rests for a moment, when you press `enter`, and
 
 | Mark | Meaning |
 |---|---|
-| Sparks along a link | Resources flowing from the environment that produces them to the environment that uses them. With traffic from `md/traffic`, the rate sets how many sparks run and how fast. |
+| Sparks along a link | Resources flowing from the environment that produces them to the environment that uses them. With traffic from `md/v1/traffic`, the rate sets how many sparks run and how fast. |
 | Red or amber sparks | Errors on the link: amber for 1 to 9, red for 10 or more |
 | Ring around an environment | The environment's instances by status, as arcs: green provisioned, red failed, blue not deployed, gray decommissioned |
 | Red pulse | An alarm is firing in the environment |
@@ -48,7 +48,7 @@ The focus moves when a selection rests for a moment, when you press `enter`, and
 | `▲N` | N alarms firing |
 | `↑N` | N instances can upgrade |
 | `⚑` | The environment has a banner |
-| `1.2k/s 340ms ✕12` on a link | Requests per second, p95 latency, and errors in the last 5 minutes, from `md/traffic` |
+| `1.2k/s 340ms ✕12` on a link | Requests per second, p95 latency, and errors in the last 5 minutes, from `md/v1/traffic` |
 | `stale` on a link | No traffic report for 10 minutes |
 | Banner across the top line | The selected environment's banner, or else the most urgent banner in view: error, then warning, then info |
 

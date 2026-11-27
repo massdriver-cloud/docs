@@ -15,15 +15,17 @@ The dashboard draws the same [widgets](/guides/annotations/widgets) and [notes](
 
 ## The stash feed
 
-The dashboard reads the stash of every project, environment, component, and instance in view, every 3 seconds by default. Change the interval with `--stash`:
+The dashboard reads the stash of every project, environment, component, and instance in view once, then streams each key as it is set or deleted. It opens one stream for each environment in view, and moves them when the view moves. Every refresh, 30 seconds by default, it reads the whole stash again to catch anything a dropped stream missed.
+
+Streaming needs a personal access token. With a service account, or while a stream reconnects, the dashboard reads the stash on an interval instead, every 3 seconds by default. Change the interval with `--stash`:
 
 ```bash
 mass dashboard --stash 1s
 ```
 
-Each read covers every stash in view, so a shorter interval costs more requests. `--stash 0` reads the stash only when the dashboard reads the organization, every 30 seconds by default.
+Each read covers every stash in view, so a shorter interval costs more requests. `--stash 0` reads the stash only with each refresh.
 
-Each key that is set or deleted between two reads goes on the ticker in yellow, such as `stash set Billing / Development · md/health = degraded`. Its environment ripples and floats up the key. A key that changes again replaces its own line on the ticker, so a script that writes every second does not fill the ticker.
+Each key that is set or deleted goes on the ticker in yellow, such as `stash set Billing / Development · md/v1/health = degraded`. Its environment ripples and floats up the key. A key that changes again replaces its own line on the ticker, so a script that writes every second does not fill the ticker.
 
 When a read fails for one project, that project keeps the entries from the last read that worked. Nothing is reported as deleted.
 
@@ -33,23 +35,23 @@ A [well-known key](/guides/stash/well-known-keys) draws its widget for everyone 
 
 | Key | Set on | In the dashboard |
 |---|---|---|
-| `md/health` | Instance | The instance's dot, and its health in the side panel: green for `healthy`, `ok`, or `up`; amber for `degraded`, `warning`, or `recovering`; red for `down`, `failed`, or `error`; gray for anything else. A red instance blinks on the map. |
-| `md/usage` | Instance | A bar under the instance in the side panel, such as `████████░░ 82/100 connections`. Amber from 80%, red from 95%. |
-| `md/traffic` | Instance | The links that leave the environment carry the rate, p95 latency, and errors, and the sparks follow the rate. A rate of 0 shows no sparks. |
-| `md/banner` | Environment | A banner across the top of the map, a ⚑ next to the environment, and the message in the side panel, colored by level |
-| `md/links` | Environment | Links under the environment's name in the side panel. Only `http` and `https` links show. |
+| `md/v1/health` | Instance | The instance's dot, and its health in the side panel: green for `healthy`, `ok`, or `up`; amber for `degraded`, `warning`, or `recovering`; red for `down`, `failed`, or `error`; gray for anything else. A red instance blinks on the map. |
+| `md/v1/usage` | Instance | A bar under the instance in the side panel, such as `████████░░ 82/100 connections`. Amber from 80%, red from 95%. |
+| `md/v1/traffic` | Instance | The links that leave the environment carry the rate, p95 latency, and errors, and the sparks follow the rate. A rate of 0 shows no sparks. |
+| `md/v1/banner` | Environment | A banner across the top of the map, a ⚑ next to the environment, and the message in the side panel, colored by level |
+| `md/v1/links` | Environment | Links under the environment's name in the side panel. Only `http` and `https` links show. |
 
 For example:
 
 ```bash
-mass stash set billing-dev-app.md/health degraded
-mass stash set billing-dev-app.md/usage '{"value": 37, "max": 100, "label": "connections"}' --format json
-mass stash set billing-dev-app.md/traffic '{"rps": 240, "errors_5m": 2, "p95_ms": 85}' --format json
-mass stash set billing-dev.md/banner '{"message": "Deploy freeze until Friday", "level": "warning"}' --format json
-mass stash set billing-dev.md/links '{"links": [{"label": "Runbook", "url": "https://wiki.example.com/billing"}]}' --format json
+mass stash set billing-dev-app.md/v1/health degraded
+mass stash set billing-dev-app.md/v1/usage '{"value": 37, "max": 100, "label": "connections"}' --format json
+mass stash set billing-dev-app.md/v1/traffic '{"rps": 240, "errors_5m": 2, "p95_ms": 85}' --format json
+mass stash set billing-dev.md/v1/banner '{"message": "Deploy freeze until Friday", "level": "warning"}' --format json
+mass stash set billing-dev.md/v1/links '{"links": [{"label": "Runbook", "url": "https://wiki.example.com/billing"}]}' --format json
 ```
 
-Traffic counts toward a link when the instance that the link leaves sets `md/traffic`. A link between two environments adds up the traffic of each instance in the first environment that sends on it. Traffic that has not been reported for 10 minutes shows as `stale`.
+Traffic counts toward a link when the instance that the link leaves sets `md/v1/traffic`. A link between two environments adds up the traffic of each instance in the first environment that sends on it. Traffic that has not been reported for 10 minutes shows as `stale`.
 
 ## Your annotations
 
