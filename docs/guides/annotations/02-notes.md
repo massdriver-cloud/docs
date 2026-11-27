@@ -7,7 +7,7 @@ sidebar_label: Notes
 
 # Notes
 
-A note is text that you write in [Liquid](https://shopify.github.io/liquid/). Massdriver fills in stash values, then shows the result as markdown.
+A note is text that you write in [Liquid](https://shopify.github.io/liquid/). Massdriver puts stash values into the text, then shows the result as markdown.
 
 ## Where a note shows
 

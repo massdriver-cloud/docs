@@ -20,7 +20,7 @@ There are two kinds of annotation.
 | Kind | What it shows | How you make it |
 |---|---|---|
 | Note | Text that you write with [Liquid](/guides/annotations/notes). The text can include stash values. It renders as markdown. | You pin it and write the text. |
-| Widget | A built-in picture, such as traffic on a line, a status dot on an instance, or a banner on an environment. | It shows on its own when the stash has a well-known `md/` key. You can also pin your own and choose the stash entries that feed it. See [Widgets](/guides/annotations/widgets). |
+| Widget | A built-in picture, such as traffic on a line, a status dot on an instance, or a banner on an environment. | It shows without any setup when the stash has a well-known `md/` key. You can also add a widget yourself and choose the stash entries that it reads. See [Widgets](/guides/annotations/widgets). |
 
 A note shows on the canvas node, line, legend, or project header that it is pinned to. A widget shows only when each of its required inputs has a valid value.
 

@@ -15,10 +15,10 @@ import {
 
 # Widgets
 
-A widget is a built-in picture that stash values drive. There are two ways to show one.
+A widget is a built-in picture that shows stash values. There are two ways to show one.
 
 - **Automatic.** Write a well-known key that starts with `md/`. Everyone who can view the project sees the widget.
-- **Pinned.** Pin your own widget and choose a stash entry for each input. Only you see it.
+- **Pinned.** Add a widget yourself and choose a stash entry for each input. Only you see it.
 
 When you pin a widget in the same spot as an automatic one, you see your widget instead. If your widget has no value, you see the automatic one.
 
@@ -75,7 +75,7 @@ mass stash set billing-dev-app.md/health degraded
 
 The match ignores case and spaces at each end.
 
-### Pin your own
+### Use your own stash keys
 
 Right-click an instance and choose **Add widget** > **Status dot**.
 
@@ -125,7 +125,7 @@ mass stash set billing-dev-app.md/usage '{"value": 37, "max": 100, "label": "con
 
 A value above `max` fills the bar.
 
-### Pin your own
+### Use your own stash keys
 
 Right-click an instance and choose **Add widget** > **Usage bar**. Each input can read a different key. For example, two TEXT entries:
 
@@ -198,7 +198,7 @@ The line width follows the rate:
 
 On a line with traffic, dashes move from the source instance to the destination instance. Higher rates move faster. When your system asks for reduced motion, the line is solid and does not move.
 
-### Pin your own
+### Use your own stash keys
 
 Right-click a line and choose **Add widget** > **Traffic**. You can read from the `source` or the `destination` instance.
 
@@ -247,7 +247,7 @@ mass stash set billing-dev.md/banner '{"message": "Deploy freeze until Friday", 
 | Error | <BannerState levels={["error"]} label="Error banner: a red strip" /> | `{"message": "Payments API is down", "level": "error"}` | A red banner. |
 | Two banners | <BannerState levels={["warning", "info"]} label="Two banners stacked: an amber strip above a blue strip" /> | `md/banner` and a pinned banner | Banners stack, one per widget. |
 
-### Pin your own
+### Use your own stash keys
 
 Right-click an empty part of the canvas and choose **Add widget** > **Banner**. For example, a short-lived TEXT entry:
 
@@ -312,7 +312,7 @@ mass stash set billing-dev.md/links '{"links": [{"label": "Shop", "url": "https:
 | Two links | <HeaderLinkState links={["Shop", "Grafana"]} label="Two header link buttons, Shop and Grafana" /> | two items in `links` | One button per item. |
 | Not an http URL | <HeaderLinkState links={["Shop"]} label="Only the Shop button shows, because the other link URL is not http or https" /> | `{"links": [{"label": "Shop", "url": "https://shop.example.com"}, {"label": "Files", "url": "ftp://files.example.com"}]}` | The server rejects this value for `md/links`. In a pinned widget, the link with the `ftp` URL does not show and the other links do. |
 
-### Pin your own
+### Use your own stash keys
 
 Right-click an empty part of the canvas and choose **Add widget** > **Header link**. The widget has one input, `links`. Point it at a JSON entry that holds a list of links in the same shape as `md/links`:
 

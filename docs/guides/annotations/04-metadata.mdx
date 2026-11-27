@@ -15,7 +15,7 @@ import {
 
 # Metadata
 
-Stash entries that have a label show as metadata in the Massdriver UI. Everyone who can view the project sees metadata. Unlike annotations, you do not set anything up. Add a label when you write the entry:
+Stash entries that have a label show as metadata in the Massdriver UI. Everyone who can view the project sees metadata. Metadata needs no setup. Add a label when you write the entry:
 
 ```bash
 mass stash set billing-dev-app.schema.version "42" --label "Schema version"
@@ -40,7 +40,7 @@ mass stash set billing-dev-app.schema.version "42" --label "Schema version"
 
 The project card shows the label, the value, and the expiry pill for each entry.
 
-Keys that start with `md/` do not show as rows in any of these places, and the Metadata tab does not count them as unlabeled entries. They drive [widgets](/guides/annotations/widgets) instead.
+Keys that start with `md/` do not show as rows in any of these places, and the Metadata tab does not count them as unlabeled entries. [Widgets](/guides/annotations/widgets) read them instead.
 
 ## Widgets on the Metadata tab
 
