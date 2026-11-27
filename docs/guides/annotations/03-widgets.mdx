@@ -67,7 +67,7 @@ Set on the instance. Format: TEXT.
 ```
 
 ```bash
-mass stash set billing-dev-app.md/health degraded
+mass alpha stash set billing-dev-app.md/health degraded
 ```
 
 ### What it looks like
@@ -118,7 +118,7 @@ Set on the instance. Format: JSON.
 | `label` | Optional. The label on the left of the bar, when the entry has no `--label`. |
 
 ```bash
-mass stash set billing-dev-app.md/usage '{"value": 37, "max": 100, "label": "connections"}' --format json
+mass alpha stash set billing-dev-app.md/usage '{"value": 37, "max": 100, "label": "connections"}' --format json
 ```
 
 ### What it looks like
@@ -136,8 +136,8 @@ A value above `max` fills the bar.
 Right-click an instance and choose **Add widget** > **Usage bar**. Each input can read a different key. For example, two TEXT entries:
 
 ```bash
-mass stash set billing-dev-app.db/connections 37
-mass stash set billing-dev-app.db/max_connections 100
+mass alpha stash set billing-dev-app.db/connections 37
+mass alpha stash set billing-dev-app.db/max_connections 100
 ```
 
 | Input | Type | Required | Example key | Path |
@@ -177,7 +177,7 @@ Set on the instance that sends the traffic. Format: JSON. Every line that leaves
 | `p95_ms` | Optional. p95 latency in milliseconds. | `latency` |
 
 ```bash
-mass stash set billing-dev-app.md/traffic '{"rps": 240, "errors_5m": 2, "p95_ms": 180}' --format json
+mass alpha stash set billing-dev-app.md/traffic '{"rps": 240, "errors_5m": 2, "p95_ms": 180}' --format json
 ```
 
 Write the entry on a schedule. When it is not updated for 10 minutes, the line shows as stale. Add `--ttl` to remove the entry, and the widget, after a time.
@@ -241,7 +241,7 @@ Set on the environment. Format: JSON.
 | `level` | Optional. `info` (blue, the default), `warning` (amber), or `error` (red). |
 
 ```bash
-mass stash set billing-dev.md/banner '{"message": "Deploy freeze until Friday", "level": "warning"}' --format json
+mass alpha stash set billing-dev.md/banner '{"message": "Deploy freeze until Friday", "level": "warning"}' --format json
 ```
 
 ### What it looks like
@@ -258,7 +258,7 @@ mass stash set billing-dev.md/banner '{"message": "Deploy freeze until Friday", 
 Right-click an empty part of the canvas and choose **Add widget** > **Banner**. For example, a short-lived TEXT entry:
 
 ```bash
-mass stash set billing-dev.status/maintenance "Database upgrade tonight" --ttl 86400
+mass alpha stash set billing-dev.status/maintenance "Database upgrade tonight" --ttl 86400
 ```
 
 | Input | Type | Required | Example key | Path |
@@ -307,7 +307,7 @@ Set on the environment. Format: JSON. Each item in `links` is one button.
 | `links[].url` | An `http` or `https` URL. |
 
 ```bash
-mass stash set billing-dev.md/links '{"links": [{"label": "Shop", "url": "https://shop.example.com"}, {"label": "Grafana", "url": "https://grafana.example.com/d/billing"}]}' --format json
+mass alpha stash set billing-dev.md/links '{"links": [{"label": "Shop", "url": "https://shop.example.com"}, {"label": "Grafana", "url": "https://grafana.example.com/d/billing"}]}' --format json
 ```
 
 ### What it looks like
@@ -323,7 +323,7 @@ mass stash set billing-dev.md/links '{"links": [{"label": "Shop", "url": "https:
 Right-click an empty part of the canvas and choose **Add widget** > **Header link**. The widget has one input, `links`. Point it at a JSON entry that holds a list of links in the same shape as `md/links`:
 
 ```bash
-mass stash set billing-dev.links '{"links": [{"label": "Shop", "url": "https://shop.example.com"}]}' --format json --label "Links"
+mass alpha stash set billing-dev.links '{"links": [{"label": "Shop", "url": "https://shop.example.com"}]}' --format json --label "Links"
 ```
 
 | Input | Type | Required | Example key | Path |
@@ -336,7 +336,7 @@ Each item is one button. The first 8 links with an `http` or `https` `url` show.
 
 For each input of a pinned widget, you choose a stash, a key, and, for a JSON entry, a path to a field. The widget editor shows the current value or the reason an input is off.
 
-Open **Data this widget reads** in the widget editor to see the inputs, the `md/` key, its fields, and a `mass stash set` command. Under **Or use your own stash keys**, the editor gives example entries and a `mass stash set` command for each. **Then set the inputs** tells you which key and path to choose for each input.
+Open **Data this widget reads** in the widget editor to see the inputs, the `md/` key, its fields, and a `mass alpha stash set` command. Under **Or use your own stash keys**, the editor gives example entries and a `mass alpha stash set` command for each. **Then set the inputs** tells you which key and path to choose for each input.
 
 | Input type | Accepted values |
 |---|---|

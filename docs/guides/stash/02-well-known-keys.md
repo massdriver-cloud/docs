@@ -48,7 +48,7 @@ Set on an instance. Format: TEXT. Shows the [status dot](/guides/annotations/wid
 The dot is green for `healthy`, `ok`, and `up`. It is amber for `degraded`, `warning`, and `recovering`. It is red for `down`, `failed`, and `error`. It is gray for any other value.
 
 ```bash
-mass stash set billing-dev-app.md/health degraded
+mass alpha stash set billing-dev-app.md/health degraded
 ```
 
 ## `md/usage`
@@ -76,7 +76,7 @@ Set on an instance. Format: JSON. Shows the [usage bar](/guides/annotations/widg
 | `label` | Optional. Text shown with the bar. |
 
 ```bash
-mass stash set billing-dev-app.md/usage '{"value": 37, "max": 100, "label": "connections"}' --format json
+mass alpha stash set billing-dev-app.md/usage '{"value": 37, "max": 100, "label": "connections"}' --format json
 ```
 
 ## `md/traffic`
@@ -104,7 +104,7 @@ Set on the instance that sends the traffic. Format: JSON. Shows [traffic](/guide
 | `p95_ms` | Optional. The 95th percentile response time, in milliseconds. |
 
 ```bash
-mass stash set billing-dev-app.md/traffic '{"rps": 240, "errors_5m": 2, "p95_ms": 180}' --format json --ttl 600
+mass alpha stash set billing-dev-app.md/traffic '{"rps": 240, "errors_5m": 2, "p95_ms": 180}' --format json --ttl 600
 ```
 
 ## `md/banner`
@@ -130,7 +130,7 @@ Set on an environment. Format: JSON. Shows a [banner](/guides/annotations/widget
 | `level` | Optional. `info` (the default), `warning`, or `error`. |
 
 ```bash
-mass stash set billing-dev.md/banner '{"message": "Deploy freeze until Friday", "level": "warning"}' --format json
+mass alpha stash set billing-dev.md/banner '{"message": "Deploy freeze until Friday", "level": "warning"}' --format json
 ```
 
 ## `md/links`
@@ -168,5 +168,5 @@ Set on an environment. Format: JSON. Shows [header links](/guides/annotations/wi
 | `links[].url` | An `http` or `https` URL with no spaces. |
 
 ```bash
-mass stash set billing-dev.md/links '{"links": [{"label": "Grafana", "url": "https://grafana.example.com/d/billing"}]}' --format json
+mass alpha stash set billing-dev.md/links '{"links": [{"label": "Grafana", "url": "https://grafana.example.com/d/billing"}]}' --format json
 ```
