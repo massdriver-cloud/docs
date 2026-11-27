@@ -3167,6 +3167,37 @@ type RootMutationType {
   ): InstancePayload @inputs(name: "orphanInstance", schema: "\/graphql\/v2\/inputs\/orphanInstance.json", ui: "\/graphql\/v2\/inputs\/orphanInstance.ui.json")
 
   """
+  Remove the Terraform/OpenTofu state lock on one step of an instance, whatever run holds it.
+
+  Use this when a deployment ended without releasing its lock, so every later deployment
+  of that step fails with "state is already locked". This is the same as
+  `tofu force-unlock`. If a deployment is still running and holds the lock, removing it
+  lets a second run write the same state at the same time and can corrupt it. Check that
+  no deployment of the instance is running first.
+
+  Requires `instance:deploy` on the instance.
+
+  ```graphql
+  mutation {
+    forceUnlockInstanceState(organizationId: "my-org", id: "ecomm-prod-db", step: "src") {
+      successful
+      result { id }
+    }
+  }
+  ```
+  """
+  forceUnlockInstanceState(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The instance whose state to unlock."
+    id: ID!
+
+    "The bundle step whose state is locked, for example `src`."
+    step: String!
+  ): InstancePayload
+
+  """
   Move an instance to an environment in another project.
 
   The instance keeps its configuration, secrets, state, resources, and deployment
