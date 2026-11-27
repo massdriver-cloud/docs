@@ -19,10 +19,10 @@ import {
 This feature is alpha. Names, fields, and behavior can change or be removed at any time without notice.
 :::
 
-Stash entries that have a label show as metadata in the Massdriver UI. Everyone who can view the project sees metadata. Metadata needs no setup. Add a label when you write the entry:
+Stash entries that have a label show as metadata in the Massdriver UI. Everyone with `stash:view` on the entity sees its metadata. Metadata needs no setup. Add a label when you write the entry:
 
 ```bash
-mass stash set billing-dev-app.schema.version "42" --label "Schema version"
+mass alpha stash set billing-dev-app.schema.version "42" --label "Schema version"
 ```
 
 ## Where metadata shows
@@ -39,8 +39,8 @@ mass stash set billing-dev-app.schema.version "42" --label "Schema version"
 |---|---|---|
 | A TEXT entry | <MetadataTextRow label="A metadata row with the label Schema version, the key schema.version, and the value 42" /> | The label, the key, and the value. |
 | A JSON entry | <MetadataJsonRow label="A metadata row for stats/traffic with one tile for each top-level field: rps 240, errors_5m 2, p95_ms 85" /> | One tile for each top-level field. A nested object shows as JSON text in its tile. |
-| An entry with flags | <MetadataPillsRow label="A metadata row with a masked value and three pills: expires in 2 hours, immutable, and sensitive" /> | Pills show when the entry expires, when it is immutable, and when it is sensitive. A sensitive value is masked unless you can change the stash. |
-| Unlabeled entries | <MetadataFooter label="Footer text: 3 entries have no label, with the command mass stash list billing-dev-app" /> | Entries without a label do not show as rows. The Metadata tab counts them and gives the command that lists them. |
+| An entry with flags | <MetadataPillsRow label="A metadata row with a masked value and three pills: expires in 2 hours, immutable, and sensitive" /> | Pills show when the entry expires, when it is immutable, and when it is sensitive. A sensitive value is masked unless you have `stash:export` on the stash. |
+| Unlabeled entries | <MetadataFooter label="Footer text: 3 entries have no label, with the command mass alpha stash list billing-dev-app" /> | Entries without a label do not show as rows. The Metadata tab counts them and gives the command that lists them. |
 
 The project card shows the label, the value, and the expiry pill for each entry.
 
@@ -52,9 +52,9 @@ The instance Metadata tab shows the instance's automatic widgets above the entri
 
 | Stat | Key | Value |
 |---|---|---|
-| Health | `md/health` | A colored dot and the value |
-| Traffic | `md/traffic` | A colored dot and the traffic label for the lines that leave the instance, such as `240 rps · 180 ms`. It says "stale" when the data is more than 10 minutes old. |
-| Usage | `md/usage` | The usage bar and the numbers, such as `37 / 100` |
+| Health | `md/v1/health` | A colored dot and the value |
+| Traffic | `md/v1/traffic` | A colored dot and the traffic label for the lines that leave the instance, such as `240 rps · 180 ms`. It says "stale" when the data is more than 10 minutes old. |
+| Usage | `md/v1/usage` | The usage bar and the numbers, such as `37 / 100` |
 
 The label of a stat is the stash entry's label. A usage stat without an entry label uses the `label` field of its value. Otherwise the stat uses the default label: `Health`, `Traffic`, or `Usage`.
 

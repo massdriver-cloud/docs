@@ -21,7 +21,7 @@ This feature is alpha. Names, fields, and behavior can change or be removed at a
 
 A widget is a built-in picture that shows stash values. There are two ways to show one.
 
-- **Automatic.** Write a well-known key that starts with `md/`. Everyone who can view the project sees the widget.
+- **Automatic.** Write a well-known key that starts with `md/`. Everyone with `stash:view` on the stash sees the widget.
 - **Pinned.** Add a widget yourself and choose a stash entry for each input. Only you see it.
 
 When you pin a widget in the same spot as an automatic one, you see your widget instead. If your widget has no value, you see the automatic one.
@@ -34,11 +34,11 @@ To hide automatic widgets, click the **Widgets** button in the canvas toolbar, a
 
 | Key | Set on | Format | Widget |
 |---|---|---|---|
-| `md/health` | Instance | TEXT | [Status dot](#status-dot) |
-| `md/usage` | Instance | JSON | [Usage bar](#usage-bar) |
-| `md/traffic` | Instance | JSON | [Traffic](#traffic) on the lines that leave the instance |
-| `md/banner` | Environment | JSON | [Banner](#banner) |
-| `md/links` | Environment | JSON | [Header links](#header-links) |
+| `md/v1/health` | Instance | TEXT | [Status dot](#status-dot) |
+| `md/v1/usage` | Instance | JSON | [Usage bar](#usage-bar) |
+| `md/v1/traffic` | Instance | JSON | [Traffic](#traffic) on the lines that leave the instance |
+| `md/v1/banner` | Environment | JSON | [Banner](#banner) |
+| `md/v1/links` | Environment | JSON | [Header links](#header-links) |
 
 The `md/` prefix is reserved. The server rejects a write to an `md/` key when:
 
@@ -52,13 +52,14 @@ The `md/` prefix is reserved. The server rejects a write to an `md/` key when:
 
 A colored dot in the header of an instance node. The tooltip shows the label and the value, for example `Health: degraded`.
 
-### Automatic: `md/health`
+### Automatic: `md/v1/health`
 
 Set on the instance. Format: TEXT.
 
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.massdriver.cloud/stash/md/v1/health.json",
   "type": "string",
   "minLength": 1,
   "maxLength": 64,
@@ -67,7 +68,7 @@ Set on the instance. Format: TEXT.
 ```
 
 ```bash
-mass stash set billing-dev-app.md/health degraded
+mass alpha stash set billing-dev-app.md/v1/health degraded
 ```
 
 ### What it looks like
@@ -93,13 +94,14 @@ Right-click an instance and choose **Add widget** > **Status dot**.
 
 A thin bar at the bottom of an instance node. The label is on the left of the bar. The value and the limit, for example `37 / 100`, are on the right.
 
-### Automatic: `md/usage`
+### Automatic: `md/v1/usage`
 
 Set on the instance. Format: JSON.
 
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.massdriver.cloud/stash/md/v1/usage.json",
   "type": "object",
   "required": ["value", "max"],
   "additionalProperties": false,
@@ -118,7 +120,7 @@ Set on the instance. Format: JSON.
 | `label` | Optional. The label on the left of the bar, when the entry has no `--label`. |
 
 ```bash
-mass stash set billing-dev-app.md/usage '{"value": 37, "max": 100, "label": "connections"}' --format json
+mass alpha stash set billing-dev-app.md/v1/usage '{"value": 37, "max": 100, "label": "connections"}' --format json
 ```
 
 ### What it looks like
@@ -136,8 +138,8 @@ A value above `max` fills the bar.
 Right-click an instance and choose **Add widget** > **Usage bar**. Each input can read a different key. For example, two TEXT entries:
 
 ```bash
-mass stash set billing-dev-app.db/connections 37
-mass stash set billing-dev-app.db/max_connections 100
+mass alpha stash set billing-dev-app.db/connections 37
+mass alpha stash set billing-dev-app.db/max_connections 100
 ```
 
 | Input | Type | Required | Example key | Path |
@@ -152,13 +154,14 @@ A pinned bar with a `max` of 0 or less does not show.
 
 The traffic on a line between two instances, shown as the width, color, and movement of the line. A short label on the line shows the rate, the errors, the p95 latency, and "stale" when the data is old. For example, `240 rps · 2 err · 180 ms`. The label leaves out the errors when there are none, and the latency when there is no value.
 
-### Automatic: `md/traffic`
+### Automatic: `md/v1/traffic`
 
 Set on the instance that sends the traffic. Format: JSON. Every line that leaves that instance shows the traffic.
 
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.massdriver.cloud/stash/md/v1/traffic.json",
   "type": "object",
   "required": ["rps", "errors_5m"],
   "additionalProperties": false,
@@ -177,7 +180,7 @@ Set on the instance that sends the traffic. Format: JSON. Every line that leaves
 | `p95_ms` | Optional. p95 latency in milliseconds. | `latency` |
 
 ```bash
-mass stash set billing-dev-app.md/traffic '{"rps": 240, "errors_5m": 2, "p95_ms": 180}' --format json
+mass alpha stash set billing-dev-app.md/v1/traffic '{"rps": 240, "errors_5m": 2, "p95_ms": 180}' --format json
 ```
 
 Write the entry on a schedule. When it is not updated for 10 minutes, the line shows as stale. Add `--ttl` to remove the entry, and the widget, after a time.
@@ -218,13 +221,14 @@ Right-click a line and choose **Add widget** > **Traffic**. You can read from th
 
 A message across the top of the environment canvas. Banners stack.
 
-### Automatic: `md/banner`
+### Automatic: `md/v1/banner`
 
 Set on the environment. Format: JSON.
 
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.massdriver.cloud/stash/md/v1/banner.json",
   "type": "object",
   "required": ["message"],
   "additionalProperties": false,
@@ -241,7 +245,7 @@ Set on the environment. Format: JSON.
 | `level` | Optional. `info` (blue, the default), `warning` (amber), or `error` (red). |
 
 ```bash
-mass stash set billing-dev.md/banner '{"message": "Deploy freeze until Friday", "level": "warning"}' --format json
+mass alpha stash set billing-dev.md/v1/banner '{"message": "Deploy freeze until Friday", "level": "warning"}' --format json
 ```
 
 ### What it looks like
@@ -251,14 +255,14 @@ mass stash set billing-dev.md/banner '{"message": "Deploy freeze until Friday", 
 | Info | <BannerState levels={["info"]} label="Info banner: a blue strip" /> | `{"message": "Database upgrade tonight"}` | A blue banner. |
 | Warning | <BannerState levels={["warning"]} label="Warning banner: an amber strip" /> | `{"message": "Deploy freeze until Friday", "level": "warning"}` | An amber banner. |
 | Error | <BannerState levels={["error"]} label="Error banner: a red strip" /> | `{"message": "Payments API is down", "level": "error"}` | A red banner. |
-| Two banners | <BannerState levels={["warning", "info"]} label="Two banners stacked: an amber strip above a blue strip" /> | `md/banner` and a pinned banner | Banners stack, one per widget. |
+| Two banners | <BannerState levels={["warning", "info"]} label="Two banners stacked: an amber strip above a blue strip" /> | `md/v1/banner` and a pinned banner | Banners stack, one per widget. |
 
 ### Use your own stash keys
 
 Right-click an empty part of the canvas and choose **Add widget** > **Banner**. For example, a short-lived TEXT entry:
 
 ```bash
-mass stash set billing-dev.status/maintenance "Database upgrade tonight" --ttl 86400
+mass alpha stash set billing-dev.status/maintenance "Database upgrade tonight" --ttl 86400
 ```
 
 | Input | Type | Required | Example key | Path |
@@ -272,13 +276,14 @@ A pinned banner with a `level` that is not `info`, `warning`, or `error` shows a
 
 Link buttons in the environment header, such as a dashboard or a runbook. A button opens its URL in a new tab.
 
-### Automatic: `md/links`
+### Automatic: `md/v1/links`
 
 Set on the environment. Format: JSON. Each item in `links` is one button.
 
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.massdriver.cloud/stash/md/v1/links.json",
   "type": "object",
   "required": ["links"],
   "additionalProperties": false,
@@ -307,7 +312,7 @@ Set on the environment. Format: JSON. Each item in `links` is one button.
 | `links[].url` | An `http` or `https` URL. |
 
 ```bash
-mass stash set billing-dev.md/links '{"links": [{"label": "Shop", "url": "https://shop.example.com"}, {"label": "Grafana", "url": "https://grafana.example.com/d/billing"}]}' --format json
+mass alpha stash set billing-dev.md/v1/links '{"links": [{"label": "Shop", "url": "https://shop.example.com"}, {"label": "Grafana", "url": "https://grafana.example.com/d/billing"}]}' --format json
 ```
 
 ### What it looks like
@@ -316,14 +321,14 @@ mass stash set billing-dev.md/links '{"links": [{"label": "Shop", "url": "https:
 |---|---|---|---|
 | One link | <HeaderLinkState links={["Shop"]} label="One header link button labeled Shop" /> | `{"links": [{"label": "Shop", "url": "https://shop.example.com"}]}` | One button. |
 | Two links | <HeaderLinkState links={["Shop", "Grafana"]} label="Two header link buttons, Shop and Grafana" /> | two items in `links` | One button per item. |
-| Not an http URL | <HeaderLinkState links={["Shop"]} label="Only the Shop button shows, because the other link URL is not http or https" /> | `{"links": [{"label": "Shop", "url": "https://shop.example.com"}, {"label": "Files", "url": "ftp://files.example.com"}]}` | The server rejects this value for `md/links`. In a pinned widget, the link with the `ftp` URL does not show and the other links do. |
+| Not an http URL | <HeaderLinkState links={["Shop"]} label="Only the Shop button shows, because the other link URL is not http or https" /> | `{"links": [{"label": "Shop", "url": "https://shop.example.com"}, {"label": "Files", "url": "ftp://files.example.com"}]}` | The server rejects this value for `md/v1/links`. In a pinned widget, the link with the `ftp` URL does not show and the other links do. |
 
 ### Use your own stash keys
 
-Right-click an empty part of the canvas and choose **Add widget** > **Header link**. The widget has one input, `links`. Point it at a JSON entry that holds a list of links in the same shape as `md/links`:
+Right-click an empty part of the canvas and choose **Add widget** > **Header link**. The widget has one input, `links`. Point it at a JSON entry that holds a list of links in the same shape as `md/v1/links`:
 
 ```bash
-mass stash set billing-dev.links '{"links": [{"label": "Shop", "url": "https://shop.example.com"}]}' --format json --label "Links"
+mass alpha stash set billing-dev.links '{"links": [{"label": "Shop", "url": "https://shop.example.com"}]}' --format json --label "Links"
 ```
 
 | Input | Type | Required | Example key | Path |
@@ -336,7 +341,7 @@ Each item is one button. The first 8 links with an `http` or `https` `url` show.
 
 For each input of a pinned widget, you choose a stash, a key, and, for a JSON entry, a path to a field. The widget editor shows the current value or the reason an input is off.
 
-Open **Data this widget reads** in the widget editor to see the inputs, the `md/` key, its fields, and a `mass stash set` command. Under **Or use your own stash keys**, the editor gives example entries and a `mass stash set` command for each. **Then set the inputs** tells you which key and path to choose for each input.
+Open **Data this widget reads** in the widget editor to see the inputs, the `md/` key, its fields, and a `mass alpha stash set` command. Under **Or use your own stash keys**, the editor gives example entries and a `mass alpha stash set` command for each. **Then set the inputs** tells you which key and path to choose for each input.
 
 | Input type | Accepted values |
 |---|---|

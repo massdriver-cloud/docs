@@ -17,7 +17,7 @@ Each operation names a stash with a scope. Set exactly one field of the scope: `
 
 ## alphaStashEntry
 
-Gets one entry. Expired entries are not returned. A sensitive value is null unless you can change the stash.
+Gets one entry. Expired entries are not returned. You need `stash:view`. A sensitive value is null unless you have `stash:export`.
 
 ```graphql
 query {
@@ -32,7 +32,7 @@ query {
 
 ## alphaStashEntries
 
-Lists the entries in one stash, ordered by key. Sensitive values are null unless you can change the stash.
+Lists the entries in one stash, ordered by key. You need `stash:view`. Sensitive values are null unless you have `stash:export`.
 
 ```graphql
 query {
@@ -45,7 +45,7 @@ query {
 
 ## alphaStashEntriesForScopes
 
-Lists the entries in up to 200 stashes in one project. Sensitive entries are never returned. The `filter.keys` argument returns only the keys that you name.
+Lists the entries in up to 200 stashes in one project. You need `stash:view` on every scope. Sensitive entries are never returned. The `filter.keys` argument returns only the keys that you name.
 
 ```graphql
 query {
@@ -66,7 +66,7 @@ query {
 
 ## alphaSetStashEntry
 
-Sets a key. The input replaces the whole entry. The mutation fails when the key has an immutable entry that has not expired, or when the stash has its maximum number of keys.
+Sets a key. You need `stash:write`. The input replaces the whole entry. The mutation fails when the key has an immutable entry that has not expired, or when the stash has its maximum number of keys.
 
 ```graphql
 mutation {
@@ -87,7 +87,7 @@ The input fields are `value`, `format`, `label`, `ttl`, `immutable`, and `sensit
 
 ## alphaDeleteStashEntry
 
-Deletes a key. It needs the same permission as `alphaSetStashEntry`. Immutable entries can be deleted. The result has the deleted entry. Its value is null when the entry is sensitive.
+Deletes a key. You need `stash:write`. Immutable entries can be deleted. The result has the deleted entry. Its value is null when the entry is sensitive.
 
 ```graphql
 mutation {
@@ -100,7 +100,7 @@ mutation {
 
 ## alphaStashEvents
 
-A subscription to entries that are set or deleted in a project. Without `environmentId`, you get events for the project, its environments, and its components. With `environmentId`, you also get events for that environment's instances and their deployments.
+A subscription to entries that are set or deleted in a project. You need `stash:view` on the project, and on the environment when you pass `environmentId`. An event's `entry` is null when you do not have `stash:view` on the entity that holds it. Without `environmentId`, you get events for the project, its environments, and its components. With `environmentId`, you also get events for that environment's instances and their deployments.
 
 The `action` is `SET` or `DELETED`. A sensitive value is always null in an event. An entry that expires sends no event.
 
@@ -118,7 +118,7 @@ subscription {
 
 ## alphaWidgetCatalog
 
-Lists every widget, with its well-known key, the kind of entity that holds the key, the format, the JSON Schema, and the inputs.
+Lists every version of every widget, with its well-known key, the version, the kind of entity that holds the key, the format, the JSON Schema, and the inputs.
 
 ```graphql
 query {
@@ -126,6 +126,7 @@ query {
     name
     entity
     key
+    version
     scope
     format
     schema
@@ -136,7 +137,7 @@ query {
 
 ## alphaWidgetsForScopes
 
-Lists the widgets of up to 200 stashes in one project. It returns a widget for each well-known key that has a valid value. A page can have fewer widgets than its limit, or none. Read pages until `cursor.next` is null.
+Lists the widgets of up to 200 stashes in one project. You need `stash:view` on every scope. It returns a widget for each well-known key that has a valid value. When a stash has more than one version of a key, it uses the highest version. A page can have fewer widgets than its limit, or none. Read pages until `cursor.next` is null.
 
 ```graphql
 query {

@@ -190,11 +190,11 @@ New organizations start with these custom groups. They have no members. You can 
 
 | Group | Policies |
 |---|---|
-| Organization Viewers | Allow `project:view`, `repo:view`, `resource:view` |
-| Developers | Allow `project:view`, `project:design`, `environment:create`, `environment:update`, `environment:configure`, `instance:configure`, `instance:plan`, `instance:propose`, `repo:view`, `repo:pull`, `resource:view` |
-| Production Deployers | Allow `project:view`, `resource:view`. Allow `instance:plan`, `instance:deploy`, `environment:deploy` where `md-environment` is `prod` or `production` |
-| Platform Engineers | Allow `repo:view`, `repo:pull`, `repo:push`, `repo:create`, `repo:update`, `repo:grant`, `repo:delete`, `organization:manageResourceTypes`, `organization:manageCustomAttributes`, `project:view`, `resource:view`, `resource:import`, `resource:update`, `resource:grant` |
-| CI / Automation | Allow `project:view`, `repo:view`, `repo:pull`, `repo:push`, `instance:configure`, `instance:plan`, `instance:deploy` |
+| Organization Viewers | Allow `project:view`, `stash:view`, `repo:view`, `resource:view` |
+| Developers | Allow `project:view`, `project:design`, `environment:create`, `environment:update`, `environment:configure`, `instance:configure`, `instance:plan`, `instance:propose`, `stash:view`, `stash:write`, `stash:export`, `repo:view`, `repo:pull`, `resource:view` |
+| Production Deployers | Allow `project:view`, `stash:view`, `resource:view`. Allow `instance:plan`, `instance:deploy`, `environment:deploy` where `md-environment` is `prod` or `production` |
+| Platform Engineers | Allow `repo:view`, `repo:pull`, `repo:push`, `repo:create`, `repo:update`, `repo:grant`, `repo:delete`, `organization:manageResourceTypes`, `organization:manageCustomAttributes`, `project:view`, `resource:view`, `resource:import`, `resource:update`, `resource:grant`, `stash:view` |
+| CI / Automation | Allow `project:view`, `repo:view`, `repo:pull`, `repo:push`, `instance:configure`, `instance:plan`, `instance:deploy`, `stash:view`, `stash:write`, `stash:export` |
 | Billing | Allow `organization:manageBilling` |
 
 Developers propose deployments, and Production Deployers approve them in production. To let Developers deploy to other environments, add an allow policy for `instance:deploy` with an `md-environment` condition, for example `["dev", "staging"]`.
@@ -285,7 +285,7 @@ Use this table to avoid relying on `md-id` wildcards (`md-id: [api-prod-*]`). Sy
 
 ## Permissions
 
-Massdriver defines 39 permissions using an `entity:verb` format.
+Massdriver defines 44 permissions using an `entity:verb` format.
 
 ### Project
 
@@ -350,6 +350,18 @@ Massdriver defines 39 permissions using an `entity:verb` format.
 | `resource:update` | Update an imported resource |
 | `resource:grant` | Author or revoke grants sharing this resource with recipient environments. Distinct from `resource:update` (metadata) and `resource:export` (downloading the unmasked payload). |
 | `resource:delete` | Delete a resource |
+
+### Stash
+
+A stash holds key and value entries on a project, environment, component, or instance. A deployment's entries belong to its instance. Each stash action is checked against the entity that holds the entries, so a condition such as `md-environment: [prod]` or a custom attribute applies to the stashes of matching entities. `stash:view` does not come with `project:view`. Grant it on its own.
+
+| Permission | Description |
+|---|---|
+| `stash:view` | Read stash entries, without sensitive values, and subscribe to their changes |
+| `stash:write` | Set and delete stash entries |
+| `stash:export` | Read sensitive stash values |
+
+A deployment's own credentials do not use these permissions. A deployment can read and write the stashes of its deployment, instance, environment, component, and project.
 
 ### Resource Type
 

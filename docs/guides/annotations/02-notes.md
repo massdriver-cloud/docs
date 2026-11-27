@@ -47,14 +47,14 @@ Each namespace also has an `id`, such as `{{ instance.id }}`.
 
 ### Insert a value from the editor
 
-The note editor lists the keys in each stash. Choose a stash in the **Stash** list, for example **Instance**, **Component**, **Environment**, or **Project**. Click a key to insert its value tag. A JSON entry also shows a button for each top-level field. Click a field to insert a tag for that field, such as `{{ instance.stash["md/traffic"].rps }}`.
+The note editor lists the keys in each stash. Choose a stash in the **Stash** list, for example **Instance**, **Component**, **Environment**, or **Project**. Click a key to insert its value tag. A JSON entry also shows a button for each top-level field. Click a field to insert a tag for that field, such as `{{ instance.stash["md/v1/traffic"].rps }}`.
 
 ### Text and JSON entries
 
 A text entry is a string. A JSON entry is an object, so you can read its fields:
 
 ```liquid
-{{ instance.stash["md/traffic"].rps }} requests per second
+{{ instance.stash["md/v1/traffic"].rps }} requests per second
 ```
 
 ### Missing values
@@ -94,8 +94,8 @@ The output of a note renders as markdown. You can use headings, lists, bold, ita
 Pin to an instance.
 
 ```bash
-mass stash set billing-dev-app.status "healthy"
-mass stash set billing-dev-app.version "2.14.0"
+mass alpha stash set billing-dev-app.status "healthy"
+mass alpha stash set billing-dev-app.version "2.14.0"
 ```
 
 ```liquid
@@ -107,8 +107,8 @@ mass stash set billing-dev-app.version "2.14.0"
 Pin to an instance.
 
 ```bash
-mass stash set billing-dev-app.db/connections "42"
-mass stash set billing-dev-app.db/max_connections "100"
+mass alpha stash set billing-dev-app.db/connections "42"
+mass alpha stash set billing-dev-app.db/max_connections "100"
 ```
 
 ```liquid
@@ -120,11 +120,11 @@ mass stash set billing-dev-app.db/max_connections "100"
 Pin to a line. The source instance writes its traffic to its own stash as a JSON entry.
 
 ```bash
-mass stash set billing-dev-app.md/traffic '{"rps": 120.5, "errors_5m": 3, "p95_ms": 84}' --format json --ttl 300
+mass alpha stash set billing-dev-app.md/v1/traffic '{"rps": 120.5, "errors_5m": 3, "p95_ms": 84}' --format json --ttl 300
 ```
 
 ```liquid
-{% assign t = source.stash["md/traffic"] %}
+{% assign t = source.stash["md/v1/traffic"] %}
 {% if t %}{{ t.rps | round }} rps · p95 {{ t.p95_ms }} ms · {{ t.errors_5m }} errors in 5 min{% else %}No traffic data{% endif %}
 ```
 
@@ -135,8 +135,8 @@ The `--ttl 300` flag deletes the entry after 5 minutes. When the writer stops, t
 Pin to an environment.
 
 ```bash
-mass stash set billing-dev.oncall "Dana Smith"
-mass stash set billing-dev.runbook "https://wiki.example.com/billing/runbook"
+mass alpha stash set billing-dev.oncall "Dana Smith"
+mass alpha stash set billing-dev.runbook "https://wiki.example.com/billing/runbook"
 ```
 
 ```liquid
@@ -150,7 +150,7 @@ mass stash set billing-dev.runbook "https://wiki.example.com/billing/runbook"
 Pin to a project.
 
 ```bash
-mass stash set billing.release/train '{"name": "2026.48", "cutoff": "2026-11-28T17:00:00Z", "captain": "Lee"}' --format json
+mass alpha stash set billing.release/train '{"name": "2026.48", "cutoff": "2026-11-28T17:00:00Z", "captain": "Lee"}' --format json
 ```
 
 ```liquid
@@ -165,7 +165,7 @@ The `date` filter shows the time in your browser's time zone.
 Pin to an instance. A deployment writes the schema version after its migrations run.
 
 ```bash
-mass stash set billing-dev-app.schema.version "42" --label "Schema version"
+mass alpha stash set billing-dev-app.schema.version "42" --label "Schema version"
 ```
 
 ```liquid

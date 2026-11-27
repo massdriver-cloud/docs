@@ -86,6 +86,21 @@ Deployments are an action *on* an instance — `createDeployment`, `planDeployme
 | `deployment` | Query | `project:view` | |
 | `compareDeployments` | Query | `project:view` (both deployments' projects) | Source and target need not be on the same instance. |
 
+## Stash
+
+Each stash action is checked against the entity that holds the entries. For a deployment's stash, that is the deployment's instance.
+
+| Operation | Type | Required permission(s) | Notes |
+|---|---|---|---|
+| `alphaStashEntry` | Query | `stash:view` | A sensitive value is null without `stash:export`. |
+| `alphaStashEntries` | Query | `stash:view` | Sensitive values are null without `stash:export`. |
+| `alphaStashEntriesForScopes` | Query | `stash:view` on every scope | Sensitive entries are never returned. |
+| `alphaWidgetsForScopes` | Query | `stash:view` on every scope | |
+| `alphaWidgetCatalog` | Query | *no explicit gate* | |
+| `alphaSetStashEntry` | Mutation | `stash:write` | A deployment's own credentials can set keys on that deployment and on its instance, environment, component, and project. |
+| `alphaDeleteStashEntry` | Mutation | `stash:write` | |
+| `alphaStashEvents` | Subscription | `stash:view` | On the project, and on the environment when you pass `environmentId`. An event's `entry` is null without `stash:view` on the entity that holds it. |
+
 ## Instance Alarm
 
 | Operation | Type | Required permission(s) | Notes |
