@@ -60,6 +60,7 @@ type AccountViewer {
   lastName: String
   createdAt: DateTime!
   updatedAt: DateTime!
+  scimManaged: Boolean!
   avatar: AvatarViewer
   organizations(
     sort: OrganizationsSort
@@ -122,6 +123,12 @@ When this account was created (UTC).
 
 #### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
 When this account's profile was last modified (UTC).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>scimManaged</b></code>](#scim-managed)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#scim-managed\} 
+Whether an organization provisions this account through SCIM. When `true`, your
+identity provider (Okta, Azure AD, etc.) owns your first and last name, and
+`updateAccount` rejects changes to them.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AccountViewer.<b>avatar</b></code>](#avatar)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AvatarViewer</b></code>](/api/graphql/types/objects/avatar-viewer.mdx) <Badge class="badge badge--secondary " text="object"/> \{#avatar\} 
@@ -244,6 +251,10 @@ Pagination cursor from a previous response to fetch the next page.
 
 
 
+
+### Member Of
+
+[`AccountViewerPayload`](/api/graphql/types/objects/account-viewer-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
 
 ### Implemented By
 

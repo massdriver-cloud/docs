@@ -2093,6 +2093,19 @@ type RootMutationType {
   ): InviteViewerPayload
 
   """
+  Update your first and last name.
+
+  Fields you leave out keep their current value. If an organization provisions your
+  account through SCIM, your identity provider owns your name and this mutation
+  returns an error; change your name in the identity provider instead. Check
+  `scimManaged` on the viewer to know in advance.
+  """
+  updateAccount(
+    "Update your name. Accounts provisioned through SCIM get their name from the identity provider and cannot change it here."
+    input: UpdateAccountInput!
+  ): AccountViewerPayload @inputs(name: "updateAccount", schema: "\/graphql\/v2\/inputs\/updateAccount.json", ui: "\/graphql\/v2\/inputs\/updateAccount.ui.json")
+
+  """
   Upload or replace your profile avatar.
 
   Accepts PNG, JPG, GIF, or WebP images up to 1 MB. If you already have an avatar, it is
@@ -7531,6 +7544,26 @@ type AvatarViewerPayload {
   result: AvatarViewer
 }
 
+type AccountViewerPayload {
+  "Indicates if the mutation completed successfully or not."
+  successful: Boolean!
+
+  "A list of failed validations. May be blank or null if mutation succeeded."
+  messages: [ValidationMessage]
+
+  "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
+  result: AccountViewer
+}
+
+"Update your name. Accounts provisioned through SCIM get their name from the identity provider and cannot change it here."
+input UpdateAccountInput {
+  "Your first name. Up to 255 characters."
+  firstName: String
+
+  "Your last name. Up to 255 characters."
+  lastName: String
+}
+
 """
 The authenticated human user (account).
 
@@ -7559,6 +7592,13 @@ type AccountViewer {
 
   "When this account's profile was last modified (UTC)."
   updatedAt: DateTime!
+
+  """
+  Whether an organization provisions this account through SCIM. When `true`, your
+  identity provider (Okta, Azure AD, etc.) owns your first and last name, and
+  `updateAccount` rejects changes to them.
+  """
+  scimManaged: Boolean!
 
   "The user's profile avatar image, or `null` if none has been uploaded."
   avatar: AvatarViewer
