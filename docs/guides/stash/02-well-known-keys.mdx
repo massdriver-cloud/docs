@@ -274,7 +274,7 @@ The `alphaWidgetCatalog` query returns the key with the step as a pattern, such 
 
 ### Results on the instance
 
-You do not write a deployment's results to the instance a second time. When you read the widgets of an instance with `alphaWidgetsForScopes`, the query also returns the results of the instance's latest deployment that has a well-known key. The `scope` of each of those widgets is that deployment. When you read a deployment's widgets, the query returns the results of that deployment only.
+You do not write a deployment's results to the instance a second time. When you read the widgets of an instance with `alphaWidgetsForScopes`, the query also returns the results of the instance's latest deployment that has a well-known key. The `scope` of each of those widgets is that deployment, and `rolledUpTo` names the instance. When you read a deployment's widgets, the query returns the results of that deployment only.
 
 The instance's `stash:view` permission covers these results, because a deployment's entries belong to its instance.
 
