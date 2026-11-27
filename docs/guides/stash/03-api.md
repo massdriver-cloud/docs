@@ -118,7 +118,7 @@ subscription {
 
 ## alphaWidgetCatalog
 
-Lists every widget, with its well-known key, the kind of entity that holds the key, the format, the JSON Schema, and the inputs.
+Lists every version of every widget, with its well-known key, the version, the kind of entity that holds the key, the format, the JSON Schema, and the inputs.
 
 ```graphql
 query {
@@ -126,6 +126,7 @@ query {
     name
     entity
     key
+    version
     scope
     format
     schema
@@ -136,7 +137,7 @@ query {
 
 ## alphaWidgetsForScopes
 
-Lists the widgets of up to 200 stashes in one project. It returns a widget for each well-known key that has a valid value. A page can have fewer widgets than its limit, or none. Read pages until `cursor.next` is null.
+Lists the widgets of up to 200 stashes in one project. It returns a widget for each well-known key that has a valid value. When a stash has more than one version of a key, it uses the highest version. A page can have fewer widgets than its limit, or none. Read pages until `cursor.next` is null.
 
 ```graphql
 query {

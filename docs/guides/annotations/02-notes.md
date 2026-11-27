@@ -47,14 +47,14 @@ Each namespace also has an `id`, such as `{{ instance.id }}`.
 
 ### Insert a value from the editor
 
-The note editor lists the keys in each stash. Choose a stash in the **Stash** list, for example **Instance**, **Component**, **Environment**, or **Project**. Click a key to insert its value tag. A JSON entry also shows a button for each top-level field. Click a field to insert a tag for that field, such as `{{ instance.stash["md/traffic"].rps }}`.
+The note editor lists the keys in each stash. Choose a stash in the **Stash** list, for example **Instance**, **Component**, **Environment**, or **Project**. Click a key to insert its value tag. A JSON entry also shows a button for each top-level field. Click a field to insert a tag for that field, such as `{{ instance.stash["md/v1/traffic"].rps }}`.
 
 ### Text and JSON entries
 
 A text entry is a string. A JSON entry is an object, so you can read its fields:
 
 ```liquid
-{{ instance.stash["md/traffic"].rps }} requests per second
+{{ instance.stash["md/v1/traffic"].rps }} requests per second
 ```
 
 ### Missing values
@@ -120,11 +120,11 @@ mass alpha stash set billing-dev-app.db/max_connections "100"
 Pin to a line. The source instance writes its traffic to its own stash as a JSON entry.
 
 ```bash
-mass alpha stash set billing-dev-app.md/traffic '{"rps": 120.5, "errors_5m": 3, "p95_ms": 84}' --format json --ttl 300
+mass alpha stash set billing-dev-app.md/v1/traffic '{"rps": 120.5, "errors_5m": 3, "p95_ms": 84}' --format json --ttl 300
 ```
 
 ```liquid
-{% assign t = source.stash["md/traffic"] %}
+{% assign t = source.stash["md/v1/traffic"] %}
 {% if t %}{{ t.rps | round }} rps · p95 {{ t.p95_ms }} ms · {{ t.errors_5m }} errors in 5 min{% else %}No traffic data{% endif %}
 ```
 

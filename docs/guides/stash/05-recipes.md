@@ -58,10 +58,10 @@ fi
 
 ## Show traffic on the canvas
 
-Write `md/traffic` on the instance that sends the traffic. The [traffic widget](/guides/annotations/widgets#traffic) shows on every line that leaves the instance. Set a TTL so that the widget goes away when your job stops writing.
+Write `md/v1/traffic` on the instance that sends the traffic. The [traffic widget](/guides/annotations/widgets#traffic) shows on every line that leaves the instance. Set a TTL so that the widget goes away when your job stops writing.
 
 ```bash
-mass alpha stash set "billing-dev-app.md/traffic" \
+mass alpha stash set "billing-dev-app.md/v1/traffic" \
   '{"rps": 240, "errors_5m": 2, "p95_ms": 180}' \
   --format json --ttl 180
 ```

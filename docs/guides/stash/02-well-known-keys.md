@@ -15,29 +15,36 @@ Keys that start with `md/` are reserved. Each one shows a [widget](/guides/annot
 
 | Key | Set on | Format | Widget |
 |---|---|---|---|
-| `md/health` | Instance | TEXT | Status dot on the instance |
-| `md/usage` | Instance | JSON | Usage bar on the instance |
-| `md/traffic` | Instance | JSON | Traffic on the lines that leave the instance |
-| `md/banner` | Environment | JSON | Banner across the top of the environment |
-| `md/links` | Environment | JSON | Links in the environment header |
+| `md/v1/health` | Instance | TEXT | Status dot on the instance |
+| `md/v1/usage` | Instance | JSON | Usage bar on the instance |
+| `md/v1/traffic` | Instance | JSON | Traffic on the lines that leave the instance |
+| `md/v1/banner` | Environment | JSON | Banner across the top of the environment |
+| `md/v1/links` | Environment | JSON | Links in the environment header |
 
 The server rejects a write to an `md/` key when:
 
-- The key is not in this table.
+- The key is not in this table. This includes a key without a version, such as `md/health`. The error names the key to use, such as `md/v1/health`.
 - The key is set on the wrong kind of entity.
 - The format is not the one in the table.
 - The value does not match the key's schema.
 - The entry is sensitive.
 
-The `alphaWidgetCatalog` query returns these keys and their schemas. See [GraphQL API](/guides/stash/api#alphawidgetcatalog).
+## Versions
 
-## `md/health`
+Each well-known key has a version in its path, such as `v1` in `md/v1/health`. A breaking change to the shape of a key's value ships as a new version, with a new key, next to the old one. An old version is removed only after the deprecation period of its stability level. When a stash has more than one version of a key, the UI shows the widget from the highest version.
+
+Each schema has an `$id` that names its key and version, such as `https://schemas.massdriver.cloud/stash/md/v1/health.json`.
+
+The `alphaWidgetCatalog` query returns these keys, their versions, and their schemas. See [GraphQL API](/guides/stash/api#alphawidgetcatalog).
+
+## `md/v1/health`
 
 Set on an instance. Format: TEXT. Shows the [status dot](/guides/annotations/widgets#status-dot).
 
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.massdriver.cloud/stash/md/v1/health.json",
   "type": "string",
   "minLength": 1,
   "maxLength": 64,
@@ -48,16 +55,17 @@ Set on an instance. Format: TEXT. Shows the [status dot](/guides/annotations/wid
 The dot is green for `healthy`, `ok`, and `up`. It is amber for `degraded`, `warning`, and `recovering`. It is red for `down`, `failed`, and `error`. It is gray for any other value.
 
 ```bash
-mass alpha stash set billing-dev-app.md/health degraded
+mass alpha stash set billing-dev-app.md/v1/health degraded
 ```
 
-## `md/usage`
+## `md/v1/usage`
 
 Set on an instance. Format: JSON. Shows the [usage bar](/guides/annotations/widgets#usage-bar).
 
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.massdriver.cloud/stash/md/v1/usage.json",
   "type": "object",
   "required": ["value", "max"],
   "additionalProperties": false,
@@ -76,16 +84,17 @@ Set on an instance. Format: JSON. Shows the [usage bar](/guides/annotations/widg
 | `label` | Optional. Text shown with the bar. |
 
 ```bash
-mass alpha stash set billing-dev-app.md/usage '{"value": 37, "max": 100, "label": "connections"}' --format json
+mass alpha stash set billing-dev-app.md/v1/usage '{"value": 37, "max": 100, "label": "connections"}' --format json
 ```
 
-## `md/traffic`
+## `md/v1/traffic`
 
 Set on the instance that sends the traffic. Format: JSON. Shows [traffic](/guides/annotations/widgets#traffic) on every line that leaves the instance.
 
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.massdriver.cloud/stash/md/v1/traffic.json",
   "type": "object",
   "required": ["rps", "errors_5m"],
   "additionalProperties": false,
@@ -104,16 +113,17 @@ Set on the instance that sends the traffic. Format: JSON. Shows [traffic](/guide
 | `p95_ms` | Optional. The 95th percentile response time, in milliseconds. |
 
 ```bash
-mass alpha stash set billing-dev-app.md/traffic '{"rps": 240, "errors_5m": 2, "p95_ms": 180}' --format json --ttl 600
+mass alpha stash set billing-dev-app.md/v1/traffic '{"rps": 240, "errors_5m": 2, "p95_ms": 180}' --format json --ttl 600
 ```
 
-## `md/banner`
+## `md/v1/banner`
 
 Set on an environment. Format: JSON. Shows a [banner](/guides/annotations/widgets#banner).
 
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.massdriver.cloud/stash/md/v1/banner.json",
   "type": "object",
   "required": ["message"],
   "additionalProperties": false,
@@ -130,16 +140,17 @@ Set on an environment. Format: JSON. Shows a [banner](/guides/annotations/widget
 | `level` | Optional. `info` (the default), `warning`, or `error`. |
 
 ```bash
-mass alpha stash set billing-dev.md/banner '{"message": "Deploy freeze until Friday", "level": "warning"}' --format json
+mass alpha stash set billing-dev.md/v1/banner '{"message": "Deploy freeze until Friday", "level": "warning"}' --format json
 ```
 
-## `md/links`
+## `md/v1/links`
 
 Set on an environment. Format: JSON. Shows [header links](/guides/annotations/widgets#header-links).
 
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.massdriver.cloud/stash/md/v1/links.json",
   "type": "object",
   "required": ["links"],
   "additionalProperties": false,
@@ -168,5 +179,5 @@ Set on an environment. Format: JSON. Shows [header links](/guides/annotations/wi
 | `links[].url` | An `http` or `https` URL with no spaces. |
 
 ```bash
-mass alpha stash set billing-dev.md/links '{"links": [{"label": "Grafana", "url": "https://grafana.example.com/d/billing"}]}' --format json
+mass alpha stash set billing-dev.md/v1/links '{"links": [{"label": "Grafana", "url": "https://grafana.example.com/d/billing"}]}' --format json
 ```

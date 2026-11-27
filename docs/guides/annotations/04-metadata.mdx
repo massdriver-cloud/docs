@@ -52,9 +52,9 @@ The instance Metadata tab shows the instance's automatic widgets above the entri
 
 | Stat | Key | Value |
 |---|---|---|
-| Health | `md/health` | A colored dot and the value |
-| Traffic | `md/traffic` | A colored dot and the traffic label for the lines that leave the instance, such as `240 rps · 180 ms`. It says "stale" when the data is more than 10 minutes old. |
-| Usage | `md/usage` | The usage bar and the numbers, such as `37 / 100` |
+| Health | `md/v1/health` | A colored dot and the value |
+| Traffic | `md/v1/traffic` | A colored dot and the traffic label for the lines that leave the instance, such as `240 rps · 180 ms`. It says "stale" when the data is more than 10 minutes old. |
+| Usage | `md/v1/usage` | The usage bar and the numbers, such as `37 / 100` |
 
 The label of a stat is the stash entry's label. A usage stat without an entry label uses the `label` field of its value. Otherwise the stat uses the default label: `Health`, `Traffic`, or `Usage`.
 
