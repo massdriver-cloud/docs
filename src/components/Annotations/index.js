@@ -292,7 +292,7 @@ export function MetadataFooter({ label }) {
         3 entries have no label.
       </text>
       <text className={`${s.muted} ${s.mono}`} x={136} y={15}>
-        mass stash list billing-dev-app
+        mass alpha stash list billing-dev-app
       </text>
     </Figure>
   );

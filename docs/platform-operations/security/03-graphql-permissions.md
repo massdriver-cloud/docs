@@ -233,6 +233,21 @@ There is no `updateGrant` — grants are immutable; delete and re-create to chan
 | `deleteEventDestination` | Mutation | `organization:manageEventDestinations` | Covered by the `organization:manage` umbrella. |
 | `redeliverEvents` | Mutation | `organization:manageEventDestinations` | Covered by the `organization:manage` umbrella. |
 
+## Stash
+
+Each stash action is checked on the entity that holds the entries: the project, environment, component, or instance. For a deployment's entries, it is checked on the deployment's instance. A deployment's own credentials do not use these actions.
+
+| Operation | Type | Required permission(s) | Notes |
+|---|---|---|---|
+| `alphaStashEntry` | Query | `stash:view` | A sensitive value is null without `stash:export`. |
+| `alphaStashEntries` | Query | `stash:view` | Sensitive values are null without `stash:export`. |
+| `alphaStashEntriesForScopes` | Query | `stash:view` on every scope | Never returns sensitive entries. |
+| `alphaSetStashEntry` | Mutation | `stash:write` | |
+| `alphaDeleteStashEntry` | Mutation | `stash:write` | |
+| `alphaStashEvents` | Subscription | `stash:view` on the project, and on the environment when you pass `environmentId` | |
+| `alphaWidgetCatalog` | Query | *no explicit gate* | Static catalog of widgets and their well-known keys. |
+| `alphaWidgetsForScopes` | Query | `stash:view` on every scope | |
+
 ## Audit Log
 
 | Operation | Type | Required permission(s) | Notes |
@@ -257,6 +272,8 @@ There is no `updateGrant` — grants are immutable; delete and re-create to chan
 | `instanceEvents` | Subscription | `project:view` | |
 | `deploymentEvents` | Subscription | `project:view` | |
 | `deploymentLogs` | Subscription | `project:view` | Streams log lines for a single deployment. |
+
+`projectEvents`, `environmentEvents`, `instanceEvents`, and `deploymentEvents` also send stash entry events. The `entry` of a stash entry event is null when you do not have `stash:view` on the entity that holds the entry.
 
 ## Viewer (Self-context)
 

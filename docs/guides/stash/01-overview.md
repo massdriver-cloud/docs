@@ -29,7 +29,7 @@ Each entry has these fields.
 | Label | Optional. A name for the entry, up to 255 characters. Entries with a label show on the Metadata panels. The label is not encrypted, so do not put secrets in it. |
 | TTL | Optional. Seconds until the entry expires, up to 315360000 (10 years). An expired entry is not returned and is deleted soon after. Without a TTL, the entry stays until you delete it. |
 | Immutable | Optional. When true, the key cannot be set again until the entry expires or is deleted. You can still delete it. An immutable write fails when the key already has a value. |
-| Sensitive | Optional. When true, the value is encrypted with your organization's key. It is masked for callers who cannot change the stash. It is never sent in events, and it is never available to notes or widgets. |
+| Sensitive | Optional. When true, the value is encrypted with your organization's key. It is masked for callers who do not have `stash:export`. Events about it do not include the value, and it is never available to notes or widgets. |
 
 A set replaces the whole entry: the value, the format, the label, the TTL, and both flags. A setting that you leave out goes back to its default.
 
@@ -48,19 +48,33 @@ Keys that start with `md/` are reserved for [widgets](/guides/annotations/widget
 
 ## Permissions
 
-You need `project:view` on the project to read a stash. Sensitive values are masked unless you can change the stash.
+The stash has its own [access control](/platform-operations/security/access-control#stash) actions:
 
-To set or delete an entry, or to read a sensitive value, you need the permission for the stash:
-
-| Stash | Permission |
+| Action | Allows |
 |---|---|
-| Project | `project:update` |
-| Environment | `environment:update` |
-| Component | `project:design` |
-| Instance | `instance:configure` |
-| Deployment | `instance:configure` on the deployment's instance |
+| `stash:view` | Read entries, without sensitive values, and subscribe to their changes |
+| `stash:write` | Set and delete entries |
+| `stash:export` | Read sensitive values |
 
-A deployment's own credentials can read and write the stash of that deployment and of its instance, environment, component, and project.
+Massdriver checks each action on the entity that holds the stash: the project, environment, component, or instance. For a deployment's stash, it checks the deployment's instance. A policy condition such as `md-environment: [prod]` applies to that entity.
+
+`project:view` does not include `stash:view`. Notes, widgets, and metadata need `stash:view` to show stash values.
+
+A deployment's own credentials can read and write the stash of that deployment and of its instance, environment, component, and project. They do not use these actions.
+
+## Events
+
+Each set sends a `stash_entry.set` event. Each delete sends a `stash_entry.deleted` event. An entry that expires sends no event. The events go to [event destinations](/platform-operations/event-destinations/events/projects-environments#stash-entry) and to these GraphQL subscriptions:
+
+| Stash | Subscriptions |
+|---|---|
+| Project | `projectEvents` |
+| Environment | `projectEvents`, `environmentEvents` |
+| Component | `projectEvents` |
+| Instance | `environmentEvents`, `instanceEvents` |
+| Deployment | `environmentEvents`, `instanceEvents`, `deploymentEvents` |
+
+A sensitive entry sends events, but they do not include its value.
 
 ## Where stash values show
 
