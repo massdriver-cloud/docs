@@ -1153,6 +1153,29 @@ type RootQueryType {
   ): AccessTokensPage
 
   """
+  Get AWS credentials for the Massdriver S3 API.
+
+  Only requests authenticated with an access token can call this query. The credentials
+  belong to that access token.
+
+  **Example:**
+
+  ```graphql
+  query {
+    s3Credentials(organizationId: "my-org") {
+      accessKeyId
+      secretAccessKey
+      endpointUrl
+    }
+  }
+  ```
+  """
+  s3Credentials(
+    "Your organization's unique identifier."
+    organizationId: ID!
+  ): S3Credentials!
+
+  """
   Fetch a single ABAC group policy by its unique identifier.
 
   Returns `null` with a `NOT_FOUND` error if the policy does not exist in
@@ -5092,6 +5115,24 @@ input UpdateServiceAccountInput {
 
   "A human-readable name for the service account"
   name: String
+}
+
+"""
+AWS credentials for the Massdriver S3 API.
+
+S3 tools such as the AWS CLI, the AWS SDKs, and rclone sign requests with these credentials.
+They belong to the access token that requested them: they work only in its organization,
+and they stop working when the access token expires or is revoked.
+"""
+type S3Credentials {
+  "The AWS access key ID."
+  accessKeyId: String!
+
+  "The AWS secret access key. Keep it secret: it signs requests as the access token."
+  secretAccessKey: String!
+
+  "The S3 endpoint URL. S3 tools must use path-style addressing with this endpoint."
+  endpointUrl: String!
 }
 
 """
