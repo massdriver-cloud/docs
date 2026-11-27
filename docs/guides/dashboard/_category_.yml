@@ -1,0 +1,6 @@
+label: Terminal Dashboard
+collapsible: true
+collapsed: true
+link:
+  type: doc
+  id: guides-dashboard-overview
