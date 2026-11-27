@@ -22,6 +22,16 @@ const QUESTIONS = [
     ],
   },
   {
+    key: "jump",
+    title: "Where do developers jump off?",
+    when: (a) => a.start === "brownfield",
+    options: [
+      { value: "network", label: "Network", detail: "Import the VPC or VNet. Developers deploy VMs, databases and caches in its subnets." },
+      { value: "k8s", label: "Kubernetes", detail: "Import namespace credentials. Developers put Helm charts in their namespace." },
+      { value: "landing", label: "Landing zone", detail: "Import everything an environment needs. Developers add an app and a few data bundles." },
+    ],
+  },
+  {
     key: "runtime",
     title: "Where will the automations run?",
     options: [
@@ -32,7 +42,7 @@ const QUESTIONS = [
   },
 ];
 
-const DEFAULTS = { cloud: "aws", start: "greenfield", runtime: "ecs" };
+const DEFAULTS = { cloud: "aws", start: "greenfield", jump: "network", runtime: "ecs" };
 
 const CLI = {
   title: "Install the mass CLI and sign in",
@@ -72,7 +82,7 @@ function credentialStep(cloud) {
   return null;
 }
 
-function infraSteps({ cloud, start, runtime }) {
+function infraSteps({ cloud, start, runtime, jump, origCloud }) {
   if (start === "greenfield") {
     if (cloud === "aws") {
       return [
@@ -102,44 +112,77 @@ function infraSteps({ cloud, start, runtime }) {
     ];
   }
 
-  const typeName = cloud === "aws" ? "aws-vpc" : "virtual-network";
+  const realCloud = origCloud || cloud;
+  const networkType = realCloud === "aws" ? "aws-vpc" : "virtual-network";
+  const importNote = "with `massdriver_imported_resource` in the Terraform that owns it, so every apply keeps it current";
   const steps = [
     {
-      title: "Pick the seam in the Terraform monolith",
-      to: "/onboarding/brownfield#pick-the-seam",
-      body: "The network is almost always the first seam: everything depends on it and it rarely changes.",
-    },
-    {
-      title: `Import the VPC as an ${typeName} resource`,
-      to: "/onboarding/brownfield#import-the-vpc",
-      body: "Build the payload from `tofu output -json` or the AWS CLI. The monolith keeps owning the VPC.",
-    },
-    {
-      title: "Make it the environment default",
-      to: "/onboarding/brownfield#make-it-the-environment-default",
-      body: "Every bundle in the environment that needs a network now connects to the imported VPC.",
+      title: "Add the Massdriver provider to the monolith",
+      to: "/onboarding/brownfield#every-import-has-the-same-shape",
+      body: "Each import is a `massdriver_imported_resource` and a `massdriver_resource_grant`. The monolith keeps owning what it imports.",
     },
   ];
-  if (cloud === "aws") {
+
+  if (jump === "k8s") {
     steps.push({
-      title: runtime === "ecs" ? "Deploy dns-zone and ecs-cluster on the imported VPC" : "Deploy a new bundle on the imported VPC",
-      to: "/onboarding/brownfield#build-on-the-imported-vpc",
+      title: "Import a namespace per team as massdriver-kubernetes-cluster",
+      to: "/onboarding/brownfield#kubernetes",
+      body: `A ServiceAccount that is admin of one namespace, imported ${importNote}. Works the same on EKS, GKE and AKS.`,
+    });
+    steps.push({
+      title: "Developers deploy Helm charts into their namespace",
+      to: "/onboarding/brownfield-kubernetes",
+      body: "Each instance sets the namespace resource as a remote reference. Nothing reaches outside the namespace.",
+    });
+  } else if (jump === "landing") {
+    steps.push({
+      title: "Import the whole landing zone",
+      to: "/onboarding/brownfield#landing-zone",
       body:
-        runtime === "ecs"
-          ? "dns-zone adopts an existing Route 53 zone. The cluster's load balancer serves HTTPS only with a zone connected."
-          : "New infrastructure lands next to the old, in its network, without moving anything.",
+        realCloud === "aws"
+          ? "aws-iam-role, aws-vpc, aws-dns-zone and aws-ecs-cluster, " + importNote + "."
+          : realCloud === "azure"
+          ? "azure-service-principal, virtual-network, private-dns-zone, key-vault and log-workspace, " + importNote + "."
+          : "The credential, the network and the cluster namespaces, " + importNote + ".",
+    });
+    steps.push({
+      title: "Set each one as an environment default",
+      to: "/onboarding/brownfield#landing-zone",
+      body: "A developer's environment then needs only their app on a runtime and the data bundles it uses.",
     });
   } else {
     steps.push({
-      title: "Deploy a new bundle on the imported network",
-      to: "/onboarding/brownfield#build-on-the-imported-vpc",
-      body: "The pets bundles still deploy random_pet. The connection to the imported resource is real.",
+      title: `Import the network as ${networkType}`,
+      to: "/onboarding/brownfield#network",
+      body:
+        realCloud === "aws"
+          ? "From the monolith, from the AWS CLI, or with `/massdriver:import` in Claude Code or opencode."
+          : `From the monolith, ${importNote}, or with \`/massdriver:import\` in Claude Code or opencode.`,
+    });
+    steps.push({
+      title:
+        realCloud === "aws" && runtime === "ecs"
+          ? "Deploy postgres, dns-zone and ecs-cluster on the imported network"
+          : "Deploy new bundles on the imported network",
+      to: "/onboarding/brownfield#build-on-the-network",
+      body:
+        realCloud === "aws" && runtime === "ecs"
+          ? "dns-zone adopts an existing Route 53 zone. The cluster's load balancer serves HTTPS only with a zone connected."
+          : cloud === "pets"
+          ? "The pets bundles still deploy random_pet. Write real ones on the imported network with `/massdriver:develop`."
+          : "New infrastructure lands in the existing subnets without touching routes or gateways.",
     });
   }
+
+  steps.push({
+    title: "Move pieces out of the monolith when they change",
+    to: "/onboarding/brownfield#move-a-piece-out-later",
+    body: "`tofu import` into one instance's state, plan in Massdriver until clean, then `tofu state rm` from the monolith. `/massdriver:import` runs the loop.",
+  });
   return steps;
 }
 
-function automationSteps({ cloud, start, runtime }) {
+function automationSteps({ cloud, start, runtime, jump }) {
   if (runtime === "none") return [];
 
   if (runtime === "ecs" && cloud !== "aws") {
@@ -154,7 +197,7 @@ function automationSteps({ cloud, start, runtime }) {
             : "The -ecs automation bundles depend on aws-ecs-cluster, which the AWS catalog's ecs-cluster bundle produces.",
         fixes: [
           { label: "Greenfield AWS with pr-sync on ECS", set: { cloud: "aws", start: "greenfield", runtime: "ecs" } },
-          { label: "pr-sync in a namespace of a cluster you already have", set: { start: "brownfield", runtime: "k8s" } },
+          { label: "pr-sync in a namespace of a cluster you already have", set: { start: "brownfield", jump: "k8s", runtime: "k8s" } },
         ],
       },
     ];
@@ -169,23 +212,13 @@ function automationSteps({ cloud, start, runtime }) {
   ];
 
   if (runtime === "k8s") {
-    if (cloud === "aws" && start === "greenfield") {
+    if (!(start === "brownfield" && jump === "k8s")) {
       steps.push({
-        soon: true,
-        title: "The AWS catalog builds ECS, not EKS",
-        to: "/onboarding/automations#where-automations-run",
-        body: "There is no EKS bundle to deploy. Import an EKS cluster you already run, or run the automations on the catalog's ecs-cluster.",
-        fixes: [{ label: "Run them on ECS", set: { runtime: "ecs" } }],
+        title: "Import a namespace of the cluster as massdriver-kubernetes-cluster",
+        to: "/onboarding/brownfield-kubernetes#import-the-namespace",
+        body: "A ServiceAccount token bound to one namespace with the admin ClusterRole. Nothing cluster-wide. EKS, GKE, AKS or any other cluster.",
       });
     }
-    steps.push({
-      title:
-        start === "brownfield"
-          ? "Import the namespace you were given as a Kubernetes cluster resource"
-          : "Import the cluster as a Kubernetes cluster resource",
-      to: "/onboarding/brownfield-kubernetes#import-the-namespace",
-      body: "A ServiceAccount token bound to one namespace with the admin ClusterRole. Nothing cluster-wide.",
-    });
     steps.push({
       title: "Publish massdriver-pr-sync",
       to: "/onboarding/automations#publish-the-bundle",
@@ -235,9 +268,18 @@ function buildRoute(answers) {
   const route = [CLI];
   if (answers.cloud === "azure" || answers.cloud === "gcp") {
     route.push(soonStep(answers.cloud));
+    effective.origCloud = answers.cloud;
     effective.cloud = "pets";
   }
-  route.push(catalogStep(effective.cloud));
+  if (answers.cloud === "azure" && answers.start === "brownfield") {
+    route.push({
+      title: "Publish the Azure catalog",
+      to: "/onboarding/catalogs#azure-and-gcp",
+      body: "massdriver-catalogs/azure has the virtual-network, private-dns-zone, key-vault and log-workspace types the imports use, and the bundles that build on them.",
+    });
+  } else {
+    route.push(catalogStep(effective.cloud));
+  }
   route.push(RESOURCE_TYPES);
   const cred = credentialStep(effective.cloud);
   if (cred) route.push(cred);
@@ -301,7 +343,7 @@ export default function OnboardingPath() {
   return (
     <div className={s.path}>
       <div className={s.questions}>
-        {QUESTIONS.map((q) => (
+        {QUESTIONS.filter((q) => !q.when || q.when(answers)).map((q) => (
           <fieldset key={q.key} className={s.question}>
             <legend className={s.legend}>{q.title}</legend>
             <div className={s.options}>

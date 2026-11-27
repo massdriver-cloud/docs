@@ -22,8 +22,9 @@ A working Massdriver organization has four parts:
 | Catalog | Start | Automations on | Route |
 |---|---|---|---|
 | AWS | Greenfield | ECS | [Catalogs](./01-catalogs.md#aws-catalog) → [Resource types](./02-resource-types.md) → [Greenfield AWS](./03-greenfield-aws.md) → [pr-sync on ECS](./04-automations.md#deploy-pr-sync-on-ecs) |
-| AWS | Brownfield | ECS | [Catalogs](./01-catalogs.md#aws-catalog) → [Resource types](./02-resource-types.md) → [Import the VPC](./05-brownfield.md) → [ecs-cluster on it](./05-brownfield.md#build-on-the-imported-vpc) → [pr-sync on ECS](./04-automations.md#deploy-pr-sync-on-ecs) |
-| Any | Brownfield | A Kubernetes namespace you were given | [Resource types](./02-resource-types.md) → [Import the namespace](./06-brownfield-kubernetes.md) → [pr-sync in the namespace](./06-brownfield-kubernetes.md#deploy-pr-sync-into-the-namespace) |
+| AWS | Brownfield, from the network | ECS | [Catalogs](./01-catalogs.md#aws-catalog) → [Resource types](./02-resource-types.md) → [Import the network](./05-brownfield.md#network) → [dns-zone and ecs-cluster on it](./05-brownfield.md#build-on-the-network) → [pr-sync on ECS](./04-automations.md#deploy-pr-sync-on-ecs) |
+| AWS, Azure | Brownfield, from the landing zone | ECS on AWS | [Catalogs](./01-catalogs.md) → [Resource types](./02-resource-types.md) → [Import the landing zone](./05-brownfield.md#landing-zone) → an app and its data bundles → [pr-sync on the imported cluster](./04-automations.md#deploy-pr-sync-on-ecs) |
+| Any | Brownfield, from Kubernetes | A namespace | [Resource types](./02-resource-types.md) → [Import namespaces from Terraform](./05-brownfield.md#kubernetes) or [by hand](./06-brownfield-kubernetes.md) → [pr-sync in the namespace](./06-brownfield-kubernetes.md#deploy-pr-sync-into-the-namespace) |
 | Pets | Either | — | [Pets catalog](./01-catalogs.md#pets-catalog) → [Model the platform](./01-catalogs.md#model-the-platform) → [Replace the stubs](./01-catalogs.md#replace-the-stubs) |
 | Pets | Either | ECS | Not possible. The pets catalog has no ECS cluster. Take the AWS greenfield route, or run the automations on [a Kubernetes namespace](./06-brownfield-kubernetes.md). |
 | Azure, GCP | — | — | Not written yet. Refer to [Azure and GCP](./01-catalogs.md#azure-and-gcp). |

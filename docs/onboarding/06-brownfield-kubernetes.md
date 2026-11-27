@@ -8,7 +8,7 @@ description: Import one namespace of a cluster that another team runs as a massd
 
 Another team runs the cluster: EKS, GKE, AKS, OpenShift or kubeadm. You get a namespace. Massdriver needs nothing more than that: a token that is an admin of the namespace and nothing outside it. The cluster, its node pools, its ingress controller and its cert-manager stay with the team that runs them.
 
-This works with any catalog, including the pets catalog, because the cluster is imported, not deployed.
+This works with any catalog, including the pets catalog, because the cluster is imported, not deployed. When the Terraform that runs the cluster can create the namespace and import it, use [the Terraform import](./05-brownfield.md#kubernetes) and skip to [Deploy pr-sync into the namespace](#deploy-pr-sync-into-the-namespace). The steps below are for when you can only ask the cluster's owners.
 
 ## Ask for
 
@@ -75,6 +75,8 @@ kubectl --kubeconfig ./kubeconfig.yaml auth can-i create namespaces    # no
 ```
 
 The resource type's import instructions in the UI also cover EKS, GKE and AKS.
+
+In Claude Code or opencode with the [Massdriver plugin](./05-brownfield.md#claude-code-and-opencode), `/massdriver:import` with **Register resource only** builds the same payload from your current kubeconfig context and creates the resource. It does not create the ServiceAccount or the RoleBinding: those need the cluster owners' access.
 
 ## Deploy pr-sync into the namespace
 
