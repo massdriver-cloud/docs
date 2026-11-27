@@ -78,7 +78,7 @@ In `metro`, a station shows as `◉` in its environment's health color. It blink
 
 ## Palettes
 
-`--palette` sets the colors and the backdrop. Red, orange, and yellow mean alarms, warnings, and the blast radius in every palette.
+`--palette` sets the colors and the backdrop, and `p` switches palettes while the dashboard runs. Red, orange, and yellow mean alarms, warnings, and the blast radius in every palette.
 
 | Palette | Backdrop |
 |---|---|
@@ -96,5 +96,6 @@ In `metro`, a station shows as `◉` in its environment's health color. It blink
 | `g` | Project names colored by project, and each project's environments pulled together |
 | `s` | Producers stacked above the environments that use their resources |
 | `v` | The next theme |
+| `p` | The next palette |
 
 The footer shows each toggle with `●` when it is on and `○` when it is off.

@@ -70,7 +70,7 @@ Press `v` to switch how the map is drawn:
 - **metro** draws environments as stations on transit lines: a band for each project, producers on the left, and sparks running down the track to their consumers.
 - **radar** puts the focus at the center of a sweeping scope, with each environment on the ring as many hops out as it is. Blips light up as the sweep passes them.
 
-Start in a theme with `--theme`, and pick colors with `--palette`:
+Press `p` to switch colors. Start in a theme with `--theme`, and pick colors with `--palette`:
 
 ```bash
 mass dashboard --theme radar --palette rain

@@ -49,6 +49,7 @@ This feature is alpha. Names, fields, and behavior can change or be removed at a
 | `t` | Replay the audit log |
 | `b` `a` `c` `g` `s` | Toggles. See [Reading the map](/guides/dashboard/reading-the-map#toggles). |
 | `v` | The next theme |
+| `p` | The next palette |
 
 ### Replay
 
