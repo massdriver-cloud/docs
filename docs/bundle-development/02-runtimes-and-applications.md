@@ -12,6 +12,45 @@ A **runtime** is a bundle that defines how applications run on a cloud: a Lambda
 
 An **application** is a bundle that runs on a runtime. It adds only what is specific to that application: its name and version, the dependencies it needs, the environment variables and secrets it reads, and the resources it emits for other services to depend on. An application is a single `massdriver.yaml` with no IaC of its own.
 
+**Write the infrastructure once. Ship every service on it.**
+
+## Quick start
+
+**1. The platform team publishes a runtime.** It is an ordinary bundle with `provides: [runtime]`:
+
+```yaml title="lambda/massdriver.yaml"
+name: lambda
+version: 1.2.8
+provides: [runtime]
+```
+
+```shell
+mass bundle publish
+```
+
+**2. A service team writes an application.** No IaC, just what the service needs:
+
+```yaml title="payments-api/massdriver.yaml"
+name: payments-api
+version: 0.4.1
+
+dependencies:
+  db:
+    resource_type: postgres@~1
+    required: true
+
+app:
+  runtime: lambda@~1.2
+  envs:
+    DB_HOST: .dependencies.db.authentication.hostname
+```
+
+```shell
+mass bundle publish
+```
+
+**3. Watch it roll out.** The [Runtimes page](#runtimes-in-the-ui) shows which version of `lambda` each application is built on and each instance runs.
+
 ## Why runtimes
 
 Most applications in an organization run on a handful of shapes. Without runtimes, each application either deploys a generic bundle and is wired up by hand in every environment, or carries a copy of the IaC in its own repository. Copies drift. Every developer can change what their infrastructure looks like, a security fix has to be applied to every copy, and the platform team ends up reviewing many modules that are mostly the same.
@@ -333,6 +372,23 @@ Massdriver delivers the connection details. The TLS handshake happens in one of 
 - **In the runtime.** A runtime that configures a service mesh or mTLS sidecar reads the dependency and sets up the connection itself, and the application calls a local endpoint without handling certificates. The runtime has to be built for this, so it is a platform decision rather than a per-application one.
 
 Either way, `checkout-api`'s own client certificate does not come from `payments-api-server`. It is issued separately, by the runtime or as a secret or resource of its own.
+
+## Runtimes in the UI
+
+Open **Runtimes** in the sidebar to see every runtime in your organization. Each card shows the runtime's latest version, the applications built on it, the instances that run those applications, and how many of those instances run an application built on the latest runtime version.
+
+![The Runtimes page, with a card for each runtime and a meter of instances on the latest version](/img/screenshots/runtimes-list.png)
+
+Select a runtime to see its rollout. In this example, `lambda` 1.2.8 is the latest version, and `payments-api` and `checkout-api` are built on it.
+
+![The lambda runtime page, with its stats, a preview of publishing 1.3.0, and the instances that stay on 1.2.8](/img/screenshots/runtime-rollout.png)
+
+- **Stats.** The latest version, the number of applications and instances, and how many instances are on the latest version.
+- **What happens if you publish a new version?** Pick the next patch, minor, or major version, or enter a custom one. The panel shows what changes before you publish anything. Publishing a runtime never changes a running instance: each application builds on the new version the next time it is published, and each instance runs it the next time it deploys. Until then, every instance shows **Stays on** its current runtime version.
+- **Instances.** Each instance whose last deployment ran an application built on this runtime, with its project, environment, application, and the runtime version it runs. An instance on an older version shows how many versions behind it is.
+- **Applications.** Each application built on this runtime, at its newest version, with the runtime version it was built on.
+
+Use this page to plan a runtime fix like the IAM change in [Use cases](#use-cases): publish the new runtime version, republish the applications on it, then watch **On latest** climb as their instances deploy.
 
 ## Related documentation
 
