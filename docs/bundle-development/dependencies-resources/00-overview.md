@@ -3,6 +3,7 @@ id: dependencies-resources-overview
 slug: /bundle-development/dependencies-resources/overview
 title: Dependencies & Resources
 sidebar_label: Overview
+image: /img/og/dependencies-resources.png
 ---
 
 Dependencies and resources enable type-safe composition of infrastructure components in Massdriver.
@@ -29,6 +30,7 @@ The first two checks happen when you draw the line, so incompatible infrastructu
 
 - **[Resource Type Specification](./resource-type-spec)** - Authoring, versioning, and publishing a resource type
 - **[Version Resolution](./version-resolution)** - How a version range picks a resource at deploy time
+- **[Massdriver Resource Types](./massdriver-resource-types)** - Official types for service accounts, Kubernetes clusters, WireGuard tunnels, and event destinations
 
 ## Related documentation
 

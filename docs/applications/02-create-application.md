@@ -1,8 +1,9 @@
 ---
 id: applications-create
 slug: /applications/create
-title: Create
+title: Create an Application
 sidebar_label: Create
+image: /img/og/applications-create.png
 ---
 
 :::note
@@ -16,7 +17,7 @@ Before getting started you'll need:
 
 :::
 
-In this guide we'll write an **application bundle** and **publish** it to Massdriver. An application bundle runs on a [runtime](/applications) that your platform team publishes. The runtime holds the IaC. The application bundle holds only the configuration that is specific to your application: its dependencies (databases, queues), its environment variables, and its secrets. After you publish the application bundle, we'll configure it in the UI and set up continuous deployments from GitHub Actions.
+You'll write one `massdriver.yaml`, publish it, and have a bundle your teammates can drop onto any project. The [runtime](/applications) your platform team publishes already holds the IaC. Your application bundle holds only what is specific to your service: the databases and queues it uses, its environment variables, and its secrets.
 
 First, make a directory for the application bundle and add a `massdriver.yaml`:
 
@@ -48,7 +49,7 @@ We recommend prefixing application and infrastructure bundles with where they ru
 
 Then, add the [`dependencies`](/concepts/dependencies) that your application uses. Give each dependency a simple name, like `postgres`. If you have more complex dependencies, use names like `inventory_database` for an inventory database or `website_cache` for a Redis website cache. A dependency name must not match a dependency or param that the runtime declares.
 
-There are different schools of thought as to if your application's cloud configuration should be stored alongside your application code or in a different directory. For `private` applications, we suggest keeping it alongside your application code to simplify CI/CD.
+Keep the `massdriver.yaml` next to your application code. Then the same pull request that changes the code can change what it connects to, and CI can publish both together.
 
 ## Files in the Application Bundle
 
@@ -76,15 +77,11 @@ The `app` block of an application bundle accepts three keys:
 
 The runtime can also have its own envs and secrets. The application inherits them and cannot change them. Your envs and secrets are added to the runtime's. Each name must be new. If you use the name of a runtime env or secret, the build fails.
 
-`app.envs` expects [jq](https://stedolan.github.io/jq/manual/) queries to extract values from `params` or `dependencies`.
+`app.envs` takes [jq](https://jqlang.github.io/jq/manual/) expressions that read from `.params` and `.dependencies`.
 
 ### Environment Variable Examples
 
-Environment variables can be extracted from `params` and/or `dependencies`. Massdriver parses `jq` expressions to allow for rich composition of values into environment variables:
-
-The following would set the `LOG_LEVEL` in your application based on the value a users selects from the `log_level` dropdown.
-
-The `.params` prefix tells Massdriver where to pull the value from. The field names can be any complex expression with JQ as we'll see in the next example.
+Set `LOG_LEVEL` from the `log_level` param that users pick on the instance, and `PORT` from a number param:
 
 ```yaml title="Simple param-based environment variable"
 app:
@@ -93,7 +90,7 @@ app:
     PORT: .params.port | tostring
 ```
 
-Here we set the `POSTGRES_USERNAME` to the `username` field in our Postgres dependency's authentication object.
+Read a field from a dependency:
 
 ```yaml title="Simple dependency-based environment variable"
 app:
@@ -109,7 +106,7 @@ The structure of each resource type is documented [in the artifact-definitions r
 
 :::
 
-In the following example we compose all of the components of the Postgres authentication object into a `POSTGRES_URL` environment variable.
+Compose several fields into one value, such as a connection URL:
 
 ```yaml title="Build a complex environment variable"
 app:
@@ -119,20 +116,20 @@ app:
 
 ### Secret Examples
 
-Secrets can be defined in your `massdriver.yaml` file. This will create forms in the Massdriver UI where 3rd party secrets can be set for your application.
+Each secret you declare gets a field in the instance's configuration, where someone sets it. At deploy time it becomes an environment variable with the same name. `app.envs` expressions cannot read secrets.
 
-Secrets will be turned into environment variables at deploy time. The environment variable has the same name as the secret. The `envs` jq queries can read only `.params` and `.dependencies` [above](#environment-variable-examples). They cannot read secrets.
-
+Set `required: true` to block deployments until the secret is set.
 
 ```yaml title="Defining a secret"
 app:
   secrets:
-    SOME_SECRET: # This is env var name this will be converted to
-      required: true # if a secret is required, Massdriver will block deployments that are missing this secret
-      title: "A nice name for the UI"
-      description: "A great description for the UI"
+    STRIPE_KEY:
+      required: true
+      title: Stripe API key
+      description: Secret key for card captures.
 ```
-## Parameters
+
+## Parameters and dependencies
 
 The runtime owns the `params` and the `ui`. An application bundle cannot set them. If your `massdriver.yaml` sets `params` or `ui`, the build fails. Your application inherits the runtime's params, and users configure them on each instance.
 
@@ -141,8 +138,6 @@ A good example is the container image repository (`.params.image.repository`). I
 To run this example, set the image repository on the instance to `massdrivercloud/phoenix-chat-example`.
 
 The repository is available [here](https://hub.docker.com/repository/docker/massdrivercloud/phoenix-chat-example) and the code is on [GitHub](https://github.com/massdriver-cloud/phoenix-chat-example).
-
-### Dependencies
 
 In this example the application has two required dependencies:
 
@@ -168,9 +163,9 @@ mass bundle build
 
 The merged bundle is in `.massdriver/build/`.
 
-At this point the application bundle can be published to the Massdriver bundle manager:
+Publish it:
 
-```yaml
+```shell
 mass bundle publish
 ```
 

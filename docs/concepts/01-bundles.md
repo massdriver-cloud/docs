@@ -3,6 +3,7 @@ id: concepts-bundles
 slug: /concepts/bundles
 title: Bundles
 sidebar_label: Bundles
+image: /img/og/concepts-bundles.png
 ---
 
 A **bundle** is a reusable, versioned definition of cloud infrastructure or application components. It encapsulates infrastructure-as-code (IaC) modules, their configuration schemas, dependencies, outputs, deployment logic, and policy-as-code into a single, composable unit.

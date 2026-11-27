@@ -3,6 +3,7 @@ id: concepts-resources-and-types
 slug: /concepts/resources-and-types
 title: Resources & Resource Types
 sidebar_label: Resources & Resource Types
+image: /img/og/concepts-resources.png
 ---
 
 ## Overview

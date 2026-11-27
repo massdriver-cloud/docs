@@ -1,0 +1,71 @@
+---
+id: guides-annotations-metadata
+slug: /guides/annotations/metadata
+title: Metadata
+sidebar_label: Metadata
+---
+
+import {
+  MetadataTextRow,
+  MetadataJsonRow,
+  MetadataPillsRow,
+  MetadataFooter,
+  MetadataWidgetsRow,
+} from "@site/src/components/Annotations";
+
+# Metadata
+
+:::caution Alpha
+This feature is alpha. Names, fields, and behavior can change or be removed at any time without notice.
+:::
+
+Stash entries that have a label show as metadata in the Massdriver UI. Everyone who can view the project sees metadata. Metadata needs no setup. Add a label when you write the entry:
+
+```bash
+mass stash set billing-dev-app.schema.version "42" --label "Schema version"
+```
+
+## Where metadata shows
+
+| Place | Entries |
+|---|---|
+| The **Metadata** tab of an instance | Labeled entries on the instance |
+| The **Deployment metadata** section of a deployment's details | Labeled entries on the deployment, written by the deployment's steps |
+| The **Metadata** card on the project overview | Labeled entries on the project |
+
+## What it looks like
+
+| Entry | Looks like | Meaning |
+|---|---|---|
+| A TEXT entry | <MetadataTextRow label="A metadata row with the label Schema version, the key schema.version, and the value 42" /> | The label, the key, and the value. |
+| A JSON entry | <MetadataJsonRow label="A metadata row for stats/traffic with one tile for each top-level field: rps 240, errors_5m 2, p95_ms 85" /> | One tile for each top-level field. A nested object shows as JSON text in its tile. |
+| An entry with flags | <MetadataPillsRow label="A metadata row with a masked value and three pills: expires in 2 hours, immutable, and sensitive" /> | Pills show when the entry expires, when it is immutable, and when it is sensitive. A sensitive value is masked unless you can change the stash. |
+| Unlabeled entries | <MetadataFooter label="Footer text: 3 entries have no label, with the command mass stash list billing-dev-app" /> | Entries without a label do not show as rows. The Metadata tab counts them and gives the command that lists them. |
+
+The project card shows the label, the value, and the expiry pill for each entry.
+
+Keys that start with `md/` do not show as rows in any of these places, and the Metadata tab does not count them as unlabeled entries. [Widgets](/guides/annotations/widgets) read them instead.
+
+## Widgets on the Metadata tab
+
+The instance Metadata tab shows the instance's automatic widgets above the entries. Each widget shows as a stat with a label and a value.
+
+| Stat | Key | Value |
+|---|---|---|
+| Health | `md/health` | A colored dot and the value |
+| Traffic | `md/traffic` | A colored dot and the traffic label for the lines that leave the instance, such as `240 rps · 180 ms`. It says "stale" when the data is more than 10 minutes old. |
+| Usage | `md/usage` | The usage bar and the numbers, such as `37 / 100` |
+
+The label of a stat is the stash entry's label. A usage stat without an entry label uses the `label` field of its value. Otherwise the stat uses the default label: `Health`, `Traffic`, or `Usage`.
+
+<MetadataWidgetsRow label="Widgets on the Metadata tab: Health with an amber dot and the value degraded, Traffic with a teal dot and 240 rps, 180 ms, and Connection pool with a teal usage bar at 37 / 100" />
+
+Each stat has a tooltip, for example `Connection pool: 37 of 100 (37%)` and `Updated 2m ago`.
+
+The tab shows only the widgets that have a valid value. When the instance has none, the widgets do not show. When you hide automatic widgets with the **Widgets** button in the canvas toolbar, the widgets on the Metadata tab are hidden too.
+
+## Live updates
+
+The Metadata panels on the canvas and on the project page update when a stash value changes. You do not need to reload the page.
+
+The **Deployment metadata** section also updates when you open the deployment's details from the **History** tab on the canvas. When you open the details from the dashboard or a repo page, the section loads once and does not update.

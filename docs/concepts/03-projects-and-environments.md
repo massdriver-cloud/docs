@@ -3,6 +3,7 @@ id: concepts-projects-and-environments
 slug: /concepts/projects-and-environments
 title: Projects & Environments
 sidebar_label: Projects & Environments
+image: /img/og/concepts-projects-environments.png
 ---
 
 ## Projects

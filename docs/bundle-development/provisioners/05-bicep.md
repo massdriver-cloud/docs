@@ -3,6 +3,7 @@ id: provisioners-bicep
 slug: /bundle-development/provisioners/bicep
 title: Bicep Provisioner
 sidebar_label: Bicep
+image: /img/og/provisioners-bicep.png
 ---
 
 # Bicep Provisioner

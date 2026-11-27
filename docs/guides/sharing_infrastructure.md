@@ -3,6 +3,7 @@ id: guides-sharing-infrastructure
 slug: /guides/sharing-infrastructure
 title: Sharing Infrastructure between Projects and Environments
 sidebar_label: Sharing Infrastructure
+image: /img/og/guide-sharing-infrastructure.png
 ---
 
 Massdriver supports sharing resources across environments and projects. Sharing resources facilitate collaboration, resource management, and operational governance across different teams or departments within an organization. 

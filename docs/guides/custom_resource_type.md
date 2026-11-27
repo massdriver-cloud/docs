@@ -15,7 +15,7 @@ A resource type is authored as a `massdriver.yaml` in its own directory, publish
 
 ## Step 1: Check whether one already exists
 
-Look through the Massdriver [resource types GitHub repo](https://github.com/massdriver-cloud/artifact-definitions/tree/main/definitions/artifacts) first. If nothing there fits, write your own.
+Look through the Massdriver [resource types GitHub repo](https://github.com/massdriver-cloud/artifact-definitions/tree/main/definitions/artifacts) first. For Massdriver service accounts, Kubernetes clusters, WireGuard tunnels, and event destinations, install the [Massdriver resource types](/bundle-development/dependencies-resources/massdriver-resource-types). If nothing there fits, write your own.
 
 :::tip Bootstrap Your Resource Types
 

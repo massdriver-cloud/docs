@@ -1,0 +1,201 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="og.css" />
+    <style>
+      .frame {
+        background:
+          radial-gradient(620px 520px at 74% 50%, rgba(45, 212, 191, 0.12), transparent 65%),
+          var(--bg);
+      }
+      .text {
+        position: absolute;
+        left: 80px;
+        top: 186px;
+        width: 500px;
+      }
+      .title {
+        font-size: 106px;
+        margin: 14px 0 24px;
+      }
+      .lede {
+        font-size: 22px;
+      }
+      .lede b {
+        color: var(--ink);
+        font-weight: 500;
+      }
+      .col {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .events {
+        left: 580px;
+        top: 112px;
+        height: 406px;
+        align-items: flex-end;
+      }
+      .autos {
+        left: 922px;
+        top: 52px;
+        height: 526px;
+      }
+      .head {
+        position: absolute;
+        font-size: 13px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .ev {
+        font-size: 14px;
+        padding: 7px 12px;
+        border-radius: 999px;
+        border: 1px solid #3a3a42;
+        background: #0d0d10;
+        color: #b9b9c0;
+        white-space: nowrap;
+      }
+      .ev.hot {
+        border-color: var(--accent);
+        color: #050506;
+        background: var(--accent);
+        font-weight: 700;
+        box-shadow: 0 0 28px rgba(45, 212, 191, 0.55);
+      }
+      .au {
+        width: 232px;
+        font-size: 14.5px;
+        padding: 8px 12px 8px 30px;
+        border-radius: 6px;
+        border: 1px solid #2c2c33;
+        background: #0b0b0e;
+        color: #8d8d95;
+        position: relative;
+        white-space: nowrap;
+      }
+      .au::before {
+        content: "";
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        width: 8px;
+        height: 8px;
+        margin-top: -4px;
+        border-radius: 50%;
+        background: #3a3a42;
+      }
+      .au.hot {
+        border-color: var(--accent);
+        background: #0a2622;
+        color: #e9fffb;
+        box-shadow: 0 0 18px rgba(45, 212, 191, 0.22);
+      }
+      .au.hot::before {
+        background: var(--accent);
+        box-shadow: 0 0 10px var(--accent);
+      }
+      svg.wires {
+        position: absolute;
+        inset: 0;
+        width: 1200px;
+        height: 630px;
+      }
+      .w {
+        fill: none;
+        stroke: #34343b;
+        stroke-width: 1.2;
+      }
+      .w.hot {
+        stroke: var(--accent);
+        stroke-width: 2;
+        filter: drop-shadow(0 0 4px rgba(45, 212, 191, 0.7));
+      }
+    </style>
+  </head>
+  <body>
+    <div class="frame">
+      <div class="grid"></div>
+      <img class="logo" src="../../static/img/logo-white.svg" />
+      <div class="text">
+        <div class="kicker">continuous delivery</div>
+        <div class="title">Automations</div>
+        <div class="lede">Services that act on<br /><b>Massdriver events</b><br />with a service account.</div>
+      </div>
+      <svg class="wires" id="wires" aria-hidden="true"></svg>
+      <div class="col events" id="events"></div>
+      <div class="col autos" id="autos"></div>
+      <div class="url">docs.massdriver.cloud</div>
+      <div class="bar"></div>
+    </div>
+    <script>
+      const HOT = "deployment.completed";
+      const EVENTS = [
+        "repo.published",
+        "group_membership.added",
+        "deployment.proposed",
+        "group.updated",
+        "deployment.completed",
+        "deployment.failed",
+        "alarm_state.created",
+      ];
+      const ALL = EVENTS;
+      const AUTOMATIONS = [
+        ["release-notes", ["repo.published"]],
+        ["bundle-scanner", ["repo.published"]],
+        ["sandbox-on-join", ["group_membership.added", "deployment.completed"]],
+        ["proposal-chatops", ["deployment.proposed"]],
+        ["freeze-guard", ["group.updated"]],
+        ["autodeploy-downstream", ["deployment.completed"]],
+        ["github-deployments", ["deployment.proposed", "deployment.completed", "deployment.failed"]],
+        ["rollback-on-failure", ["deployment.failed"]],
+        ["drift", ["deployment.completed", "deployment.failed"]],
+        ["statuspage", ["deployment.completed", "deployment.failed", "alarm_state.created"]],
+        ["audit-archiver", ALL],
+        ["router", ALL],
+      ];
+
+      const evCol = document.getElementById("events");
+      for (const e of EVENTS) {
+        const d = document.createElement("div");
+        d.className = "ev" + (e === HOT ? " hot" : "");
+        d.dataset.id = e;
+        d.textContent = e;
+        evCol.appendChild(d);
+      }
+      const auCol = document.getElementById("autos");
+      for (const [name, evs] of AUTOMATIONS) {
+        const d = document.createElement("div");
+        d.className = "au" + (evs.includes(HOT) ? " hot" : "");
+        d.dataset.id = name;
+        d.textContent = name;
+        auCol.appendChild(d);
+      }
+
+      document.fonts.ready.then(() => {
+      const svg = document.getElementById("wires");
+      const anchor = (sel, side) => {
+        const r = document.querySelector(sel).getBoundingClientRect();
+        return [side === "right" ? r.right : r.left, r.top + r.height / 2];
+      };
+      const wires = [];
+      for (const [name, evs] of AUTOMATIONS) {
+        for (const e of evs) wires.push([e, name, e === HOT]);
+      }
+      wires.sort((a, b) => a[2] - b[2]);
+      for (const [e, name, hot] of wires) {
+        const [x1, y1] = anchor(`.ev[data-id="${e}"]`, "right");
+        const [x2, y2] = anchor(`.au[data-id="${name}"]`, "left");
+        const mx = (x1 + x2) / 2;
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", `M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`);
+        path.setAttribute("class", "w" + (hot ? " hot" : ""));
+        svg.appendChild(path);
+      }
+      });
+    </script>
+  </body>
+</html>

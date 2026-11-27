@@ -3,6 +3,7 @@ id: bundle-yaml-spec
 slug: /bundle-development/bundle-yaml-spec
 title: Bundle YAML Specification
 sidebar_label: Bundle YAML Spec
+image: /img/og/bundle-yaml-spec.png
 ---
 
 # Bundle YAML Specification

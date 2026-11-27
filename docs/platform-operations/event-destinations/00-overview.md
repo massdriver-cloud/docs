@@ -3,6 +3,7 @@ id: event-destinations-overview
 slug: /platform-operations/event-destinations
 title: Event Destinations
 sidebar_label: Overview
+image: /img/og/event-destinations.png
 ---
 
 An event destination receives your organization's audit log events. You choose the events that the destination receives. Each destination has an adapter. The adapter sets where and how Massdriver sends the events.
@@ -15,6 +16,8 @@ An event destination receives your organization's audit log events. You choose t
 | [PagerDuty](/platform-operations/event-destinations/pagerduty) | As an alert on a PagerDuty service, with the Events API v2. |
 
 To manage destinations, a person or service account needs the `organization:manageEventDestinations` permission. Refer to [GraphQL permissions](/platform-operations/security/graphql-permissions#event-destination).
+
+To act on events, such as to approve proposals from Slack or roll back a failed deployment, run an [automation](/continuous-delivery/automations) behind an HTTP destination.
 
 ## Add a destination
 
@@ -179,23 +182,7 @@ These events have no attributes, so a destination with **Attributes** never rece
 
 Massdriver records the event and its deliveries in one database transaction. It starts to send them when the transaction commits, usually in less than a second.
 
-```mermaid
-sequenceDiagram
-    participant AL as Audit log
-    participant MD as Massdriver
-    participant EP as Your endpoint
-    AL-->>MD: Events 1 and 2
-    Note over MD: One delivery for each event that matches Events and Attributes
-    MD->>EP: Send event 1, attempt 1
-    EP-->>MD: Failure that Massdriver retries
-    Note over MD: Event 1 is PENDING and waits 30 seconds or more. Massdriver stops for now.
-    MD->>EP: Send event 2, attempt 1, within a minute
-    EP-->>MD: Success
-    Note over MD: Event 2 is DELIVERED
-    MD->>EP: Send event 1, attempt 2
-    EP-->>MD: Success
-    Note over MD: Event 1 is DELIVERED
-```
+<DeliverySequence />
 
 ### Order and duplicates
 
@@ -217,6 +204,8 @@ Massdriver gives each event to the adapter as one [CloudEvent](https://cloudeven
 | `time` | When the event occurred (UTC, ISO 8601). |
 | `datacontenttype` | `application/json` |
 | `data` | `entity`, the entity that the event is about, and `actor`, the actor that caused the event. [Event Reference](/platform-operations/event-destinations/events) lists the fields of each entity. |
+| `traceparent` | The trace of the work that caused the event, in [W3C Trace Context](https://www.w3.org/TR/trace-context/#traceparent-header) format. Refer to [Trace context](#trace-context). |
+| `tracestate` | Vendor data for the trace, in [W3C Trace Context](https://www.w3.org/TR/trace-context/#tracestate-header) format. Refer to [Trace context](#trace-context). |
 
 Massdriver adds two objects to `data`:
 
@@ -280,6 +269,12 @@ This is a `deployment.completed` event:
   }
 }
 ```
+
+### Trace context
+
+Massdriver sets `traceparent` and `tracestate` from the [CloudEvents distributed tracing extension](https://github.com/cloudevents/spec/blob/main/cloudevents/extensions/distributed-tracing.md). They identify the trace of the request or job that caused the event, such as the API request that created a project. An event has `traceparent` only when Massdriver recorded a trace for that work. An event has `tracestate` only when the trace has vendor data.
+
+Every attempt of an event sends the same `traceparent` and `tracestate`. To show the work of your receiver in the same trace as the work in Massdriver, make the span of your receiver a child of `traceparent` or link it to `traceparent`.
 
 ## Failures and retries
 

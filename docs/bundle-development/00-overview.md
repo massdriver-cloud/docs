@@ -3,6 +3,7 @@ id: bundle-development-overview
 slug: /bundle-development/overview
 title: Bundle Development
 sidebar_label: Overview
+image: /img/og/bundle-development.png
 ---
 
 This section covers everything you need to build, test, and publish Massdriver bundles.

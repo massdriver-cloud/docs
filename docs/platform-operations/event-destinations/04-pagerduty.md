@@ -3,6 +3,7 @@ id: event-destinations-pagerduty
 slug: /platform-operations/event-destinations/pagerduty
 title: PagerDuty Event Destinations
 sidebar_label: PagerDuty
+image: /img/og/event-destinations-pagerduty.png
 ---
 
 The `PAGER_DUTY` adapter triggers one PagerDuty alert for each event, with the [Events API v2](https://developer.pagerduty.com/docs/events-api-v2-overview). The alert goes to the service or ruleset of your integration key.
