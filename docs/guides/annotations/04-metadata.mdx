@@ -44,12 +44,22 @@ Keys that start with `md/` do not show as rows in any of these places, and the M
 
 ## Widgets on the Metadata tab
 
-The instance Metadata tab shows a **Widgets** row above the entries. It shows the instance's automatic widgets:
+The instance Metadata tab shows the instance's automatic widgets above the entries. Each widget shows as a stat with a label and a value.
 
-- The `md/health` dot, with its value.
-- The `md/usage` bar, with the value and the limit.
-- The `md/traffic` label for the traffic that leaves the instance. Its color follows the traffic state, and it says "stale" when the data is more than 10 minutes old.
+| Stat | Key | Value |
+|---|---|---|
+| Health | `md/health` | A colored dot and the value |
+| Traffic | `md/traffic` | A colored dot and the traffic label for the lines that leave the instance, such as `240 rps · 180 ms`. It says "stale" when the data is more than 10 minutes old. |
+| Usage | `md/usage` | The usage bar and the numbers, such as `37 / 100` |
 
-<MetadataWidgetsRow label="Widgets row: an amber dot with the value degraded, a usage bar at 86 of 100, and a teal traffic label that says 240 rps" />
+The label of a stat is the stash entry's label. A usage stat without an entry label uses the `label` field of its value. Otherwise the stat uses the default label: `Health`, `Traffic`, or `Usage`.
 
-The row shows only the widgets that have a valid value. It does not show when the instance has none. When you hide automatic widgets with the **Widgets** button on the canvas, the row is hidden too.
+<MetadataWidgetsRow label="Widgets on the Metadata tab: Health with an amber dot and the value degraded, Traffic with a teal dot and 240 rps, 180 ms, and Connection pool with a teal usage bar at 37 / 100" />
+
+Each stat has a tooltip, for example `Connection pool: 37 of 100 (37%)` and `Updated 2m ago`.
+
+The tab shows only the widgets that have a valid value. When the instance has none, the widgets do not show. When you hide automatic widgets with the **Widgets** button in the canvas toolbar, the widgets on the Metadata tab are hidden too.
+
+## Live updates
+
+The Metadata panels on the canvas and on the project page update when a stash value changes. You do not need to reload the page.

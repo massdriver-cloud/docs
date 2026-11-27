@@ -93,19 +93,34 @@ export function StatusDotState({ tone, label }) {
   );
 }
 
-export function UsageBarState({ percent, tone, text, label }) {
-  const track = 80;
+function UsageMeter({ x, y, width, percent, tone, name, text }) {
+  const nameWidth = name ? name.length * 5.6 + 8 : 0;
+  const textWidth = text.length * 5.6 + 8;
+  const track = width - nameWidth - textWidth;
   return (
-    <Figure label={label} width={190} height={56}>
-      <rect className={s.node} x={2} y={2} width={186} height={52} rx={6} />
+    <g>
+      {name ? (
+        <text className={s.muted} x={x} y={y + 4}>
+          {name}
+        </text>
+      ) : null}
+      <rect x={x + nameWidth} y={y - 3} width={track} height={6} rx={3} style={{ fill: "var(--an-border)" }} />
+      <rect x={x + nameWidth} y={y - 3} width={(track * percent) / 100} height={6} rx={3} style={{ fill: TONE_VAR[tone] }} />
+      <text className={s.muted} x={x + width} y={y + 4} textAnchor="end">
+        {text}
+      </text>
+    </g>
+  );
+}
+
+export function UsageBarState({ percent, tone, name, text, label }) {
+  return (
+    <Figure label={label} width={210} height={58}>
+      <rect className={s.node} x={2} y={2} width={206} height={54} rx={6} />
       <text className={s.strong} x={14} y={22}>
         billing-dev-app
       </text>
-      <rect x={14} y={42} width={track} height={3} rx={1.5} style={{ fill: "var(--an-border)" }} />
-      <rect x={14} y={42} width={(track * percent) / 100} height={3} rx={1.5} style={{ fill: TONE_VAR[tone] }} />
-      <text className={s.muted} x={102} y={47}>
-        {text}
-      </text>
+      <UsageMeter x={14} y={44} width={182} percent={percent} tone={tone} name={name} text={text} />
     </Figure>
   );
 }
@@ -239,25 +254,34 @@ export function MetadataPillsRow({ label }) {
 }
 
 export function MetadataWidgetsRow({ label }) {
+  const cell = 160;
   return (
-    <Row height={36} label={label}>
-      <text className={s.muted} x={12} y={22} style={{ letterSpacing: "0.08em" }}>
-        WIDGETS
+    <Figure label={label} width={cell * 3} height={60}>
+      <rect className={s.surface} x={0.5} y={0.5} width={cell * 3 - 1} height={59} rx={4} />
+      <line className={s.line} x1={cell} y1={1} x2={cell} y2={59} />
+      <line className={s.line} x1={cell * 2} y1={1} x2={cell * 2} y2={59} />
+
+      <text className={s.strong} x={16} y={22}>
+        Health
       </text>
-      <circle cx={86} cy={18} r={5} style={{ fill: TONE_VAR.warning }} />
-      <text className={s.text} x={96} y={22}>
+      <circle cx={21} cy={41} r={5} style={{ fill: TONE_VAR.warning }} />
+      <text className={`${s.text} ${s.mono}`} x={32} y={45}>
         degraded
       </text>
-      <rect x={160} y={17} width={50} height={3} rx={1.5} style={{ fill: "var(--an-border)" }} />
-      <rect x={160} y={17} width={43} height={3} rx={1.5} style={{ fill: TONE_VAR.warning }} />
-      <text className={s.muted} x={216} y={22}>
-        86 / 100
+
+      <text className={s.strong} x={cell + 16} y={22}>
+        Traffic
       </text>
-      <rect x={268} y={9} width={84} height={18} rx={9} style={{ fill: TONE_VAR.teal, opacity: 0.14 }} />
-      <text className={s.text} x={310} y={22} textAnchor="middle" style={{ fontSize: 11 }}>
-        240 rps
+      <circle cx={cell + 21} cy={41} r={5} style={{ fill: TONE_VAR.teal }} />
+      <text className={`${s.text} ${s.mono}`} x={cell + 32} y={45}>
+        240 rps · 180 ms
       </text>
-    </Row>
+
+      <text className={s.strong} x={cell * 2 + 16} y={22}>
+        Connection pool
+      </text>
+      <UsageMeter x={cell * 2 + 16} y={41} width={cell - 32} percent={37} tone="teal" text="37 / 100" />
+    </Figure>
   );
 }
 

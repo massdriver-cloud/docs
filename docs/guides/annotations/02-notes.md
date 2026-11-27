@@ -41,6 +41,10 @@ On a line, `source` is the instance at the start of the line and `destination` i
 
 Each namespace also has an `id`, such as `{{ instance.id }}`.
 
+### Insert a value from the editor
+
+The note editor lists the keys in each stash. Choose a stash in the **Stash** list, for example **Instance**, **Component**, **Environment**, or **Project**. Click a key to insert its value tag. A JSON entry also shows a button for each top-level field. Click a field to insert a tag for that field, such as `{{ instance.stash["md/traffic"].rps }}`.
+
 ### Text and JSON entries
 
 A text entry is a string. A JSON entry is an object, so you can read its fields:

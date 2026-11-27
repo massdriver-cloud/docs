@@ -46,7 +46,7 @@ On an environment canvas, right-click a spot.
 
 On a project page, click the **+** button next to the project name to pin a note to the project header.
 
-To change or delete a note, click it. To change or delete a pinned widget, click it. For a header link, right-click it. For a banner, click its menu button.
+A note shows as a pin. Click the pin (**Show note**) to read the note. The note card has buttons to edit and delete it. To change or delete a pinned widget, click it. For a header link, right-click it. For a banner, click its menu button.
 
 ## Where the values come from
 
