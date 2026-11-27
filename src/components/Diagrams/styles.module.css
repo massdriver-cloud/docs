@@ -107,6 +107,36 @@
   stroke-dasharray: 4 3;
 }
 
+.surfaceDanger {
+  fill: var(--ifm-background-surface-color);
+  stroke: #d64545;
+  stroke-width: 1.5;
+}
+
+.surfaceGhost {
+  fill: none;
+  stroke: var(--ifm-color-emphasis-400);
+  stroke-width: 1;
+  stroke-dasharray: 2 3;
+}
+
+.dashed {
+  stroke-dasharray: 4 3;
+}
+
+.dot { fill: var(--ifm-color-emphasis-600); }
+
+.head { fill: var(--ifm-color-emphasis-400); }
+.headAccent { fill: var(--ifm-color-primary); }
+.headDanger { fill: #d64545; }
+
+.halo {
+  paint-order: stroke;
+  stroke: var(--ifm-background-color);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+
 /* Versioned connections: staging moves to a new major and reads the other route. */
 .stgOld { animation: stgOff 14s linear infinite; }
 .stgNew { opacity: 0; animation: stgOn 14s linear infinite; }

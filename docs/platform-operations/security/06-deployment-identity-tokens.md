@@ -36,13 +36,7 @@ Identity tokens are the recommended way to give deployments cloud access. Self-h
 3. The IaC in your bundle gives one of the tokens to your cloud's token exchange: AWS STS, GCP Security Token Service, or Microsoft Entra ID.
 4. The cloud fetches Massdriver's public keys, verifies the token, checks it against your trust rule, and returns a short-lived credential.
 
-```
-Massdriver deployment
-    └─ signed token (/massdriver/oidc/environment.jwt)
-        └─ cloud token exchange verifies it against Massdriver's public keys
-            └─ trust rule matches the token subject
-                └─ short-lived credential in your cloud account
-```
+<IdentityTokenChain />
 
 Massdriver publishes its public keys at the standard OIDC discovery paths of the issuer:
 

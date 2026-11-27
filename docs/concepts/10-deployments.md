@@ -20,11 +20,7 @@ An instance has a `params` field that holds its current configuration. A deploym
 
 > Editing an instance changes what the next deployment will use. Creating a deployment pins a copy of the current configuration and asks the system to apply it.
 
-```mermaid
-flowchart LR
-    I[(instance.params<br/>configuration)] -->|snapshot at enqueue| D[Deployment<br/>frozen snapshot]
-    D --> A[Apply against<br/>real infrastructure]
-```
+<DeploymentSnapshot />
 
 ## Two ways to deploy a change
 
@@ -34,11 +30,7 @@ Massdriver supports two ways to deploy a change to an instance. The difference i
 
 `instance.params` is overwritten immediately and the deployment enters the queue at `PENDING`.
 
-```mermaid
-flowchart LR
-    A[Submit params] --> B[instance.params updated]
-    B --> C[Deployment PENDING] --> D[RUNNING] --> E[COMPLETED]
-```
+<DirectDeployment />
 
 Use this when the change does not require review.
 
@@ -46,12 +38,7 @@ Use this when the change does not require review.
 
 The proposed params live only on the deployment record while it sits in `PROPOSED`. `instance.params` is untouched. On approval, the snapshot is copied into `instance.params` and the deployment enters the queue at `APPROVED`. On rejection, neither moves.
 
-```mermaid
-flowchart LR
-    A[Submit params] --> B[Deployment PROPOSED<br/>config untouched]
-    B -->|approveDeployment| C[instance.params updated] --> D[Deployment APPROVED] --> E[RUNNING] --> F[COMPLETED]
-    B -->|rejectDeployment| G[REJECTED]
-```
+<ProposedDeployment />
 
 Use this when a change requires review before applying — for example, production environments or tagged resources requiring elevated approval.
 
@@ -65,7 +52,7 @@ An environment can require that a proposal is approved by somebody other than th
 
 With the setting on, `approveDeployment` is refused when the subject calling it is the same account or service account that called `proposeDeployment`. Approval has to come from a second reviewer.
 
-Rejection is not gated. A proposer can always withdraw their own proposal with `rejectDeployment`, so the control adds a second pair of eyes without stranding a change nobody wants.
+Rejection is not gated by the setting. Anyone with `instance:deploy`, including the proposer, can withdraw a proposal with `rejectDeployment`. A proposer with only `instance:propose` cannot reject, so their proposal stays open until a reviewer approves or rejects it.
 
 The setting is read from the environment at the moment of approval, so turning it on takes effect on proposals that are already open.
 
@@ -79,20 +66,7 @@ The field is `separationOfDuty` on the V2 API, and `separation_of_duty` on the `
 
 A deployment walks through a state machine after creation. Direct pushes enter at `PENDING`; proposals enter at `PROPOSED`.
 
-```mermaid
-stateDiagram-v2
-    [*] --> PENDING: createDeployment
-    [*] --> PROPOSED: proposeDeployment
-    PROPOSED --> APPROVED: approveDeployment
-    PROPOSED --> REJECTED: rejectDeployment
-    PENDING --> RUNNING: queue drains
-    APPROVED --> RUNNING: queue drains
-    RUNNING --> COMPLETED: apply succeeded
-    RUNNING --> FAILED: apply errored
-    PENDING --> ABORTED: abortDeployment
-    APPROVED --> ABORTED: abortDeployment
-    RUNNING --> ABORTED: abortDeployment
-```
+<DeploymentLifecycle />
 
 | Status | Meaning |
 |---|---|
@@ -103,7 +77,7 @@ stateDiagram-v2
 | `RUNNING` | The provisioner is applying changes. |
 | `COMPLETED` | Apply succeeded. Infrastructure matches the snapshot. |
 | `FAILED` | Apply errored. See [What happens when a deployment fails](#what-happens-when-a-deployment-fails). |
-| `ABORTED` | Operator cancelled. |
+| `ABORTED` | Operator cancelled. An in-flight apply is not stopped. |
 
 `COMPLETED`, `FAILED`, `REJECTED`, and `ABORTED` are terminal. To try again, create a new deployment.
 
@@ -111,22 +85,10 @@ stateDiagram-v2
 
 Every instance has its own queue. Only one deployment per instance can be `RUNNING` at a time.
 
-```mermaid
-flowchart TB
-    subgraph Q ["Instance queue — drains in creation order"]
-        direction LR
-        R[RUNNING]
-        P1[PENDING]
-        A1[APPROVED]
-        P2[PENDING]
-    end
-    PR[PROPOSED<br/>deployments] -. do not hold slots .-> Q
-    PR -.->|approveDeployment| A1
-    R -->|finishes| N[Worker picks next]
-```
+<DeploymentQueue />
 
 - `PROPOSED` deployments are outside the queue. Open proposals do not block direct-push work. Approval moves a proposal into the queue.
-- `APPROVED` and `PENDING` drain together in creation order. Approval gives no priority.
+- `APPROVED` and `PENDING` drain together in creation order. A proposal keeps the time it was proposed, so a proposal approved late runs ahead of `PENDING` deployments created after it.
 - The queue is per-instance. Two instances in the same environment deploy independently.
 - Queued deployments are not rebased. Each queued deployment carries the snapshot it captured at enqueue, even if earlier items in the queue change the infrastructure.
 - `PLAN` deployments take a queue slot. A plan is a real deployment record.
@@ -159,11 +121,11 @@ When a `RUNNING` deployment transitions to `FAILED`:
 
 - `instance.params` has already moved to reflect the requested configuration.
 - Real infrastructure is in whatever state the provisioner reached before the error.
-- There is no rollback mutation.
+- Nothing is rolled back automatically.
 
-To recover, edit `instance.params` to a configuration that can reconcile cleanly and create a new deployment. To revert, write the previous params back to `instance.params` and create a new deployment.
+To recover, edit `instance.params` to a configuration that can reconcile cleanly and create a new deployment. To revert, [roll back](/continuous-delivery/rollback) to a past `COMPLETED` deployment with `rollbackDeployment`. It creates a proposal with that deployment's bundle version, params, and connections, which runs once approved.
 
-`ABORTED` behaves the same way: it stops further work but does not unwind work already done.
+`ABORTED` does not unwind work already done either. Aborting a `RUNNING` deployment marks it `ABORTED` and frees the queue, but the provisioner is not stopped: the apply in flight runs to its end, and the next queued deployment can start while it does.
 
 ## Common behaviors to know
 
@@ -173,7 +135,7 @@ To recover, edit `instance.params` to a configuration that can reconcile cleanly
 - `PROPOSED` deployments do not hold queue slots. Open proposals do not block direct-push work.
 - The queue is strictly per-instance. Long deployments on one instance do not slow others down.
 - `PLAN` is a real deployment. It takes a queue slot and produces a record.
-- `ABORTED` is not undo. It stops further work but does not unwind work already done.
+- `ABORTED` is not undo, and it does not stop an apply that is already running.
 
 ## Compared to a merge queue
 
@@ -198,7 +160,7 @@ The trade-off compared to a merge queue: there is no automatic, clean rollback o
 
 | Mutation | Effect on `instance.params` | Deployment status |
 |---|---|---|
-| `createDeployment` | Overwritten immediately with the supplied params | `PENDING` |
+| `createDeployment` | Overwritten immediately with the supplied params. Not touched for `PLAN`. | `PENDING` |
 | `proposeDeployment` | Not touched — params live only on the deployment | `PROPOSED` |
 | `approveDeployment` | Overwritten with the proposal's snapshot | `PROPOSED` → `APPROVED` |
 | `rejectDeployment` | Not touched | `PROPOSED` → `REJECTED` |

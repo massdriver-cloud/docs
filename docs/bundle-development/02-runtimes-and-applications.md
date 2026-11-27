@@ -57,20 +57,7 @@ Most applications in an organization run on a handful of shapes. Without runtime
 
 With runtimes, the IaC exists once. Applications carry only what differs between them, and that difference is small enough to review at a glance.
 
-```mermaid
-flowchart LR
-  subgraph platform[Platform team]
-    lambda["lambda runtime<br/>IaC, params, UI"]
-  end
-  subgraph apps[Application teams]
-    payments["payments-api<br/>+ postgres, STRIPE_KEY"]
-    search["search-api<br/>+ opensearch"]
-    reports["reports-worker<br/>+ s3 bucket, schedule env"]
-  end
-  lambda --> payments
-  lambda --> search
-  lambda --> reports
-```
+<LambdaApplications />
 
 The split follows who consumes a dependency and when. The runtime owns provision-time dependencies, the ones its IaC uses while it runs: the IAM role, the VPC, the cluster, the cloud credential. The application owns run-time dependencies, the ones its process talks to after deploy: Postgres, Redis, a queue, another service's endpoint.
 
@@ -80,14 +67,9 @@ Each application is still a complete, versioned bundle. It appears in the catalo
 
 **A golden path for application teams.** The platform team publishes an `ecs-service` runtime with networking, logging, autoscaling, and IAM already decided. `orders-api` runs on it, adds a database and two environment variables, and ships. Developers see a form with only the params the platform team chose to expose.
 
-**Rolling out a fix across many applications.** `lambda@1.2.8` scopes the IAM role more tightly. Every application on `lambda@~1.2` is rebuilt on 1.2.8 the next time it is published, from CI or a quick `mass bundle publish`. Nobody edits an application.
+**Rolling out a fix across many applications.** `lambda@1.2.8` scopes the IAM role more tightly. Every application on `lambda@~1.2` is built on 1.2.8 the next time it is published with a new version, from CI or a quick `mass bundle publish`. Nobody edits the application's dependencies or envs. Each instance runs the fix the next time it deploys.
 
-```mermaid
-flowchart LR
-  fix["lambda 1.2.8<br/>IAM fix"] --> ci["application CI runs<br/>mass bundle publish"]
-  ci --> p["payments-api 0.4.1<br/>on lambda 1.2.8"]
-  ci --> s["search-api 1.0.3<br/>on lambda 1.2.8"]
-```
+<RuntimeFix />
 
 **Applications that publish their own contract.** `billing-api` runs on `lambda` but emits a `billing-api` resource, so other services depend on billing by type and never see the function underneath.
 
@@ -266,12 +248,7 @@ mass bundle publish
 
 `payments-api` serves an mTLS endpoint, and `checkout-api` calls it. Both run on the `lambda` runtime. `payments-api` publishes a `payments-api-server` resource, and `checkout-api` depends on that type, so checkout connects to payments by contract and never needs to know which function serves it.
 
-```mermaid
-flowchart LR
-  lambda["lambda runtime"] -.runs.-> payments["payments-api"]
-  lambda -.runs.-> checkout["checkout-api"]
-  payments -- "payments-api-server<br/>url, ca_cert, server_name" --> checkout
-```
+<RuntimeMtls />
 
 ### The resource type
 
