@@ -1,0 +1,312 @@
+---
+id: guides-annotations-bindings
+slug: /guides/annotations/bindings
+title: Bindings Reference
+sidebar_label: Bindings Reference
+---
+
+import {
+  TrafficState,
+  StatusDotState,
+  UsageBarState,
+  BannerState,
+  HeaderLinkState,
+} from "@site/src/components/Annotations";
+
+# Bindings Reference
+
+A binding is a built-in feature that reads its inputs from the stash. For each input, you choose a stash, a key, and, for a JSON entry, a path to a field. The feature shows only when every required input has a value of the right type.
+
+| Input type | Accepted values |
+|---|---|
+| number | A JSON number, or a text value such as `42`, `-3`, or `12.5` |
+| string | Text |
+| url | An `http` or `https` URL |
+
+An input is off when its key is missing, expired, sensitive, or has the wrong type, or when its path is not in the JSON entry. The binding editor shows the reason next to each input.
+
+On an instance, you can choose the `project`, `environment`, `component`, or `instance` stash. On a line, you can choose the `project`, `environment`, `source`, or `destination` stash. On an environment, you can choose the `project` or `environment` stash.
+
+## link.traffic
+
+Shows the traffic on a line between two instances as the width, color, and movement of the line. Right-click a line on the canvas and choose **Traffic**.
+
+| Input | Type | Required | Effect |
+|---|---|---|---|
+| `rate` | number | yes | Requests per second. 0 is idle. A higher rate draws a thicker, faster line. |
+| `errors` | number | yes | Error count. 1 to 9 turns the line amber. 10 or more turns it red. |
+
+The line width follows the rate:
+
+| Rate | Width |
+|---|---|
+| under 10 | 3px |
+| 10 to 99 | 4px |
+| 100 to 999 | 6px |
+| 1000 or more | 8px |
+
+On a flowing line, dashes move from the source instance to the destination instance. Higher rates move faster. When your system asks for reduced motion, the line is solid and does not move.
+
+### What it looks like
+
+| State | Looks like | Stash value | Meaning |
+|---|---|---|---|
+| Off | <TrafficState state="off" label="Traffic off: a plain gray line with no chip" /> | key missing or expired | The line shows as usual. |
+| Idle | <TrafficState state="idle" label="Traffic idle: a thin gray dashed line with a 0 rps chip" /> | `{"rps": 0, "errors_5m": 0}` | Rate 0. A thin gray dashed line. |
+| Flowing | <TrafficState state="flowing" label="Traffic flowing: a thick teal moving line with a 240 rps chip" /> | `{"rps": 240, "errors_5m": 0}` | Rate above 0 and no errors. A teal line. |
+| Some errors | <TrafficState state="someErrors" label="Traffic with some errors: an amber line with a 3 err chip" /> | `{"rps": 240, "errors_5m": 3}` | 1 to 9 errors. An amber line. |
+| Many errors | <TrafficState state="manyErrors" label="Traffic with many errors: a red line with a 42 err chip" /> | `{"rps": 240, "errors_5m": 42}` | 10 or more errors. A red line. |
+| Stale | <TrafficState state="stale" label="Stale traffic: a teal line at half opacity with a stale chip" /> | not updated for 10 minutes | The line fades to half opacity and the chip says "stale". |
+
+## instance.status_dot
+
+Shows a colored dot in the header of an instance node. Right-click an instance and choose **Status dot**.
+
+| Input | Type | Required | Effect |
+|---|---|---|---|
+| `state` | string | yes | Sets the dot color. The value shows in a tooltip. |
+
+### What it looks like
+
+| State | Looks like | Stash value | Meaning |
+|---|---|---|---|
+| Healthy | <StatusDotState tone="success" label="Status dot healthy: a green dot" /> | `healthy`, `ok`, or `up` | A green dot. |
+| Degraded | <StatusDotState tone="warning" label="Status dot degraded: an amber dot" /> | `degraded`, `warning`, or `recovering` | An amber dot. |
+| Down | <StatusDotState tone="error" label="Status dot down: a red dot" /> | `down`, `failed`, or `error` | A red dot. |
+| Unknown | <StatusDotState tone="neutral" label="Status dot with an unknown value: a gray dot" /> | any other text | A gray dot. |
+
+The match ignores case and spaces at each end.
+
+## instance.usage_bar
+
+Shows a thin bar at the bottom of an instance node with the value and the limit. Right-click an instance and choose **Usage bar**.
+
+| Input | Type | Required | Effect |
+|---|---|---|---|
+| `value` | number | yes | The amount in use. |
+| `max` | number | yes | The limit. It must be above 0. |
+| `label` | string | no | Text before the numbers, for example `connections`. |
+
+### What it looks like
+
+| State | Looks like | Stash value | Meaning |
+|---|---|---|---|
+| Under 80% | <UsageBarState percent={37} tone="success" text="connections 37 / 100" label="Usage bar at 37 percent: a green bar" /> | `{"value": 37, "max": 100, "label": "connections"}` | A green bar. |
+| 80% to 94% | <UsageBarState percent={86} tone="warning" text="connections 86 / 100" label="Usage bar at 86 percent: an amber bar" /> | `{"value": 86, "max": 100, "label": "connections"}` | An amber bar. |
+| 95% or more | <UsageBarState percent={97} tone="error" text="connections 97 / 100" label="Usage bar at 97 percent: a red bar" /> | `{"value": 97, "max": 100, "label": "connections"}` | A red bar. |
+
+A value above `max` fills the bar. A `max` of 0 or less hides the bar.
+
+## environment.banner
+
+Shows a banner across the top of the environment canvas. Right-click an empty part of the canvas and choose **Banner**.
+
+| Input | Type | Required | Effect |
+|---|---|---|---|
+| `message` | string | yes | The banner text. |
+| `level` | string | no | `info` (blue, the default), `warning` (amber), or `error` (red). Other values show as `info`. |
+
+### What it looks like
+
+| State | Looks like | Stash value | Meaning |
+|---|---|---|---|
+| Info | <BannerState levels={["info"]} label="Info banner: a blue strip" /> | `{"message": "Database upgrade tonight", "level": "info"}` | A blue banner. |
+| Warning | <BannerState levels={["warning"]} label="Warning banner: an amber strip" /> | `{"message": "Deploy freeze until Friday", "level": "warning"}` | An amber banner. |
+| Error | <BannerState levels={["error"]} label="Error banner: a red strip" /> | `{"message": "Payments API is down", "level": "error"}` | A red banner. |
+| Two banners | <BannerState levels={["warning", "info"]} label="Two banners stacked: an amber strip above a blue strip" /> | two banner annotations | Banners stack, one per annotation. |
+
+## environment.header_link
+
+Shows a link button in the environment header. Right-click an empty part of the canvas and choose **Header link**.
+
+| Input | Type | Required | Effect |
+|---|---|---|---|
+| `url` | url | yes | Where the button goes. It opens in a new tab. |
+| `label` | string | no | The button text. Without it, the button shows the URL host. |
+
+### What it looks like
+
+| State | Looks like | Stash value | Meaning |
+|---|---|---|---|
+| One link | <HeaderLinkState links={["Shop"]} label="One header link button labeled Shop" /> | `links/product` = `https://shop.example.com`, `links/product-name` = `Shop` | One button. |
+| Two links | <HeaderLinkState links={["Shop", "Grafana"]} label="Two header link buttons, Shop and Grafana" /> | two header link annotations | One button per annotation. |
+| Not an http URL | <HeaderLinkState links={[]} label="No header link button, because the URL is not http or https" /> | `links/product` = `ftp://files.example.com` | No button. Only `http` and `https` URLs show. |
+
+## Stash shapes
+
+These are the entry shapes that each binding expects. They are conventions. The server does not check them. A JSON entry can hold more fields than a binding reads.
+
+### Traffic: `stats/traffic`
+
+Set the entry on the instance at either end of the line. Format: JSON.
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "stats/traffic",
+  "type": "object",
+  "properties": {
+    "rps": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Requests per second. Read by the rate input."
+    },
+    "errors_5m": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Errors in the last 5 minutes. Read by the errors input."
+    },
+    "p95_ms": {
+      "type": "number",
+      "minimum": 0,
+      "description": "p95 latency in milliseconds. Not read by the binding."
+    }
+  },
+  "required": ["rps", "errors_5m"],
+  "additionalProperties": true
+}
+```
+
+```bash
+mass stash set billing-dev-app.stats/traffic '{"rps": 240, "errors_5m": 2, "p95_ms": 85}' --format json --label "Traffic"
+```
+
+| Input | Stash | Key | Path |
+|---|---|---|---|
+| `rate` | `source` or `destination` | `stats/traffic` | `rps` |
+| `errors` | `source` or `destination` | `stats/traffic` | `errors_5m` |
+
+Write the entry on a schedule. When the writer stops, the line shows as stale after 10 minutes. Add `--ttl` to remove the entry, and turn the feature off, after a time.
+
+### Status dot: `status/health`
+
+Set the entry on the instance. Format: TEXT.
+
+| Value | Dot |
+|---|---|
+| `healthy`, `ok`, `up` | Green |
+| `degraded`, `warning`, `recovering` | Amber |
+| `down`, `failed`, `error` | Red |
+| Any other text | Gray |
+
+```bash
+mass stash set billing-dev-app.status/health degraded --label "Health"
+```
+
+| Input | Stash | Key | Path |
+|---|---|---|---|
+| `state` | `instance` | `status/health` | none |
+
+### Usage bar: `usage`
+
+Set the entry on the instance. Format: JSON.
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "usage",
+  "type": "object",
+  "properties": {
+    "value": {
+      "type": "number",
+      "description": "Amount in use. Read by the value input."
+    },
+    "max": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "description": "The limit. Read by the max input."
+    },
+    "label": {
+      "type": "string",
+      "description": "Text before the numbers, such as connections. Read by the label input."
+    }
+  },
+  "required": ["value", "max"],
+  "additionalProperties": true
+}
+```
+
+```bash
+mass stash set billing-dev-app.usage '{"value": 37, "max": 100, "label": "connections"}' --format json --label "Usage"
+```
+
+| Input | Stash | Key | Path |
+|---|---|---|---|
+| `value` | `instance` | `usage` | `value` |
+| `max` | `instance` | `usage` | `max` |
+| `label` | `instance` | `usage` | `label` |
+
+You can also use two TEXT entries that each hold a plain decimal number:
+
+```bash
+mass stash set billing-dev-app.db/connections 37
+mass stash set billing-dev-app.db/max_connections 100
+```
+
+| Input | Stash | Key | Path |
+|---|---|---|---|
+| `value` | `instance` | `db/connections` | none |
+| `max` | `instance` | `db/max_connections` | none |
+
+### Banner: `status/banner`
+
+Set the entry on the environment. Format: JSON.
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "status/banner",
+  "type": "object",
+  "properties": {
+    "message": {
+      "type": "string",
+      "description": "Banner text. Read by the message input."
+    },
+    "level": {
+      "type": "string",
+      "enum": ["info", "warning", "error"],
+      "description": "Banner color. Read by the level input. Other values show as info."
+    }
+  },
+  "required": ["message"],
+  "additionalProperties": true
+}
+```
+
+```bash
+mass stash set billing-dev.status/banner '{"message": "Deploy freeze until Friday", "level": "warning"}' --format json --label "Banner"
+```
+
+| Input | Stash | Key | Path |
+|---|---|---|---|
+| `message` | `environment` | `status/banner` | `message` |
+| `level` | `environment` | `status/banner` | `level` |
+
+For a short-lived info banner, use one TEXT entry with a TTL:
+
+```bash
+mass stash set billing-dev.status/maintenance "Database upgrade tonight" --ttl 86400
+```
+
+| Input | Stash | Key | Path |
+|---|---|---|---|
+| `message` | `environment` | `status/maintenance` | none |
+
+### Header link: `links/<name>` and `links/<name>-name`
+
+Set the entries on the environment. Format: TEXT.
+
+| Key | Value |
+|---|---|
+| `links/<name>` | An `http` or `https` URL |
+| `links/<name>-name` | The button text |
+
+```bash
+mass stash set billing-dev.links/product https://shop.example.com
+mass stash set billing-dev.links/product-name "Shop"
+```
+
+| Input | Stash | Key | Path |
+|---|---|---|---|
+| `url` | `environment` | `links/product` | none |
+| `label` | `environment` | `links/product-name` | none |
