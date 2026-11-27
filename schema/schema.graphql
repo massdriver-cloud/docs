@@ -1499,13 +1499,15 @@ type RootQueryType {
   ): [String!]!
 
   """
+  Alpha: this API can change or be removed at any time, without notice.
+
   Get one entry from a stash. Expired entries are not returned.
 
   You need `project:view` on the stash's project. A sensitive value is null unless you can change the stash.
 
   ```graphql
   query {
-    stashEntry(organizationId: "my-org", scope: { instance: "ecomm-prod-database" }, key: "schema.version") {
+    alphaStashEntry(organizationId: "my-org", scope: { instance: "ecomm-prod-database" }, key: "schema.version") {
       key
       value
       expiresAt
@@ -1513,41 +1515,43 @@ type RootQueryType {
   }
   ```
   """
-  stashEntry(
+  alphaStashEntry(
     "Your organization's unique identifier."
     organizationId: ID!
 
     "The stash to read."
-    scope: StashScope!
+    scope: AlphaStashScope!
 
     "The key to get."
     key: String!
-  ): StashEntry
+  ): AlphaStashEntry
 
   """
+  Alpha: this API can change or be removed at any time, without notice.
+
   List the entries in a stash, ordered by key. Expired entries are not returned.
 
   You need `project:view` on the stash's project. Sensitive values are null unless you can change the stash.
 
   ```graphql
   query {
-    stashEntries(organizationId: "my-org", scope: { environment: "ecomm-prod" }) {
+    alphaStashEntries(organizationId: "my-org", scope: { environment: "ecomm-prod" }) {
       items { key value format }
       cursor { next }
     }
   }
   ```
   """
-  stashEntries(
+  alphaStashEntries(
     "Your organization's unique identifier."
     organizationId: ID!
 
     "The stash to list."
-    scope: StashScope!
+    scope: AlphaStashScope!
 
     "Pagination cursor returned by a previous page."
     cursor: Cursor
-  ): StashEntriesPage
+  ): AlphaStashEntriesPage
 }
 
 type RootSubscriptionType {
@@ -3676,6 +3680,8 @@ type RootMutationType {
   ): GrantPayload
 
   """
+  Alpha: this API can change or be removed at any time, without notice.
+
   Set the value of a key in a stash. Setting a key that has a value replaces the value and every other setting
   of the entry.
 
@@ -3697,7 +3703,7 @@ type RootMutationType {
 
   ```graphql
   mutation {
-    setStashEntry(
+    alphaSetStashEntry(
       organizationId: "my-org"
       scope: { instance: "ecomm-prod-database" }
       key: "schema.version"
@@ -3710,47 +3716,53 @@ type RootMutationType {
   }
   ```
   """
-  setStashEntry(
+  alphaSetStashEntry(
     "Your organization's unique identifier."
     organizationId: ID!
 
     "The stash to write."
-    scope: StashScope!
+    scope: AlphaStashScope!
 
     "The key to set. Letters, digits, and the characters `_`, `.`, `\/`, and `-`, up to 255 characters."
     key: String!
 
     "Set the value of a key in a stash. Setting a key that has a value replaces the value and every other setting of the entry."
-    input: SetStashEntryInput!
-  ): StashEntryPayload @inputs(name: "setStashEntry", schema: "\/graphql\/v2\/inputs\/setStashEntry.json", ui: "\/graphql\/v2\/inputs\/setStashEntry.ui.json")
+    input: AlphaSetStashEntryInput!
+  ): AlphaStashEntryPayload @inputs(name: "setStashEntry", schema: "\/graphql\/v2\/inputs\/setStashEntry.json", ui: "\/graphql\/v2\/inputs\/setStashEntry.ui.json")
 
   """
-  Delete a key from a stash. Needs the same permission as `setStashEntry`. Immutable entries can be deleted.
+  Alpha: this API can change or be removed at any time, without notice.
+
+  Delete a key from a stash. Needs the same permission as `alphaSetStashEntry`. Immutable entries can be deleted.
   The result has the deleted entry. Its value is null when the entry is sensitive.
 
   ```graphql
   mutation {
-    deleteStashEntry(organizationId: "my-org", scope: { project: "ecomm" }, key: "release") {
+    alphaDeleteStashEntry(organizationId: "my-org", scope: { project: "ecomm" }, key: "release") {
       successful
       result { key }
     }
   }
   ```
   """
-  deleteStashEntry(
+  alphaDeleteStashEntry(
     "Your organization's unique identifier."
     organizationId: ID!
 
     "The stash to delete from."
-    scope: StashScope!
+    scope: AlphaStashScope!
 
     "The key to delete."
     key: String!
-  ): StashEntryPayload
+  ): AlphaStashEntryPayload
 }
 
-"How a stash value is stored and returned."
-enum StashFormat {
+"""
+Alpha: this API can change or be removed at any time, without notice.
+
+How a stash value is stored and returned.
+"""
+enum AlphaStashFormat {
   "Any string."
   TEXT
 
@@ -3759,12 +3771,14 @@ enum StashFormat {
 }
 
 """
+Alpha: this API can change or be removed at any time, without notice.
+
 The project, environment, component, instance, or deployment that owns a stash. Set exactly one field.
 
 Each one has its own stash. A key set on an environment is not returned when you read the stash of an
 instance in that environment.
 """
-input StashScope {
+input AlphaStashScope {
   "A project ID, for example `ecomm`."
   project: ID
 
@@ -3781,10 +3795,14 @@ input StashScope {
   deployment: ID
 }
 
-"Set the value of a key in a stash. Setting a key that has a value replaces the value and every other setting of the entry."
-input SetStashEntryInput {
+"""
+Alpha: this API can change or be removed at any time, without notice.
+
+Set the value of a key in a stash. Setting a key that has a value replaces the value and every other setting of the entry.
+"""
+input AlphaSetStashEntryInput {
   "TEXT stores any string. JSON requires a JSON object, and the entry's `data` field returns it parsed. Defaults to TEXT."
-  format: StashFormat
+  format: AlphaStashFormat
 
   "When true, the key cannot be set again until the entry expires or is deleted. Setting an immutable entry fails if the key already has a value."
   immutable: Boolean
@@ -3803,10 +3821,12 @@ input SetStashEntryInput {
 }
 
 """
+Alpha: this API can change or be removed at any time, without notice.
+
 A key and value stored on a project, environment, component, instance, or deployment. Massdriver stores the
 value and returns it as written. It does not read the value or act on it.
 """
-type StashEntry {
+type AlphaStashEntry {
   "The entry's key. Letters, digits, and the characters `_`, `.`, `\/`, and `-`."
   key: String!
 
@@ -3820,7 +3840,7 @@ type StashEntry {
   data: Map
 
   "How the value is stored and returned."
-  format: StashFormat!
+  format: AlphaStashFormat!
 
   "When true, the key cannot be set again until the entry expires or is deleted."
   immutable: Boolean!
@@ -3835,7 +3855,12 @@ type StashEntry {
   updatedAt: DateTime!
 }
 
-type StashEntryPayload {
+"""
+Alpha: this API can change or be removed at any time, without notice.
+
+The result of a mutation on AlphaStashEntry.
+"""
+type AlphaStashEntryPayload {
   "Indicates if the mutation completed successfully or not."
   successful: Boolean!
 
@@ -3843,15 +3868,20 @@ type StashEntryPayload {
   messages: [ValidationMessage]
 
   "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
-  result: StashEntry
+  result: AlphaStashEntry
 }
 
-type StashEntriesPage {
+"""
+Alpha: this API can change or be removed at any time, without notice.
+
+A page of AlphaStashEntry items.
+"""
+type AlphaStashEntriesPage {
   "Pagination cursors for navigating between pages."
   cursor: PaginationCursor!
 
   "A list of type stash_entry."
-  items: [StashEntry]
+  items: [AlphaStashEntry]
 }
 
 """

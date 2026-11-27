@@ -2,8 +2,8 @@
 pagination_next: null
 pagination_prev: null
 hide_table_of_contents: true
-id: stash-entry
-title: stashEntry
+id: alpha-stash-entry
+title: alphaStashEntry
 ---
 
 
@@ -42,13 +42,15 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
+Alpha: this API can change or be removed at any time, without notice.
+
 Get one entry from a stash. Expired entries are not returned.
 
 You need `project:view` on the stash's project. A sensitive value is null unless you can change the stash.
 
 ```graphql
 query {
-  stashEntry(organizationId: "my-org", scope: { instance: "ecomm-prod-database" }, key: "schema.version") {
+  alphaStashEntry(organizationId: "my-org", scope: { instance: "ecomm-prod-database" }, key: "schema.version") {
     key
     value
     expiresAt
@@ -58,11 +60,11 @@ query {
 
 
 ```graphql
-stashEntry(
+alphaStashEntry(
   organizationId: ID!
-  scope: StashScope!
+  scope: AlphaStashScope!
   key: String!
-): StashEntry
+): AlphaStashEntry
 ```
 
 
@@ -70,20 +72,22 @@ stashEntry(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>stashEntry.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>alphaStashEntry.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
 Your organization's unique identifier.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>stashEntry.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>StashScope!</b></code>](/api/graphql/types/inputs/stash-scope.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#scope\} 
+#### [<code style={{ fontWeight: 'normal' }}>alphaStashEntry.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AlphaStashScope!</b></code>](/api/graphql/types/inputs/alpha-stash-scope.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#scope\} 
 The stash to read.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>stashEntry.<b>key</b></code>](#key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#key\} 
+#### [<code style={{ fontWeight: 'normal' }}>alphaStashEntry.<b>key</b></code>](#key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#key\} 
 The key to get.
 
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>StashEntry</b></code>](/api/graphql/types/objects/stash-entry.mdx) <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}><b>AlphaStashEntry</b></code>](/api/graphql/types/objects/alpha-stash-entry.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Alpha: this API can change or be removed at any time, without notice.
+
 A key and value stored on a project, environment, component, instance, or deployment. Massdriver stores the
 value and returns it as written. It does not read the value or act on it.

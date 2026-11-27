@@ -2,8 +2,8 @@
 pagination_next: null
 pagination_prev: null
 hide_table_of_contents: true
-id: stash-entries
-title: stashEntries
+id: alpha-stash-entries
+title: alphaStashEntries
 ---
 
 
@@ -42,13 +42,15 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
+Alpha: this API can change or be removed at any time, without notice.
+
 List the entries in a stash, ordered by key. Expired entries are not returned.
 
 You need `project:view` on the stash's project. Sensitive values are null unless you can change the stash.
 
 ```graphql
 query {
-  stashEntries(organizationId: "my-org", scope: { environment: "ecomm-prod" }) {
+  alphaStashEntries(organizationId: "my-org", scope: { environment: "ecomm-prod" }) {
     items { key value format }
     cursor { next }
   }
@@ -57,11 +59,11 @@ query {
 
 
 ```graphql
-stashEntries(
+alphaStashEntries(
   organizationId: ID!
-  scope: StashScope!
+  scope: AlphaStashScope!
   cursor: Cursor
-): StashEntriesPage
+): AlphaStashEntriesPage
 ```
 
 
@@ -69,18 +71,21 @@ stashEntries(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>stashEntries.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>alphaStashEntries.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
 Your organization's unique identifier.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>stashEntries.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>StashScope!</b></code>](/api/graphql/types/inputs/stash-scope.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#scope\} 
+#### [<code style={{ fontWeight: 'normal' }}>alphaStashEntries.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AlphaStashScope!</b></code>](/api/graphql/types/inputs/alpha-stash-scope.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#scope\} 
 The stash to list.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>stashEntries.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#cursor\} 
+#### [<code style={{ fontWeight: 'normal' }}>alphaStashEntries.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#cursor\} 
 Pagination cursor returned by a previous page.
 
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>StashEntriesPage</b></code>](/api/graphql/types/objects/stash-entries-page.mdx) <Badge class="badge badge--secondary " text="object"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>AlphaStashEntriesPage</b></code>](/api/graphql/types/objects/alpha-stash-entries-page.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Alpha: this API can change or be removed at any time, without notice.
+
+A page of AlphaStashEntry items.

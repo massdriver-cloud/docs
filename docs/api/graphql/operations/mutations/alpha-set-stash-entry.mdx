@@ -2,8 +2,8 @@
 pagination_next: null
 pagination_prev: null
 hide_table_of_contents: true
-id: set-stash-entry
-title: setStashEntry
+id: alpha-set-stash-entry
+title: alphaSetStashEntry
 ---
 
 
@@ -42,6 +42,8 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
+Alpha: this API can change or be removed at any time, without notice.
+
 Set the value of a key in a stash. Setting a key that has a value replaces the value and every other setting
 of the entry.
 
@@ -63,7 +65,7 @@ its maximum number of keys (1000 unless your installation sets another).
 
 ```graphql
 mutation {
-  setStashEntry(
+  alphaSetStashEntry(
     organizationId: "my-org"
     scope: { instance: "ecomm-prod-database" }
     key: "schema.version"
@@ -80,12 +82,12 @@ mutation {
 
 
 ```graphql
-setStashEntry(
+alphaSetStashEntry(
   organizationId: ID!
-  scope: StashScope!
+  scope: AlphaStashScope!
   key: String!
-  input: SetStashEntryInput!
-): StashEntryPayload
+  input: AlphaSetStashEntryInput!
+): AlphaStashEntryPayload
 ```
 
 
@@ -102,27 +104,30 @@ This mutation supports dynamic form generation using JSON Schema.
 <SchemaForm
   schemaUrl="https://api.massdriver.cloud/graphql/v2/inputs/setStashEntry.json"
   uiSchemaUrl="https://api.massdriver.cloud/graphql/v2/inputs/setStashEntry.ui.json"
-  name="setStashEntry"
+  name="alphaSetStashEntry"
 />
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>setStashEntry.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>alphaSetStashEntry.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
 Your organization's unique identifier.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>setStashEntry.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>StashScope!</b></code>](/api/graphql/types/inputs/stash-scope.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#scope\} 
+#### [<code style={{ fontWeight: 'normal' }}>alphaSetStashEntry.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AlphaStashScope!</b></code>](/api/graphql/types/inputs/alpha-stash-scope.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#scope\} 
 The stash to write.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>setStashEntry.<b>key</b></code>](#key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#key\} 
+#### [<code style={{ fontWeight: 'normal' }}>alphaSetStashEntry.<b>key</b></code>](#key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#key\} 
 The key to set. Letters, digits, and the characters `_`, `.`, `/`, and `-`, up to 255 characters.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>setStashEntry.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetStashEntryInput!</b></code>](/api/graphql/types/inputs/set-stash-entry-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+#### [<code style={{ fontWeight: 'normal' }}>alphaSetStashEntry.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AlphaSetStashEntryInput!</b></code>](/api/graphql/types/inputs/alpha-set-stash-entry-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
 Set the value of a key in a stash. Setting a key that has a value replaces the value and every other setting of the entry.
 
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>StashEntryPayload</b></code>](/api/graphql/types/objects/stash-entry-payload.mdx) <Badge class="badge badge--secondary " text="object"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>AlphaStashEntryPayload</b></code>](/api/graphql/types/objects/alpha-stash-entry-payload.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Alpha: this API can change or be removed at any time, without notice.
+
+The result of a mutation on AlphaStashEntry.

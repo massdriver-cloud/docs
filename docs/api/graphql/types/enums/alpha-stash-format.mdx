@@ -2,8 +2,8 @@
 pagination_next: null
 pagination_prev: null
 hide_table_of_contents: true
-id: stash-format
-title: StashFormat
+id: alpha-stash-format
+title: AlphaStashFormat
 ---
 
 
@@ -42,11 +42,13 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
+Alpha: this API can change or be removed at any time, without notice.
+
 How a stash value is stored and returned.
 
 
 ```graphql
-enum StashFormat {
+enum AlphaStashFormat {
   TEXT
   JSON
 }
@@ -57,11 +59,11 @@ enum StashFormat {
 
 ### Values
 
-#### [<code style={{ fontWeight: 'normal' }}>StashFormat.<b>TEXT</b></code>](#text) \{#text\} 
+#### [<code style={{ fontWeight: 'normal' }}>AlphaStashFormat.<b>TEXT</b></code>](#text) \{#text\} 
 Any string.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>StashFormat.<b>JSON</b></code>](#json) \{#json\} 
+#### [<code style={{ fontWeight: 'normal' }}>AlphaStashFormat.<b>JSON</b></code>](#json) \{#json\} 
 A JSON object. The entry's `data` field returns it parsed.
 
 
@@ -71,4 +73,4 @@ A JSON object. The entry's `data` field returns it parsed.
 
 ### Member Of
 
-[`SetStashEntryInput`](/api/graphql/types/inputs/set-stash-entry-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`StashEntry`](/api/graphql/types/objects/stash-entry.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`AlphaSetStashEntryInput`](/api/graphql/types/inputs/alpha-set-stash-entry-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`AlphaStashEntry`](/api/graphql/types/objects/alpha-stash-entry.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

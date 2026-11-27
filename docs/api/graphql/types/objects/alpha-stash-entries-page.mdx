@@ -2,8 +2,8 @@
 pagination_next: null
 pagination_prev: null
 hide_table_of_contents: true
-id: stash-entries-page
-title: StashEntriesPage
+id: alpha-stash-entries-page
+title: AlphaStashEntriesPage
 ---
 
 
@@ -42,13 +42,15 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-No description
+Alpha: this API can change or be removed at any time, without notice.
+
+A page of AlphaStashEntry items.
 
 
 ```graphql
-type StashEntriesPage {
+type AlphaStashEntriesPage {
   cursor: PaginationCursor!
-  items: [StashEntry]
+  items: [AlphaStashEntry]
 }
 ```
 
@@ -57,11 +59,11 @@ type StashEntriesPage {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>StashEntriesPage.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PaginationCursor!</b></code>](/api/graphql/types/objects/pagination-cursor.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#cursor\} 
+#### [<code style={{ fontWeight: 'normal' }}>AlphaStashEntriesPage.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PaginationCursor!</b></code>](/api/graphql/types/objects/pagination-cursor.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#cursor\} 
 Pagination cursors for navigating between pages.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>StashEntriesPage.<b>items</b></code>](#items)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[StashEntry]</b></code>](/api/graphql/types/objects/stash-entry.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> \{#items\} 
+#### [<code style={{ fontWeight: 'normal' }}>AlphaStashEntriesPage.<b>items</b></code>](#items)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[AlphaStashEntry]</b></code>](/api/graphql/types/objects/alpha-stash-entry.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> \{#items\} 
 A list of type stash_entry.
 
 
@@ -71,4 +73,4 @@ A list of type stash_entry.
 
 ### Returned By
 
-[`stashEntries`](/api/graphql/operations/queries/stash-entries.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+[`alphaStashEntries`](/api/graphql/operations/queries/alpha-stash-entries.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
