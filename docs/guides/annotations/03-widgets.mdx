@@ -20,9 +20,9 @@ A widget is a built-in picture that stash values drive. There are two ways to sh
 - **Automatic.** Write a well-known key that starts with `md/`. Everyone who can view the project sees the widget.
 - **Pinned.** Pin your own widget and choose a stash entry for each input. Only you see it.
 
-When one of your pinned widgets shows in a spot, the automatic widget for that spot does not show for you.
+When you pin a widget in the same spot as an automatic one, you see your widget instead. If your widget has no value, you see the automatic one.
 
-To hide automatic widgets, click the **Widgets** button in the canvas controls. The setting is saved in your browser and applies only to you.
+To hide automatic widgets, click the **Widgets** button in the canvas toolbar, after the inactive instances button. The setting is saved in your browser and applies only to you. Your pinned widgets still show.
 
 ## Well-known keys
 
@@ -205,7 +205,7 @@ Right-click a line and choose **Add widget** > **Traffic**. You can read from th
 | Input | Type | Required | Example key | Path |
 |---|---|---|---|---|
 | `rate` | number | yes | `stats/traffic` on `destination` (JSON) | `rps` |
-| `errors` | number | yes | `stats/traffic` on `destination` (JSON) | `errors_5m` |
+| `errors` | integer | yes | `stats/traffic` on `destination` (JSON) | `errors_5m` |
 
 ## Banner
 
@@ -309,23 +309,21 @@ mass stash set billing-dev.md/links '{"links": [{"label": "Shop", "url": "https:
 |---|---|---|---|
 | One link | <HeaderLinkState links={["Shop"]} label="One header link button labeled Shop" /> | `{"links": [{"label": "Shop", "url": "https://shop.example.com"}]}` | One button. |
 | Two links | <HeaderLinkState links={["Shop", "Grafana"]} label="Two header link buttons, Shop and Grafana" /> | two items in `links` | One button per item. |
-| Not an http URL | <HeaderLinkState links={[]} label="No header link button, because the URL is not http or https" /> | `"url": "ftp://files.example.com"` | No button. The server rejects this value for `md/links`. A pinned link with this URL does not show. |
+| Not an http URL | <HeaderLinkState links={["Shop"]} label="Only the Shop button shows, because the other link URL is not http or https" /> | `{"links": [{"label": "Shop", "url": "https://shop.example.com"}, {"label": "Files", "url": "ftp://files.example.com"}]}` | The server rejects this value for `md/links`. In a pinned widget, the link with the `ftp` URL does not show and the other links do. |
 
 ### Pin your own
 
-Right-click an empty part of the canvas and choose **Add widget** > **Header link**. A pinned header link is one button.
+Right-click an empty part of the canvas and choose **Add widget** > **Header link**. The widget has one input, `links`. Point it at a JSON entry that holds a list of links in the same shape as `md/links`:
 
 ```bash
-mass stash set billing-dev.links/product https://shop.example.com
-mass stash set billing-dev.links/product-name "Shop"
+mass stash set billing-dev.links '{"links": [{"label": "Shop", "url": "https://shop.example.com"}]}' --format json --label "Links"
 ```
 
 | Input | Type | Required | Example key | Path |
 |---|---|---|---|---|
-| `url` | url | yes | `links/product` on the environment | none |
-| `label` | string | no | `links/product-name` on the environment | none |
+| `links` | array | yes | `links` on the environment (JSON) | `links` |
 
-Without a label, the button shows the URL host.
+Each item is one button. The first 8 links with an `http` or `https` `url` show. A link without a `label` shows the URL host.
 
 ## Pinned widget inputs
 
@@ -334,8 +332,9 @@ For each input of a pinned widget, you choose a stash, a key, and, for a JSON en
 | Input type | Accepted values |
 |---|---|
 | number | A JSON number, or a text value such as `42`, `-3`, or `12.5` |
+| integer | A whole number, as a JSON number or as text such as `3` |
 | string | Text |
-| url | An `http` or `https` URL |
+| array | A JSON list |
 
 An input is off when its key is missing, expired, sensitive, or has the wrong type, or when its path is not in the JSON entry. A pinned widget shows only when every required input has a value.
 

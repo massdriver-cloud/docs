@@ -10,6 +10,7 @@ import {
   MetadataJsonRow,
   MetadataPillsRow,
   MetadataFooter,
+  MetadataWidgetsRow,
 } from "@site/src/components/Annotations";
 
 # Metadata
@@ -38,3 +39,17 @@ mass stash set billing-dev-app.schema.version "42" --label "Schema version"
 | Unlabeled entries | <MetadataFooter label="Footer text: 3 entries have no label, with the command mass stash list billing-dev-app" /> | Entries without a label do not show as rows. The Metadata tab counts them and gives the command that lists them. |
 
 The project card shows the label, the value, and the expiry pill for each entry.
+
+Keys that start with `md/` do not show as rows in any of these places, and the Metadata tab does not count them as unlabeled entries. They drive [widgets](/guides/annotations/widgets) instead.
+
+## Widgets on the Metadata tab
+
+The instance Metadata tab shows a **Widgets** row above the entries. It shows the instance's automatic widgets:
+
+- The `md/health` dot, with its value.
+- The `md/usage` bar, with the value and the limit.
+- The `md/traffic` label for the traffic that leaves the instance. Its color follows the traffic state, and it says "stale" when the data is more than 10 minutes old.
+
+<MetadataWidgetsRow label="Widgets row: an amber dot with the value degraded, a usage bar at 86 of 100, and a teal traffic label that says 240 rps" />
+
+The row shows only the widgets that have a valid value. It does not show when the instance has none. When you hide automatic widgets with the **Widgets** button on the canvas, the row is hidden too.

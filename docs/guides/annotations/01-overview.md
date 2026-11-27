@@ -30,7 +30,9 @@ Only you can see the notes and widgets that you pin. Other members of your organ
 
 Automatic widgets are different. When a stash has a well-known `md/` key with a valid value, everyone who can view the project sees its widget.
 
-To hide automatic widgets, click the **Widgets** button in the canvas controls. The setting is saved in your browser and applies only to you. Your pinned widgets still show.
+When you pin a widget in the same spot as an automatic one, you see your widget instead. If your widget has no value, you see the automatic one.
+
+To hide automatic widgets, click the **Widgets** button in the canvas toolbar, after the inactive instances button. The setting is saved in your browser and applies only to you. Your pinned widgets still show.
 
 ## Pin an annotation
 

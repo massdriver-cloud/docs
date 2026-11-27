@@ -238,6 +238,29 @@ export function MetadataPillsRow({ label }) {
   );
 }
 
+export function MetadataWidgetsRow({ label }) {
+  return (
+    <Row height={36} label={label}>
+      <text className={s.muted} x={12} y={22} style={{ letterSpacing: "0.08em" }}>
+        WIDGETS
+      </text>
+      <circle cx={86} cy={18} r={5} style={{ fill: TONE_VAR.warning }} />
+      <text className={s.text} x={96} y={22}>
+        degraded
+      </text>
+      <rect x={160} y={17} width={50} height={3} rx={1.5} style={{ fill: "var(--an-border)" }} />
+      <rect x={160} y={17} width={43} height={3} rx={1.5} style={{ fill: TONE_VAR.warning }} />
+      <text className={s.muted} x={216} y={22}>
+        86 / 100
+      </text>
+      <rect x={268} y={9} width={84} height={18} rx={9} style={{ fill: TONE_VAR.teal, opacity: 0.14 }} />
+      <text className={s.text} x={310} y={22} textAnchor="middle" style={{ fontSize: 11 }}>
+        240 rps
+      </text>
+    </Row>
+  );
+}
+
 export function MetadataFooter({ label }) {
   return (
     <Figure label={label} width={360} height={22}>
