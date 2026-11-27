@@ -29,6 +29,10 @@ Names that start with `alpha` are alpha. We can change or remove them at any tim
 
 Names that start with `beta` are beta. The shape is settled. We announce a breaking change in the changelog at least 30 days ahead. The old field or type stays, marked `@deprecated`, during those 30 days.
 
+## Well-known stash keys
+
+A well-known stash key has a version in the key, for example `md/v1/health`. A breaking change to the shape of a key's value ships as a new version next to the old one. The old version is removed only after the deprecation period of its stability level. A key without a version, such as `md/health`, is rejected.
+
 ## Promotion
 
 When an alpha API becomes beta, it gets the beta name. The alpha name is removed at once.

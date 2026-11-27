@@ -44,13 +44,14 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 Events delivered by the `deploymentEvents` subscription.
 
-A single-deployment feed. Fires on creation and every status transition.
+A single-deployment feed. Fires on creation, every status transition, and
+every change to the deployment's stash entries.
 For log content, subscribe to `deploymentLogs` — log deltas don't travel on
 this feed.
 
 
 ```graphql
-union DeploymentEventsPayload = DeploymentEvent
+union DeploymentEventsPayload = DeploymentEvent | AlphaStashEntryEvent
 ```
 
 
@@ -72,6 +73,22 @@ instance or environment.
 
 On `UPDATED`, re-select whichever fields you need (typically `status` and
 `elapsedTime`) — Apollo will merge the payload into its cache by `Deployment:id`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DeploymentEventsPayload.<b>AlphaStashEntryEvent</b></code>](/api/graphql/types/objects/alpha-stash-entry-event.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Alpha: this API can change or be removed at any time, without notice.
+
+A stash entry was set or deleted, sent to `projectEvents`, `environmentEvents`, `instanceEvents`, and
+`deploymentEvents` by the entity that holds the entry. The action is `UPDATED` when the entry is set and
+`DELETED` when it is deleted. An entry that expires sends no event.
+
+| Stash       | Subscriptions                                              |
+|-------------|------------------------------------------------------------|
+| Project     | `projectEvents`                                            |
+| Environment | `projectEvents`, `environmentEvents`                       |
+| Component   | `projectEvents`                                            |
+| Instance    | `environmentEvents`, `instanceEvents`                      |
+| Deployment  | `environmentEvents`, `instanceEvents`, `deploymentEvents`  |
 
 
 

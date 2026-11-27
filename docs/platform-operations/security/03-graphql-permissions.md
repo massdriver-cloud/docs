@@ -86,17 +86,6 @@ Deployments are an action *on* an instance — `createDeployment`, `planDeployme
 | `deployment` | Query | `project:view` | |
 | `compareDeployments` | Query | `project:view` (both deployments' projects) | Source and target need not be on the same instance. |
 
-## Stash
-
-Each project, environment, component, instance, and deployment has its own stash. The permission to set or delete a key depends on the stash.
-
-| Operation | Type | Required permission(s) | Notes |
-|---|---|---|---|
-| `alphaStashEntry` | Query | `project:view` | Sensitive values are null unless the caller has the permission to set keys in that stash. |
-| `alphaStashEntries` | Query | `project:view` | Sensitive values are null unless the caller has the permission to set keys in that stash. |
-| `alphaSetStashEntry` | Mutation | `project:update`, `environment:update`, `project:design`, or `instance:configure` | Project stash → `project:update`, environment stash → `environment:update`, component stash → `project:design`, instance stash → `instance:configure`, deployment stash → `instance:configure` on the deployment's instance. A deployment's own credentials can set keys on that deployment and on its instance, environment, component, and project. |
-| `alphaDeleteStashEntry` | Mutation | `project:update`, `environment:update`, `project:design`, or `instance:configure` | Same permission as `alphaSetStashEntry`. |
-
 ## Instance Alarm
 
 | Operation | Type | Required permission(s) | Notes |

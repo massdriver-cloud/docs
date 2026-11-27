@@ -46,7 +46,7 @@ Alpha: this API can change or be removed at any time, without notice.
 
 List the entries in a stash, ordered by key. Expired entries are not returned.
 
-You need `project:view` on the stash's project. Sensitive values are null unless you can change the stash.
+You need `stash:view` on the stash's entity. Sensitive values are null unless you have `stash:export` on it.
 
 ```graphql
 query {

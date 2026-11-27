@@ -47,21 +47,18 @@ Alpha: this API can change or be removed at any time, without notice.
 Set the value of a key in a stash. Setting a key that has a value replaces the value and every other setting
 of the entry.
 
-The permission you need depends on the stash:
-
-| Stash       | Permission                                         |
-|-------------|----------------------------------------------------|
-| Project     | `project:update`                                   |
-| Environment | `environment:update`                               |
-| Component   | `project:design`                                   |
-| Instance    | `instance:configure`                               |
-| Deployment  | `instance:configure` on the deployment's instance  |
+You need `stash:write` on the stash's entity: the project, environment, component, or instance, or the
+deployment's instance for a deployment's stash.
 
 A deployment's own credentials can set keys on that deployment and on its instance, environment, component,
 and project.
 
 The mutation fails when the key has an immutable entry that has not expired, or when the stash already has
 its maximum number of keys (1000 unless your installation sets another).
+
+Keys that start with `md/` are well-known keys that drive the widgets in `alphaWidgetCatalog`, for example
+`md/v1/health`. Each one can be set only on its kind of entity, with its format, and with a value that
+matches its schema. An `md/` key that is not in the catalog is rejected. An `md/` entry cannot be sensitive.
 
 ```graphql
 mutation {

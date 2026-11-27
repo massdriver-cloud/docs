@@ -1,0 +1,96 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: alpha-widget-entity-kind
+title: AlphaWidgetEntityKind
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Alpha: this API can change or be removed at any time, without notice.
+
+The kind of entity a widget shows on.
+
+
+```graphql
+enum AlphaWidgetEntityKind {
+  PROJECT
+  ENVIRONMENT
+  COMPONENT
+  INSTANCE
+  DEPLOYMENT
+  LINK
+}
+```
+
+
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaWidgetEntityKind.<b>PROJECT</b></code>](#project) \{#project\} 
+A project.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaWidgetEntityKind.<b>ENVIRONMENT</b></code>](#environment) \{#environment\} 
+An environment.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaWidgetEntityKind.<b>COMPONENT</b></code>](#component) \{#component\} 
+A component.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaWidgetEntityKind.<b>INSTANCE</b></code>](#instance) \{#instance\} 
+An instance.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaWidgetEntityKind.<b>DEPLOYMENT</b></code>](#deployment) \{#deployment\} 
+A deployment.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaWidgetEntityKind.<b>LINK</b></code>](#link) \{#link\} 
+A link between two components, drawn as a line on the canvas.
+
+
+
+
+
+
+### Member Of
+
+[`AlphaWidgetDefinition`](/api/graphql/types/objects/alpha-widget-definition.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

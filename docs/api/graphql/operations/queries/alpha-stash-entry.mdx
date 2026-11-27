@@ -46,7 +46,7 @@ Alpha: this API can change or be removed at any time, without notice.
 
 Get one entry from a stash. Expired entries are not returned.
 
-You need `project:view` on the stash's project. A sensitive value is null unless you can change the stash.
+You need `stash:view` on the stash's entity. A sensitive value is null unless you have `stash:export` on it.
 
 ```graphql
 query {

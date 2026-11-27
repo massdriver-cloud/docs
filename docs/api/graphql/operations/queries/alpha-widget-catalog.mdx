@@ -1,0 +1,84 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: alpha-widget-catalog
+title: alphaWidgetCatalog
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Alpha: this API can change or be removed at any time, without notice.
+
+Every version of every widget that the Massdriver UI can draw from a well-known stash key, ordered by name
+and then version.
+
+```graphql
+query {
+  alphaWidgetCatalog {
+    name
+    entity
+    version
+    key
+    scope
+    format
+    schema
+    inputs { name type required field }
+  }
+}
+```
+
+
+```graphql
+alphaWidgetCatalog: [AlphaWidgetDefinition!]!
+```
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AlphaWidgetDefinition</b></code>](/api/graphql/types/objects/alpha-widget-definition.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Alpha: this API can change or be removed at any time, without notice.
+
+One version of a widget that the Massdriver UI can draw, and the well-known stash key that drives it. When a
+stash has the key with a value that matches `schema`, everyone who can view the project sees the widget.
+Keys that start with `md/` are reserved for widgets: setting one checks its value against the schema.
+
+A well-known key carries its version, for example `md/v1/usage`. A breaking change to a key's shape adds a
+new version of the widget with a new key, next to the old one. When a stash has more than one version of a
+widget's key, the UI draws the widget from the highest version.

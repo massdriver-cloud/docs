@@ -1,0 +1,100 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: alpha-stash-events
+title: alphaStashEvents
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Alpha: this API can change or be removed at any time, without notice.
+
+Subscribe to stash entries that are set or deleted in a project. You need `stash:view` on the project, and on
+the environment when you pass `environmentId`.
+
+Without `environmentId`, you get events for the project, its environments, and its components. With
+`environmentId`, you also get events for that environment's instances and their deployments.
+
+An event's `entry` is null when you do not have `stash:view` on the stash's entity. A sensitive entry's value
+is always null in an event. An entry that expires sends no event.
+
+```graphql
+subscription {
+  alphaStashEvents(organizationId: "my-org", projectId: "ecomm", environmentId: "ecomm-prod") {
+    action
+    scope { kind id }
+    key
+    entry { value expiresAt }
+    timestamp
+  }
+}
+```
+
+
+```graphql
+alphaStashEvents(
+  organizationId: ID!
+  projectId: ID!
+  environmentId: ID
+): AlphaStashEvent
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>alphaStashEvents.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>alphaStashEvents.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#project-id\} 
+The project's ID, for example `ecomm`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>alphaStashEvents.<b>environmentId</b></code>](#environment-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#environment-id\} 
+An environment ID in the project, for example `ecomm-prod`. Adds events for the environment's instances and their deployments.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AlphaStashEvent</b></code>](/api/graphql/types/objects/alpha-stash-event.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Alpha: this API can change or be removed at any time, without notice.
+
+A stash entry was set or deleted. Events are keyed by `scope` and `key`. An entry that expires sends no
+event, so drop an entry when its `expiresAt` passes.

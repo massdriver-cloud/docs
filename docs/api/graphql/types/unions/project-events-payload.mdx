@@ -44,12 +44,13 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 Events delivered by the `projectEvents` subscription.
 
-Covers the project itself plus its blueprint (components, links) and the
-environments provisioned from it.
+Covers the project itself plus its blueprint (components, links), the
+environments provisioned from it, and the stash entries of the project, its
+components, and its environments.
 
 
 ```graphql
-union ProjectEventsPayload = ProjectEvent | EnvironmentEvent | ComponentEvent | LinkEvent
+union ProjectEventsPayload = ProjectEvent | EnvironmentEvent | ComponentEvent | LinkEvent | AlphaStashEntryEvent
 ```
 
 
@@ -86,6 +87,22 @@ A lifecycle event for a blueprint link between two components.
 Emitted when components are linked or unlinked in a project's blueprint. Links have
 no mutable body, so only `CREATED` and `DELETED` actions are emitted. Subscribe via
 `projectEvents`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ProjectEventsPayload.<b>AlphaStashEntryEvent</b></code>](/api/graphql/types/objects/alpha-stash-entry-event.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Alpha: this API can change or be removed at any time, without notice.
+
+A stash entry was set or deleted, sent to `projectEvents`, `environmentEvents`, `instanceEvents`, and
+`deploymentEvents` by the entity that holds the entry. The action is `UPDATED` when the entry is set and
+`DELETED` when it is deleted. An entry that expires sends no event.
+
+| Stash       | Subscriptions                                              |
+|-------------|------------------------------------------------------------|
+| Project     | `projectEvents`                                            |
+| Environment | `projectEvents`, `environmentEvents`                       |
+| Component   | `projectEvents`                                            |
+| Instance    | `environmentEvents`, `instanceEvents`                      |
+| Deployment  | `environmentEvents`, `instanceEvents`, `deploymentEvents`  |
 
 
 

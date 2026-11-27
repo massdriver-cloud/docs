@@ -46,11 +46,12 @@ Events delivered by the `environmentEvents` subscription.
 
 Covers the environment itself, its default resources, every instance
 provisioned into it, every connection wired within it, every alarm attached
-to those instances, and every deployment run against them.
+to those instances, every deployment run against them, and the stash entries
+of the environment, its instances, and their deployments.
 
 
 ```graphql
-union EnvironmentEventsPayload = EnvironmentEvent | EnvironmentDefaultEvent | InstanceEvent | ConnectionEvent | AlarmEvent | DeploymentEvent
+union EnvironmentEventsPayload = EnvironmentEvent | EnvironmentDefaultEvent | InstanceEvent | ConnectionEvent | AlarmEvent | DeploymentEvent | AlphaStashEntryEvent
 ```
 
 
@@ -119,6 +120,22 @@ instance or environment.
 
 On `UPDATED`, re-select whichever fields you need (typically `status` and
 `elapsedTime`) — Apollo will merge the payload into its cache by `Deployment:id`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentEventsPayload.<b>AlphaStashEntryEvent</b></code>](/api/graphql/types/objects/alpha-stash-entry-event.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Alpha: this API can change or be removed at any time, without notice.
+
+A stash entry was set or deleted, sent to `projectEvents`, `environmentEvents`, `instanceEvents`, and
+`deploymentEvents` by the entity that holds the entry. The action is `UPDATED` when the entry is set and
+`DELETED` when it is deleted. An entry that expires sends no event.
+
+| Stash       | Subscriptions                                              |
+|-------------|------------------------------------------------------------|
+| Project     | `projectEvents`                                            |
+| Environment | `projectEvents`, `environmentEvents`                       |
+| Component   | `projectEvents`                                            |
+| Instance    | `environmentEvents`, `instanceEvents`                      |
+| Deployment  | `environmentEvents`, `instanceEvents`, `deploymentEvents`  |
 
 
 

@@ -1,0 +1,117 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: alpha-widget-definition
+title: AlphaWidgetDefinition
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Alpha: this API can change or be removed at any time, without notice.
+
+One version of a widget that the Massdriver UI can draw, and the well-known stash key that drives it. When a
+stash has the key with a value that matches `schema`, everyone who can view the project sees the widget.
+Keys that start with `md/` are reserved for widgets: setting one checks its value against the schema.
+
+A well-known key carries its version, for example `md/v1/usage`. A breaking change to a key's shape adds a
+new version of the widget with a new key, next to the old one. When a stash has more than one version of a
+widget's key, the UI draws the widget from the highest version.
+
+
+```graphql
+type AlphaWidgetDefinition {
+  name: String!
+  description: String!
+  entity: AlphaWidgetEntityKind!
+  version: Int!
+  key: String!
+  scope: AlphaStashScopeKind!
+  format: AlphaStashFormat!
+  schema: Map!
+  inputs: [AlphaWidgetInput!]!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaWidgetDefinition.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+The widget's name, for example `instance.usage_bar`. A `WIDGET` annotation uses it as its surface.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaWidgetDefinition.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+What the widget shows.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaWidgetDefinition.<b>entity</b></code>](#entity)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AlphaWidgetEntityKind!</b></code>](/api/graphql/types/enums/alpha-widget-entity-kind.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#entity\} 
+The kind of entity the widget shows on.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaWidgetDefinition.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/api/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version\} 
+The version of the well-known key's shape, for example `1`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaWidgetDefinition.<b>key</b></code>](#key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#key\} 
+The well-known stash key, for example `md/v1/usage`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaWidgetDefinition.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AlphaStashScopeKind!</b></code>](/api/graphql/types/enums/alpha-stash-scope-kind.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#scope\} 
+The kind of entity whose stash holds the key. A `link.traffic` widget reads the key on the instance that sends the traffic, and shows on the lines that leave that instance.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaWidgetDefinition.<b>format</b></code>](#format)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AlphaStashFormat!</b></code>](/api/graphql/types/enums/alpha-stash-format.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#format\} 
+The format the key's value must be set with.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaWidgetDefinition.<b>schema</b></code>](#schema)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#schema\} 
+The JSON Schema (draft 2020-12) that the key's value must match. Its `$id` names the key, for example `https://schemas.massdriver.cloud/stash/md/v1/usage.json`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaWidgetDefinition.<b>inputs</b></code>](#inputs)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[AlphaWidgetInput!]!</b></code>](/api/graphql/types/objects/alpha-widget-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#inputs\} 
+The widget's inputs.
+
+
+
+
+
+
+### Returned By
+
+[`alphaWidgetCatalog`](/api/graphql/operations/queries/alpha-widget-catalog.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

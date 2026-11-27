@@ -1,0 +1,116 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: alpha-annotation
+title: AlphaAnnotation
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Alpha: this API can change or be removed at any time, without notice.
+
+Your own note, pinned to a project, environment, component, instance, deployment, or link, and shown on one
+or more surfaces of the Massdriver UI. Only you can see your annotations.
+
+
+```graphql
+type AlphaAnnotation {
+  id: ID!
+  kind: AlphaAnnotationKind!
+  project: Project!
+  entity: AlphaAnnotationEntity!
+  surfaces: [String!]!
+  template: String
+  inputs: Map
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaAnnotation.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+The annotation's ID (a UUID).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaAnnotation.<b>kind</b></code>](#kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AlphaAnnotationKind!</b></code>](/api/graphql/types/enums/alpha-annotation-kind.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#kind\} 
+What the annotation shows.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaAnnotation.<b>project</b></code>](#project)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Project!</b></code>](/api/graphql/types/objects/project.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#project\} 
+The project the annotation is in.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaAnnotation.<b>entity</b></code>](#entity)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AlphaAnnotationEntity!</b></code>](/api/graphql/types/unions/alpha-annotation-entity.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="union"/> \{#entity\} 
+The entity the annotation is on. The project when the annotation is on the project itself.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaAnnotation.<b>surfaces</b></code>](#surfaces)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#surfaces\} 
+Where the Massdriver UI shows the annotation, for example `instance.canvas_node`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaAnnotation.<b>template</b></code>](#template)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#template\} 
+The Liquid template of a `NOTE` annotation. Null for `WIDGET` annotations.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaAnnotation.<b>inputs</b></code>](#inputs)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#inputs\} 
+The stash entries of a `WIDGET` annotation, by widget input name. Each scope names its stash by ID, for example `{"instance": "ecomm-prod-database"}`. An input whose stash owner was deleted, or moved to another project, is left out. Null for `NOTE` annotations.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaAnnotation.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When the annotation was created (UTC).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaAnnotation.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+When the annotation was last changed (UTC).
+
+
+
+
+
+
+### Returned By
+
+[`alphaAnnotation`](/api/graphql/operations/queries/alpha-annotation.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+
+### Member Of
+
+[`AlphaAnnotationPayload`](/api/graphql/types/objects/alpha-annotation-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AlphaAnnotationsPage`](/api/graphql/types/objects/alpha-annotations-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
