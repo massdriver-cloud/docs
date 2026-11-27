@@ -81,7 +81,20 @@ Open the bundle's repository page (**Repositories** → click the bundle) to see
 
 ## Release Channels
 
-Release channels use tilde (`~`) constraints to specify compatible version ranges. When an instance uses a release channel, it **automatically runs the full deploy/apply pipeline** whenever a new version matching that channel is published. This includes compliance checks, Terraform plans, and all other validation steps. This automates infrastructure version management.
+Release channels use tilde (`~`) constraints to specify compatible version ranges. When an instance uses a release channel and is running, it **automatically runs the full deploy/apply pipeline** whenever a new version matching that channel is published. This includes compliance checks, Terraform plans, and all other validation steps. This automates infrastructure version management.
+
+### Which Instances Deploy
+
+When a version is published, every instance on a matching channel moves to the new version. Only running instances deploy it:
+
+| Instance | Moves to the new version | Deploys it |
+|---|---|---|
+| Deployed, including one whose latest deploy or decommission failed | Yes | Yes |
+| Never deployed, or its first deploy failed | Yes | No |
+| Decommissioned | Yes | No |
+| Decommission running, pending or waiting for approval | Yes | No |
+
+An instance that does not deploy stays on its channel. The next time someone deploys it, it deploys the version its channel resolves to.
 
 ### Major Channel (`~1`)
 Matches the latest version within major version 1:
