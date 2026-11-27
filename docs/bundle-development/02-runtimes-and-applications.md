@@ -12,6 +12,45 @@ A **runtime** is a bundle that defines how applications run on a cloud: a Lambda
 
 An **application** is a bundle that runs on a runtime. It adds only what is specific to that application: its name and version, the dependencies it needs, the environment variables and secrets it reads, and the resources it emits for other services to depend on. An application is a single `massdriver.yaml` with no IaC of its own.
 
+**Write the infrastructure once. Ship every service on it.**
+
+## Quick start
+
+**1. The platform team publishes a runtime.** It is an ordinary bundle with `provides: [runtime]`:
+
+```yaml title="lambda/massdriver.yaml"
+name: lambda
+version: 1.2.8
+provides: [runtime]
+```
+
+```shell
+mass bundle publish
+```
+
+**2. A service team writes an application.** No IaC, just what the service needs:
+
+```yaml title="payments-api/massdriver.yaml"
+name: payments-api
+version: 0.4.1
+
+dependencies:
+  db:
+    resource_type: postgres@~1
+    required: true
+
+app:
+  runtime: lambda@~1.2
+  envs:
+    DB_HOST: .dependencies.db.authentication.hostname
+```
+
+```shell
+mass bundle publish
+```
+
+**3. Watch it roll out.** The [Runtimes page](#runtimes-in-the-ui) shows which version of `lambda` each application is built on and each instance runs.
+
 ## Why runtimes
 
 Most applications in an organization run on a handful of shapes. Without runtimes, each application either deploys a generic bundle and is wired up by hand in every environment, or carries a copy of the IaC in its own repository. Copies drift. Every developer can change what their infrastructure looks like, a security fix has to be applied to every copy, and the platform team ends up reviewing many modules that are mostly the same.
