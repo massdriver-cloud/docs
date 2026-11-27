@@ -7,6 +7,10 @@ sidebar_label: Notes
 
 # Notes
 
+:::caution Alpha
+This feature is alpha. Names, fields, and behavior can change or be removed at any time without notice.
+:::
+
 A note is text that you write in [Liquid](https://shopify.github.io/liquid/). Massdriver puts stash values into the text, then shows the result as markdown.
 
 ## Where a note shows

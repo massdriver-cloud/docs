@@ -7,11 +7,13 @@ sidebar_label: Overview
 
 # Annotations
 
+:::caution Alpha
+This feature is alpha. Names, fields, and behavior can change or be removed at any time without notice.
+:::
+
 Annotations show stash values on the canvas and in the project header. They update live when a stash value changes. You do not need to reload the page.
 
-The stash holds small key and value entries on a project, environment, component, instance, or deployment. Deployments and scripts write them with `mass stash set`.
-
-Annotations are an alpha feature. They can change or be removed at any time, without notice.
+The stash holds small key and value entries on a project, environment, component, instance, or deployment. Deployments and scripts write them with `mass stash set`. See the [Stash guide](/guides/stash).
 
 ## Notes and widgets
 
