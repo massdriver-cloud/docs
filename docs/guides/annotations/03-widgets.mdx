@@ -1,0 +1,346 @@
+---
+id: guides-annotations-widgets
+slug: /guides/annotations/widgets
+title: Widgets
+sidebar_label: Widgets
+---
+
+import {
+  TrafficState,
+  StatusDotState,
+  UsageBarState,
+  BannerState,
+  HeaderLinkState,
+} from "@site/src/components/Annotations";
+
+# Widgets
+
+A widget is a built-in picture that stash values drive. There are two ways to show one.
+
+- **Automatic.** Write a well-known key that starts with `md/`. Everyone who can view the project sees the widget.
+- **Pinned.** Pin your own widget and choose a stash entry for each input. Only you see it.
+
+When one of your pinned widgets shows in a spot, the automatic widget for that spot does not show for you.
+
+To hide automatic widgets, click the **Widgets** button in the canvas controls. The setting is saved in your browser and applies only to you.
+
+## Well-known keys
+
+| Key | Set on | Format | Widget |
+|---|---|---|---|
+| `md/health` | Instance | TEXT | [Status dot](#status-dot) |
+| `md/usage` | Instance | JSON | [Usage bar](#usage-bar) |
+| `md/traffic` | Instance | JSON | [Traffic](#traffic) on the lines that leave the instance |
+| `md/banner` | Environment | JSON | [Banner](#banner) |
+| `md/links` | Environment | JSON | [Header links](#header-links) |
+
+The `md/` prefix is reserved. The server rejects a write to an `md/` key when:
+
+- No widget reads the key.
+- The key is set on the wrong kind of entity.
+- The entry is sensitive.
+- The format is not the one in the table.
+- The value does not match the key's schema.
+
+## Status dot
+
+A colored dot in the header of an instance node. The value shows in a tooltip.
+
+### Automatic: `md/health`
+
+Set on the instance. Format: TEXT.
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "string",
+  "minLength": 1,
+  "maxLength": 64,
+  "examples": ["healthy", "degraded", "down"]
+}
+```
+
+```bash
+mass stash set billing-dev-app.md/health degraded
+```
+
+### What it looks like
+
+| State | Looks like | Value | Meaning |
+|---|---|---|---|
+| Healthy | <StatusDotState tone="success" label="Status dot healthy: a green dot" /> | `healthy`, `ok`, or `up` | A green dot. |
+| Degraded | <StatusDotState tone="warning" label="Status dot degraded: an amber dot" /> | `degraded`, `warning`, or `recovering` | An amber dot. |
+| Down | <StatusDotState tone="error" label="Status dot down: a red dot" /> | `down`, `failed`, or `error` | A red dot. |
+| Unknown | <StatusDotState tone="neutral" label="Status dot with an unknown value: a gray dot" /> | any other text | A gray dot. |
+
+The match ignores case and spaces at each end.
+
+### Pin your own
+
+Right-click an instance and choose **Add widget** > **Status dot**.
+
+| Input | Type | Required | Example key | Path |
+|---|---|---|---|---|
+| `state` | string | yes | `status/health` on the instance (TEXT) | none |
+
+## Usage bar
+
+A thin bar at the bottom of an instance node with the value and the limit.
+
+### Automatic: `md/usage`
+
+Set on the instance. Format: JSON.
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["value", "max"],
+  "additionalProperties": false,
+  "properties": {
+    "value": { "type": "number", "minimum": 0 },
+    "max": { "type": "number", "exclusiveMinimum": 0 },
+    "label": { "type": "string", "maxLength": 64 }
+  }
+}
+```
+
+| Field | Meaning |
+|---|---|
+| `value` | The amount in use. |
+| `max` | The limit. |
+| `label` | Optional text before the numbers, such as `connections`. |
+
+```bash
+mass stash set billing-dev-app.md/usage '{"value": 37, "max": 100, "label": "connections"}' --format json
+```
+
+### What it looks like
+
+| State | Looks like | Value | Meaning |
+|---|---|---|---|
+| Under 80% | <UsageBarState percent={37} tone="success" text="connections 37 / 100" label="Usage bar at 37 percent: a green bar" /> | `{"value": 37, "max": 100, "label": "connections"}` | A green bar. |
+| 80% to 94% | <UsageBarState percent={86} tone="warning" text="connections 86 / 100" label="Usage bar at 86 percent: an amber bar" /> | `{"value": 86, "max": 100, "label": "connections"}` | An amber bar. |
+| 95% or more | <UsageBarState percent={97} tone="error" text="connections 97 / 100" label="Usage bar at 97 percent: a red bar" /> | `{"value": 97, "max": 100, "label": "connections"}` | A red bar. |
+
+A value above `max` fills the bar.
+
+### Pin your own
+
+Right-click an instance and choose **Add widget** > **Usage bar**. Each input can read a different key. For example, two TEXT entries:
+
+```bash
+mass stash set billing-dev-app.db/connections 37
+mass stash set billing-dev-app.db/max_connections 100
+```
+
+| Input | Type | Required | Example key | Path |
+|---|---|---|---|---|
+| `value` | number | yes | `db/connections` on the instance | none |
+| `max` | number | yes | `db/max_connections` on the instance | none |
+| `label` | string | no | none | none |
+
+A pinned bar with a `max` of 0 or less does not show.
+
+## Traffic
+
+The traffic on a line between two instances, shown as the width, color, and movement of the line. A short label on the line shows the rate, the errors, and "stale" when the data is old.
+
+### Automatic: `md/traffic`
+
+Set on the instance that sends the traffic. Format: JSON. Every line that leaves that instance shows the traffic.
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["rps", "errors_5m"],
+  "additionalProperties": false,
+  "properties": {
+    "rps": { "type": "number", "minimum": 0 },
+    "errors_5m": { "type": "integer", "minimum": 0 },
+    "p95_ms": { "type": "number", "minimum": 0 }
+  }
+}
+```
+
+| Field | Meaning |
+|---|---|
+| `rps` | Requests per second. |
+| `errors_5m` | Errors in the last 5 minutes. |
+| `p95_ms` | Optional. p95 latency in milliseconds. The widget does not read it. |
+
+```bash
+mass stash set billing-dev-app.md/traffic '{"rps": 240, "errors_5m": 2, "p95_ms": 85}' --format json
+```
+
+Write the entry on a schedule. When it is not updated for 10 minutes, the line shows as stale. Add `--ttl` to remove the entry, and the widget, after a time.
+
+### What it looks like
+
+| State | Looks like | Value | Meaning |
+|---|---|---|---|
+| Off | <TrafficState state="off" label="Traffic off: a plain gray line with no label" /> | key missing or expired | The line shows as usual. |
+| Idle | <TrafficState state="idle" label="Traffic idle: a thin gray dashed line with a 0 rps label" /> | `{"rps": 0, "errors_5m": 0}` | Rate 0. A thin gray dashed line. |
+| Flowing | <TrafficState state="flowing" label="Traffic flowing: a thick teal moving line with a 240 rps label" /> | `{"rps": 240, "errors_5m": 0}` | Rate above 0 and no errors. A teal line. |
+| Some errors | <TrafficState state="someErrors" label="Traffic with some errors: an amber line with a 3 err label" /> | `{"rps": 240, "errors_5m": 3}` | 1 to 9 errors. An amber line. |
+| Many errors | <TrafficState state="manyErrors" label="Traffic with many errors: a red line with a 42 err label" /> | `{"rps": 240, "errors_5m": 42}` | 10 or more errors. A red line. |
+| Stale | <TrafficState state="stale" label="Stale traffic: a teal line at half opacity with a stale label" /> | not updated for 10 minutes | The line fades to half opacity. |
+
+The line width follows the rate:
+
+| Rate | Width |
+|---|---|
+| under 10 | 3px |
+| 10 to 99 | 4px |
+| 100 to 999 | 6px |
+| 1000 or more | 8px |
+
+On a line with traffic, dashes move from the source instance to the destination instance. Higher rates move faster. When your system asks for reduced motion, the line is solid and does not move.
+
+### Pin your own
+
+Right-click a line and choose **Add widget** > **Traffic**. You can read from the `source` or the `destination` instance.
+
+| Input | Type | Required | Example key | Path |
+|---|---|---|---|---|
+| `rate` | number | yes | `stats/traffic` on `destination` (JSON) | `rps` |
+| `errors` | number | yes | `stats/traffic` on `destination` (JSON) | `errors_5m` |
+
+## Banner
+
+A message across the top of the environment canvas. Banners stack.
+
+### Automatic: `md/banner`
+
+Set on the environment. Format: JSON.
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["message"],
+  "additionalProperties": false,
+  "properties": {
+    "message": { "type": "string", "minLength": 1, "maxLength": 280 },
+    "level": { "enum": ["info", "warning", "error"] }
+  }
+}
+```
+
+| Field | Meaning |
+|---|---|
+| `message` | The banner text. |
+| `level` | Optional. `info` (blue, the default), `warning` (amber), or `error` (red). |
+
+```bash
+mass stash set billing-dev.md/banner '{"message": "Deploy freeze until Friday", "level": "warning"}' --format json
+```
+
+### What it looks like
+
+| State | Looks like | Value | Meaning |
+|---|---|---|---|
+| Info | <BannerState levels={["info"]} label="Info banner: a blue strip" /> | `{"message": "Database upgrade tonight"}` | A blue banner. |
+| Warning | <BannerState levels={["warning"]} label="Warning banner: an amber strip" /> | `{"message": "Deploy freeze until Friday", "level": "warning"}` | An amber banner. |
+| Error | <BannerState levels={["error"]} label="Error banner: a red strip" /> | `{"message": "Payments API is down", "level": "error"}` | A red banner. |
+| Two banners | <BannerState levels={["warning", "info"]} label="Two banners stacked: an amber strip above a blue strip" /> | `md/banner` and a pinned banner | Banners stack, one per widget. |
+
+### Pin your own
+
+Right-click an empty part of the canvas and choose **Add widget** > **Banner**. For example, a short-lived TEXT entry:
+
+```bash
+mass stash set billing-dev.status/maintenance "Database upgrade tonight" --ttl 86400
+```
+
+| Input | Type | Required | Example key | Path |
+|---|---|---|---|---|
+| `message` | string | yes | `status/maintenance` on the environment | none |
+| `level` | string | no | none | none |
+
+A pinned banner with a `level` that is not `info`, `warning`, or `error` shows as `info`.
+
+## Header links
+
+Link buttons in the environment header, such as a dashboard or a runbook. A button opens its URL in a new tab.
+
+### Automatic: `md/links`
+
+Set on the environment. Format: JSON. Each item in `links` is one button.
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["links"],
+  "additionalProperties": false,
+  "properties": {
+    "links": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "required": ["label", "url"],
+        "additionalProperties": false,
+        "properties": {
+          "label": { "type": "string", "minLength": 1, "maxLength": 40 },
+          "url": { "type": "string", "maxLength": 2048, "pattern": "^https?://[^\\s]+$" }
+        }
+      }
+    }
+  }
+}
+```
+
+| Field | Meaning |
+|---|---|
+| `links[].label` | The button text. |
+| `links[].url` | An `http` or `https` URL. |
+
+```bash
+mass stash set billing-dev.md/links '{"links": [{"label": "Shop", "url": "https://shop.example.com"}, {"label": "Grafana", "url": "https://grafana.example.com/d/billing"}]}' --format json
+```
+
+### What it looks like
+
+| State | Looks like | Value | Meaning |
+|---|---|---|---|
+| One link | <HeaderLinkState links={["Shop"]} label="One header link button labeled Shop" /> | `{"links": [{"label": "Shop", "url": "https://shop.example.com"}]}` | One button. |
+| Two links | <HeaderLinkState links={["Shop", "Grafana"]} label="Two header link buttons, Shop and Grafana" /> | two items in `links` | One button per item. |
+| Not an http URL | <HeaderLinkState links={[]} label="No header link button, because the URL is not http or https" /> | `"url": "ftp://files.example.com"` | No button. The server rejects this value for `md/links`. A pinned link with this URL does not show. |
+
+### Pin your own
+
+Right-click an empty part of the canvas and choose **Add widget** > **Header link**. A pinned header link is one button.
+
+```bash
+mass stash set billing-dev.links/product https://shop.example.com
+mass stash set billing-dev.links/product-name "Shop"
+```
+
+| Input | Type | Required | Example key | Path |
+|---|---|---|---|---|
+| `url` | url | yes | `links/product` on the environment | none |
+| `label` | string | no | `links/product-name` on the environment | none |
+
+Without a label, the button shows the URL host.
+
+## Pinned widget inputs
+
+For each input of a pinned widget, you choose a stash, a key, and, for a JSON entry, a path to a field. The widget editor shows the current value or the reason an input is off.
+
+| Input type | Accepted values |
+|---|---|
+| number | A JSON number, or a text value such as `42`, `-3`, or `12.5` |
+| string | Text |
+| url | An `http` or `https` URL |
+
+An input is off when its key is missing, expired, sensitive, or has the wrong type, or when its path is not in the JSON entry. A pinned widget shows only when every required input has a value.
+
+| Pinned to | Stashes you can choose |
+|---|---|
+| An instance | `project`, `environment`, `component`, `instance` |
+| A line | `project`, `environment`, `source`, `destination` |
+| An environment | `project`, `environment` |

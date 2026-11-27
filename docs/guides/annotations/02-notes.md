@@ -1,15 +1,15 @@
 ---
-id: guides-annotations-templates
-slug: /guides/annotations/templates
-title: Template Notes
-sidebar_label: Template Notes
+id: guides-annotations-notes
+slug: /guides/annotations/notes
+title: Notes
+sidebar_label: Notes
 ---
 
-# Template Notes
+# Notes
 
-A template note is text that you write in [Liquid](https://shopify.github.io/liquid/). Massdriver fills in stash values, then shows the result as markdown.
+A note is text that you write in [Liquid](https://shopify.github.io/liquid/). Massdriver fills in stash values, then shows the result as markdown.
 
-## Where a template note shows
+## Where a note shows
 
 | Pinned to | Shows on |
 |---|---|
@@ -46,7 +46,7 @@ Each namespace also has an `id`, such as `{{ instance.id }}`.
 A text entry is a string. A JSON entry is an object, so you can read its fields:
 
 ```liquid
-{{ instance.stash["stats/traffic"].rps }} requests per second
+{{ instance.stash["md/traffic"].rps }} requests per second
 ```
 
 ### Missing values
@@ -73,7 +73,7 @@ An unknown filter is an error. The note shows the error message in place of the 
 
 ## Markdown output
 
-The output of a template renders as markdown. You can use headings, lists, bold, italics, code, and tables.
+The output of a note renders as markdown. You can use headings, lists, bold, italics, code, and tables.
 
 - Links work only with `http` and `https` URLs. A link with any other URL shows as plain text. Links open in a new browser tab.
 - Images do not show.
@@ -112,15 +112,15 @@ mass stash set billing-dev-app.db/max_connections "100"
 Pin to a line. The source instance writes its traffic to its own stash as a JSON entry.
 
 ```bash
-mass stash set billing-dev-app.stats/traffic '{"rps": 120.5, "errors_5m": 3, "p95_ms": 84}' --format json --ttl 300
+mass stash set billing-dev-app.md/traffic '{"rps": 120.5, "errors_5m": 3, "p95_ms": 84}' --format json --ttl 300
 ```
 
 ```liquid
-{% assign t = source.stash["stats/traffic"] %}
+{% assign t = source.stash["md/traffic"] %}
 {% if t %}{{ t.rps | round }} rps · p95 {{ t.p95_ms }} ms · {{ t.errors_5m }} errors in 5 min{% else %}No traffic data{% endif %}
 ```
 
-The `--ttl 300` flag deletes the entry after 5 minutes. When the writer stops, the note shows "No traffic data".
+The `--ttl 300` flag deletes the entry after 5 minutes. When the writer stops, the note shows "No traffic data". The same entry also draws the [traffic widget](/guides/annotations/widgets#traffic) on the line.
 
 ### Canvas legend with a runbook link
 
