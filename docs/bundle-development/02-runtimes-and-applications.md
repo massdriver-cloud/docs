@@ -334,6 +334,23 @@ Massdriver delivers the connection details. The TLS handshake happens in one of 
 
 Either way, `checkout-api`'s own client certificate does not come from `payments-api-server`. It is issued separately, by the runtime or as a secret or resource of its own.
 
+## Runtimes in the UI
+
+Open **Runtimes** in the sidebar to see every runtime in your organization. Each card shows the runtime's latest version, the applications built on it, the instances that run those applications, and how many of those instances run an application built on the latest runtime version.
+
+![The Runtimes page, with a card for each runtime and a meter of instances on the latest version](/img/screenshots/runtimes-list.png)
+
+Select a runtime to see its rollout. In this example, `lambda` 1.2.8 is the latest version, and `payments-api` and `checkout-api` are built on it.
+
+![The lambda runtime page, with its stats, a preview of publishing 1.3.0, and the instances that stay on 1.2.8](/img/screenshots/runtime-rollout.png)
+
+- **Stats.** The latest version, the number of applications and instances, and how many instances are on the latest version.
+- **What happens if you publish a new version?** Pick the next patch, minor, or major version, or enter a custom one. The panel shows what changes before you publish anything. Publishing a runtime never changes a running instance: each application builds on the new version the next time it is published, and each instance runs it the next time it deploys. Until then, every instance shows **Stays on** its current runtime version.
+- **Instances.** Each instance whose last deployment ran an application built on this runtime, with its project, environment, application, and the runtime version it runs. An instance on an older version shows how many versions behind it is.
+- **Applications.** Each application built on this runtime, at its newest version, with the runtime version it was built on.
+
+Use this page to plan a runtime fix like the IAM change in [Use cases](#use-cases): publish the new runtime version, republish the applications on it, then watch **On latest** climb as their instances deploy.
+
 ## Related documentation
 
 - [Bundle YAML Specification](/bundle-development/bundle-yaml-spec)
