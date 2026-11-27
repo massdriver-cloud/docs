@@ -44,24 +44,24 @@ function Node({ x, y, name, w = 96 }) {
 const TRAFFIC = {
   off: { stroke: "var(--an-border)", width: 1.5, dash: null, chip: null },
   idle: { stroke: TONE_VAR.idle, width: 2, dash: "4 4", chip: "0 rps" },
-  flowing: { stroke: TONE_VAR.teal, width: 6, dash: "8 6", chip: "240 rps" },
-  someErrors: { stroke: TONE_VAR.warning, width: 6, dash: "8 6", chip: "240 rps · 3 err" },
-  manyErrors: { stroke: TONE_VAR.error, width: 6, dash: "8 6", chip: "240 rps · 42 err" },
-  stale: { stroke: TONE_VAR.teal, width: 6, dash: "8 6", chip: "240 rps · stale", opacity: 0.5 },
+  flowing: { stroke: TONE_VAR.teal, width: 6, dash: "8 6", chip: "240 rps · 180 ms" },
+  someErrors: { stroke: TONE_VAR.warning, width: 6, dash: "8 6", chip: "240 rps · 3 err · 180 ms" },
+  manyErrors: { stroke: TONE_VAR.error, width: 6, dash: "8 6", chip: "240 rps · 42 err · 180 ms" },
+  stale: { stroke: TONE_VAR.teal, width: 6, dash: "8 6", chip: "240 rps · 180 ms · stale", opacity: 0.5 },
 };
 
 export function TrafficState({ state, label }) {
   const t = TRAFFIC[state];
   const chipWidth = t.chip ? t.chip.length * 6.2 + 14 : 0;
   return (
-    <Figure label={label} width={300} height={60}>
+    <Figure label={label} width={380} height={60}>
       <Node x={2} y={12} name="api" w={80} />
-      <Node x={218} y={12} name="database" w={80} />
+      <Node x={298} y={12} name="database" w={80} />
       <g opacity={t.opacity ?? 1}>
         <line
           x1={82}
           y1={30}
-          x2={218}
+          x2={298}
           y2={30}
           stroke={t.stroke}
           strokeWidth={t.width}
@@ -70,8 +70,8 @@ export function TrafficState({ state, label }) {
         />
         {t.chip ? (
           <g>
-            <rect className={s.surface} x={150 - chipWidth / 2} y={0} width={chipWidth} height={18} rx={9} />
-            <text className={s.muted} x={150} y={13} textAnchor="middle">
+            <rect className={s.surface} x={190 - chipWidth / 2} y={0} width={chipWidth} height={18} rx={9} />
+            <text className={s.muted} x={190} y={13} textAnchor="middle">
               {t.chip}
             </text>
           </g>

@@ -144,7 +144,7 @@ A pinned bar with a `max` of 0 or less does not show.
 
 ## Traffic
 
-The traffic on a line between two instances, shown as the width, color, and movement of the line. A short label on the line shows the rate, the errors, and "stale" when the data is old.
+The traffic on a line between two instances, shown as the width, color, and movement of the line. A short label on the line shows the rate, the errors, the p95 latency, and "stale" when the data is old. For example, `240 rps · 2 err · 180 ms`. The label leaves out the errors when there are none, and the latency when there is no value.
 
 ### Automatic: `md/traffic`
 
@@ -164,14 +164,14 @@ Set on the instance that sends the traffic. Format: JSON. Every line that leaves
 }
 ```
 
-| Field | Meaning |
-|---|---|
-| `rps` | Requests per second. |
-| `errors_5m` | Errors in the last 5 minutes. |
-| `p95_ms` | Optional. p95 latency in milliseconds. The widget does not read it. |
+| Field | Meaning | Input |
+|---|---|---|
+| `rps` | Requests per second. | `rate` |
+| `errors_5m` | Errors in the last 5 minutes. | `errors` |
+| `p95_ms` | Optional. p95 latency in milliseconds. | `latency` |
 
 ```bash
-mass stash set billing-dev-app.md/traffic '{"rps": 240, "errors_5m": 2, "p95_ms": 85}' --format json
+mass stash set billing-dev-app.md/traffic '{"rps": 240, "errors_5m": 2, "p95_ms": 180}' --format json
 ```
 
 Write the entry on a schedule. When it is not updated for 10 minutes, the line shows as stale. Add `--ttl` to remove the entry, and the widget, after a time.
@@ -182,9 +182,9 @@ Write the entry on a schedule. When it is not updated for 10 minutes, the line s
 |---|---|---|---|
 | Off | <TrafficState state="off" label="Traffic off: a plain gray line with no label" /> | key missing or expired | The line shows as usual. |
 | Idle | <TrafficState state="idle" label="Traffic idle: a thin gray dashed line with a 0 rps label" /> | `{"rps": 0, "errors_5m": 0}` | Rate 0. A thin gray dashed line. |
-| Flowing | <TrafficState state="flowing" label="Traffic flowing: a thick teal moving line with a 240 rps label" /> | `{"rps": 240, "errors_5m": 0}` | Rate above 0 and no errors. A teal line. |
-| Some errors | <TrafficState state="someErrors" label="Traffic with some errors: an amber line with a 3 err label" /> | `{"rps": 240, "errors_5m": 3}` | 1 to 9 errors. An amber line. |
-| Many errors | <TrafficState state="manyErrors" label="Traffic with many errors: a red line with a 42 err label" /> | `{"rps": 240, "errors_5m": 42}` | 10 or more errors. A red line. |
+| Flowing | <TrafficState state="flowing" label="Traffic flowing: a thick teal moving line with a 240 rps, 180 ms label" /> | `{"rps": 240, "errors_5m": 0, "p95_ms": 180}` | Rate above 0 and no errors. A teal line. |
+| Some errors | <TrafficState state="someErrors" label="Traffic with some errors: an amber line with a 240 rps, 3 err, 180 ms label" /> | `{"rps": 240, "errors_5m": 3, "p95_ms": 180}` | 1 to 9 errors. An amber line. |
+| Many errors | <TrafficState state="manyErrors" label="Traffic with many errors: a red line with a 240 rps, 42 err, 180 ms label" /> | `{"rps": 240, "errors_5m": 42, "p95_ms": 180}` | 10 or more errors. A red line. |
 | Stale | <TrafficState state="stale" label="Stale traffic: a teal line at half opacity with a stale label" /> | not updated for 10 minutes | The line fades to half opacity. |
 
 The line width follows the rate:
@@ -206,6 +206,7 @@ Right-click a line and choose **Add widget** > **Traffic**. You can read from th
 |---|---|---|---|---|
 | `rate` | number | yes | `stats/traffic` on `destination` (JSON) | `rps` |
 | `errors` | integer | yes | `stats/traffic` on `destination` (JSON) | `errors_5m` |
+| `latency` | number | no | `stats/traffic` on `destination` (JSON) | `p95_ms` |
 
 ## Banner
 
