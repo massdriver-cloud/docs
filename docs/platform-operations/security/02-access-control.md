@@ -3,6 +3,7 @@ id: security-access-control
 slug: /platform-operations/security/access-control
 title: Access Control (ABAC)
 sidebar_label: Access Control
+image: /img/og/access-control.png
 ---
 
 # Access Control
@@ -92,32 +93,9 @@ Massdriver automatically injects system attributes on every entity. These use th
 
 ### Resource Hierarchy
 
-```
-                ┌─────────────┐
-                │   Project   │
-                └──────┬──────┘
-            ┌──────────┴──────────┐
-            ▼                     ▼
-     ┌─────────────┐      ┌─────────────┐
-     │ Environment │      │  Component  │
-     └──────┬──────┘      └──────┬──────┘
-            └──────────┬──────────┘
-                       ▼
-                ┌─────────────┐
-                │  Instance   │
-                └──────┬──────┘
-                       ▼
-                ┌─────────────┐      ┌───────────────┐
-                │ Deployment  │      │ Resource Type │
-                └──────┬──────┘      └───────┬───────┘
-                       └──────────┬──────────┘
-                                  ▼
-                           ┌─────────────┐
-                           │  Resource   │
-                           └─────────────┘
-```
+<AttributeCascade />
 
-An instance is the intersection of an environment and a component, and a resource is the intersection of a deployment and a resource type (the resource type contributes only `md-resource-type` today). Attributes set anywhere upstream cascade downward — a resource at the bottom carries attributes from every parent above it.
+An instance is the intersection of an environment and a component. Deployments and resources carry the attributes of their instance with their own `md-id`. A resource also gets `md-resource-type` from its resource type, which contributes nothing else today. A resource at the bottom carries the attributes of every parent above its instance.
 
 ### Attribute Reference
 
@@ -212,11 +190,11 @@ New organizations start with these custom groups. They have no members. You can 
 
 | Group | Policies |
 |---|---|
-| Organization Viewers | Allow `project:view`, `repo:view`, `resource:view` |
-| Developers | Allow `project:view`, `project:design`, `environment:create`, `environment:update`, `environment:configure`, `instance:configure`, `instance:plan`, `instance:propose`, `repo:view`, `repo:pull`, `resource:view` |
-| Production Deployers | Allow `project:view`, `resource:view`. Allow `instance:plan`, `instance:deploy`, `environment:deploy` where `md-environment` is `prod` or `production` |
-| Platform Engineers | Allow `repo:view`, `repo:pull`, `repo:push`, `repo:create`, `repo:update`, `repo:grant`, `repo:delete`, `organization:manageResourceTypes`, `organization:manageCustomAttributes`, `project:view`, `resource:view`, `resource:import`, `resource:update`, `resource:grant` |
-| CI / Automation | Allow `project:view`, `repo:view`, `repo:pull`, `repo:push`, `instance:configure`, `instance:plan`, `instance:deploy` |
+| Organization Viewers | Allow `project:view`, `stash:view`, `repo:view`, `resource:view` |
+| Developers | Allow `project:view`, `project:design`, `environment:create`, `environment:update`, `environment:configure`, `instance:configure`, `instance:plan`, `instance:propose`, `repo:view`, `repo:pull`, `resource:view`, `stash:view`, `stash:write`, `stash:export` |
+| Production Deployers | Allow `project:view`, `stash:view`, `resource:view`. Allow `instance:plan`, `instance:deploy`, `environment:deploy` where `md-environment` is `prod` or `production` |
+| Platform Engineers | Allow `repo:view`, `repo:pull`, `repo:push`, `repo:create`, `repo:update`, `repo:grant`, `repo:delete`, `organization:manageResourceTypes`, `organization:manageCustomAttributes`, `project:view`, `resource:view`, `resource:import`, `resource:update`, `resource:grant`, `stash:view` |
+| CI / Automation | Allow `project:view`, `repo:view`, `repo:pull`, `repo:push`, `instance:configure`, `instance:plan`, `instance:deploy`, `stash:view`, `stash:write`, `stash:export` |
 | Billing | Allow `organization:manageBilling` |
 
 Developers propose deployments, and Production Deployers approve them in production. To let Developers deploy to other environments, add an allow policy for `instance:deploy` with an `md-environment` condition, for example `["dev", "staging"]`.
@@ -294,6 +272,7 @@ Use this table to avoid relying on `md-id` wildcards (`md-id: [api-prod-*]`). Sy
 | group           | `md-id`                                                          | (none — groups are principals, not scoped entities) |
 | repo            | `md-id`, `md-repo`                                               | `:repo`                                        |
 | resource_type   | `md-id`                                                          | (none today)                                   |
+| stash           | The row of the entity that holds the entries: project, environment, component, or instance | The row of that entity |
 
 **Cascade**: a custom attribute registered at scope `:project` is reachable on every descendant — environment, component, instance, resource — because the project's value flows down. Setting `team: payments` at the project level means every instance in that project carries `team=payments` for policy matching, even though the value isn't physically stored on each instance row.
 
@@ -307,7 +286,7 @@ Use this table to avoid relying on `md-id` wildcards (`md-id: [api-prod-*]`). Sy
 
 ## Permissions
 
-Massdriver defines 39 permissions using an `entity:verb` format.
+Massdriver defines 46 permissions using an `entity:verb` format.
 
 ### Project
 
@@ -389,13 +368,27 @@ Resource-type repos are not shared through grants — grants are a bundle→proj
 
 Resource types push `md-resource-type` onto every resource produced from them, so policies can target by type (`md-resource-type: [aws-iam-role]`).
 
+### Stash
+
+A [stash](/guides/stash) holds key and value entries on a project, environment, component, or instance. The entries of a deployment belong to its instance. Massdriver checks each stash action against the entity that holds the entries. So a condition such as `md-environment: [prod]`, or a custom attribute, applies to the stashes of the entities that match.
+
+`project:view` does not include `stash:view`. Grant it on its own.
+
+| Permission | Description |
+|---|---|
+| `stash:view` | Read stash entries, without sensitive values, and subscribe to their changes. Notes and widgets need it to show stash values. |
+| `stash:write` | Set and delete stash entries |
+| `stash:export` | Read sensitive stash values |
+
+A deployment's own credentials do not use these permissions. A deployment can read and write the stashes of its deployment, instance, environment, component, and project.
+
 ### Organization
 
 Organization-level capabilities are split into one umbrella action and nine sub-actions. Authoring a single policy with `organization:manage` covers every sub-action via the engine's umbrella rule; authoring an individual sub-action grants only that capability.
 
 | Permission | Description |
 |---|---|
-| `organization:manage` | Umbrella. A policy granting `organization:manage` satisfies any of the nine `organization:manage*` sub-actions below. |
+| `organization:manage` | Umbrella. A policy granting `organization:manage` satisfies any of the ten `organization:manage*` sub-actions below. |
 | `organization:manageServiceAccounts` | Create, update, delete, list, and inspect service accounts. |
 | `organization:manageGroups` | Create new groups. Editing an existing group's membership or policies is gated separately by `group:manage` on that group. |
 | `organization:manageBilling` | View and change subscription, payment, seats, and Stripe customer portal. |
@@ -405,6 +398,7 @@ Organization-level capabilities are split into one umbrella action and nine sub-
 | `organization:manageSettings` | View and change organization-wide behavior settings, such as the default access granted to new bundle repositories. |
 | `organization:manageProfile` | Update display name and logo. |
 | `organization:manageMembers` | Remove members from the organization, which also revokes their group memberships, invitations, and access tokens. |
+| `organization:manageEventDestinations` | Add, change, pause, resume, and delete the destinations that receive the organization's events, see what each destination was sent, and send failed events again. |
 
 Reading the organization's public profile (name, logo, identifier) is open to every org member — no policy required.
 

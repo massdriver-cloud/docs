@@ -3,6 +3,7 @@ id: schema-design-overview
 slug: /bundle-development/schema-design/overview
 title: Schema Design
 sidebar_label: Overview
+image: /img/og/schema-design.png
 ---
 
 Design parameter schemas for your bundles using JSON Schema (draft-07). This section covers validation patterns, Massdriver-specific extensions, and form display options.

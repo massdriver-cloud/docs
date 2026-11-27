@@ -3,6 +3,7 @@ id: platform-operations-overview
 slug: /platform-operations/overview
 title: Platform Operations
 sidebar_label: Overview
+image: /img/og/platform-operations.png
 ---
 
 This section covers operating and administering the Massdriver platform.
@@ -11,6 +12,7 @@ This section covers operating and administering the Massdriver platform.
 
 - **[State Management](./state-management)** - Manage Terraform/OpenTofu state for your deployments
 - **[Monitoring & Alarms](./monitoring-and-alarms)** - Configure alerts and observability
+- **[Event Destinations](./event-destinations)** - Send your organization's events to an HTTP endpoint
 - **[CI/CD Integration](./ci-cd/github-action)** - Automate deployments with GitHub Actions and Azure DevOps
 - **[Security](./security/overview)** - Service accounts, access control, and ABAC policies
 - **[Self-Hosted](./self-hosted/overview)** - Deploy Massdriver in your own infrastructure

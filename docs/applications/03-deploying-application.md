@@ -1,13 +1,14 @@
 ---
 id: applications-deploy
 slug: /applications/deploy
-title: Deploy
+title: Deploy an Application
 sidebar_label: Deploy
+image: /img/og/applications-deploy.png
 ---
 
 Once an application bundle has been published to Massdriver, it can be connected and configured via the UI and then deployed via UI or CLI.
 
-From the UI, you can deploy any application you have access to which includes your private applications and public open-source applications added by the community.
+From the UI, you can deploy any application in your organization that you have access to.
 
 :::info
 
@@ -45,7 +46,7 @@ Attach the credential you created in the `Create environment` screen.
 
 **Design and deploy infrastructure for your application**:
 
-If you followed the guide in the [previous section](/applications/create) your application will depend on a Kubernetes Cluster and PostgreSQL.
+If you followed the guide in the [previous section](/applications/create) your application will depend on a Kubernetes Cluster and PostgreSQL. The application inherits the Kubernetes Cluster dependency from its runtime. The application declares the PostgreSQL dependency.
 
 Add and connect the following resources from the bundle sidebar. To expand the sidebar click the bundle-bar icon.
 
@@ -67,7 +68,7 @@ In this example you could use `aws-rds-postgres`, `aws-aurora-serverless-postgre
 
 Once all of your infrastructure has booted up, you can add and connect your application: `k8s-phoenix-chat-example`.
 
-You can now click configure and set your values. You can set any values here that makes sense for your application. A publicly hosted docker repository can be used: `massdriver/cloud/phoenix-chat-example`.
+Open the instance's **Config** tab and set its values. The fields come from the runtime's params. You can set any values here that makes sense for your application. A publicly hosted docker repository can be used: `massdrivercloud/phoenix-chat-example`.
 
 
 Once your application has been configured and connected, it can also be deployed from our CLI.
@@ -78,7 +79,7 @@ The `deploy` command takes the **instance identifier** — the prefix Massdriver
 
 `mass deploy` can be added to your CI/CD pipeline to trigger deployments to your Kubernetes cluster.
 
-```yaml
+```shell
 export MASSDRIVER_ORG_ID=FOO
 export MASSDRIVER_API_KEY=BAR
 mass deploy example-staging-phoenixchat

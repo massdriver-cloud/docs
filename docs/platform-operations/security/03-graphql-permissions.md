@@ -18,7 +18,7 @@ This page maps every operation in the Massdriver GraphQL API to the [ABAC permis
 
 If you're building a least-privilege policy, scan the table for the operations the principal needs and assemble the union of required permissions. List queries (`projects`, `instances`, `resources`, etc.) are visibility-filtered: a caller only sees what their group policies and grants make visible — there's no explicit list permission to grant.
 
-`organization:manage` is a one-level umbrella: a single policy granting `organization:manage` on a custom group satisfies any `organization:manageServiceAccounts`, `organization:manageGroups`, `organization:manageBilling`, `organization:manageIntegrations`, `organization:manageCustomAttributes`, `organization:manageResourceTypes`, `organization:manageSettings`, `organization:manageProfile`, or `organization:manageMembers` query below. Grant the umbrella when you want full org-level administrative authority on a custom group; grant a single sub-action when you want to scope authority to one capability.
+`organization:manage` is a one-level umbrella: a single policy granting `organization:manage` on a custom group satisfies any `organization:manageServiceAccounts`, `organization:manageGroups`, `organization:manageBilling`, `organization:manageIntegrations`, `organization:manageCustomAttributes`, `organization:manageResourceTypes`, `organization:manageSettings`, `organization:manageProfile`, `organization:manageMembers`, or `organization:manageEventDestinations` query below. Grant the umbrella when you want full org-level administrative authority on a custom group; grant a single sub-action when you want to scope authority to one capability.
 
 ---
 
@@ -219,6 +219,35 @@ There is no `updateGrant` — grants are immutable; delete and re-create to chan
 | `disableIntegration` | Mutation | `organization:manageIntegrations` | Covered by the `organization:manage` umbrella. |
 | `deleteIntegration` | Mutation | `organization:manageIntegrations` | Covered by the `organization:manage` umbrella. |
 
+## Event Destination
+
+| Operation | Type | Required permission(s) | Notes |
+|---|---|---|---|
+| `eventDestinations` | Query | `organization:manageEventDestinations` | Covered by the `organization:manage` umbrella. |
+| `eventDestination` | Query | `organization:manageEventDestinations` | Covered by the `organization:manage` umbrella. Includes the destination's deliveries. |
+| `previewEventDestination` | Query | `organization:manageEventDestinations` | Covered by the `organization:manage` umbrella. Returns every matching event in the organization, not only events in projects the caller can view. |
+| `createEventDestination` | Mutation | `organization:manageEventDestinations` | Covered by the `organization:manage` umbrella. |
+| `updateEventDestination` | Mutation | `organization:manageEventDestinations` | Covered by the `organization:manage` umbrella. |
+| `pauseEventDestination` | Mutation | `organization:manageEventDestinations` | Covered by the `organization:manage` umbrella. |
+| `resumeEventDestination` | Mutation | `organization:manageEventDestinations` | Covered by the `organization:manage` umbrella. |
+| `deleteEventDestination` | Mutation | `organization:manageEventDestinations` | Covered by the `organization:manage` umbrella. |
+| `redeliverEvents` | Mutation | `organization:manageEventDestinations` | Covered by the `organization:manage` umbrella. |
+
+## Stash
+
+Each stash action is checked on the entity that holds the entries: the project, environment, component, or instance. For a deployment's entries, it is checked on the deployment's instance. A deployment's own credentials do not use these actions.
+
+| Operation | Type | Required permission(s) | Notes |
+|---|---|---|---|
+| `alphaStashEntry` | Query | `stash:view` | A sensitive value is null without `stash:export`. |
+| `alphaStashEntries` | Query | `stash:view` | Sensitive values are null without `stash:export`. |
+| `alphaStashEntriesForScopes` | Query | `stash:view` on every scope | Never returns sensitive entries. |
+| `alphaSetStashEntry` | Mutation | `stash:write` | |
+| `alphaDeleteStashEntry` | Mutation | `stash:write` | |
+| `alphaStashEvents` | Subscription | `stash:view` on the project, and on the environment when you pass `environmentId` | |
+| `alphaWidgetCatalog` | Query | *no explicit gate* | Static catalog of widgets and their well-known keys. |
+| `alphaWidgetsForScopes` | Query | `stash:view` on every scope | |
+
 ## Audit Log
 
 | Operation | Type | Required permission(s) | Notes |
@@ -243,6 +272,8 @@ There is no `updateGrant` — grants are immutable; delete and re-create to chan
 | `instanceEvents` | Subscription | `project:view` | |
 | `deploymentEvents` | Subscription | `project:view` | |
 | `deploymentLogs` | Subscription | `project:view` | Streams log lines for a single deployment. |
+
+`projectEvents`, `environmentEvents`, `instanceEvents`, and `deploymentEvents` also send stash entry events. The `entry` of a stash entry event is null when you do not have `stash:view` on the entity that holds the entry.
 
 ## Viewer (Self-context)
 

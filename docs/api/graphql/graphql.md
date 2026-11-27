@@ -41,3 +41,9 @@ Explore and run queries interactively against your organization from the **API W
 ## Authorization
 
 Every query and mutation runs through Massdriver's [attribute-based access control (ABAC)](/platform-operations/security/access-control). Each operation requires a specific permission such as `project:view`, `instance:deploy`, or `resource:export`. See the [GraphQL permissions reference](/platform-operations/security/graphql-permissions) for the full mapping of operations to required permissions.
+
+## Tracing
+
+The API reads the [W3C Trace Context](https://www.w3.org/TR/trace-context/) `traceparent` and `tracestate` headers. When a request has a valid `traceparent`, Massdriver starts a new trace for the request and links that trace to your trace. Massdriver does not add its spans to your trace.
+
+The events that the request causes have the `traceparent` of the Massdriver trace. Refer to [Trace context](/platform-operations/event-destinations#trace-context).

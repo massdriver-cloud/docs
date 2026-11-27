@@ -1,0 +1,139 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: application
+title: Application
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+A bundle that runs on a runtime.
+
+An application adds its own dependencies, resources, environment variables,
+and secrets to a runtime. Its massdriver.yaml sets `app.runtime`, and each
+published version is built on one exact runtime version.
+
+
+```graphql
+type Application {
+  id: ID!
+  latest: Bundle!
+  runtime: Runtime
+  runtimeAccessGroups(
+    sort: GroupsSort
+    cursor: Cursor
+  ): GroupsPage!
+  versions(
+    cursor: Cursor
+  ): BundlesPage!
+  instances(
+    filter: InstancesFilter
+    sort: InstancesSort
+    cursor: Cursor
+  ): InstancesPage!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>Application.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+The application name, which is the name of its bundle repository (e.g., `payments-api`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Application.<b>latest</b></code>](#latest)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Bundle!</b></code>](/api/graphql/types/objects/bundle.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#latest\} 
+The newest published version: the highest stable version, or the highest
+development version when no stable version exists. `latest.runtime` is the
+exact runtime version it is built on.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Application.<b>runtime</b></code>](#runtime)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Runtime</b></code>](/api/graphql/types/objects/runtime.mdx) <Badge class="badge badge--secondary " text="object"/> \{#runtime\} 
+The runtime that the newest version is built on.
+
+`null` when you cannot view the runtime's repository. `runtimeAccessGroups`
+then lists the groups that can.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Application.<b>runtimeAccessGroups</b></code>](#runtime-access-groups)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GroupsPage!</b></code>](/api/graphql/types/objects/groups-page.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#runtime-access-groups\} 
+The groups whose members can view the runtime's repository. You can read
+this field even when you cannot view the runtime. When `runtime` is null for
+you, ask a member of one of these groups for access.
+##### [<code style={{ fontWeight: 'normal' }}>Application.runtimeAccessGroups.<b>sort</b></code>](#application-runtime-access-groups-sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GroupsSort</b></code>](/api/graphql/types/inputs/groups-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#application-runtime-access-groups-sort\} 
+Sort field and direction. Defaults to name ascending.
+
+
+##### [<code style={{ fontWeight: 'normal' }}>Application.runtimeAccessGroups.<b>cursor</b></code>](#application-runtime-access-groups-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#application-runtime-access-groups-cursor\} 
+Pagination cursor returned from a previous response to fetch the next page.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Application.<b>versions</b></code>](#versions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BundlesPage!</b></code>](/api/graphql/types/objects/bundles-page.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#versions\} 
+Every published version of the application, newest first.
+##### [<code style={{ fontWeight: 'normal' }}>Application.versions.<b>cursor</b></code>](#application-versions-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#application-versions-cursor\} 
+Pagination cursor returned by a previous page.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Application.<b>instances</b></code>](#instances)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InstancesPage!</b></code>](/api/graphql/types/objects/instances-page.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#instances\} 
+The instances of the application's components that you can view, whatever
+version each instance runs. The filters and sort work as on the top-level
+`instances` query, so `runtime` matches the runtime that each instance's
+latest completed provision runs.
+##### [<code style={{ fontWeight: 'normal' }}>Application.instances.<b>filter</b></code>](#application-instances-filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InstancesFilter</b></code>](/api/graphql/types/inputs/instances-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#application-instances-filter\} 
+Narrow results by project, environment, status, bundle, or params.
+
+
+##### [<code style={{ fontWeight: 'normal' }}>Application.instances.<b>sort</b></code>](#application-instances-sort)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InstancesSort</b></code>](/api/graphql/types/inputs/instances-sort.mdx) <Badge class="badge badge--secondary " text="input"/> \{#application-instances-sort\} 
+Sort field and direction. Defaults to `name` ascending.
+
+
+##### [<code style={{ fontWeight: 'normal' }}>Application.instances.<b>cursor</b></code>](#application-instances-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#application-instances-cursor\} 
+Pagination cursor returned by a previous page.
+
+
+
+
+
+
+### Returned By
+
+[`application`](/api/graphql/operations/queries/application.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+
+### Member Of
+
+[`ApplicationsPage`](/api/graphql/types/objects/applications-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

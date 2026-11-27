@@ -3,6 +3,7 @@ id: self-hosted-oidc
 slug: /platform-operations/self-hosted/oidc
 title: OIDC Configuration
 sidebar_label: OIDC
+image: /img/og/self-hosted-oidc.png
 ---
 
 Massdriver uses the [OpenID Connect (OIDC)](https://openid.net/connect/) protocol for user authentication. This guide covers how to configure OIDC for your self-hosted Massdriver instance, including provider-specific setup instructions.

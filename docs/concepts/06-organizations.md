@@ -3,6 +3,7 @@ id: concepts-organizations
 slug: /concepts/organizations
 title: Organizations
 sidebar_label: Organizations
+image: /img/og/concepts-organizations.png
 ---
 
 Organizations are the top-level entity in Massdriver. They are the primary way to manage access to Massdriver.

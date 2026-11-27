@@ -1,0 +1,88 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: runtime
+title: runtime
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Fetch a single runtime by name. Returns `null` with a `NOT_FOUND` error if
+no runtime with that name exists or you cannot view its repository.
+
+```graphql
+query {
+  runtime(organizationId: "your-org-id", id: "lambda") {
+    latest { version createdAt }
+    applications(sort: { field: RUNTIME_VERSION, order: ASC }) {
+      items { id latest { version runtime { version } } }
+    }
+  }
+}
+```
+
+
+```graphql
+runtime(
+  organizationId: ID!
+  id: ID!
+): Runtime
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>runtime.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>runtime.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+The runtime name (e.g., `lambda`).
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Runtime</b></code>](/api/graphql/types/objects/runtime.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A bundle that applications run on.
+
+A runtime holds the infrastructure-as-code, params, and the dependencies its
+infrastructure needs. Its massdriver.yaml lists `runtime` under `provides`.
+Applications build on one exact runtime version and add their own
+dependencies, resources, environment variables, and secrets.

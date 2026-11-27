@@ -3,6 +3,7 @@ id: scim
 slug: /reference/integrations/scim
 title: SCIM
 sidebar_label: SCIM
+image: /img/og/integration-scim.png
 ---
 
 # SCIM

@@ -1,0 +1,92 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: force-unlock-instance-state
+title: forceUnlockInstanceState
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Remove the Terraform/OpenTofu state lock on one step of an instance, whatever run holds it.
+
+Use this when a deployment ended without releasing its lock, so every later deployment
+of that step fails with "state is already locked". This is the same as
+`tofu force-unlock`. If a deployment is still running and holds the lock, removing it
+lets a second run write the same state at the same time and can corrupt it. Check that
+no deployment of the instance is running first.
+
+Requires `instance:deploy` on the instance.
+
+```graphql
+mutation {
+  forceUnlockInstanceState(organizationId: "my-org", id: "ecomm-prod-db", step: "src") {
+    successful
+    result { id }
+  }
+}
+```
+
+
+```graphql
+forceUnlockInstanceState(
+  organizationId: ID!
+  id: ID!
+  step: String!
+): InstancePayload
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>forceUnlockInstanceState.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>forceUnlockInstanceState.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+The instance whose state to unlock.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>forceUnlockInstanceState.<b>step</b></code>](#step)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#step\} 
+The bundle step whose state is locked, for example `src`.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>InstancePayload</b></code>](/api/graphql/types/objects/instance-payload.mdx) <Badge class="badge badge--secondary " text="object"/>

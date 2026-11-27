@@ -1,8 +1,9 @@
 ---
 id: applications-create
 slug: /applications/create
-title: Create
+title: Create an Application
 sidebar_label: Create
+image: /img/og/applications-create.png
 ---
 
 :::note
@@ -12,18 +13,31 @@ Before getting started you'll need:
 * [Massdriver CLI](https://github.com/massdriver-cloud/mass/releases)
 * [Service Account key](/platform-operations/security/service-accounts)
 * A containerized application. Quick start application examples are available [here](https://github.com/massdriver-cloud/application-examples#source-code-for-example-applications).
+* A runtime in your organization. This guide uses a runtime named `kubernetes-deployment`. Use the name of a runtime that your organization publishes.
 
 :::
 
-In this guide we'll generate an `application bundle` and **publish** it to Massdriver. The application bundle will be all of the configuration your application needs to connect to runtimes (serverless, containers) and cloud resources (queues, databases, etc). Once the application bundle is published, we'll configure it in the UI and set up continuous deployments from GitHub actions.
+You'll write one `massdriver.yaml`, publish it, and have a bundle your teammates can drop onto any project. The [runtime](/applications) your platform team publishes already holds the IaC. Your application bundle holds only what is specific to your service: the databases and queues it uses, its environment variables, and its secrets.
 
-First, create a new application bundle:
+First, make a directory for the application bundle and add a `massdriver.yaml`:
 
-```shell
-mass bundle new
+```yaml title="massdriver.yaml"
+name: k8s-phoenix-chat-example
+description: A phoenix chat app
+version: 0.1.0
+
+dependencies:
+  postgres:
+    resource_type: postgresql-authentication@~1
+    required: true
+
+app:
+  runtime: kubernetes-deployment@~1
+  envs:
+    POSTGRES_USERNAME: .dependencies.postgres.authentication.username
 ```
 
-Enter `k8s-phoenix-chat-example` as the name and a description. These will be used in the Massdriver UI to identify application bundles to users.
+The `name` and `description` identify the application bundle to users in the Massdriver UI. The `version` is the application's own version. It does not change with the runtime's version.
 
 :::note
 
@@ -31,88 +45,43 @@ We recommend prefixing application and infrastructure bundles with where they ru
 
 :::
 
+`app.runtime` takes `<runtime>@<constraint>`. Each build resolves the constraint to the newest matching runtime version. The published application pins `app.runtime` to that exact version, for example `kubernetes-deployment@1.4.2`. See [Choosing a runtime version](/bundle-development/runtimes-and-applications#choosing-a-runtime-version).
 
-```shell title="Prompt"
-Name: k8s-phoenix-chat-example
-Description: A phoenix chat app
-```
+Then, add the [`dependencies`](/concepts/dependencies) that your application uses. Give each dependency a simple name, like `postgres`. If you have more complex dependencies, use names like `inventory_database` for an inventory database or `website_cache` for a Redis website cache. A dependency name must not match a dependency or param that the runtime declares.
 
-Next an [application template](https://github.com/massdriver-cloud/application-templates) will need to be chosen.
-
-For this example we'll choose `kubernetes-deployment`:
-
-```shell
-? Template:
-    aws-lambda
-    azure-function
-    kubernetes-cronjob
-  ▸ kubernetes-deployment
-    kubernetes-job
-```
-
-:::info
-
-Application templates are cached locally the first time `mass bundle new` is run. To get the latest application templates run `mass app template refresh`.
-
-:::
-
-Then, [`connections`](/concepts/dependencies) (your application dependencies) will need to be selected.
-
-For this example we'll choose [`postgresql-authentication`](https://github.com/massdriver-cloud/artifact-definitions/blob/main/definitions/artifacts/postgresql-authentication.json).
-
-```shell title="Prompt"
-? What connections do you need?
-  If you don't need any, just hit enter or select (None)
-  [Use arrows to move, space to select, <right> to all, <left> to none, type to filter]
-  [ ]  (None)
-  [ ]  aws-dynamodb-table
-  ...
-  [ ]  mongo-authentication
-  [ ]  mysql-authentication
-> [ ]  postgresql-authentication
-  [ ]  redis-authentication
-```
-
-You'll be prompted to name the variable for each connection that you added. We suggest simple names like `postgres`, but if you have more complex dependencies it may make sense to use names like `inventory_database` for an inventory database or `website_cache` for a Redis website cache.
-
-Finally, you'll be prompted for the output directory. There are different schools of thought as to if your application's cloud configuration should be stored alongside your application code or in a different directory. For `private` applications, we suggest keeping it alongside your application code to simplify CI/CD.
-
-For this example we'll set the output directory to `k8s-phoenix-chat-example` since we are using a publicly available application and docker image.
+Keep the `massdriver.yaml` next to your application code. Then the same pull request that changes the code can change what it connects to, and CI can publish both together.
 
 ## Files in the Application Bundle
 
-The following directory structure will be created:
+An application bundle has these files:
 
-* `massdriver.yaml` - Bundle metadata, input parameter requirements / validation, connections / dependencies, and UI controls
-* `src` - Infrastructure-as-code rigging for your application. This will generally be the IAM, observability, and deployment configuration of your app.
-* `README.md` - It's a README 🤓
+* `massdriver.yaml` - The application's name, version, runtime, dependencies, resources, environment variables, and secrets.
+* `README.md` - Optional. Replaces the runtime's README.
+* `CHANGELOG.md`, `icon.svg`, `operator.md` - Optional. Each one replaces the runtime's file.
+
+An application bundle has no IaC. Massdriver ignores directories such as `src/` in the application bundle.
 
 :::info
 
-The `massdriver.yaml` is covered in detail in the [Bundle YAML Specification](/bundle-development/bundle-yaml-spec).
-
-It's important to note that the generated code is a great way to _get started_, but you can customize the fields in `massdriver.yaml` and the rigging code in `src` to meet your needs.
-
-In this example, we generated a Kubernetes deployment with a Helm chart. The generated Helm works well for most deployments, but you can replace or edit the chart as necessary. The values provided at provisioning time will be passed in similarly to `values.yaml` in a standard Helm chart.
+The `massdriver.yaml` is covered in detail in the [Bundle YAML Specification](/bundle-development/bundle-yaml-spec). The keys that an application can set are listed in [What an application can set](/bundle-development/runtimes-and-applications#what-an-application-can-set).
 
 :::
 
 ## Configuring Apps
 
-In addition to the configuration options exposed in the _bundle guide_, two additional configuration options are exposed to application bundles:
+The `app` block of an application bundle accepts three keys:
 
+* `app.runtime` - The runtime that the application runs on.
 * `app.envs` - _Map_ of environment variables to set on the running application.
 * `app.secrets` - _Map_ of secret **definitions**. These will be presented in your application's configuration interface in Massdriver and can be set per-instance or for preview environments.
 
-Both of these configuration options expect [jq](https://stedolan.github.io/jq/manual/) queries to extract values from `parameters` or upstream `connections`.
+The runtime can also have its own envs and secrets. The application inherits them and cannot change them. Your envs and secrets are added to the runtime's. Each name must be new. If you use the name of a runtime env or secret, the build fails.
+
+`app.envs` takes [jq](https://jqlang.github.io/jq/manual/) expressions that read from `.params` and `.dependencies`.
 
 ### Environment Variable Examples
 
-Environment variables can be extracted from `parameters` and/or `connections`. Massdriver parses `jq` expressions to allow for rich composition of values into environment variables:
-
-The following would set the `LOG_LEVEL` in your application based on the value a users selects from the `log_level` dropdown.
-
-The `.params` prefix tells Massdriver where to pull the value from. The field names can be any complex expression with JQ as we'll see in the next example.
+Set `LOG_LEVEL` from the `log_level` param that users pick on the instance, and `PORT` from a number param:
 
 ```yaml title="Simple param-based environment variable"
 app:
@@ -121,15 +90,15 @@ app:
     PORT: .params.port | tostring
 ```
 
-Here we set the `POSTGRES_USERNAME` to the `username` field in our Postgres connection's authentication object.
+Read a field from a dependency:
 
-```yaml title="Simple connection-based environment variable"
+```yaml title="Simple dependency-based environment variable"
 app:
   envs:
-    POSTGRES_USERNAME: .connections.postgres.data.authentication.username
+    POSTGRES_USERNAME: .dependencies.postgres.authentication.username
 ```
 
-While secrets are automatically converted to environment variables, they can also be parsed if necessary. More on secrets [below](#secret-examples).
+Secrets are automatically converted to environment variables. More on secrets [below](#secret-examples).
 
 :::info
 
@@ -137,85 +106,66 @@ The structure of each resource type is documented [in the artifact-definitions r
 
 :::
 
-In the following example we compose all of the components of the Postgres authentication object into a `POSTGRES_URL` environment variable.
+Compose several fields into one value, such as a connection URL:
 
 ```yaml title="Build a complex environment variable"
 app:
   envs:
-    POSTGRES_URL: '@text "postgres://" + .connections.postgres.data.authentication.username + ":" + .connections.postgres.data.authentication.password + "@" + .connections.postgres.data.authentication.hostname + ":" + (.connections.postgres.data.authentication.port|tostring) + "/chat?sslmode=disable"'
+    POSTGRES_URL: '"postgres://" + .dependencies.postgres.authentication.username + ":" + .dependencies.postgres.authentication.password + "@" + .dependencies.postgres.authentication.hostname + ":" + (.dependencies.postgres.authentication.port|tostring) + "/chat?sslmode=disable"'
 ```
 
 ### Secret Examples
 
-Secrets can be defined in your `massdriver.yaml` file. This will create forms in the Massdriver UI where 3rd party secrets can be set for your application.
+Each secret you declare gets a field in the instance's configuration, where someone sets it. At deploy time it becomes an environment variable with the same name. `app.envs` expressions cannot read secrets.
 
-Secrets will be turned into environment variables at deploy time and are also exposed to the `envs` section for JQ parsing similar to `.params` and `.connections` [above](#environment-variable-examples).
+Set `required: true` to block deployments until the secret is set.
 
-
-```yaml title="Parsing secrets into an environment variable"
+```yaml title="Defining a secret"
 app:
-  envs:
-    FOO: bar
-    # SOME_SECRET is automatically created, but if you needed to map to a different var or perform parsing on the secret, you can do so
-    SOME_SECRET_RENAMED: .secret.SOME_SECRET
-    SOME_SECRET_UPCASED: .secret.SOME_SECRET | ascii_upcase
   secrets:
-    SOME_SECRET: # This is env var name this will be converted to
-      required: true # if a secret is required, Massdriver will block deployments that are missing this secret
-      title: "A nice name for the UI"
-      description: "A great description for the UI"
+    STRIPE_KEY:
+      required: true
+      title: Stripe API key
+      description: Secret key for card captures.
 ```
-## Parameters
 
-The `params` in your `massdriver.yaml` are really good defaults for a Kubernetes deployment. Feel free to add or remove values depending on what you want to expose to your users / developers.
+## Parameters and dependencies
 
-With Helm-based applications the `values.yaml` file will be loaded as the base level defaults, and your parameters will be applied on top of those. If there are parameters that you don't want exposed to end users, simply remove the parameter from `params` and add the hard coded value to the `values.yaml` file.
+The runtime owns the `params` and the `ui`. An application bundle cannot set them. If your `massdriver.yaml` sets `params` or `ui`, the build fails. Your application inherits the runtime's params, and users configure them on each instance.
 
-A good example of where to do this is your container repository (`.params.image.repository`). For private applications it may make sense to hard code this value to something like `my-org/web-api`. You could remove this field and set the image repository manually in the `values.yaml` file.
+A good example is the container image repository (`.params.image.repository`). If the runtime exposes it as a param, set it on the instance's **Config** tab. If you need a different default or a param that the runtime does not have, ask your platform team to change the runtime.
 
-To run this example, we'll set the `default` for the `image.repository`.
-
-```yaml
-# under params.properties.image.properties:
-        repository:
-          title: Repository
-          default: massdrivercloud/phoenix-chat-example
-```
+To run this example, set the image repository on the instance to `massdrivercloud/phoenix-chat-example`.
 
 The repository is available [here](https://hub.docker.com/repository/docker/massdrivercloud/phoenix-chat-example) and the code is on [GitHub](https://github.com/massdriver-cloud/phoenix-chat-example).
 
-### Connections
+In this example the application has two required dependencies:
 
-Your generated connections should resemble those below. In this example we have two required connections:
+* `kubernetes_cluster` - the cluster the app will deploy to. The runtime declares it, and the application inherits it.
+* `postgres` - the database the app needs. The application declares it.
 
-* `kubernetes_cluster` - the cluster the app will deploy to
-* `postgres` - the database the app needs
+The runtime can also declare optional cloud credentials, such as an AWS IAM role or a GCP service account. The runtime uses the credential that is connected in the UI to create IAM roles and permissions for your application.
 
-Additionally there are a few optional cloud authentication mechanisms. This bundle will use whichever cloud is connected in the UI to create IAM roles and permissions for your application.
+Declare only the dependencies that your application uses after it deploys. The runtime declares the dependencies that its IaC uses, such as the cluster and the cloud credential.
 
 ```yaml
-connections:
-  required:
-    - kubernetes_cluster
-    - postgres
-  properties:
-    kubernetes_cluster:
-      $ref: kubernetes-cluster
-    aws_authentication:
-      $ref: aws-iam-role
-    gcp_authentication:
-      $ref: gcp-service-account
-    azure_authentication:
-      $ref: azure-service-principal
-    postgres:
-      $ref: postgresql-authentication
+dependencies:
+  postgres:
+    resource_type: postgresql-authentication@~1
+    required: true
 ```
 
-If you followed the prompts in this guide, you should end up with an application bundle that looks like [this](https://github.com/massdriver-cloud/application-examples/tree/main/k8s/phoenix-chat-example).
+To see the merged bundle before you publish it, build it locally:
 
-At this point the application bundle can be published to the Massdriver bundle manager:
+```shell
+mass bundle build
+```
 
-```yaml
+The merged bundle is in `.massdriver/build/`.
+
+Publish it:
+
+```shell
 mass bundle publish
 ```
 
@@ -223,14 +173,10 @@ You should see a success message. On any project canvas, open the **Bundles** pa
 
 Click the bundle to add it to the project. Give the component a friendly **Component Name** (e.g. `Checkout Service`) and a short **Component ID** (the first segment of every instance identifier the bundle creates). Connect it to the Kubernetes cluster and PostgreSQL instances it depends on, configure the **Config** tab, and click **Provision** — or follow [Deploy](/applications/deploy) for the full walk-through.
 
-<video controls loop muted playsInline width="100%">
-  <source src="/img/screenshots/bundle-new-deploy-new-application.webm" type="video/webm" />
-</video>
-
 If you would like to automatically publish your application bundle in CI/CD, see the [GitHub Actions guide](/platform-operations/ci-cd/github-action).
 
 :::info
 
-We have a number of pre-defined application templates available [here](https://github.com/massdriver-cloud/application-templates). We welcome PRs to add more.
+To write a runtime for your applications, see [Runtimes and Applications](/bundle-development/runtimes-and-applications#publishing-a-runtime).
 
 :::

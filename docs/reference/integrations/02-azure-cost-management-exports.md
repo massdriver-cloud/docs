@@ -3,6 +3,7 @@ id: azure-cost-management-exports
 slug: /reference/integrations/azure-cost-management-exports
 title: Azure Cost Management Exports
 sidebar_label: Azure Cost Management
+image: /img/og/integration-azure-cost.png
 ---
 
 # Azure Cost Management Exports

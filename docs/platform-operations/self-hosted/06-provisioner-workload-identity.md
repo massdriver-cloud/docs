@@ -26,17 +26,11 @@ Provisioner workload identity only reaches the cloud that runs the cluster: EKS 
 Every deployment step runs in an Argo Workflow pod using the **provisioner ServiceAccount** created by the Massdriver Helm chart. That ServiceAccount is the anchor for workload identity:
 
 1. The chart annotates the provisioner ServiceAccount with a cloud identity (`provisioner.serviceAccount.annotations`).
-2. Your cloud provider's admission webhook or metadata server projects a signed OIDC token for that ServiceAccount into every provisioner pod.
-3. The cloud SDK inside the provisioner image exchanges that token for a short-lived credential — this is the **provisioner identity**.
+2. The cluster's workload identity gives every provisioner pod a credential for that ServiceAccount's cloud identity. On EKS (IRSA) and AKS, a webhook projects a signed token into the pod. On EKS Pod Identity, the Pod Identity agent serves the credential. On GKE, the metadata server does.
+3. The cloud SDK inside the provisioner image uses it to get a short-lived credential — this is the **provisioner identity**.
 4. The IaC in your bundle uses the provisioner identity to reach the **target account**: AWS by assuming a role, GCP by impersonating a service account, Azure by exchanging the federated token for a managed identity.
 
-```
-Argo workflow pod (massdriver-provisioner ServiceAccount)
-    └─ projected OIDC token
-        └─ provisioner identity in your platform account
-            └─ assume role / impersonate SA / federated identity
-                └─ target cloud account
-```
+<ProvisionerIdentityChain />
 
 No secret ever leaves the target cloud account, and nothing long-lived is stored in Massdriver.
 
@@ -49,7 +43,7 @@ No secret ever leaves the target cloud account, and nothing long-lived is stored
 - Permission to create identities and role bindings in both your platform account (where the cluster runs) and each target account.
 - The [`mass` CLI](/reference/cli/overview) authenticated against your self-hosted instance, for publishing resource types and bundles.
 
-Find the provisioner ServiceAccount name before you start — it is `RELEASE_NAME-provisioner`, so `massdriver-provisioner` for the default release name:
+Find the provisioner ServiceAccount name before you start — it is `massdriver-provisioner` for the default release name. A release name that contains `massdriver` gives `RELEASE_NAME-provisioner`; any other gives `RELEASE_NAME-massdriver-provisioner`:
 
 ```bash
 kubectl get serviceaccount -n massdriver -l app.kubernetes.io/component=provisioner

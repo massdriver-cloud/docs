@@ -3,6 +3,7 @@ id: self-hosted-overview
 slug: /platform-operations/self-hosted/overview
 title: Self-Hosted Overview
 sidebar_label: Overview
+image: /img/og/self-hosted.png
 ---
 
 # Massdriver Self-Hosted Overview

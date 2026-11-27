@@ -3,6 +3,7 @@ id: self-hosted-install
 slug: /platform-operations/self-hosted/install
 title: Self-Hosted Installation
 sidebar_label: Install
+image: /img/og/self-hosted-install.png
 ---
 
 This guide will walk you through installing Massdriver's self-hosted version using our Helm chart. The self-hosted version of Massdriver is great for teams that want the all the features of our platform in a private cloud environment.
@@ -120,6 +121,16 @@ MD_DOCS_URL=https://docs.internal.example.com
 ```
 
 Leave it unset to keep the default.
+
+**Audit log retention**
+
+Massdriver keeps every audit log event by default. To delete old events, set `MD_AUDIT_LOG_RETENTION_DAYS` to the number of days to keep. A value below `1` keeps every event.
+
+```bash
+MD_AUDIT_LOG_RETENTION_DAYS=365
+```
+
+Massdriver deletes a whole month of events at a time, after the last day of the month is older than this number of days. So it keeps at least this number of days, and up to one month more. The value cannot be less than `MD_EVENT_DESTINATIONS_FAILED_RETENTION_DAYS` (default `30`), because [event destinations](/platform-operations/event-destinations#self-hosted-settings) read failed events from the audit log when you send them again. A smaller value of `1` or more is raised to it, and Massdriver logs a warning.
 
 :::info Custom Release Name (Optional)
 

@@ -3,6 +3,7 @@ id: concepts-components-instances-deployments
 slug: /concepts/components-instances-deployments
 title: Components, Instances & Deployments
 sidebar_label: Components, Instances & Deployments
+image: /img/og/concepts-components-instances.png
 ---
 
 This page covers the lifecycle of infrastructure from blueprint to deployed resources.
@@ -65,16 +66,12 @@ From an instance's **History** tab, pick any two deployments and Massdriver show
 
 ## The Lifecycle
 
-```
-Bundle → Component → Instance → Deployment
-   ↓         ↓          ↓           ↓
-Template  Blueprint  Env-bound    Record
-```
+<ConceptLifecycle />
 
 1. **Bundle**: A reusable infrastructure template (e.g., "PostgreSQL Database")
 2. **Component**: A bundle added to a project for a specific purpose (e.g., "User Database")
 3. **Instance**: A component as it exists in a specific environment (e.g., "User Database in Production")
-4. **Deployment**: A record of provisioning or decommissioning that instance
+4. **Deployment**: A record of provisioning, planning, or decommissioning that instance
 
 ## Related Documentation
 

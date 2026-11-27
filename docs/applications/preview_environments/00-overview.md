@@ -10,6 +10,6 @@ or spike, then tears down when the work merges. Every instance on the
 project's canvas comes along.
 
 The full walkthrough lives under Workflows: see
-[Preview Environments from the CLI](/workflows/preview) for the YAML
+[Preview Environments from the CLI](/continuous-delivery/preview) for the YAML
 schema, the `mass environment preview` command, env-var expansion, and
 a drop-in GitHub Actions workflow.
