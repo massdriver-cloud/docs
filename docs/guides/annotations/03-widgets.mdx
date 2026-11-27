@@ -15,6 +15,10 @@ import {
 
 # Widgets
 
+:::caution Alpha
+This feature is alpha. Names, fields, and behavior can change or be removed at any time without notice.
+:::
+
 A widget is a built-in picture that shows stash values. There are two ways to show one.
 
 - **Automatic.** Write a well-known key that starts with `md/`. Everyone who can view the project sees the widget.
@@ -289,7 +293,7 @@ Set on the environment. Format: JSON. Each item in `links` is one button.
         "additionalProperties": false,
         "properties": {
           "label": { "type": "string", "minLength": 1, "maxLength": 40 },
-          "url": { "type": "string", "maxLength": 2048, "pattern": "^https?://[^\\s]+$" }
+          "url": { "type": "string", "maxLength": 2048, "pattern": "^https?://[^\\s]+(?![\\s\\S])" }
         }
       }
     }

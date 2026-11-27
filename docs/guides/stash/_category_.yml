@@ -1,0 +1,6 @@
+label: Stash
+collapsible: true
+collapsed: true
+link:
+  type: doc
+  id: guides-stash-overview
