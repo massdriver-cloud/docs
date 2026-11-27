@@ -5,6 +5,13 @@ title: Well-Known Keys
 sidebar_label: Well-Known Keys
 ---
 
+import {
+  ResultPillState,
+  ChangesState,
+  SeverityBarState,
+  ProblemBadgeState,
+} from "@site/src/components/Annotations";
+
 # Well-Known Keys
 
 :::caution Alpha
@@ -205,7 +212,51 @@ A provisioner writes these keys while a deployment runs. Each key has the same s
 
 Every schema has `additionalProperties: false`. Counts are whole numbers of 0 or more. Times are RFC 3339 strings. URLs are `http` or `https`.
 
-The Massdriver UI does not show deployment results yet. Keys that start with `md/` do not show as metadata rows. Read the results with the [`alphaWidgetsForScopes`](/guides/stash/api#alphawidgetsforscopes) query, or with `mass alpha stash get`.
+Keys that start with `md/` do not show as metadata rows. The UI shows deployment results in the places below. You can also read them with the [`alphaWidgetsForScopes`](/guides/stash/api#alphawidgetsforscopes) query, or with `mass alpha stash get`.
+
+### Where results show
+
+**Deployment details.** A **Results** section shows the results of that deployment. It has one row for each step, sorted by step path, and then the results for the whole deployment.
+
+| Result | What shows |
+|---|---|
+| `md/v1/step/<step>` | A status pill, then the tool, the action, and the duration |
+| `md/v1/changes/<step>` | **Changes** with `+add ~change -destroy`, and `±replace` when there are replacements. A link shows the list of changed resources. |
+| `md/v1/compliance/<step>` | **Compliance** with the passed and failed counts, a severity bar, a **Blocking** pill when `blocking` is true, and a link to the report |
+| `md/v1/policy/<step>` | **Policy** with the passed, failed, and warning counts, and the list of denials |
+| `md/v1/vulnerabilities` | **Vulnerabilities** with a severity bar and the number of fixable findings |
+| `md/v1/tests` | **Tests** with the passed, failed, and skipped counts |
+| `md/v1/cost_estimate` | **Cost estimate** with the monthly cost before and after, such as `$41.20 → $41.58 per month`, and the change |
+| `md/v1/source` | **Source** with the repository and ref, a link to the commit, and the commit message |
+| `md/v1/state_lock` | **State lock** with the status and the holder |
+
+**Instance Metadata tab.** A card shows the results of the instance's latest deployment that has results: the status of each step, the changes, the worst finding, and the cost change. **From** links to that deployment, such as **Deployment 4f6e2a3c**. The card also shows the instance's `md/v1/drift` status, with when it was checked, and its `md/v1/release` version and image, with when it was deployed.
+
+**Canvas.** A warning badge shows on an instance node only when something is wrong in its latest deployment or its drift:
+
+- A step failed.
+- A compliance result is blocking.
+- An image or package scan found critical or high vulnerabilities.
+- Drift is detected.
+
+The badge's tooltip lists each problem, such as `Step src failed` or `Drift detected`.
+
+The card on the Metadata tab and the canvas badge follow the **Widgets** button in the canvas toolbar. When you hide automatic widgets, they do not show. The **Results** section in deployment details does not depend on the button.
+
+### What results look like
+
+| Result | Looks like | Value | Meaning |
+|---|---|---|---|
+| Step succeeded | <ResultPillState tone="success" text="Succeeded" label="Green step status pill: Succeeded" /> | `"status": "succeeded"` | A green pill. |
+| Step running | <ResultPillState tone="info" text="Running" label="Blue step status pill: Running" /> | `"status": "running"` | A blue pill. |
+| Step failed | <ResultPillState tone="error" text="Failed" label="Red step status pill: Failed" /> | `"status": "failed"` | A red pill. The canvas badge shows. |
+| Step skipped or canceled | <ResultPillState tone="neutral" text="Skipped" label="Gray step status pill: Skipped" /> | `"status": "skipped"` or `"canceled"` | A gray pill. |
+| Changes | <ChangesState text="+2 ~3 -0 ±1" label="Changes: 2 to add, 3 to change, 0 to destroy, 1 to replace" /> | `{"add": 2, "change": 3, "destroy": 0, "replace": 1}` | `±` shows only when `replace` is more than 0. |
+| Severity bar | <SeverityBarState severity={{ high: 1, medium: 2, low: 4 }} label="Severity bar: 1 high, 2 medium, 4 low" /> | `{"critical": 0, "high": 1, "medium": 2, "low": 4}` | One part for each level with findings. Critical is dark red, high is red, medium is amber, and low is blue. |
+| No findings | <SeverityBarState severity={{}} label="No findings" /> | All counts are 0 | No bar. |
+| Blocking | <ResultPillState tone="error" text="Blocking" label="Red Blocking pill" /> | `"blocking": true` | The compliance findings stop the deployment. The canvas badge shows. |
+| Drift detected | <ResultPillState tone="warning" text="Detected" label="Amber drift pill: Detected" /> | `{"status": "detected"}` | An amber pill. The canvas badge shows. |
+| Canvas badge | <ProblemBadgeState label="Instance node with a warning badge" /> | A failed step, blocking compliance, critical or high vulnerabilities, or drift | A warning icon on the instance node. |
 
 ### Step keys
 

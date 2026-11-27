@@ -297,3 +297,76 @@ export function MetadataFooter({ label }) {
     </Figure>
   );
 }
+
+const SEVERITY_FILL = {
+  critical: "#B91C1C",
+  high: "var(--an-error)",
+  medium: "var(--an-warning)",
+  low: "var(--an-info)",
+};
+
+export function ResultPillState({ tone, text, label }) {
+  const width = text.length * 6.2 + 16;
+  return (
+    <Figure label={label} width={width + 4} height={22}>
+      <rect x={2} y={2} width={width} height={18} rx={9} style={{ fill: TONE_VAR[tone], opacity: 0.14 }} />
+      <rect x={2} y={2} width={width} height={18} rx={9} style={{ fill: "none", stroke: TONE_VAR[tone], strokeOpacity: 0.35 }} />
+      <text className={s.text} x={2 + width / 2} y={15} textAnchor="middle" style={{ fontSize: 11, fontWeight: 500 }}>
+        {text}
+      </text>
+    </Figure>
+  );
+}
+
+export function ChangesState({ text, label }) {
+  return (
+    <Figure label={label} width={190} height={22}>
+      <text className={s.strong} x={2} y={15}>
+        Changes
+      </text>
+      <text className={`${s.text} ${s.mono}`} x={70} y={15}>
+        {text}
+      </text>
+    </Figure>
+  );
+}
+
+export function SeverityBarState({ severity, label }) {
+  const levels = ["critical", "high", "medium", "low"].filter((level) => (severity[level] ?? 0) > 0);
+  const total = levels.reduce((sum, level) => sum + severity[level], 0);
+  const track = 90;
+  const legend = levels.map((level) => `${severity[level]} ${level}`).join(" · ") || "No findings";
+  let x = 2;
+  return (
+    <Figure label={label} width={track + 8 + legend.length * 6 + 8} height={22}>
+      {total > 0 ? (
+        <g>
+          <rect x={2} y={8} width={track} height={6} rx={3} style={{ fill: "var(--an-border)" }} />
+          {levels.map((level) => {
+            const width = (track * severity[level]) / total;
+            const segment = <rect key={level} x={x} y={8} width={width} height={6} style={{ fill: SEVERITY_FILL[level] }} />;
+            x += width;
+            return segment;
+          })}
+        </g>
+      ) : null}
+      <text className={s.muted} x={total > 0 ? track + 10 : 2} y={15}>
+        {legend}
+      </text>
+    </Figure>
+  );
+}
+
+export function ProblemBadgeState({ label }) {
+  return (
+    <Figure label={label} width={190} height={44}>
+      <rect className={s.node} x={2} y={4} width={186} height={36} rx={6} />
+      <text className={s.strong} x={14} y={26}>
+        billing-dev-app
+      </text>
+      <path d="M 170 13 L 180 31 L 160 31 Z" style={{ fill: "none", stroke: "#B7791F", strokeWidth: 1.6, strokeLinejoin: "round" }} />
+      <line x1={170} y1={19} x2={170} y2={25} style={{ stroke: "#B7791F", strokeWidth: 1.6 }} />
+      <circle cx={170} cy={28} r={0.9} style={{ fill: "#B7791F" }} />
+    </Figure>
+  );
+}

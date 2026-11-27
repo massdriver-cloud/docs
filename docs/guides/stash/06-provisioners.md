@@ -18,7 +18,7 @@ A provisioner can write values to the stash while a deployment runs. The Massdri
 | An entry with a label, on the deployment | A row in **Deployment metadata** in the deployment's details |
 | An entry with a label, on the instance | A row in the instance's **Metadata** tab |
 | An entry with a label, on the project | A row in the **Metadata** card on the project page |
-| A [well-known key](/guides/stash/well-known-keys) | A [widget](/guides/annotations/widgets) or a deployment result |
+| A [well-known key](/guides/stash/well-known-keys) | A [widget](/guides/annotations/widgets), or a deployment result in the deployment's details and the instance's **Metadata** tab |
 | Any entry | A value that a person can show in a [note](/guides/annotations/notes) |
 
 An entry without a label is stored, and you can read it. It does not show as a metadata row.
@@ -100,4 +100,4 @@ mass alpha stash set "$MASSDRIVER_INSTANCE_ID.md/v1/release" \
 
 Most result keys are set on the deployment. `md/v1/drift` and `md/v1/release` are set on the instance. You do not write a deployment's results to the instance as well. A read of the instance's widgets also returns the results of its latest deployment.
 
-The Massdriver UI does not show deployment results yet. Read them with the [`alphaWidgetsForScopes`](/guides/stash/api#alphawidgetsforscopes) query, or with `mass alpha stash get`.
+The results show in a **Results** section in the deployment's details, and in a card on the instance's **Metadata** tab. A warning badge shows on the instance node on the canvas when a step failed, a compliance result is blocking, a scan found critical or high vulnerabilities, or drift is detected. See [Where results show](/guides/stash/well-known-keys#where-results-show).
