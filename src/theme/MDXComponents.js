@@ -5,6 +5,7 @@ import SchemaForm from "@site/src/components/SchemaForm";
 import VersionedConnections from "@site/src/components/Diagrams/VersionedConnections";
 import SlotResolution from "@site/src/components/Diagrams/SlotResolution";
 import SeparationOfDuty from "@site/src/components/Diagrams/SeparationOfDuty";
+import * as Diagrams from "@site/src/components/Diagrams/all";
 import { Topology, TopologyLegend, OrganizationTopology, Canvas } from "@site/src/components/Topology";
 
 export default {
@@ -15,6 +16,7 @@ export default {
   VersionedConnections,
   SlotResolution,
   SeparationOfDuty,
+  ...Diagrams,
   Topology,
   TopologyLegend,
   OrganizationTopology,

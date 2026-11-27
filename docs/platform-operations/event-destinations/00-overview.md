@@ -182,23 +182,7 @@ These events have no attributes, so a destination with **Attributes** never rece
 
 Massdriver records the event and its deliveries in one database transaction. It starts to send them when the transaction commits, usually in less than a second.
 
-```mermaid
-sequenceDiagram
-    participant AL as Audit log
-    participant MD as Massdriver
-    participant EP as Your endpoint
-    AL-->>MD: Events 1 and 2
-    Note over MD: One delivery for each event that matches Events and Attributes
-    MD->>EP: Send event 1, attempt 1
-    EP-->>MD: Failure that Massdriver retries
-    Note over MD: Event 1 is PENDING and waits 30 seconds or more. Massdriver stops for now.
-    MD->>EP: Send event 2, attempt 1, within a minute
-    EP-->>MD: Success
-    Note over MD: Event 2 is DELIVERED
-    MD->>EP: Send event 1, attempt 2
-    EP-->>MD: Success
-    Note over MD: Event 1 is DELIVERED
-```
+<DeliverySequence />
 
 ### Order and duplicates
 

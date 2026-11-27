@@ -52,7 +52,7 @@ Development releases are a powerful means of rapidly testing Infrastructure as C
 - Deploy development releases to real cloud environments for comprehensive testing
 
 **Opt-in Testing Network:**
-- Set up multiple instances using release channels with "Enable Development Releases" toggle
+- Set up multiple instances on a development channel, such as `~1.2+dev`
 - These instances automatically pick up your latest development releases and run the full deploy/apply pipeline
 - Run Terraform plans and compliance scans against actual provisioned resources
 - Validate infrastructure changes with real cloud provider APIs
@@ -114,17 +114,12 @@ Matches the newest stable release:
 - Will upgrade to any newer *stable* version
 - Automatically deploys when any new stable version is published
 
-### Release Strategies
+### Development Channels (`~1.2+dev`)
 
-**Stable (Default):**
-- Only receives stable releases
-- Excludes development releases
-- Recommended for production environments
+Add `+dev` to a channel to include development releases: `~1.2+dev`, `~1+dev`, or `latest+dev`.
 
-**Development Release:**
-- Receives both stable and development releases
-- Automatically includes development releases when using release channels
-- Recommended for testing and staging environments
+- A channel without `+dev` resolves to stable releases only. Use it for production environments.
+- A channel with `+dev` resolves to the newest stable or development release in its range. Use it for testing and staging environments.
 
 ## Development Releases and **Real Infrastructure** Testing
 
@@ -265,23 +260,7 @@ Use major channels for latest features:
 
 ## Version Lifecycle
 
-```mermaid
-graph TD
-    A["Set version in massdriver.yaml"] --> B{"Publish Type"}
-    B -->|"mass bundle publish -d"| C["Development Release<br/>1.2.0-dev.timestamp"]
-    B -->|"mass bundle publish"| D["Stable Release<br/>1.2.0"]
-    C --> E["Test in Staging"]
-    E --> F{"Ready for Release?"}
-    F -->|"No"| G["Fix Issues & Republish Dev Release"]
-    G --> C
-    F -->|"Yes"| D
-    D --> H["Available in UI"]
-    H --> I["Instance Deployment"]
-    I --> J{"Version Selection"}
-    J -->|"Exact"| K["Pin to 1.2.0"]
-    J -->|"Channel"| L["Use ~1.2"]
-    J -->|"Strategy"| M["Stable/Development Release"]
-```
+<VersionLifecycle />
 
 **Workflow Steps:**
 
@@ -289,8 +268,8 @@ graph TD
 2. **Development Release**: Optional development release publishing for testing (`-d` flag)
 3. **Testing Phase**: Validate development releases in staging environments
 4. **Stable Release**: Publish final immutable version
-5. **Instance Selection**: Choose version strategy in UI dropdown
-6. **Deployment**: Instance runs with selected version/automation rule
+5. **Instance Selection**: Set each instance's `version` to an exact version, a release channel, or a development channel
+6. **Deployment**: The instance deploys the release its `version` resolves to
 
 ## Version Fields and Properties
 
@@ -299,7 +278,7 @@ Each instance in Massdriver has several version-related fields that control how 
 ### Instance Version Fields
 
 - **`version`** - The version constraint (e.g., `"1.2.3"`, `"~1.2"`, `"latest"`)
-- **`releaseStrategy`** - Whether the instance receives `stable` releases only or also `development` releases
+- **`releaseStrategy`** - Deprecated. Derived from `version`: a `+dev` suffix means the instance receives development releases
 - **`resolvedVersion`** - The resolved semantic version that will be deployed next
 - **`deployedVersion`** - The version that was last successfully deployed to infrastructure
 - **`availableUpgrade`** - The newest version available for upgrade based on the constraint

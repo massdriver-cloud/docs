@@ -40,13 +40,7 @@ That is the whole application. No Terraform, no Helm chart, no copy of someone e
 
 Everything an application gets from its runtime is **inherited**. The application can add to it, but it cannot change it. When the platform team ships a fix, applications pick it up the next time they publish.
 
-```mermaid
-flowchart LR
-  runtime["ecs-service runtime<br/>network, IAM, logging"]
-  runtime --> orders["orders-api<br/>+ postgres, STRIPE_KEY"]
-  runtime --> search["search-api<br/>+ opensearch"]
-  runtime --> worker["emails-worker<br/>+ queue"]
-```
+<EcsServiceApplications />
 
 ## What a runtime can do for you
 

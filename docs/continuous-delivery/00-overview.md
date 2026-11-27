@@ -26,15 +26,7 @@ What the environments of a project stand for, such as stages, regions, customers
 
 ## How a change moves
 
-```mermaid
-flowchart LR
-    P[Publish a<br/>bundle version] --> PR[Preview or<br/>sandbox environment]
-    PR --> S[Staging]
-    S -->|promote| G{Production gate:<br/>policy, approval,<br/>freeze window}
-    G --> PD[Production]
-    PD -->|failure| R[Roll back]
-    PD -->|on a schedule| D[Drift check]
-```
+<ChangeFlow />
 
 1. **Publish.** `mass bundle publish` releases a bundle version. Instances on a release channel, such as `~1` or `latest`, deploy it. Other instances show it as an available upgrade. Refer to [Versions](/bundle-development/publishing/versioning#release-channels).
 2. **Validate in a lower environment.** [Fork](/continuous-delivery/fork-environment) staging into a new environment, stand up a [preview environment](/continuous-delivery/preview) for each pull request, or give each developer a [sandbox](/continuous-delivery/automations/sandbox-on-join).

@@ -93,32 +93,9 @@ Massdriver automatically injects system attributes on every entity. These use th
 
 ### Resource Hierarchy
 
-```
-                ┌─────────────┐
-                │   Project   │
-                └──────┬──────┘
-            ┌──────────┴──────────┐
-            ▼                     ▼
-     ┌─────────────┐      ┌─────────────┐
-     │ Environment │      │  Component  │
-     └──────┬──────┘      └──────┬──────┘
-            └──────────┬──────────┘
-                       ▼
-                ┌─────────────┐
-                │  Instance   │
-                └──────┬──────┘
-                       ▼
-                ┌─────────────┐      ┌───────────────┐
-                │ Deployment  │      │ Resource Type │
-                └──────┬──────┘      └───────┬───────┘
-                       └──────────┬──────────┘
-                                  ▼
-                           ┌─────────────┐
-                           │  Resource   │
-                           └─────────────┘
-```
+<AttributeCascade />
 
-An instance is the intersection of an environment and a component, and a resource is the intersection of a deployment and a resource type (the resource type contributes only `md-resource-type` today). Attributes set anywhere upstream cascade downward — a resource at the bottom carries attributes from every parent above it.
+An instance is the intersection of an environment and a component. Deployments and resources carry the attributes of their instance with their own `md-id`. A resource also gets `md-resource-type` from its resource type, which contributes nothing else today. A resource at the bottom carries the attributes of every parent above its instance.
 
 ### Attribute Reference
 
