@@ -11,7 +11,7 @@ sidebar_label: Recipes
 This feature is alpha. Names, fields, and behavior can change or be removed at any time without notice.
 :::
 
-These recipes use the [`mass stash` commands](/guides/stash/cli). In a provisioner, `MASSDRIVER_DEPLOYMENT_ID` holds the deployment's UUID.
+These recipes use the [`mass alpha stash` commands](/guides/stash/cli). In a provisioner, `MASSDRIVER_DEPLOYMENT_ID` holds the deployment's UUID.
 
 ## Pass a value between deployment steps
 
@@ -19,10 +19,10 @@ One step writes a value to the deployment's stash. A later step reads it.
 
 ```bash
 # Step 1
-mass stash set "$MASSDRIVER_DEPLOYMENT_ID.db/hostname" "$DB_HOST"
+mass alpha stash set "$MASSDRIVER_DEPLOYMENT_ID.db/hostname" "$DB_HOST"
 
 # Step 2
-DB_HOST=$(mass stash get "$MASSDRIVER_DEPLOYMENT_ID.db/hostname")
+DB_HOST=$(mass alpha stash get "$MASSDRIVER_DEPLOYMENT_ID.db/hostname")
 ```
 
 ## Record deployment stats
@@ -30,7 +30,7 @@ DB_HOST=$(mass stash get "$MASSDRIVER_DEPLOYMENT_ID.db/hostname")
 Write a JSON entry with a label. It shows in the **Deployment metadata** section of the deployment's details, with one tile for each field.
 
 ```bash
-mass stash set "$MASSDRIVER_DEPLOYMENT_ID.stats" \
+mass alpha stash set "$MASSDRIVER_DEPLOYMENT_ID.stats" \
   "$(jq -n '{duration_s: 412, changed: 3}')" \
   --format json --label "Deployment stats"
 ```
@@ -40,9 +40,9 @@ mass stash set "$MASSDRIVER_DEPLOYMENT_ID.stats" \
 Set a TTL in seconds. The entry is deleted when the time ends. Read it, and compute the value again when it is missing.
 
 ```bash
-AMI=$(mass stash get "billing-dev-app.ami-id" 2>/dev/null) || {
+AMI=$(mass alpha stash get "billing-dev-app.ami-id" 2>/dev/null) || {
   AMI=$(aws ec2 describe-images --owners self --query 'sort_by(Images,&CreationDate)[-1].ImageId' --output text)
-  mass stash set "billing-dev-app.ami-id" "$AMI" --ttl 86400
+  mass alpha stash set "billing-dev-app.ami-id" "$AMI" --ttl 86400
 }
 ```
 
@@ -51,17 +51,17 @@ AMI=$(mass stash get "billing-dev-app.ami-id" 2>/dev/null) || {
 An immutable write fails when the key already has a value. Use it to run a step only one time for each deployment.
 
 ```bash
-if mass stash set "$MASSDRIVER_DEPLOYMENT_ID.migrations/ran" "true" --immutable; then
+if mass alpha stash set "$MASSDRIVER_DEPLOYMENT_ID.migrations/ran" "true" --immutable; then
   ./run-migrations.sh
 fi
 ```
 
 ## Show traffic on the canvas
 
-Write `md/traffic` on the instance that sends the traffic. The [traffic widget](/guides/annotations/widgets#traffic) shows on every line that leaves the instance. Set a TTL so that the widget goes away when your job stops writing.
+Write `md/v1/traffic` on the instance that sends the traffic. The [traffic widget](/guides/annotations/widgets#traffic) shows on every line that leaves the instance. Set a TTL so that the widget goes away when your job stops writing.
 
 ```bash
-mass stash set "billing-dev-app.md/traffic" \
+mass alpha stash set "billing-dev-app.md/v1/traffic" \
   '{"rps": 240, "errors_5m": 2, "p95_ms": 180}' \
   --format json --ttl 180
 ```

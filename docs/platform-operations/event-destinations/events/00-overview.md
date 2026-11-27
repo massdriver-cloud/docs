@@ -11,7 +11,7 @@ Each event has the same [CloudEvent](/platform-operations/event-destinations#the
 | Page | Entities |
 |---|---|
 | [Deployments and instances](/platform-operations/event-destinations/events/deployments-instances) | `deployment`, `instance`, `connection`, `remote_reference` |
-| [Projects and environments](/platform-operations/event-destinations/events/projects-environments) | `project`, `environment`, `environment_default`, `component`, `link`, `secret` |
+| [Projects and environments](/platform-operations/event-destinations/events/projects-environments) | `project`, `environment`, `environment_default`, `component`, `link`, `secret`, `stash_entry` |
 | [Resources and bundles](/platform-operations/event-destinations/events/resources-bundles) | `resource`, `resource_type`, `repo` |
 | [Alarms](/platform-operations/event-destinations/events/alarms) | `alarm`, `alarm_state` |
 | [Organization and access](/platform-operations/event-destinations/events/organization-access) | `organization`, `account`, `access_token`, `service_account`, `group`, `group_invitation`, `group_membership`, `custom_attribute`, `event_destination` |
