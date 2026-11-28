@@ -1767,7 +1767,8 @@ type RootSubscriptionType {
 
   Receives events for projects created in the organization, OCI repositories
   created in the bundle catalog, and bundle versions published to those
-  repositories. Requires organization membership.
+  repositories. Requires organization membership. A project event for a project
+  you do not have `project:view` on arrives as `null`.
 
   ```graphql
   subscription {
@@ -2413,6 +2414,18 @@ type RootMutationType {
     "The invitation's unique identifier."
     id: UUID!
   ): InviteViewerPayload
+
+  """
+  Update your first and last name.
+
+  Fields you leave out keep their current value. If an organization provisions your
+  account through SCIM, your identity provider owns your name and this mutation
+  returns an error; change your name in the identity provider instead.
+  """
+  updateAccount(
+    "Update your name. Accounts provisioned through SCIM get their name from the identity provider and cannot change it here."
+    input: UpdateAccountInput!
+  ): AccountViewerPayload @inputs(name: "updateAccount", schema: "\/graphql\/v2\/inputs\/updateAccount.json", ui: "\/graphql\/v2\/inputs\/updateAccount.ui.json")
 
   """
   Upload or replace your profile avatar.
@@ -5501,6 +5514,20 @@ type Resource {
     "Pagination cursor returned from a previous response to fetch the next page."
     cursor: Cursor
   ): GroupsPage
+
+  """
+  Alpha: this API can change or be removed at any time, without notice.
+
+  The people on call for the environment that contains the instance that produced this resource. The value is
+  that environment's `md/v1/oncall` stash entry, in the shape of the `environment.oncall` widget in
+  `alphaWidgetCatalog`: an optional `title` and a list of `entries`, each with an optional `name`, `image_url`,
+  `email`, and `handles`.
+
+  Null for **imported** resources and when the environment has no current on-call list. Anyone with
+  `resource:view` on this resource can read this field, even without access to the project that contains the
+  instance, so they know whom to contact.
+  """
+  alphaInstanceOncall: Map
 
   """
   Download formats supported for this resource.
@@ -8619,6 +8646,26 @@ type AvatarViewerPayload {
   result: AvatarViewer
 }
 
+type AccountViewerPayload {
+  "Indicates if the mutation completed successfully or not."
+  successful: Boolean!
+
+  "A list of failed validations. May be blank or null if mutation succeeded."
+  messages: [ValidationMessage]
+
+  "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
+  result: AccountViewer
+}
+
+"Update your name. Accounts provisioned through SCIM get their name from the identity provider and cannot change it here."
+input UpdateAccountInput {
+  "Your first name. Up to 255 characters."
+  firstName: String
+
+  "Your last name. Up to 255 characters."
+  lastName: String
+}
+
 """
 The authenticated human user (account).
 
@@ -9998,8 +10045,11 @@ Where a dependency wire-in comes from.
 - `EnvironmentDefault` — no explicit wire was set, so the slot is filled
   from the environment's default for this resource type.
 
-Per-instance `RemoteReference` overrides take priority over blueprint
-`Connection`s, which take priority over `EnvironmentDefault`s.
+For a dependency that takes one resource, per-instance `RemoteReference`
+overrides take priority over blueprint `Connection`s, which take priority over
+`EnvironmentDefault`s. A dependency that takes many resources gets a resource
+from every `RemoteReference` and `Connection` into it, and never from an
+`EnvironmentDefault`.
 """
 union InstanceDependencySource = Connection | RemoteReference | EnvironmentDefault
 
@@ -10009,6 +10059,9 @@ An input dependency consumed by an instance, keyed by the field handle that rece
 Dependencies are resources wired into this instance's bundle slots — either
 through a blueprint connection, a per-instance remote-reference override, or
 the environment's default for the resource type.
+
+A dependency with cardinality `MANY` takes a set of resources. It has one entry
+for each resource in the set, and every entry has the same `field`.
 """
 type InstanceDependency {
   "The input handle name that consumes this resource (e.g., `database`)."
@@ -10173,6 +10226,23 @@ type Instance {
   """
   effectiveAttributes: Map!
 
+  """
+  The `project:*`, `environment:*`, and `instance:*` actions that the given
+  group's policies allow on this instance, as `entity:verb` ids sorted
+  alphabetically. `environment:*` actions are decided against the instance's
+  environment.
+
+  Only that group's policies count, as they would for an account in no other
+  group, and a matching deny policy removes the action. Returns a `NOT_FOUND`
+  error when the group is not in this organization.
+
+  Requires the `organization:manageGroups` action.
+  """
+  groupAllowedActions(
+    "The group whose policies are evaluated."
+    groupId: UUID!
+  ): [String!]!
+
   "The version constraint controlling which bundle releases are eligible for deployment. Accepts any value accepted by the `VersionConstraint` scalar: a pinned semver (e.g., `1.2.3`) or a release channel name as listed by `ociRepo.releaseChannels` (e.g., `latest`, `~1.2`, `~1.2+dev`). Round-trips: the value returned here is valid input for the next `updateInstance` mutation."
   version: VersionConstraint!
 
@@ -10304,10 +10374,11 @@ type Instance {
   """
   Dependencies wired into this instance's bundle slots, sorted alphabetically by field.
 
-  Each entry is one filled slot from the bundle's `connections_schema` along
-  with the source object that filled it — a blueprint `Connection`, a
+  Each entry is one resource wired into a slot from the bundle's dependencies,
+  along with the source object that wired it — a blueprint `Connection`, a
   per-instance `RemoteReference`, or an `EnvironmentDefault` from the
-  environment. Unfilled slots are not included.
+  environment. A slot with cardinality `MANY` has one entry for each resource
+  in its set, sorted by resource ID. Unfilled slots are not included.
   """
   dependencies: [InstanceDependency!]!
 
@@ -10611,6 +10682,21 @@ type Environment {
   """
   effectiveAttributes: Map!
 
+  """
+  The `project:*` and `environment:*` actions that the given group's policies
+  allow on this environment, as `entity:verb` ids sorted alphabetically.
+
+  Only that group's policies count, as they would for an account in no other
+  group, and a matching deny policy removes the action. Returns a `NOT_FOUND`
+  error when the group is not in this organization.
+
+  Requires the `organization:manageGroups` action.
+  """
+  groupAllowedActions(
+    "The group whose policies are evaluated."
+    groupId: UUID!
+  ): [String!]!
+
   "When this environment was created (UTC)."
   createdAt: DateTime!
 
@@ -10745,6 +10831,20 @@ type EnvironmentDefaultResource {
     "Pagination cursor returned from a previous response to fetch the next page."
     cursor: Cursor
   ): GroupsPage
+
+  """
+  Alpha: this API can change or be removed at any time, without notice.
+
+  The people on call for the environment that contains the instance that produced this resource. The value is
+  that environment's `md/v1/oncall` stash entry, in the shape of the `environment.oncall` widget in
+  `alphaWidgetCatalog`: an optional `title` and a list of `entries`, each with an optional `name`, `image_url`,
+  `email`, and `handles`.
+
+  Null for **imported** resources and when the environment has no current on-call list. Anyone with
+  `resource:view` on this resource can read this field, even without access to the project that contains the
+  instance, so they know whom to contact.
+  """
+  alphaInstanceOncall: Map
 }
 
 """

@@ -48,6 +48,9 @@ Dependencies are resources wired into this instance's bundle slots — either
 through a blueprint connection, a per-instance remote-reference override, or
 the environment's default for the resource type.
 
+A dependency with cardinality `MANY` takes a set of resources. It has one entry
+for each resource in the set, and every entry has the same `field`.
+
 
 ```graphql
 type InstanceDependency {

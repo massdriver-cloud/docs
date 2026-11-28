@@ -59,6 +59,7 @@ type EnvironmentDefaultResource {
     sort: GroupsSort
     cursor: Cursor
   ): GroupsPage
+  alphaInstanceOncall: Map
 }
 ```
 
@@ -107,6 +108,19 @@ Sort field and direction. Defaults to name ascending.
 
 ##### [<code style={{ fontWeight: 'normal' }}>EnvironmentDefaultResource.instanceAccessGroups.<b>cursor</b></code>](#environment-default-resource-instance-access-groups-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#environment-default-resource-instance-access-groups-cursor\} 
 Pagination cursor returned from a previous response to fetch the next page.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentDefaultResource.<b>alphaInstanceOncall</b></code>](#alpha-instance-oncall)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#alpha-instance-oncall\} 
+Alpha: this API can change or be removed at any time, without notice.
+
+The people on call for the environment that contains the instance that produced this resource. The value is
+that environment's `md/v1/oncall` stash entry, in the shape of the `environment.oncall` widget in
+`alphaWidgetCatalog`: an optional `title` and a list of `entries`, each with an optional `name`, `image_url`,
+`email`, and `handles`.
+
+Null for **imported** resources and when the environment has no current on-call list. Anyone with
+`resource:view` on this resource can read this field, even without access to the project that contains the
+instance, so they know whom to contact.
 
 
 

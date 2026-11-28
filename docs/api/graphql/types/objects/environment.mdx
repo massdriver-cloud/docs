@@ -65,6 +65,9 @@ type Environment {
   decommissionProtection: Boolean!
   separationOfDuty: Boolean!
   effectiveAttributes: Map!
+  groupAllowedActions(
+    groupId: UUID!
+  ): [String!]!
   createdAt: DateTime!
   updatedAt: DateTime!
   project: Project
@@ -120,6 +123,19 @@ System attributes always present on an environment:
 - `md-id` — the environment's identifier
 - `md-project` — the project's identifier
 - `md-environment` — the environment's local identifier
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Environment.<b>groupAllowedActions</b></code>](#group-allowed-actions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#group-allowed-actions\} 
+The `project:*` and `environment:*` actions that the given group's policies
+allow on this environment, as `entity:verb` ids sorted alphabetically.
+
+Only that group's policies count, as they would for an account in no other
+group, and a matching deny policy removes the action. Returns a `NOT_FOUND`
+error when the group is not in this organization.
+
+Requires the `organization:manageGroups` action.
+##### [<code style={{ fontWeight: 'normal' }}>Environment.groupAllowedActions.<b>groupId</b></code>](#environment-group-allowed-actions-group-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UUID!</b></code>](/api/graphql/types/scalars/uuid.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#environment-group-allowed-actions-group-id\} 
+The group whose policies are evaluated.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Environment.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
