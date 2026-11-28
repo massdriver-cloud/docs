@@ -11,7 +11,7 @@ sidebar_label: Reading the Map
 This feature is alpha. Names, fields, and behavior can change or be removed at any time without notice.
 :::
 
-Press `?` on the map to see a short version of this page in the side panel.
+Press `?` on the map for a short legend in the side panel.
 
 ## What is in view
 
@@ -22,10 +22,10 @@ The map holds one neighborhood of your organization, not all of it:
 
 | Label | Meaning |
 |---|---|
-| **not loaded** | One hop past the edge. A loaded environment links to it. Select it to move the focus there. |
+| **🔭 out of view** | One hop past the edge. An environment in view links to it. Select it to move the focus there and bring it into view. |
 | **no access** | An instance in view uses a resource from this environment, but you cannot view the environment. |
 
-The focus moves when a selection rests for a moment, when you press `enter`, and when a search moves it. Every node glides from its old place to its new one.
+The focus moves when a selection rests for a moment, when you press `enter`, and when a search moves it. Every node glides from its old place to its new one, and the environments around the new focus come into frame.
 
 ## What moves
 
@@ -41,6 +41,15 @@ The focus moves when a selection rests for a moment, when you press `enter`, and
 | Closing rings and crosshairs | `--watch` just took the view to a new alarm |
 | Twinkling stars, falling streams, or a grid | The palette's backdrop |
 
+## Lines
+
+| Line | Meaning |
+|---|---|
+| Solid | The environment at the end uses resources from the environment at the start |
+| Dashed | The environment was forked from the one at the other end |
+| `1.2k/s 340ms ✕12` | Requests per second, p95 latency, and errors in the last 5 minutes, from `md/v1/traffic` |
+| `stale` | No traffic report for 10 minutes |
+
 ## Badges and labels
 
 | Mark | Meaning |
@@ -48,8 +57,9 @@ The focus moves when a selection rests for a moment, when you press `enter`, and
 | `▲N` | N alarms firing |
 | `↑N` | N instances can upgrade |
 | `⚑` | The environment has a banner |
-| `1.2k/s 340ms ✕12` on a link | Requests per second, p95 latency, and errors in the last 5 minutes, from `md/v1/traffic` |
-| `stale` on a link | No traffic report for 10 minutes |
+| `◆` | An application instance |
+| `◌` | An environment you cannot view |
+| `✎` | A note |
 | Banner across the top line | The selected environment's banner, or else the most urgent banner in view: error, then warning, then info |
 
 ## Blast radius
@@ -66,27 +76,51 @@ The links between them take the same colors. When the selected environment has a
 
 ## Themes
 
-`--theme` sets how the map is drawn, and `v` switches themes while the dashboard runs.
+`--theme` sets how the map is drawn, and `v` switches themes while Massdriver Constellation runs, in this order:
 
 | Theme | Layout | How links are drawn |
 |---|---|---|
 | `constellation` | A force layout. Environments that share resources pull together, and the focus holds the center. | Curved lines with sparks |
 | `metro` | A band for each project, and a column for each layer of producers, so resources flow left to right | Track drawn with box characters, with sparks running down it. Each project's line has its own color. |
 | `radar` | The focus at the center of a scope. Each environment sits on the ring as many hops out as it is, and environments the focus cannot reach sit on the edge. | Straight lines. A sweep turns around the scope, and blips light up as it passes them. |
+| `plain` | Environments listed by project, one line each, in columns that fill the width of the map | No links. Nothing moves except the dot of an environment that is deploying. |
 
 In `metro`, a station shows as `◉` in its environment's health color. It blinks red while an alarm fires and spins while a deployment runs.
 
+In `plain`, each project is a heading in its own color, and each environment is one line: a dot in its health color, its name, and then what applies to it.
+
+| On a `plain` line | Meaning |
+|---|---|
+| Spinning blue dot | A deployment is running |
+| `🔭` and **out of view** | One hop past the edge |
+| `◌` and **no access** | You cannot view the environment |
+| `▲ N alarming` | N alarms firing |
+| `⟳ N deploying` | N instances deploying |
+| `✕ N failed` | N instances failed |
+| `N/M up` | N of the environment's M instances are provisioned |
+| `↑ N` | N instances can upgrade |
+| `⚑` | The environment has a banner, colored by its level |
+| `$1.2k/mo` | Last month's spend, with cost on (`c`) |
+
+The arrow keys move the selection from line to line, and the blast radius colors the names of the environments it reaches.
+
 ## Palettes
 
-`--palette` sets the colors and the backdrop, and `p` switches palettes while the dashboard runs. Red, orange, and yellow mean alarms, warnings, and the blast radius in every palette.
-
-`--render blocks` fills the map's dots in as solid blocks, so links and rings draw as solid lines rather than dotted ones. It looks best in a terminal that draws block characters itself, such as Ghostty.
+`--palette` sets the colors and the backdrop, and `p` switches palettes while Massdriver Constellation runs. Red, orange, and yellow mean alarms, warnings, and the blast radius in every palette.
 
 | Palette | Backdrop |
 |---|---|
 | `night` | A starfield |
 | `rain` | Falling green streams |
 | `blueprint` | A drafting grid |
+
+## Braille or blocks
+
+The map is drawn with braille dots by default, which works in any terminal. `--render blocks` fills the dots in as solid blocks, so links and rings draw as solid lines rather than dotted ones. It looks best in a terminal that draws block characters itself, such as Ghostty.
+
+```bash
+mass dashboard --render blocks
+```
 
 ## Toggles
 
