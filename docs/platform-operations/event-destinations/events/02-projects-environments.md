@@ -227,3 +227,78 @@ Secret events have no attributes. To select one instance, use `instance_id`.
 |---|---|---|
 | Changes to secrets with names that end in `_PASSWORD` | `secret.*` | `.data.entity.name \| endswith("_PASSWORD")` |
 | Secrets set with the CLI or a script | `secret.set` | `.data.metadata.credential == "access_token"` |
+
+## Stash entry
+
+A [stash](/guides/stash) entry is a key and a value on a project, environment, component, instance, or deployment.
+
+| Event type | Occurs when |
+|---|---|
+| `stash_entry.set` | A stash entry was set. |
+| `stash_entry.deleted` | A stash entry was deleted. An entry that expires sends no event. |
+
+### `data.entity`
+
+| Field | Type | Value |
+|---|---|---|
+| `id` | UUID | The ID of the entry. |
+| `key` | string | The key, such as `md/v1/health`. |
+| `label` | string or null | The label of the entry. |
+| `format` | string | `text` or `json`. |
+| `immutable` | boolean | `true` when the key cannot be set again until the entry expires or is deleted. |
+| `sensitive` | boolean | `true` when the value is encrypted. |
+| `expires_at` | time or null | When the entry expires. `null` when it has no TTL. |
+| `scope` | object | The entity that holds the entry. `kind` is `project`, `environment`, `component`, `instance`, or `deployment`. `id` is its identifier, or its ID for a deployment. |
+| `value` | string or null | The value. `null` when the entry is sensitive. |
+| `data` | object or null | The value parsed as JSON, for a `json` entry. `null` when the entry is sensitive. |
+| `updated_at` | time | |
+
+### `data.attributes`
+
+The attributes of the entity that holds the entry. For a deployment's entry, the attributes of the deployment.
+
+### Example
+
+```json
+{
+  "type": "stash_entry.set",
+  "data": {
+    "entity": {
+      "id": "9e4c2a7b-1d3f-4b6e-8a0c-5f2d7b9e1c34",
+      "key": "md/v1/health",
+      "label": "Health",
+      "format": "text",
+      "immutable": false,
+      "sensitive": false,
+      "expires_at": "2026-11-24T06:54:03Z",
+      "updated_at": "2026-11-24T06:44:03Z",
+      "scope": { "kind": "instance", "id": "api-prod-database" },
+      "value": "degraded",
+      "data": null
+    },
+    "actor": {
+      "service_account_id": "c3e9a7b2-5d1f-4a8e-b6c0-9f2d4e7a1b85",
+      "name": "stash-sync",
+      "organization_id": "5a2c8e4f-1b7d-4e3a-9c6f-8d0b2a4e6c17"
+    },
+    "metadata": { "credential": "service_account" },
+    "attributes": {
+      "md-id": "api-prod-database",
+      "md-project": "api",
+      "md-environment": "prod",
+      "md-component": "database",
+      "md-instance": "api-prod-database",
+      "md-repo": "aws-rds-postgres",
+      "md-bundle": "aws-rds-postgres@1.4.2"
+    }
+  }
+}
+```
+
+### Example conditions
+
+| To send | Events | Condition |
+|---|---|---|
+| Health changes to `down` | `stash_entry.set` | `.data.entity.key == "md/v1/health" and .data.entity.value == "down"` |
+| Banners in production | `stash_entry.set` | `.data.entity.key == "md/v1/banner" and .data.attributes["md-environment"] == "prod"` |
+| Entries deleted by a person | `stash_entry.deleted` | `.data.actor.account_id != null` |
