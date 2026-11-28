@@ -53,6 +53,12 @@ deployments producing logs at high cadence.
 For the initial backfill, query `deployment { logs { ... } }` once and
 render the result, then open this subscription to stream new batches.
 
+Requires `project:view` on the project that holds the deployment's instance.
+Access is checked again against the instance's current project, and each
+result is reused for up to 30 seconds. After the instance moves to a project
+you cannot view, or after you lose `project:view`, batches arrive as `null`
+within 30 seconds.
+
 ```graphql
 subscription {
   deploymentLogs(organizationId: "my-org", deploymentId: "a1b2c3...") {
@@ -67,7 +73,7 @@ subscription {
 deploymentLogs(
   organizationId: ID!
   deploymentId: ID!
-): DeploymentLog!
+): DeploymentLog
 ```
 
 

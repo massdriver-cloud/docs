@@ -46,8 +46,12 @@ Subscribe to events for a specific instance via WebSocket.
 
 Receives events when the instance's configuration changes, a deployment is created,
 an incoming connection is added or removed, or a cloud metric alarm on the instance
-is registered, updated, deleted, or changes firing state. Requires read access to
-the instance's project.
+is registered, updated, deleted, or changes firing state. Requires `project:view`
+on the instance's project.
+
+Access is checked again for each event against the instance's current project,
+so after the instance moves to a project you cannot view, or after you lose
+`project:view`, each event arrives as `null`.
 
 ```graphql
 subscription {

@@ -51,6 +51,11 @@ status (e.g., `PENDING` → `RUNNING` → `COMPLETED`). For log deltas use
 Re-select whatever fields you need on `deployment` — Apollo will merge the
 payload into its cache by `Deployment:id`.
 
+Requires `project:view` on the project that holds the deployment's instance.
+Access is checked again for each event against the instance's current
+project, so after the instance moves to a project you cannot view, or after
+you lose `project:view`, each event arrives as `null`.
+
 ```graphql
 subscription {
   deploymentEvents(organizationId: "my-org", deploymentId: "a1b2c3...") {
