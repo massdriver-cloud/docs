@@ -1,0 +1,121 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: alpha-stash-entry
+title: AlphaStashEntry
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Alpha: this API can change or be removed at any time, without notice.
+
+A key and value stored on a project, environment, component, instance, or deployment. Massdriver stores the
+value and returns it as written. It does not read the value or act on it.
+
+
+```graphql
+type AlphaStashEntry {
+  scope: AlphaStashScopeRef!
+  key: String!
+  label: String
+  value: String
+  data: Map
+  format: AlphaStashFormat!
+  immutable: Boolean!
+  sensitive: Boolean!
+  expiresAt: DateTime
+  updatedAt: DateTime!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaStashEntry.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AlphaStashScopeRef!</b></code>](/api/graphql/types/objects/alpha-stash-scope-ref.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#scope\} 
+The project, environment, component, instance, or deployment that owns the entry.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaStashEntry.<b>key</b></code>](#key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#key\} 
+The entry's key. Letters, digits, and the characters `_`, `.`, `/`, and `-`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaStashEntry.<b>label</b></code>](#label)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#label\} 
+A human-readable name for the entry, shown in the Massdriver UI. Null when the entry has no label. The label is not encrypted and is returned even when the entry is sensitive, so do not put secrets in it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaStashEntry.<b>value</b></code>](#value)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#value\} 
+The value exactly as it was written. Null when the entry is sensitive and you cannot change this stash.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaStashEntry.<b>data</b></code>](#data)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#data\} 
+The value parsed as a JSON object when the format is `JSON`. Null for `TEXT` entries.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaStashEntry.<b>format</b></code>](#format)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AlphaStashFormat!</b></code>](/api/graphql/types/enums/alpha-stash-format.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#format\} 
+How the value is stored and returned.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaStashEntry.<b>immutable</b></code>](#immutable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#immutable\} 
+When true, the key cannot be set again until the entry expires or is deleted.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaStashEntry.<b>sensitive</b></code>](#sensitive)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#sensitive\} 
+When true, the value is encrypted and is returned only to callers who can change this stash.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaStashEntry.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#expires-at\} 
+When the entry expires (UTC). Null when the entry does not expire.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaStashEntry.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+When the value was last set (UTC).
+
+
+
+
+
+
+### Returned By
+
+[`alphaStashEntry`](/api/graphql/operations/queries/alpha-stash-entry.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`alphaUiNotices`](/api/graphql/operations/subscriptions/alpha-ui-notices.mdx)  <Badge class="badge badge--secondary badge--relation" text="subscription"/>
+
+### Member Of
+
+[`AlphaStashEntriesPage`](/api/graphql/types/objects/alpha-stash-entries-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AlphaStashEntryEvent`](/api/graphql/types/objects/alpha-stash-entry-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AlphaStashEntryPayload`](/api/graphql/types/objects/alpha-stash-entry-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AlphaStashEvent`](/api/graphql/types/objects/alpha-stash-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

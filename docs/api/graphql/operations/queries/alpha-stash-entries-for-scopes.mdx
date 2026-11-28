@@ -1,0 +1,107 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: alpha-stash-entries-for-scopes
+title: alphaStashEntriesForScopes
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Alpha: this API can change or be removed at any time, without notice.
+
+List the entries in several stashes at once, ordered by key. Pass the project, environments, components,
+instances, and deployments that you show, up to 200. Every scope must be in the same project. Expired
+entries are not returned.
+
+Sensitive entries are never returned, even when you have `stash:export`. Read a sensitive value with
+`alphaStashEntry`. You need `stash:view` on every scope.
+
+```graphql
+query {
+  alphaStashEntriesForScopes(
+    organizationId: "my-org"
+    scopes: [{ project: "ecomm" }, { environment: "ecomm-prod" }, { instance: "ecomm-prod-database" }]
+    filter: { keys: ["owner"] }
+  ) {
+    items {
+      scope { kind id }
+      key
+      value
+    }
+    cursor { next }
+  }
+}
+```
+
+
+```graphql
+alphaStashEntriesForScopes(
+  organizationId: ID!
+  scopes: [AlphaStashScope!]!
+  filter: AlphaStashEntriesFilter
+  cursor: Cursor
+): AlphaStashEntriesPage
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>alphaStashEntriesForScopes.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>alphaStashEntriesForScopes.<b>scopes</b></code>](#scopes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[AlphaStashScope!]!</b></code>](/api/graphql/types/inputs/alpha-stash-scope.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#scopes\} 
+The stashes to read, from 1 to 200. Set exactly one field of each.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>alphaStashEntriesForScopes.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AlphaStashEntriesFilter</b></code>](/api/graphql/types/inputs/alpha-stash-entries-filter.mdx) <Badge class="badge badge--secondary " text="input"/> \{#filter\} 
+Return only the entries that match.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>alphaStashEntriesForScopes.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#cursor\} 
+Pagination cursor returned by a previous page.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AlphaStashEntriesPage</b></code>](/api/graphql/types/objects/alpha-stash-entries-page.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Alpha: this API can change or be removed at any time, without notice.
+
+A page of AlphaStashEntry items.

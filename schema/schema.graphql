@@ -1497,6 +1497,268 @@ type RootQueryType {
     "The custom attribute's key (matches `customAttribute.key`)."
     key: String!
   ): [String!]!
+
+  """
+  Alpha: this API can change or be removed at any time, without notice.
+
+  Get one entry from a stash. Expired entries are not returned.
+
+  You need `stash:view` on the stash's entity. A sensitive value is null unless you have `stash:export` on it.
+
+  ```graphql
+  query {
+    alphaStashEntry(organizationId: "my-org", scope: { instance: "ecomm-prod-database" }, key: "schema.version") {
+      key
+      value
+      expiresAt
+    }
+  }
+  ```
+  """
+  alphaStashEntry(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The stash to read."
+    scope: AlphaStashScope!
+
+    "The key to get."
+    key: String!
+  ): AlphaStashEntry
+
+  """
+  Alpha: this API can change or be removed at any time, without notice.
+
+  List the entries in a stash, ordered by key. Expired entries are not returned.
+
+  You need `stash:view` on the stash's entity. Sensitive values are null unless you have `stash:export` on it.
+
+  ```graphql
+  query {
+    alphaStashEntries(organizationId: "my-org", scope: { environment: "ecomm-prod" }) {
+      items { key value format }
+      cursor { next }
+    }
+  }
+  ```
+  """
+  alphaStashEntries(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The stash to list."
+    scope: AlphaStashScope!
+
+    "Pagination cursor returned by a previous page."
+    cursor: Cursor
+  ): AlphaStashEntriesPage
+
+  """
+  Alpha: this API can change or be removed at any time, without notice.
+
+  List the entries in several stashes at once, ordered by key. Pass the project, environments, components,
+  instances, and deployments that you show, up to 200. Every scope must be in the same project. Expired
+  entries are not returned.
+
+  Sensitive entries are never returned, even when you have `stash:export`. Read a sensitive value with
+  `alphaStashEntry`. You need `stash:view` on every scope.
+
+  ```graphql
+  query {
+    alphaStashEntriesForScopes(
+      organizationId: "my-org"
+      scopes: [{ project: "ecomm" }, { environment: "ecomm-prod" }, { instance: "ecomm-prod-database" }]
+      filter: { keys: ["owner"] }
+    ) {
+      items {
+        scope { kind id }
+        key
+        value
+      }
+      cursor { next }
+    }
+  }
+  ```
+  """
+  alphaStashEntriesForScopes(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The stashes to read, from 1 to 200. Set exactly one field of each."
+    scopes: [AlphaStashScope!]!
+
+    "Return only the entries that match."
+    filter: AlphaStashEntriesFilter
+
+    "Pagination cursor returned by a previous page."
+    cursor: Cursor
+  ): AlphaStashEntriesPage
+
+  """
+  Alpha: this API can change or be removed at any time, without notice.
+
+  List your annotations in a project, oldest first. Other users' annotations are not returned.
+
+  You need `project:view` on the project. Service accounts cannot have annotations.
+
+  ```graphql
+  query {
+    alphaAnnotations(
+      organizationId: "my-org"
+      filter: { projectId: "ecomm", entity: { instance: "ecomm-prod-database" } }
+    ) {
+      items {
+        id
+        kind
+        surfaces
+        template
+        entity { ... on Instance { id } }
+      }
+      cursor { next }
+    }
+  }
+  ```
+  """
+  alphaAnnotations(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The project to list, and optional filters."
+    filter: AlphaAnnotationsFilter!
+
+    "Pagination cursor returned by a previous page."
+    cursor: Cursor
+  ): AlphaAnnotationsPage
+
+  """
+  Alpha: this API can change or be removed at any time, without notice.
+
+  Get one of your annotations. Another user's annotation is not found.
+
+  You need `project:view` on the annotation's project.
+
+  ```graphql
+  query {
+    alphaAnnotation(organizationId: "my-org", id: "4f6e2a3c-8d1b-4c5e-9a7f-1b2c3d4e5f60") {
+      kind
+      surfaces
+      inputs
+    }
+  }
+  ```
+  """
+  alphaAnnotation(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The annotation's ID (a UUID)."
+    id: ID!
+  ): AlphaAnnotation
+
+  """
+  Alpha: this API can change or be removed at any time, without notice.
+
+  Every version of every widget that the Massdriver UI can draw from a well-known stash key, ordered by name
+  and then version.
+
+  ```graphql
+  query {
+    alphaWidgetCatalog {
+      name
+      entity
+      version
+      key
+      keySegments
+      scope
+      format
+      schema
+      inputs { name type required field }
+    }
+  }
+  ```
+  """
+  alphaWidgetCatalog: [AlphaWidgetDefinition!]!
+
+  """
+  Alpha: this API can change or be removed at any time, without notice.
+
+  List the widgets of several stashes at once. Pass the project, environments, components, instances, and
+  deployments that you show, up to 200. Every scope must be in the same project. You need `stash:view` on
+  every scope.
+
+  A widget is returned for each well-known key that is set with a value that matches its schema. When a scope
+  has more than one version of a widget's key, the widget is returned from the highest version. Expired keys
+  are not returned. A page reads up to `limit` keys, so it can have fewer widgets than `limit`, or none. Keep
+  reading pages until `cursor.next` is null. Subscribe to `alphaStashEvents` and read the widgets again when
+  an `md/` key changes.
+
+  An instance scope also returns the deployment results of the instance's latest deployment that has any
+  well-known key, such as `md/v1/step/src` and `md/v1/cost_estimate`. The `scope` of each of those widgets
+  is that deployment, and `rolledUpTo` is the instance. Any well-known key makes a deployment the latest one
+  with results, including `md/v1/source` and `md/v1/state_lock`, which a run often sets when it starts. A
+  newer deployment that has not set a well-known key yet does not hide the earlier results. A deployment
+  scope returns the results of that deployment.
+
+  ```graphql
+  query {
+    alphaWidgetsForScopes(
+      organizationId: "my-org"
+      scopes: [{ environment: "ecomm-prod" }, { instance: "ecomm-prod-database" }]
+    ) {
+      items {
+        name
+        scope { kind id }
+        rolledUpTo { kind id }
+        segments
+        values
+        expiresAt
+      }
+      cursor { next }
+    }
+  }
+  ```
+  """
+  alphaWidgetsForScopes(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The stashes to read, from 1 to 200. Set exactly one field of each."
+    scopes: [AlphaStashScope!]!
+
+    "Pagination cursor returned by a previous page."
+    cursor: Cursor
+  ): AlphaWidgetsPage
+
+  """
+  Alpha: this API can change or be removed at any time, without notice.
+
+  List the UI notices you can see in your organization, newest first. A notice is a `md/v1/ui-ephemeral-notice`
+  stash entry that Massdriver sets on a project when it is created, and on an environment when it is created.
+  Its `data` has the shape of the `project.notice` and `environment.notice` widgets in `alphaWidgetCatalog`.
+
+  You see the notices of the projects and environments where you have `stash:view`. Expired notices are not
+  returned. Read this when a page opens, then subscribe to `alphaUiNotices` for new ones.
+
+  ```graphql
+  query {
+    alphaUiNotices(organizationId: "my-org") {
+      items {
+        scope { kind id }
+        data
+        expiresAt
+      }
+      cursor { next }
+    }
+  }
+  ```
+  """
+  alphaUiNotices(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "Pagination cursor returned by a previous page."
+    cursor: Cursor
+  ): AlphaStashEntriesPage
 }
 
 type RootSubscriptionType {
@@ -1698,6 +1960,66 @@ type RootSubscriptionType {
     "The deployment's unique identifier."
     deploymentId: ID!
   ): DeploymentLog!
+
+  """
+  Alpha: this API can change or be removed at any time, without notice.
+
+  Subscribe to stash entries that are set or deleted in a project. You need `stash:view` on the project, and on
+  the environment when you pass `environmentId`.
+
+  Without `environmentId`, you get events for the project, its environments, and its components. With
+  `environmentId`, you also get events for that environment's instances and their deployments.
+
+  An event's `entry` is null when you do not have `stash:view` on the stash's entity. A sensitive entry's value
+  is always null in an event. An entry that expires sends no event.
+
+  ```graphql
+  subscription {
+    alphaStashEvents(organizationId: "my-org", projectId: "ecomm", environmentId: "ecomm-prod") {
+      action
+      scope { kind id }
+      key
+      entry { value expiresAt }
+      timestamp
+    }
+  }
+  ```
+  """
+  alphaStashEvents(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The project's ID, for example `ecomm`."
+    projectId: ID!
+
+    "An environment ID in the project, for example `ecomm-prod`. Adds events for the environment's instances and their deployments."
+    environmentId: ID
+  ): AlphaStashEvent
+
+  """
+  Alpha: this API can change or be removed at any time, without notice.
+
+  Subscribe to the UI notices you can see in your organization, as Massdriver sets them. One subscription
+  covers every project and environment where you have `stash:view`, including the ones created after you
+  subscribe. You do not get a notice about a project or environment where you do not have `stash:view`.
+
+  A notice is an `md/v1/ui-ephemeral-notice` stash entry. Drop it when its `expiresAt` passes: an expiry sends
+  no event.
+
+  ```graphql
+  subscription {
+    alphaUiNotices(organizationId: "my-org") {
+      scope { kind id }
+      data
+      expiresAt
+    }
+  }
+  ```
+  """
+  alphaUiNotices(
+    "Your organization's unique identifier."
+    organizationId: ID!
+  ): AlphaStashEntry
 }
 
 type RootMutationType {
@@ -3654,6 +3976,737 @@ type RootMutationType {
     "The grant's unique identifier."
     id: UUID!
   ): GrantPayload
+
+  """
+  Alpha: this API can change or be removed at any time, without notice.
+
+  Set the value of a key in a stash. Setting a key that has a value replaces the value and every other setting
+  of the entry.
+
+  You need `stash:write` on the stash's entity: the project, environment, component, or instance, or the
+  deployment's instance for a deployment's stash.
+
+  A deployment's own credentials can set keys on that deployment and on its instance, environment, component,
+  and project.
+
+  The mutation fails when the key has an immutable entry that has not expired, or when the stash already has
+  its maximum number of keys (1000 unless your installation sets another).
+
+  Keys that start with `md/` are well-known keys that drive the widgets in `alphaWidgetCatalog`, for example
+  `md/v1/health` or `md/v1/step/src`. Each one can be set only on its kind of entity, with its format, and
+  with a value that matches its schema. An `md/` key that is not in the catalog is rejected. An `md/` entry
+  cannot be sensitive.
+
+  ```graphql
+  mutation {
+    alphaSetStashEntry(
+      organizationId: "my-org"
+      scope: { instance: "ecomm-prod-database" }
+      key: "schema.version"
+      input: { value: "42", ttl: 86400 }
+    ) {
+      successful
+      result { key value expiresAt }
+      messages { field message }
+    }
+  }
+  ```
+  """
+  alphaSetStashEntry(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The stash to write."
+    scope: AlphaStashScope!
+
+    "The key to set. Letters, digits, and the characters `_`, `.`, `\/`, and `-`, up to 255 characters."
+    key: String!
+
+    "Set the value of a key in a stash. Setting a key that has a value replaces the value and every other setting of the entry."
+    input: AlphaSetStashEntryInput!
+  ): AlphaStashEntryPayload @inputs(name: "setStashEntry", schema: "\/graphql\/v2\/inputs\/setStashEntry.json", ui: "\/graphql\/v2\/inputs\/setStashEntry.ui.json")
+
+  """
+  Alpha: this API can change or be removed at any time, without notice.
+
+  Delete a key from a stash. Needs the same permission as `alphaSetStashEntry`. Immutable entries can be deleted.
+  The result has the deleted entry. Its value is null when the entry is sensitive.
+
+  ```graphql
+  mutation {
+    alphaDeleteStashEntry(organizationId: "my-org", scope: { project: "ecomm" }, key: "release") {
+      successful
+      result { key }
+    }
+  }
+  ```
+  """
+  alphaDeleteStashEntry(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The stash to delete from."
+    scope: AlphaStashScope!
+
+    "The key to delete."
+    key: String!
+  ): AlphaStashEntryPayload
+
+  """
+  Alpha: this API can change or be removed at any time, without notice.
+
+  Pin a new annotation to a project, environment, component, instance, deployment, or link. Only you can see
+  it.
+
+  You need `project:view` on the project. Service accounts cannot have annotations. You can have up to 200
+  annotations in each project unless your installation sets another limit.
+
+  ```graphql
+  mutation {
+    alphaCreateAnnotation(
+      organizationId: "my-org"
+      projectId: "ecomm"
+      entity: { instance: "ecomm-prod-database" }
+      input: {
+        kind: NOTE
+        surfaces: ["instance.canvas_node"]
+        template: "Schema version: {{ instance.stash[\"schema.version\"] }}"
+      }
+    ) {
+      successful
+      result { id kind surfaces }
+      messages { field message }
+    }
+  }
+  ```
+  """
+  alphaCreateAnnotation(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The project's ID, for example `ecomm`."
+    projectId: ID!
+
+    "The entity in the project to pin the annotation to. Leave it out for the project itself."
+    entity: AlphaAnnotationEntityInput
+
+    "Pin a new annotation to a project, environment, component, instance, deployment, or link. Only you can see it."
+    input: AlphaCreateAnnotationInput!
+  ): AlphaAnnotationPayload @inputs(name: "createAnnotation", schema: "\/graphql\/v2\/inputs\/createAnnotation.json", ui: "\/graphql\/v2\/inputs\/createAnnotation.ui.json")
+
+  """
+  Alpha: this API can change or be removed at any time, without notice.
+
+  Change the surfaces, template, or inputs of one of your annotations. Fields you leave out keep their
+  values. The kind and the entity cannot be changed.
+
+  You need `project:view` on the annotation's project.
+
+  ```graphql
+  mutation {
+    alphaUpdateAnnotation(
+      organizationId: "my-org"
+      id: "4f6e2a3c-8d1b-4c5e-9a7f-1b2c3d4e5f60"
+      input: { surfaces: ["instance.canvas_node", "instance.card"] }
+    ) {
+      successful
+      result { id surfaces }
+      messages { field message }
+    }
+  }
+  ```
+  """
+  alphaUpdateAnnotation(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The annotation's ID (a UUID)."
+    id: ID!
+
+    "Change the surfaces, template, or inputs of one of your annotations. Fields you leave out keep their values. The kind and the entity cannot be changed."
+    input: AlphaUpdateAnnotationInput!
+  ): AlphaAnnotationPayload @inputs(name: "updateAnnotation", schema: "\/graphql\/v2\/inputs\/updateAnnotation.json", ui: "\/graphql\/v2\/inputs\/updateAnnotation.ui.json")
+
+  """
+  Alpha: this API can change or be removed at any time, without notice.
+
+  Delete one of your annotations. The result has the deleted annotation.
+
+  You need `project:view` on the annotation's project.
+
+  ```graphql
+  mutation {
+    alphaDeleteAnnotation(organizationId: "my-org", id: "4f6e2a3c-8d1b-4c5e-9a7f-1b2c3d4e5f60") {
+      successful
+      result { id }
+    }
+  }
+  ```
+  """
+  alphaDeleteAnnotation(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "The annotation's ID (a UUID)."
+    id: ID!
+  ): AlphaAnnotationPayload
+}
+
+"""
+Alpha: this API can change or be removed at any time, without notice.
+
+The kind of entity a widget shows on.
+"""
+enum AlphaWidgetEntityKind {
+  "A project."
+  PROJECT
+
+  "An environment."
+  ENVIRONMENT
+
+  "A component."
+  COMPONENT
+
+  "An instance."
+  INSTANCE
+
+  "A deployment."
+  DEPLOYMENT
+
+  "A link between two components, drawn as a line on the canvas."
+  LINK
+}
+
+"""
+Alpha: this API can change or be removed at any time, without notice.
+
+The JSON type of a widget input's value.
+"""
+enum AlphaWidgetInputType {
+  "A string."
+  STRING
+
+  "A number."
+  NUMBER
+
+  "A whole number."
+  INTEGER
+
+  "True or false."
+  BOOLEAN
+
+  "A list."
+  ARRAY
+
+  "A JSON object."
+  OBJECT
+}
+
+"""
+Alpha: this API can change or be removed at any time, without notice.
+
+One input of a widget.
+"""
+type AlphaWidgetInput {
+  "The input's name, for example `value`."
+  name: String!
+
+  "The JSON type of the input's value."
+  type: AlphaWidgetInputType!
+
+  "When true, the widget is not drawn without this input."
+  required: Boolean!
+
+  "What the input shows."
+  description: String!
+
+  "The field of the well-known key's JSON value that the input reads, for example `rps`. Null when the key is `TEXT` and the input reads the whole value."
+  field: String
+}
+
+"""
+Alpha: this API can change or be removed at any time, without notice.
+
+One version of a widget that the Massdriver UI can draw, and the well-known stash key that drives it. When a
+stash has the key with a value that matches `schema`, everyone who can view the project sees the widget.
+Keys that start with `md/` are reserved for widgets: setting one checks its value against the schema.
+
+A well-known key carries its version, for example `md/v1/usage`. A breaking change to a key's shape adds a
+new version of the widget with a new key, next to the old one. When a stash has more than one version of a
+widget's key, the UI draws the widget from the highest version.
+"""
+type AlphaWidgetDefinition {
+  "The widget's name, for example `instance.usage_bar`. A `WIDGET` annotation uses it as its surface."
+  name: String!
+
+  "What the widget shows."
+  description: String!
+
+  "The kind of entity the widget shows on."
+  entity: AlphaWidgetEntityKind!
+
+  "The version of the well-known key's shape, for example `1`."
+  version: Int!
+
+  "The well-known stash key, for example `md\/v1\/usage`, or a key pattern with named segments in braces, for example `md\/v1\/step\/{step}`. A key such as `md\/v1\/step\/src` matches the pattern. A segment is 1 to 63 lowercase letters, digits, `_`, and `-`, and starts with a letter or digit."
+  key: String!
+
+  "The names of the segments in `key`, for example `[\"step\"]` for `md\/v1\/step\/{step}`. Empty for a fixed key."
+  keySegments: [String!]!
+
+  "The only values that a segment can have, by segment name. A segment that is not listed can be any value that follows the segment rule in `key`."
+  segmentValues: Map!
+
+  "The kind of entity whose stash holds the key. A `link.traffic` widget reads the key on the instance that sends the traffic, and shows on the lines that leave that instance."
+  scope: AlphaStashScopeKind!
+
+  "The format the key's value must be set with."
+  format: AlphaStashFormat!
+
+  "The JSON Schema (draft 2020-12) that the key's value must match. Its `$id` names the key, for example `https:\/\/schemas.massdriver.cloud\/stash\/md\/v1\/usage.json`."
+  schema: Map!
+
+  "The widget's inputs."
+  inputs: [AlphaWidgetInput!]!
+}
+
+"""
+Alpha: this API can change or be removed at any time, without notice.
+
+A widget drawn from a well-known stash key.
+"""
+type AlphaWidget {
+  "The widget's name, for example `instance.usage_bar`."
+  name: String!
+
+  "The entity whose stash has the key. For a `link.traffic` widget, this is the instance that sends the traffic, and the widget shows on the lines that leave it. For a deployment result read through an instance, this is the deployment that the result came from."
+  scope: AlphaStashScopeRef!
+
+  "The instance whose latest deployment results include this widget, when the widget is a deployment result returned for an instance scope. Null for every other widget, such as a result read only through its deployment scope."
+  rolledUpTo: AlphaStashScopeRef
+
+  "The values of the key's named segments, by name, for example `{\"step\": \"src\"}` for the key `md\/v1\/step\/src`. Empty for a fixed key."
+  segments: Map!
+
+  "The widget's input values, by input name, for example `{\"value\": 42, \"max\": 100}`. An optional input that the key's value does not set is left out."
+  values: Map!
+
+  "When the key was last set (UTC)."
+  updatedAt: DateTime!
+
+  "When the key expires (UTC). Null when the key does not expire."
+  expiresAt: DateTime
+}
+
+"""
+Alpha: this API can change or be removed at any time, without notice.
+
+A page of AlphaWidget items.
+"""
+type AlphaWidgetsPage {
+  "Pagination cursors for navigating between pages."
+  cursor: PaginationCursor!
+
+  "A list of type widget."
+  items: [AlphaWidget]
+}
+
+"""
+Alpha: this API can change or be removed at any time, without notice.
+
+What an annotation shows.
+"""
+enum AlphaAnnotationKind {
+  "A Liquid template that the Massdriver UI renders. Massdriver does not evaluate it."
+  NOTE
+
+  "One widget from `alphaWidgetCatalog`, with each of its inputs connected to a stash entry."
+  WIDGET
+}
+
+"""
+Alpha: this API can change or be removed at any time, without notice.
+
+The entity an annotation is on. Set at most one field. Set no field for the project itself.
+"""
+input AlphaAnnotationEntityInput {
+  "An environment ID, for example `ecomm-prod`."
+  environment: ID
+
+  "A component ID, for example `ecomm-database`."
+  component: ID
+
+  "An instance ID, for example `ecomm-prod-database`."
+  instance: ID
+
+  "A deployment ID (a UUID)."
+  deployment: ID
+
+  "A link ID (a UUID)."
+  link: ID
+}
+
+"""
+Alpha: this API can change or be removed at any time, without notice.
+
+Which of your annotations in a project to list.
+"""
+input AlphaAnnotationsFilter {
+  "The project's ID, for example `ecomm`."
+  projectId: ID!
+
+  "Only annotations on this entity. An empty object lists only the annotations on the project itself. Leave it out to list every annotation in the project."
+  entity: AlphaAnnotationEntityInput
+
+  "Only annotations shown on this surface, for example `instance.canvas_node`."
+  surface: String
+}
+
+"""
+Alpha: this API can change or be removed at any time, without notice.
+
+Pin a new annotation to a project, environment, component, instance, deployment, or link. Only you can see it.
+"""
+input AlphaCreateAnnotationInput {
+  "A JSON object that maps each input of the widget to a stash entry. Use the input names from `alphaWidgetCatalog`, and set every required input. Required for WIDGET annotations and empty for NOTE annotations. Each value has `source` (always `stash`), `scope` (one of `project`, `environment`, `component`, `instance`, or `deployment`, set to an ID in the annotation's project), `key`, and an optional `path` (a list of keys into a JSON entry's data)."
+  inputs: Map
+
+  "NOTE shows a Liquid template that the Massdriver UI renders. WIDGET shows one widget from `alphaWidgetCatalog` and connects its inputs to stash entries. The kind cannot be changed later."
+  kind: AlphaAnnotationKind!
+
+  "Where the Massdriver UI shows the annotation, from 1 to 8 surfaces. Each one is lowercase words joined by dots, up to 64 characters, and starts with the kind of entity the annotation is on, such as `instance.canvas_node`. An annotation on a component can also use `instance` surfaces. A WIDGET annotation has exactly one surface: the name of a widget, such as `instance.usage_bar`."
+  surfaces: [String!]!
+
+  "The Liquid template to show, up to 4096 bytes. Required for NOTE annotations and empty for WIDGET annotations. Massdriver stores it as written and does not evaluate it."
+  template: String
+}
+
+"""
+Alpha: this API can change or be removed at any time, without notice.
+
+Change the surfaces, template, or inputs of one of your annotations. Fields you leave out keep their values. The kind and the entity cannot be changed.
+"""
+input AlphaUpdateAnnotationInput {
+  "A JSON object that maps each input of the widget of a WIDGET annotation to a stash entry, and replaces every input. Use the input names from `alphaWidgetCatalog`, and set every required input. Each value has `source` (always `stash`), `scope` (one of `project`, `environment`, `component`, `instance`, or `deployment`, set to an ID in the annotation's project), `key`, and an optional `path` (a list of keys into a JSON entry's data)."
+  inputs: Map
+
+  "Where the Massdriver UI shows the annotation, from 1 to 8 surfaces. Each one is lowercase words joined by dots, up to 64 characters, and starts with the kind of entity the annotation is on, such as `instance.canvas_node`. An annotation on a component can also use `instance` surfaces. A WIDGET annotation has exactly one surface: the name of a widget, such as `instance.usage_bar`."
+  surfaces: [String!]
+
+  "The Liquid template to show on a NOTE annotation, up to 4096 bytes. Massdriver stores it as written and does not evaluate it."
+  template: String
+}
+
+"""
+Alpha: this API can change or be removed at any time, without notice.
+
+The project, environment, component, instance, deployment, or link an annotation is on.
+"""
+union AlphaAnnotationEntity = Project | Environment | Component | Instance | Deployment | Link
+
+"""
+Alpha: this API can change or be removed at any time, without notice.
+
+Your own note, pinned to a project, environment, component, instance, deployment, or link, and shown on one
+or more surfaces of the Massdriver UI. Only you can see your annotations.
+"""
+type AlphaAnnotation {
+  "The annotation's ID (a UUID)."
+  id: ID!
+
+  "What the annotation shows."
+  kind: AlphaAnnotationKind!
+
+  "The project the annotation is in."
+  project: Project!
+
+  "The entity the annotation is on. The project when the annotation is on the project itself."
+  entity: AlphaAnnotationEntity!
+
+  "Where the Massdriver UI shows the annotation, for example `instance.canvas_node`."
+  surfaces: [String!]!
+
+  "The Liquid template of a `NOTE` annotation. Null for `WIDGET` annotations."
+  template: String
+
+  "The stash entries of a `WIDGET` annotation, by widget input name. Each scope names its stash by ID, for example `{\"instance\": \"ecomm-prod-database\"}`. An input whose stash owner was deleted, or moved to another project, is left out. Null for `NOTE` annotations."
+  inputs: Map
+
+  "When the annotation was created (UTC)."
+  createdAt: DateTime!
+
+  "When the annotation was last changed (UTC)."
+  updatedAt: DateTime!
+}
+
+"""
+Alpha: this API can change or be removed at any time, without notice.
+
+The result of a mutation on AlphaAnnotation.
+"""
+type AlphaAnnotationPayload {
+  "Indicates if the mutation completed successfully or not."
+  successful: Boolean!
+
+  "A list of failed validations. May be blank or null if mutation succeeded."
+  messages: [ValidationMessage]
+
+  "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
+  result: AlphaAnnotation
+}
+
+"""
+Alpha: this API can change or be removed at any time, without notice.
+
+A page of AlphaAnnotation items.
+"""
+type AlphaAnnotationsPage {
+  "Pagination cursors for navigating between pages."
+  cursor: PaginationCursor!
+
+  "A list of type annotation."
+  items: [AlphaAnnotation]
+}
+
+"""
+Alpha: this API can change or be removed at any time, without notice.
+
+How a stash value is stored and returned.
+"""
+enum AlphaStashFormat {
+  "Any string."
+  TEXT
+
+  "A JSON object. The entry's `data` field returns it parsed."
+  JSON
+}
+
+"""
+Alpha: this API can change or be removed at any time, without notice.
+
+The project, environment, component, instance, or deployment that owns a stash. Set exactly one field.
+
+Each one has its own stash. A key set on an environment is not returned when you read the stash of an
+instance in that environment.
+"""
+input AlphaStashScope {
+  "A project ID, for example `ecomm`."
+  project: ID
+
+  "An environment ID, for example `ecomm-prod`."
+  environment: ID
+
+  "A component ID, for example `ecomm-database`."
+  component: ID
+
+  "An instance ID, for example `ecomm-prod-database`."
+  instance: ID
+
+  "A deployment ID (a UUID)."
+  deployment: ID
+}
+
+"""
+Alpha: this API can change or be removed at any time, without notice.
+
+The kind of entity that owns a stash.
+"""
+enum AlphaStashScopeKind {
+  "A project."
+  PROJECT
+
+  "An environment."
+  ENVIRONMENT
+
+  "A component."
+  COMPONENT
+
+  "An instance."
+  INSTANCE
+
+  "A deployment."
+  DEPLOYMENT
+}
+
+"""
+Alpha: this API can change or be removed at any time, without notice.
+
+What happened to a stash entry.
+"""
+enum AlphaStashEventAction {
+  "The key was set. A set that replaces a value sends one event."
+  SET
+
+  "The key was deleted."
+  DELETED
+}
+
+"""
+Alpha: this API can change or be removed at any time, without notice.
+
+Narrows the entries a stash query returns.
+"""
+input AlphaStashEntriesFilter {
+  "Return only entries with one of these keys."
+  keys: [String!]
+}
+
+"""
+Alpha: this API can change or be removed at any time, without notice.
+
+Set the value of a key in a stash. Setting a key that has a value replaces the value and every other setting of the entry.
+"""
+input AlphaSetStashEntryInput {
+  "TEXT stores any string. JSON requires a JSON object, and the entry's `data` field returns it parsed. Defaults to TEXT."
+  format: AlphaStashFormat
+
+  "When true, the key cannot be set again until the entry expires or is deleted. Setting an immutable entry fails if the key already has a value."
+  immutable: Boolean
+
+  "A human-readable name for the entry, shown in the Massdriver UI. Up to 255 characters. An empty label is the same as no label. The label is not encrypted and is shown even when the entry is sensitive, so do not put secrets in it."
+  label: String
+
+  "When true, the value is encrypted and is returned only to callers who can change the stash."
+  sensitive: Boolean
+
+  "Seconds until the entry expires. An expired entry is not returned and is deleted soon after. At most 315360000 (10 years). Leave empty to keep the entry until you delete it."
+  ttl: Int
+
+  "The value to store. Massdriver returns it exactly as written. The size limit is 65536 bytes unless your installation sets another."
+  value: String!
+}
+
+"""
+Alpha: this API can change or be removed at any time, without notice.
+
+The project, environment, component, instance, or deployment that owns a stash.
+"""
+type AlphaStashScopeRef {
+  "The kind of entity."
+  kind: AlphaStashScopeKind!
+
+  "The entity's ID, for example `ecomm-prod-database` for an instance. A deployment's ID is a UUID."
+  id: ID!
+}
+
+"""
+Alpha: this API can change or be removed at any time, without notice.
+
+A key and value stored on a project, environment, component, instance, or deployment. Massdriver stores the
+value and returns it as written. It does not read the value or act on it.
+"""
+type AlphaStashEntry {
+  "The project, environment, component, instance, or deployment that owns the entry."
+  scope: AlphaStashScopeRef!
+
+  "The entry's key. Letters, digits, and the characters `_`, `.`, `\/`, and `-`."
+  key: String!
+
+  "A human-readable name for the entry, shown in the Massdriver UI. Null when the entry has no label. The label is not encrypted and is returned even when the entry is sensitive, so do not put secrets in it."
+  label: String
+
+  "The value exactly as it was written. Null when the entry is sensitive and you cannot change this stash."
+  value: String
+
+  "The value parsed as a JSON object when the format is `JSON`. Null for `TEXT` entries."
+  data: Map
+
+  "How the value is stored and returned."
+  format: AlphaStashFormat!
+
+  "When true, the key cannot be set again until the entry expires or is deleted."
+  immutable: Boolean!
+
+  "When true, the value is encrypted and is returned only to callers who can change this stash."
+  sensitive: Boolean!
+
+  "When the entry expires (UTC). Null when the entry does not expire."
+  expiresAt: DateTime
+
+  "When the value was last set (UTC)."
+  updatedAt: DateTime!
+}
+
+"""
+Alpha: this API can change or be removed at any time, without notice.
+
+The result of a mutation on AlphaStashEntry.
+"""
+type AlphaStashEntryPayload {
+  "Indicates if the mutation completed successfully or not."
+  successful: Boolean!
+
+  "A list of failed validations. May be blank or null if mutation succeeded."
+  messages: [ValidationMessage]
+
+  "The object created\/updated\/deleted by the mutation. May be null if mutation failed."
+  result: AlphaStashEntry
+}
+
+"""
+Alpha: this API can change or be removed at any time, without notice.
+
+A page of AlphaStashEntry items.
+"""
+type AlphaStashEntriesPage {
+  "Pagination cursors for navigating between pages."
+  cursor: PaginationCursor!
+
+  "A list of type stash_entry."
+  items: [AlphaStashEntry]
+}
+
+"""
+Alpha: this API can change or be removed at any time, without notice.
+
+A stash entry was set or deleted, sent to `projectEvents`, `environmentEvents`, `instanceEvents`, and
+`deploymentEvents` by the entity that holds the entry. The action is `UPDATED` when the entry is set and
+`DELETED` when it is deleted. An entry that expires sends no event.
+
+| Stash       | Subscriptions                                              |
+|-------------|------------------------------------------------------------|
+| Project     | `projectEvents`                                            |
+| Environment | `projectEvents`, `environmentEvents`                       |
+| Component   | `projectEvents`                                            |
+| Instance    | `environmentEvents`, `instanceEvents`                      |
+| Deployment  | `environmentEvents`, `instanceEvents`, `deploymentEvents`  |
+"""
+type AlphaStashEntryEvent implements Event {
+  action: EventAction!
+
+  timestamp: DateTime!
+
+  "The project, environment, component, instance, or deployment that holds the entry."
+  scope: AlphaStashScopeRef!
+
+  "The entry's key."
+  key: String!
+
+  "The entry as it was set. Null when the action is `DELETED`, or when you do not have `stash:view` on the entity that holds the entry. Its value is always null when the entry is sensitive."
+  entry: AlphaStashEntry
+}
+
+"""
+Alpha: this API can change or be removed at any time, without notice.
+
+A stash entry was set or deleted. Events are keyed by `scope` and `key`. An entry that expires sends no
+event, so drop an entry when its `expiresAt` passes.
+"""
+type AlphaStashEvent {
+  "What happened to the entry."
+  action: AlphaStashEventAction!
+
+  "The project, environment, component, instance, or deployment that owns the entry."
+  scope: AlphaStashScopeRef!
+
+  "The entry's key."
+  key: String!
+
+  "The entry as it was set. Null when the action is `DELETED`. Its value is always null when the entry is sensitive. Query the entry to read a sensitive value."
+  entry: AlphaStashEntry
+
+  "When the event happened (UTC)."
+  timestamp: DateTime!
 }
 
 """
@@ -4013,36 +5066,40 @@ union OrganizationEventsPayload = ProjectEvent | OciRepoEvent | BundleEvent
 """
 Events delivered by the `projectEvents` subscription.
 
-Covers the project itself plus its blueprint (components, links) and the
-environments provisioned from it.
+Covers the project itself plus its blueprint (components, links), the
+environments provisioned from it, and the stash entries of the project, its
+components, and its environments.
 """
-union ProjectEventsPayload = ProjectEvent | EnvironmentEvent | ComponentEvent | LinkEvent
+union ProjectEventsPayload = ProjectEvent | EnvironmentEvent | ComponentEvent | LinkEvent | AlphaStashEntryEvent
 
 """
 Events delivered by the `environmentEvents` subscription.
 
 Covers the environment itself, its default resources, every instance
 provisioned into it, every connection wired within it, every alarm attached
-to those instances, and every deployment run against them.
+to those instances, every deployment run against them, and the stash entries
+of the environment, its instances, and their deployments.
 """
-union EnvironmentEventsPayload = EnvironmentEvent | EnvironmentDefaultEvent | InstanceEvent | ConnectionEvent | AlarmEvent | DeploymentEvent
+union EnvironmentEventsPayload = EnvironmentEvent | EnvironmentDefaultEvent | InstanceEvent | ConnectionEvent | AlarmEvent | DeploymentEvent | AlphaStashEntryEvent
 
 """
 Events delivered by the `instanceEvents` subscription.
 
 Covers the instance itself, incoming connections that terminate on it,
-alarms attached to it, and deployments run against it.
+alarms attached to it, deployments run against it, and the stash entries of
+the instance and its deployments.
 """
-union InstanceEventsPayload = InstanceEvent | ConnectionEvent | AlarmEvent | DeploymentEvent
+union InstanceEventsPayload = InstanceEvent | ConnectionEvent | AlarmEvent | DeploymentEvent | AlphaStashEntryEvent
 
 """
 Events delivered by the `deploymentEvents` subscription.
 
-A single-deployment feed. Fires on creation and every status transition.
+A single-deployment feed. Fires on creation, every status transition, and
+every change to the deployment's stash entries.
 For log content, subscribe to `deploymentLogs` — log deltas don't travel on
 this feed.
 """
-union DeploymentEventsPayload = DeploymentEvent
+union DeploymentEventsPayload = DeploymentEvent | AlphaStashEntryEvent
 
 """
 The thing a grant is sharing — exactly one of an OCI repo or a resource. The

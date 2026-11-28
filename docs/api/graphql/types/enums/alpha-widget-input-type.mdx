@@ -1,0 +1,96 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: alpha-widget-input-type
+title: AlphaWidgetInputType
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Alpha: this API can change or be removed at any time, without notice.
+
+The JSON type of a widget input's value.
+
+
+```graphql
+enum AlphaWidgetInputType {
+  STRING
+  NUMBER
+  INTEGER
+  BOOLEAN
+  ARRAY
+  OBJECT
+}
+```
+
+
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaWidgetInputType.<b>STRING</b></code>](#string) \{#string\} 
+A string.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaWidgetInputType.<b>NUMBER</b></code>](#number) \{#number\} 
+A number.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaWidgetInputType.<b>INTEGER</b></code>](#integer) \{#integer\} 
+A whole number.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaWidgetInputType.<b>BOOLEAN</b></code>](#boolean) \{#boolean\} 
+True or false.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaWidgetInputType.<b>ARRAY</b></code>](#array) \{#array\} 
+A list.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaWidgetInputType.<b>OBJECT</b></code>](#object) \{#object\} 
+A JSON object.
+
+
+
+
+
+
+### Member Of
+
+[`AlphaWidgetInput`](/api/graphql/types/objects/alpha-widget-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

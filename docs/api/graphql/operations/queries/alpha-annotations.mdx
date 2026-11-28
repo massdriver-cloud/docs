@@ -1,0 +1,100 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: alpha-annotations
+title: alphaAnnotations
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Alpha: this API can change or be removed at any time, without notice.
+
+List your annotations in a project, oldest first. Other users' annotations are not returned.
+
+You need `project:view` on the project. Service accounts cannot have annotations.
+
+```graphql
+query {
+  alphaAnnotations(
+    organizationId: "my-org"
+    filter: { projectId: "ecomm", entity: { instance: "ecomm-prod-database" } }
+  ) {
+    items {
+      id
+      kind
+      surfaces
+      template
+      entity { ... on Instance { id } }
+    }
+    cursor { next }
+  }
+}
+```
+
+
+```graphql
+alphaAnnotations(
+  organizationId: ID!
+  filter: AlphaAnnotationsFilter!
+  cursor: Cursor
+): AlphaAnnotationsPage
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>alphaAnnotations.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>alphaAnnotations.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AlphaAnnotationsFilter!</b></code>](/api/graphql/types/inputs/alpha-annotations-filter.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#filter\} 
+The project to list, and optional filters.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>alphaAnnotations.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#cursor\} 
+Pagination cursor returned by a previous page.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AlphaAnnotationsPage</b></code>](/api/graphql/types/objects/alpha-annotations-page.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Alpha: this API can change or be removed at any time, without notice.
+
+A page of AlphaAnnotation items.

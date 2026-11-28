@@ -39,7 +39,8 @@ visit(ast, {
     const uiSchema = getArgValue('ui');
 
     if (name && schema && uiSchema) {
-      formSchemaMutations[name] = { schema, uiSchema };
+      // The @inputs name drops the stability prefix (alphaSetStashEntry has name "setStashEntry"); the page file uses the field name.
+      formSchemaMutations[node.name.value] = { schema, uiSchema };
     }
   }
 });

@@ -1,0 +1,92 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: alpha-stash-event
+title: AlphaStashEvent
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Alpha: this API can change or be removed at any time, without notice.
+
+A stash entry was set or deleted. Events are keyed by `scope` and `key`. An entry that expires sends no
+event, so drop an entry when its `expiresAt` passes.
+
+
+```graphql
+type AlphaStashEvent {
+  action: AlphaStashEventAction!
+  scope: AlphaStashScopeRef!
+  key: String!
+  entry: AlphaStashEntry
+  timestamp: DateTime!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaStashEvent.<b>action</b></code>](#action)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AlphaStashEventAction!</b></code>](/api/graphql/types/enums/alpha-stash-event-action.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#action\} 
+What happened to the entry.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaStashEvent.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AlphaStashScopeRef!</b></code>](/api/graphql/types/objects/alpha-stash-scope-ref.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#scope\} 
+The project, environment, component, instance, or deployment that owns the entry.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaStashEvent.<b>key</b></code>](#key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#key\} 
+The entry's key.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaStashEvent.<b>entry</b></code>](#entry)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AlphaStashEntry</b></code>](/api/graphql/types/objects/alpha-stash-entry.mdx) <Badge class="badge badge--secondary " text="object"/> \{#entry\} 
+The entry as it was set. Null when the action is `DELETED`. Its value is always null when the entry is sensitive. Query the entry to read a sensitive value.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaStashEvent.<b>timestamp</b></code>](#timestamp)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#timestamp\} 
+When the event happened (UTC).
+
+
+
+
+
+
+### Returned By
+
+[`alphaStashEvents`](/api/graphql/operations/subscriptions/alpha-stash-events.mdx)  <Badge class="badge badge--secondary badge--relation" text="subscription"/>

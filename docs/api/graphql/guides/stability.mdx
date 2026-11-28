@@ -1,0 +1,47 @@
+---
+id: stability
+title: API Stability
+sidebar_label: API Stability
+description: What the alpha and beta prefixes on GraphQL API names mean.
+---
+
+# API Stability
+
+Each query, mutation, and type in the Massdriver GraphQL API has a stability level. The level is the first word of the name.
+
+| Level | Query or mutation | Type | Promise |
+|---|---|---|---|
+| alpha | `alphaStashEntry` | `AlphaStashEntry` | Can change or be removed at any time, without notice. |
+| beta | `betaStashEntry` | `BetaStashEntry` | The shape is settled. Breaking changes follow the beta rule below. |
+| stable | `stashEntry` | `StashEntry` | Normal deprecation. |
+
+Arguments, input fields, object fields, and enum values do not get the prefix.
+
+## Stable
+
+Stable APIs have no prefix. They follow the normal deprecation policy.
+
+## Alpha
+
+Names that start with `alpha` are alpha. We can change or remove them at any time, without notice. Do not build production workflows on them.
+
+## Beta
+
+Names that start with `beta` are beta. The shape is settled. We announce a breaking change in the changelog at least 30 days ahead. The old field or type stays, marked `@deprecated`, during those 30 days.
+
+## Well-known stash keys
+
+A well-known stash key has a version in the key, for example `md/v1/health`. A breaking change to the shape of a key's value ships as a new version next to the old one. The old version is removed only after the deprecation period of its stability level. A key without a version, such as `md/health`, is rejected.
+
+## Promotion
+
+When an alpha API becomes beta, it gets the beta name. The alpha name is removed at once.
+
+When a beta API becomes stable, it drops the prefix. The beta name stays, deprecated, for 30 days.
+
+## Notices
+
+The description of every alpha and beta query, mutation, and type starts with a notice that gives its level:
+
+- Alpha: "Alpha: this API can change or be removed at any time, without notice."
+- Beta: "Beta: breaking changes are announced in the changelog at least 30 days ahead; the old form stays, deprecated, for those 30 days."

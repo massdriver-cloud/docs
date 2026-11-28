@@ -1,0 +1,76 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: alpha-annotation-kind
+title: AlphaAnnotationKind
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Alpha: this API can change or be removed at any time, without notice.
+
+What an annotation shows.
+
+
+```graphql
+enum AlphaAnnotationKind {
+  NOTE
+  WIDGET
+}
+```
+
+
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaAnnotationKind.<b>NOTE</b></code>](#note) \{#note\} 
+A Liquid template that the Massdriver UI renders. Massdriver does not evaluate it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaAnnotationKind.<b>WIDGET</b></code>](#widget) \{#widget\} 
+One widget from `alphaWidgetCatalog`, with each of its inputs connected to a stash entry.
+
+
+
+
+
+
+### Member Of
+
+[`AlphaAnnotation`](/api/graphql/types/objects/alpha-annotation.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AlphaCreateAnnotationInput`](/api/graphql/types/inputs/alpha-create-annotation-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

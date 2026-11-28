@@ -1,0 +1,96 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: alpha-set-stash-entry-input
+title: AlphaSetStashEntryInput
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Alpha: this API can change or be removed at any time, without notice.
+
+Set the value of a key in a stash. Setting a key that has a value replaces the value and every other setting of the entry.
+
+
+```graphql
+input AlphaSetStashEntryInput {
+  format: AlphaStashFormat
+  immutable: Boolean
+  label: String
+  sensitive: Boolean
+  ttl: Int
+  value: String!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaSetStashEntryInput.<b>format</b></code>](#format)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AlphaStashFormat</b></code>](/api/graphql/types/enums/alpha-stash-format.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#format\} 
+TEXT stores any string. JSON requires a JSON object, and the entry's `data` field returns it parsed. Defaults to TEXT.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaSetStashEntryInput.<b>immutable</b></code>](#immutable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#immutable\} 
+When true, the key cannot be set again until the entry expires or is deleted. Setting an immutable entry fails if the key already has a value.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaSetStashEntryInput.<b>label</b></code>](#label)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#label\} 
+A human-readable name for the entry, shown in the Massdriver UI. Up to 255 characters. An empty label is the same as no label. The label is not encrypted and is shown even when the entry is sensitive, so do not put secrets in it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaSetStashEntryInput.<b>sensitive</b></code>](#sensitive)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#sensitive\} 
+When true, the value is encrypted and is returned only to callers who can change the stash.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaSetStashEntryInput.<b>ttl</b></code>](#ttl)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/api/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#ttl\} 
+Seconds until the entry expires. An expired entry is not returned and is deleted soon after. At most 315360000 (10 years). Leave empty to keep the entry until you delete it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaSetStashEntryInput.<b>value</b></code>](#value)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#value\} 
+The value to store. Massdriver returns it exactly as written. The size limit is 65536 bytes unless your installation sets another.
+
+
+
+
+
+
+### Member Of
+
+[`alphaSetStashEntry`](/api/graphql/operations/mutations/alpha-set-stash-entry.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

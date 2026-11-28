@@ -1,0 +1,93 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: alpha-ui-notices
+title: alphaUiNotices
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Alpha: this API can change or be removed at any time, without notice.
+
+List the UI notices you can see in your organization, newest first. A notice is a `md/v1/ui-ephemeral-notice`
+stash entry that Massdriver sets on a project when it is created, and on an environment when it is created.
+Its `data` has the shape of the `project.notice` and `environment.notice` widgets in `alphaWidgetCatalog`.
+
+You see the notices of the projects and environments where you have `stash:view`. Expired notices are not
+returned. Read this when a page opens, then subscribe to `alphaUiNotices` for new ones.
+
+```graphql
+query {
+  alphaUiNotices(organizationId: "my-org") {
+    items {
+      scope { kind id }
+      data
+      expiresAt
+    }
+    cursor { next }
+  }
+}
+```
+
+
+```graphql
+alphaUiNotices(
+  organizationId: ID!
+  cursor: Cursor
+): AlphaStashEntriesPage
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>alphaUiNotices.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>alphaUiNotices.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#cursor\} 
+Pagination cursor returned by a previous page.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AlphaStashEntriesPage</b></code>](/api/graphql/types/objects/alpha-stash-entries-page.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Alpha: this API can change or be removed at any time, without notice.
+
+A page of AlphaStashEntry items.

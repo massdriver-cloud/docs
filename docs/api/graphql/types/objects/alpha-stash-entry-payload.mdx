@@ -1,0 +1,81 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: alpha-stash-entry-payload
+title: AlphaStashEntryPayload
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Alpha: this API can change or be removed at any time, without notice.
+
+The result of a mutation on AlphaStashEntry.
+
+
+```graphql
+type AlphaStashEntryPayload {
+  successful: Boolean!
+  messages: [ValidationMessage]
+  result: AlphaStashEntry
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaStashEntryPayload.<b>successful</b></code>](#successful)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/api/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#successful\} 
+Indicates if the mutation completed successfully or not.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaStashEntryPayload.<b>messages</b></code>](#messages)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ValidationMessage]</b></code>](/api/graphql/types/objects/validation-message.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> \{#messages\} 
+A list of failed validations. May be blank or null if mutation succeeded.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaStashEntryPayload.<b>result</b></code>](#result)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AlphaStashEntry</b></code>](/api/graphql/types/objects/alpha-stash-entry.mdx) <Badge class="badge badge--secondary " text="object"/> \{#result\} 
+The object created/updated/deleted by the mutation. May be null if mutation failed.
+
+
+
+
+
+
+### Returned By
+
+[`alphaDeleteStashEntry`](/api/graphql/operations/mutations/alpha-delete-stash-entry.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`alphaSetStashEntry`](/api/graphql/operations/mutations/alpha-set-stash-entry.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

@@ -1,0 +1,114 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: alpha-widgets-for-scopes
+title: alphaWidgetsForScopes
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Alpha: this API can change or be removed at any time, without notice.
+
+List the widgets of several stashes at once. Pass the project, environments, components, instances, and
+deployments that you show, up to 200. Every scope must be in the same project. You need `stash:view` on
+every scope.
+
+A widget is returned for each well-known key that is set with a value that matches its schema. When a scope
+has more than one version of a widget's key, the widget is returned from the highest version. Expired keys
+are not returned. A page reads up to `limit` keys, so it can have fewer widgets than `limit`, or none. Keep
+reading pages until `cursor.next` is null. Subscribe to `alphaStashEvents` and read the widgets again when
+an `md/` key changes.
+
+An instance scope also returns the deployment results of the instance's latest deployment that has any
+well-known key, such as `md/v1/step/src` and `md/v1/cost_estimate`. The `scope` of each of those widgets
+is that deployment, and `rolledUpTo` is the instance. Any well-known key makes a deployment the latest one
+with results, including `md/v1/source` and `md/v1/state_lock`, which a run often sets when it starts. A
+newer deployment that has not set a well-known key yet does not hide the earlier results. A deployment
+scope returns the results of that deployment.
+
+```graphql
+query {
+  alphaWidgetsForScopes(
+    organizationId: "my-org"
+    scopes: [{ environment: "ecomm-prod" }, { instance: "ecomm-prod-database" }]
+  ) {
+    items {
+      name
+      scope { kind id }
+      rolledUpTo { kind id }
+      segments
+      values
+      expiresAt
+    }
+    cursor { next }
+  }
+}
+```
+
+
+```graphql
+alphaWidgetsForScopes(
+  organizationId: ID!
+  scopes: [AlphaStashScope!]!
+  cursor: Cursor
+): AlphaWidgetsPage
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>alphaWidgetsForScopes.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>alphaWidgetsForScopes.<b>scopes</b></code>](#scopes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[AlphaStashScope!]!</b></code>](/api/graphql/types/inputs/alpha-stash-scope.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#scopes\} 
+The stashes to read, from 1 to 200. Set exactly one field of each.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>alphaWidgetsForScopes.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Cursor</b></code>](/api/graphql/types/inputs/cursor.mdx) <Badge class="badge badge--secondary " text="input"/> \{#cursor\} 
+Pagination cursor returned by a previous page.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AlphaWidgetsPage</b></code>](/api/graphql/types/objects/alpha-widgets-page.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Alpha: this API can change or be removed at any time, without notice.
+
+A page of AlphaWidget items.

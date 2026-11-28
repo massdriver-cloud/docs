@@ -1,0 +1,81 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: alpha-update-annotation-input
+title: AlphaUpdateAnnotationInput
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Alpha: this API can change or be removed at any time, without notice.
+
+Change the surfaces, template, or inputs of one of your annotations. Fields you leave out keep their values. The kind and the entity cannot be changed.
+
+
+```graphql
+input AlphaUpdateAnnotationInput {
+  inputs: Map
+  surfaces: [String!]
+  template: String
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaUpdateAnnotationInput.<b>inputs</b></code>](#inputs)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#inputs\} 
+A JSON object that maps each input of the widget of a WIDGET annotation to a stash entry, and replaces every input. Use the input names from `alphaWidgetCatalog`, and set every required input. Each value has `source` (always `stash`), `scope` (one of `project`, `environment`, `component`, `instance`, or `deployment`, set to an ID in the annotation's project), `key`, and an optional `path` (a list of keys into a JSON entry's data).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaUpdateAnnotationInput.<b>surfaces</b></code>](#surfaces)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#surfaces\} 
+Where the Massdriver UI shows the annotation, from 1 to 8 surfaces. Each one is lowercase words joined by dots, up to 64 characters, and starts with the kind of entity the annotation is on, such as `instance.canvas_node`. An annotation on a component can also use `instance` surfaces. A WIDGET annotation has exactly one surface: the name of a widget, such as `instance.usage_bar`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaUpdateAnnotationInput.<b>template</b></code>](#template)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#template\} 
+The Liquid template to show on a NOTE annotation, up to 4096 bytes. Massdriver stores it as written and does not evaluate it.
+
+
+
+
+
+
+### Member Of
+
+[`alphaUpdateAnnotation`](/api/graphql/operations/mutations/alpha-update-annotation.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

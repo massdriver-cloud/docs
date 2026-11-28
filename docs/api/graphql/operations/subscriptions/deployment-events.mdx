@@ -92,6 +92,7 @@ The deployment's unique identifier.
 #### [<code style={{ fontWeight: 'normal' }}><b>DeploymentEventsPayload</b></code>](/api/graphql/types/unions/deployment-events-payload.mdx) <Badge class="badge badge--secondary " text="union"/> 
 Events delivered by the `deploymentEvents` subscription.
 
-A single-deployment feed. Fires on creation and every status transition.
+A single-deployment feed. Fires on creation, every status transition, and
+every change to the deployment's stash entries.
 For log content, subscribe to `deploymentLogs` — log deltas don't travel on
 this feed.

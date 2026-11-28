@@ -1,0 +1,76 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: alpha-stash-scope-ref
+title: AlphaStashScopeRef
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Alpha: this API can change or be removed at any time, without notice.
+
+The project, environment, component, instance, or deployment that owns a stash.
+
+
+```graphql
+type AlphaStashScopeRef {
+  kind: AlphaStashScopeKind!
+  id: ID!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaStashScopeRef.<b>kind</b></code>](#kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AlphaStashScopeKind!</b></code>](/api/graphql/types/enums/alpha-stash-scope-kind.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#kind\} 
+The kind of entity.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaStashScopeRef.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+The entity's ID, for example `ecomm-prod-database` for an instance. A deployment's ID is a UUID.
+
+
+
+
+
+
+### Member Of
+
+[`AlphaStashEntry`](/api/graphql/types/objects/alpha-stash-entry.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AlphaStashEntryEvent`](/api/graphql/types/objects/alpha-stash-entry-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AlphaStashEvent`](/api/graphql/types/objects/alpha-stash-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AlphaWidget`](/api/graphql/types/objects/alpha-widget.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

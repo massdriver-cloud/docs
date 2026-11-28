@@ -1,0 +1,127 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: alpha-stash-entry-event
+title: AlphaStashEntryEvent
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Alpha: this API can change or be removed at any time, without notice.
+
+A stash entry was set or deleted, sent to `projectEvents`, `environmentEvents`, `instanceEvents`, and
+`deploymentEvents` by the entity that holds the entry. The action is `UPDATED` when the entry is set and
+`DELETED` when it is deleted. An entry that expires sends no event.
+
+| Stash       | Subscriptions                                              |
+|-------------|------------------------------------------------------------|
+| Project     | `projectEvents`                                            |
+| Environment | `projectEvents`, `environmentEvents`                       |
+| Component   | `projectEvents`                                            |
+| Instance    | `environmentEvents`, `instanceEvents`                      |
+| Deployment  | `environmentEvents`, `instanceEvents`, `deploymentEvents`  |
+
+
+```graphql
+type AlphaStashEntryEvent implements Event {
+  action: EventAction!
+  timestamp: DateTime!
+  scope: AlphaStashScopeRef!
+  key: String!
+  entry: AlphaStashEntry
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaStashEntryEvent.<b>action</b></code>](#action)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EventAction!</b></code>](/api/graphql/types/enums/event-action.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#action\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaStashEntryEvent.<b>timestamp</b></code>](#timestamp)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/api/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#timestamp\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaStashEntryEvent.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AlphaStashScopeRef!</b></code>](/api/graphql/types/objects/alpha-stash-scope-ref.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#scope\} 
+The project, environment, component, instance, or deployment that holds the entry.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaStashEntryEvent.<b>key</b></code>](#key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#key\} 
+The entry's key.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaStashEntryEvent.<b>entry</b></code>](#entry)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AlphaStashEntry</b></code>](/api/graphql/types/objects/alpha-stash-entry.mdx) <Badge class="badge badge--secondary " text="object"/> \{#entry\} 
+The entry as it was set. Null when the action is `DELETED`, or when you do not have `stash:view` on the entity that holds the entry. Its value is always null when the entry is sensitive.
+
+
+### Interfaces
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Event</b></code>](/api/graphql/types/interfaces/event.mdx) <Badge class="badge badge--secondary " text="interface"/> 
+Base interface implemented by all lifecycle events.
+
+Every event carries an `action` describing what happened and a `timestamp` recording
+when it occurred. Concrete event types add a field for the affected resource.
+
+Because each subscription returns a union, use an `... on Event` fragment to
+access the shared fields and concrete fragments for the resource payload:
+
+```graphql
+subscription {
+  projectEvents(organizationId: "my-org", projectId: "my-project") {
+    ... on Event { action timestamp }
+    ... on ComponentEvent {
+      component { id name }
+    }
+    ... on LinkEvent {
+      link { id fromField toField }
+    }
+  }
+}
+```
+
+
+
+
+
+
+### Implemented By
+
+[`DeploymentEventsPayload`](/api/graphql/types/unions/deployment-events-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="union"/><Bullet />[`EnvironmentEventsPayload`](/api/graphql/types/unions/environment-events-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="union"/><Bullet />[`InstanceEventsPayload`](/api/graphql/types/unions/instance-events-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="union"/><Bullet />[`ProjectEventsPayload`](/api/graphql/types/unions/project-events-payload.mdx)  <Badge class="badge badge--secondary badge--relation" text="union"/>
