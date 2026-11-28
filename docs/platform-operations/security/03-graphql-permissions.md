@@ -266,12 +266,12 @@ Each stash action is checked on the entity that holds the entries: the project, 
 
 | Operation | Type | Required permission(s) | Notes |
 |---|---|---|---|
-| `organizationEvents` | Subscription | *no explicit gate* | Open to every org member. A project event for a project the member does not have `project:view` on arrives as `null`. |
+| `organizationEvents` | Subscription | *no explicit gate* | Open to every org member. A project event for a project the member does not have `project:view` on arrives as `null`. An OCI repository event, or a bundle event for a version published to that repository, arrives as `null` unless the member can see the repository: a `repo:view` policy, or a grant on the repository to a project they can view. |
 | `projectEvents` | Subscription | `project:view` | |
 | `environmentEvents` | Subscription | `project:view` | Inherits the surrounding project's view permission. |
-| `instanceEvents` | Subscription | `project:view` | |
-| `deploymentEvents` | Subscription | `project:view` | |
-| `deploymentLogs` | Subscription | `project:view` | Streams log lines for a single deployment. |
+| `instanceEvents` | Subscription | `project:view` | Checked again on each event against the instance's current project. After the instance moves to a project you cannot view, or after you lose `project:view`, each event arrives as `null`. |
+| `deploymentEvents` | Subscription | `project:view` | Checked again on each event against the current project of the deployment's instance. A failed check sends `null`. |
+| `deploymentLogs` | Subscription | `project:view` | Streams log lines for a single deployment. Checked again against the current project of the deployment's instance, and each result is reused for up to 30 seconds. A failed check sends `null`. |
 
 `projectEvents`, `environmentEvents`, `instanceEvents`, and `deploymentEvents` also send stash entry events. The `entry` of a stash entry event is null when you do not have `stash:view` on the entity that holds the entry.
 
