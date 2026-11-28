@@ -51,7 +51,7 @@ From top to bottom:
 | Map | The environment in focus and the environments around it. A banner from the stash runs across its top line. |
 | Side panel | The selected environment: its instances, alarms, deployments, banner, links, notes, neighbors, and blast radius, or the logs of a deployment you follow. It hides on terminals narrower than 90 columns. |
 | Ticker | The newest events from the audit log and the stash, newest first |
-| Footer | The keys for the tab you are on. Messages such as "✓ approved …" show here for a few seconds. |
+| Key line | The keys that do something where you are: on the tab, for the picked instance, for the selected deployment, or in the logs you follow. `?` lists every key. Messages such as "✓ approved …" show here for a few seconds. |
 
 ## Tabs
 

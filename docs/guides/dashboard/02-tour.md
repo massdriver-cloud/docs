@@ -29,9 +29,9 @@ The header counts what is in view. The map does not hold your whole organization
 mass dashboard --env billing-dev --depth 2
 ```
 
-Environments one hop past the edge show dimmed and labeled **🔭 out of view**. Environments you cannot view show as **no access**.
+Environments one hop past the edge show dimmed, with a 🔭 under the name. Environments you cannot view show as **no access**.
 
-Press `?` to see what each mark and color means in the side panel. Press `?` or `esc` to close it.
+The key line at the bottom shows only the keys that do something where you are. Press `?` to see every key, and what each mark and color means, in the side panel. Press `?` or `esc` to close it.
 
 ## 2. Move around
 
@@ -39,7 +39,7 @@ Press the arrow keys, or `h`, `j`, `k`, and `l`. The selection jumps to the near
 
 The side panel follows the selection. It lists the environment's instances with their health, firing alarms, running deployments, and deployments awaiting approval (`⏸`), then the environments it uses resources from and the ones it feeds, and its blast radius.
 
-Rest on an environment for a moment. It becomes the new focus. The map reads what is around it, every node glides to its new place, and environments that were out of view come into frame from the new focus. Select a 🔭 environment to bring it in. Press `enter` to move the focus at once.
+Rest on an environment for a moment. It becomes the new focus. The map reads what is around it, every node glides to its new place, and environments that were past the edge come into frame from the new focus. Select a 🔭 environment to bring it in. Press `enter` to move the focus at once.
 
 ## 3. Find an environment
 
@@ -63,6 +63,8 @@ Turn on more detail:
 | `c` | Each ring sized by last month's spend, and the spend under each name |
 | `g` | Project names colored by project, and each project's environments pulled together |
 | `s` | Producers stacked above the environments that use their resources |
+
+Each of these keys flips its toggle and shows where all five stand on the bottom line for a few seconds, such as `blast ●  ·  apps ○  ·  cost ○  ·  projects ○  ·  producers on top ○`.
 
 ## 5. Change how it looks
 
@@ -98,7 +100,7 @@ Open a second terminal and set a few [well-known keys](/guides/stash/well-known-
 mass stash set billing-dev-app.md/v1/health degraded
 ```
 
-A yellow line lands on the ticker, `billing-dev` ripples, and `md/v1/health` floats up out of it. In the side panel, the instance's dot turns amber.
+A yellow line lands on the ticker, `billing-dev` ripples, and a 📌 rises out of it. Start with `--flashes words` to see the key itself rise instead. In the side panel, the instance's dot turns amber.
 
 Give the instance some traffic:
 
@@ -141,13 +143,25 @@ The panel's heading names the instance, the action, and the status. Lines stream
 
 Streaming logs needs a personal access token. With a service account, the logs are read every 2 seconds instead.
 
+Scroll back through the logs:
+
+| Key | What it does |
+|---|---|
+| `pgup`, `ctrl+u` | Back a page |
+| `pgdown`, `ctrl+d` | Forward a page |
+| `shift+↑`, `shift+↓` | Back or forward a line |
+| `home` | Go to the first line |
+| `end`, `G` | Go to the newest line and follow it again |
+
+While you are scrolled back, the heading shows `↑ N lines back · end follows`, and new lines keep arriving without moving what you are reading.
+
 Press `f` or `esc` to close the logs. Moving the selection or switching tabs closes them too.
 
 ## 8. Approve and deploy from the map
 
 An instance in the side panel shows `⏸ awaiting approval` when it has a proposed deployment.
 
-1. Press `n` to pick the first instance in the side panel. Press `n` again for the next one, or `N` for the one before. The picked instance is highlighted.
+1. Press `n` to pick the first instance in the side panel. Press `n` again for the next one, or `N` for the one before. The picked instance is highlighted, and the key line shows what you can do with it: `y approve app` when it has a deployment awaiting approval, and `d deploy app` unless it is already deploying. Press `esc` to unpick it.
 2. Press `y` to approve the picked instance's deployment awaiting approval, or `d` to deploy it again with its current configuration.
 3. A box asks first. It names the instance and its environment, what you are about to do, and how many environments and instances depend on it downstream.
 4. Press `y` or `enter` to go ahead. Any other key cancels. When approving, press `c` first to see the deployment's configuration, then `esc` to come back to the box.
@@ -178,7 +192,7 @@ Press `y` to approve a deployment awaiting approval. The same box as on the map 
 
 Press `x` to reject one. Type a reason if you want one, up to 200 characters, and press `enter`. `esc` cancels. The deployment API takes no message for a rejection, so the reason is kept in the deployment's stash under `review/rejection`. If the reason cannot be saved, the deployment is still rejected and the footer says so.
 
-Only a deployment awaiting approval can be approved or rejected. `--read-only` turns off `y` and `x` here too.
+Only a deployment awaiting approval can be approved or rejected, so the key line shows `y` and `x` only when one is selected. `--read-only` turns off `y` and `x` here too.
 
 The other keys on this tab:
 
@@ -204,7 +218,7 @@ On either tab, press `enter` to show the selected row on the map with its blast 
 
 Press `1` to go back to the map, then press `t`. Pick how far back to go with `←` and `→`, from 5 minutes to 24 hours, and press `enter`.
 
-The audit log plays back onto the map in order. Each event ripples its environment and floats its name up. The ticker shows the time being replayed and a progress bar. Press `]` to speed up, `[` to slow down, and `space` to pause. Press `t` to stop.
+The audit log plays back onto the map in order. Each event ripples its environment and raises its flash, such as 🚀 for a deployment starting. The ticker shows the time being replayed and a progress bar. Press `]` to speed up, `[` to slow down, and `space` to pause. Press `t` to stop.
 
 A replay of any window finishes in under a minute at its starting speed.
 

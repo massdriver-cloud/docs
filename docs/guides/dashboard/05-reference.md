@@ -29,6 +29,7 @@ mass dashboard [flags]
 | `--watch` | Off | Jump to any alarm that starts firing in view, and send a desktop notification |
 | `--theme` | `constellation` | How the map is drawn: `constellation`, `metro`, `radar`, or `plain` |
 | `--palette` | `night` | Colors and backdrop: `night`, `rain`, or `blueprint` |
+| `--flashes` | `emoji` | What rises over an environment where something happens: `emoji`, `words`, or `off`. See [Flashes](/guides/dashboard/reading-the-map#flashes). |
 | `--render` | `braille` | How the map's dots are drawn: `braille` dots, or solid `blocks` for terminals that draw block characters themselves, such as Ghostty |
 | `--read-only` | Off | Turn off approving, rejecting, and deploying |
 | `--playback` | None | Replay an incident recording written with `w`, offline. Takes the path to the `.json` file. |
@@ -37,6 +38,8 @@ mass dashboard [flags]
 With `--playback`, only `--theme`, `--palette`, and `--render` apply. A playback reads nothing from Massdriver and is always read-only.
 
 ## Keys
+
+The key line at the bottom shows only the keys that do something where you are. `?` lists every key.
 
 ### Everywhere
 
@@ -48,8 +51,8 @@ With `--playback`, only `--theme`, `--palette`, and `--render` apply. A playback
 | `o` | Open the selection in the Massdriver web app: the environment on the map, the runtime on Runtimes, and the instance on Alarms, Upgrades, and Deployments |
 | `w` | Write up an incident: the one behind the selected alarm or environment, or else the most recent |
 | `r` | Read the organization again now |
-| `?` | Show or hide the help for the tab |
-| `esc` | Clear the search, close the help, close the logs, or put away an incident banner |
+| `?` | Show or hide the help for the tab, with every key |
+| `esc` | Clear the search, close the help, close the logs, unpick the picked instance, or put away an incident banner |
 | `q`, `ctrl+c` | Quit |
 
 ### Constellation
@@ -64,9 +67,24 @@ With `--playback`, only `--theme`, `--palette`, and `--render` apply. A playback
 | `d` | Deploy the picked instance again with its current configuration |
 | `t` | Replay the audit log |
 | `e` | Save the map as an SVG in the current directory |
-| `b` `a` `c` `g` `s` | Toggles. See [Reading the map](/guides/dashboard/reading-the-map#toggles). |
+| `b` `a` `c` `g` `s` | Toggles. Each shows all five on the key line for a few seconds. See [Reading the map](/guides/dashboard/reading-the-map#toggles). |
 | `v` | The next theme |
 | `p` | The next palette |
+
+### Logs
+
+While you follow a deployment's logs with `f`, on the map or the Deployments tab:
+
+| Key | What it does |
+|---|---|
+| `pgup`, `ctrl+u` | Back a page |
+| `pgdown`, `ctrl+d` | Forward a page |
+| `shift+↑`, `shift+↓` | Back or forward a line |
+| `home` | Go to the first line |
+| `end`, `G` | Go to the newest line and follow it again |
+| `f`, `esc` | Close the logs |
+
+While you are scrolled back, the heading shows `↑ N lines back · end follows`.
 
 ### Search
 
@@ -180,7 +198,7 @@ Massdriver Constellation reads one neighborhood at a time, so the size of your o
 |---|---|
 | Notes and pinned widgets are missing | The profile signs in as a service account. Use a profile with your personal access token. |
 | Stash changes and logs arrive a few seconds late | The profile signs in as a service account, so the stash is read every `--stash` interval and logs every 2 seconds. Use a profile with your personal access token to stream them. |
-| An environment shows as **🔭 out of view** | It is past `--depth`. Select it, or raise `--depth`. |
+| An environment shows a 🔭 | It is past `--depth`. Select it, or raise `--depth`. |
 | An environment shows as **no access** | You cannot view its project. |
 | A link says `stale` | Its traffic has not been reported for 10 minutes. |
 | No widgets show | Nothing in view has a well-known `md/` key. See [Well-known keys](/guides/stash/well-known-keys). |

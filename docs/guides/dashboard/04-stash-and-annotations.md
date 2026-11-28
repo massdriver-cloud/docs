@@ -36,7 +36,7 @@ Each read covers every stash in view, so a shorter interval costs more requests.
 
 ### On the map
 
-Each key that is set or deleted goes on the ticker in yellow, such as `stash set Billing / Development · md/v1/health = degraded`. Its environment ripples and floats up the key. A key that changes again replaces its own line on the ticker, so a script that writes every second does not fill the ticker.
+Each key that is set or deleted goes on the ticker in yellow, such as `stash set Billing / Development · md/v1/health = degraded`. Its environment ripples and raises 📌 for a key that is set or 🗑 for one that is deleted, or the key itself with `--flashes words`. A key that changes again replaces its own line on the ticker, so a script that writes every second does not fill the ticker.
 
 When a read fails for one project, that project keeps the entries from the last read that worked. Nothing is reported as deleted.
 

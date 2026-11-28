@@ -22,7 +22,7 @@ The map holds one neighborhood of your organization, not all of it:
 
 | Label | Meaning |
 |---|---|
-| **🔭 out of view** | One hop past the edge. An environment in view links to it. Select it to move the focus there and bring it into view. |
+| 🔭 | One hop past the edge. An environment in view links to it. Select it to move the focus there and bring it into view. |
 | **no access** | An instance in view uses a resource from this environment, but you cannot view the environment. |
 
 The focus moves when a selection rests for a moment, when you press `enter`, and when a search moves it. Every node glides from its old place to its new one, and the environments around the new focus come into frame.
@@ -36,10 +36,42 @@ The focus moves when a selection rests for a moment, when you press `enter`, and
 | Ring around an environment | The environment's instances by status, as arcs: green provisioned, red failed, blue not deployed, gray decommissioned |
 | Red pulse | An alarm is firing in the environment |
 | Comet around a ring | A provision or decommission is running or queued. A plan does not count. |
-| Ripple with floating text | Something just happened there: an audit log event or a stash change. The text is the event or the stash key. |
+| Ripple with a rising flash | Something just happened there: an audit log event or a stash change. See [Flashes](#flashes). |
 | Spinning white and teal halo | The selected environment |
 | Closing rings and crosshairs | `--watch` just took the view to a new alarm |
 | Twinkling stars, falling streams, or a grid | The palette's backdrop |
+
+## Flashes
+
+Where something happens, the environment ripples and a flash rises over it. By default the flash is an emoji:
+
+| Flash | What happened |
+|---|---|
+| 🚀 | A deployment started |
+| ✅ | A deployment completed, or an alarm cleared |
+| 💥 | A deployment failed |
+| 🛑 | A deployment was aborted |
+| 📝 | A deployment was proposed |
+| 👍 | A deployment was approved |
+| 👎 | A deployment was rejected |
+| 🚨 | An alarm fired |
+| 📌 | A stash key was set |
+| 🗑 | A stash key was deleted |
+| 🛠 | An instance changed |
+| 🌍 | An environment or project changed |
+| ✨ | Anything else |
+
+`--flashes` chooses what rises:
+
+| Value | Flash |
+|---|---|
+| `emoji` | The emoji for the event. The default. |
+| `words` | The event, or the stash key that changed |
+| `off` | Nothing. The ripple still shows. |
+
+```bash
+mass dashboard --flashes words
+```
 
 ## Lines
 
@@ -92,7 +124,7 @@ In `plain`, each project is a heading in its own color, and each environment is 
 | On a `plain` line | Meaning |
 |---|---|
 | Spinning blue dot | A deployment is running |
-| `🔭` and **out of view** | One hop past the edge |
+| 🔭 in place of the dot | One hop past the edge |
 | `◌` and **no access** | You cannot view the environment |
 | `▲ N alarming` | N alarms firing |
 | `⟳ N deploying` | N instances deploying |
@@ -134,4 +166,4 @@ mass dashboard --render blocks
 | `v` | The next theme |
 | `p` | The next palette |
 
-The footer shows each toggle with `●` when it is on and `○` when it is off.
+Pressing `b`, `a`, `c`, `g`, or `s` shows all five toggles on the bottom line for a few seconds, each with `●` when it is on and `○` when it is off.
