@@ -51,8 +51,11 @@ Where a dependency wire-in comes from.
 - `EnvironmentDefault` — no explicit wire was set, so the slot is filled
   from the environment's default for this resource type.
 
-Per-instance `RemoteReference` overrides take priority over blueprint
-`Connection`s, which take priority over `EnvironmentDefault`s.
+For a dependency that takes one resource, per-instance `RemoteReference`
+overrides take priority over blueprint `Connection`s, which take priority over
+`EnvironmentDefault`s. A dependency that takes many resources gets a resource
+from every `RemoteReference` and `Connection` into it, and never from an
+`EnvironmentDefault`.
 
 
 ```graphql

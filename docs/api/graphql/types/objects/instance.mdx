@@ -82,6 +82,9 @@ type Instance {
   operatorGuide: String
   attributes: Map!
   effectiveAttributes: Map!
+  groupAllowedActions(
+    groupId: UUID!
+  ): [String!]!
   version: VersionConstraint!
   releaseStrategy: ReleaseStrategy!
   createdAt: DateTime!
@@ -195,6 +198,21 @@ System attributes always present on an instance:
 - `md-component` — the component's local identifier
 - `md-repo` — the bundle's repo name
 - `md-bundle` — `"{bundle}@{version}"` of the resolved release
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Instance.<b>groupAllowedActions</b></code>](#group-allowed-actions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#group-allowed-actions\} 
+The `project:*`, `environment:*`, and `instance:*` actions that the given
+group's policies allow on this instance, as `entity:verb` ids sorted
+alphabetically. `environment:*` actions are decided against the instance's
+environment.
+
+Only that group's policies count, as they would for an account in no other
+group, and a matching deny policy removes the action. Returns a `NOT_FOUND`
+error when the group is not in this organization.
+
+Requires the `organization:manageGroups` action.
+##### [<code style={{ fontWeight: 'normal' }}>Instance.groupAllowedActions.<b>groupId</b></code>](#instance-group-allowed-actions-group-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UUID!</b></code>](/api/graphql/types/scalars/uuid.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#instance-group-allowed-actions-group-id\} 
+The group whose policies are evaluated.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Instance.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>VersionConstraint!</b></code>](/api/graphql/types/scalars/version-constraint.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version\} 
@@ -324,10 +342,11 @@ Pagination cursor returned by a previous page.
 #### [<code style={{ fontWeight: 'normal' }}>Instance.<b>dependencies</b></code>](#dependencies)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[InstanceDependency!]!</b></code>](/api/graphql/types/objects/instance-dependency.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#dependencies\} 
 Dependencies wired into this instance's bundle slots, sorted alphabetically by field.
 
-Each entry is one filled slot from the bundle's `connections_schema` along
-with the source object that filled it — a blueprint `Connection`, a
+Each entry is one resource wired into a slot from the bundle's dependencies,
+along with the source object that wired it — a blueprint `Connection`, a
 per-instance `RemoteReference`, or an `EnvironmentDefault` from the
-environment. Unfilled slots are not included.
+environment. A slot with cardinality `MANY` has one entry for each resource
+in its set, sorted by resource ID. Unfilled slots are not included.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Instance.<b>changedDependencies</b></code>](#changed-dependencies)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#changed-dependencies\} 
