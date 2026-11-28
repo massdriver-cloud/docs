@@ -42,7 +42,7 @@ export const Details = ({ dataOpen, dataClose, children, startOpen = false }) =>
 
 
 
-Aggregated cloud-provider cost metrics for a project or environment.
+Aggregated cloud-provider cost metrics for a project, environment, or instance.
 
 Cost data is sourced from your cloud provider's billing APIs and refreshed periodically.
 Each metric is a `CostSample` containing an amount and currency. All four metrics are
@@ -54,6 +54,10 @@ not yet been ingested.
 - **last_day** -- Total spend for the most recent 24-hour period.
 - **daily_average** -- Average daily spend over the last 7 days.
 
+Spend in different currencies is never converted or added together. `byCurrency` lists the
+metrics for each currency. The four top-level metrics are the first `byCurrency` entry: the
+currency with the largest last month total.
+
 
 ```graphql
 type CostSummary {
@@ -61,6 +65,7 @@ type CostSummary {
   monthlyAverage: CostSample!
   lastDay: CostSample!
   dailyAverage: CostSample!
+  byCurrency: [CostCurrencySummary!]!
 }
 ```
 
@@ -70,19 +75,23 @@ type CostSummary {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>CostSummary.<b>lastMonth</b></code>](#last-month)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CostSample!</b></code>](/api/graphql/types/objects/cost-sample.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#last-month\} 
-Total cost for the most recent complete billing cycle.
+Total cost for the most recent complete billing cycle, in the currency with the largest last month total.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CostSummary.<b>monthlyAverage</b></code>](#monthly-average)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CostSample!</b></code>](/api/graphql/types/objects/cost-sample.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#monthly-average\} 
-Average monthly cost across all available billing cycles.
+Average monthly cost across all available billing cycles, in the currency with the largest last month total.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CostSummary.<b>lastDay</b></code>](#last-day)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CostSample!</b></code>](/api/graphql/types/objects/cost-sample.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#last-day\} 
-Total cost for the most recent 24-hour period.
+Total cost for the most recent 24-hour period, in the currency with the largest last month total.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CostSummary.<b>dailyAverage</b></code>](#daily-average)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CostSample!</b></code>](/api/graphql/types/objects/cost-sample.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#daily-average\} 
-Average daily cost over the last 7 days.
+Average daily cost over the last 7 days, in the currency with the largest last month total.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CostSummary.<b>byCurrency</b></code>](#by-currency)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CostCurrencySummary!]!</b></code>](/api/graphql/types/objects/cost-currency-summary.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#by-currency\} 
+Cost metrics for each currency this spend is billed in. Sorted by the largest last month total first, then by currency code. A currency with no last month total sorts after those that have one. Empty when no billing data is available.
 
 
 

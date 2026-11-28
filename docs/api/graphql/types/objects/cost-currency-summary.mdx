@@ -1,0 +1,92 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: cost-currency-summary
+title: CostCurrencySummary
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Cloud-provider cost metrics in one currency.
+
+Amounts in different currencies are never converted or added together. Each sample's
+`currency` matches this entry's `currency`, or is null when that sample has no billing data.
+
+
+```graphql
+type CostCurrencySummary {
+  currency: String!
+  lastMonth: CostSample!
+  monthlyAverage: CostSample!
+  lastDay: CostSample!
+  dailyAverage: CostSample!
+}
+```
+
+
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CostCurrencySummary.<b>currency</b></code>](#currency)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#currency\} 
+ISO 4217 currency code for every sample in this entry (e.g., `USD`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CostCurrencySummary.<b>lastMonth</b></code>](#last-month)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CostSample!</b></code>](/api/graphql/types/objects/cost-sample.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#last-month\} 
+Total cost in this currency for the most recent complete billing cycle.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CostCurrencySummary.<b>monthlyAverage</b></code>](#monthly-average)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CostSample!</b></code>](/api/graphql/types/objects/cost-sample.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#monthly-average\} 
+Average monthly cost in this currency across all available billing cycles.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CostCurrencySummary.<b>lastDay</b></code>](#last-day)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CostSample!</b></code>](/api/graphql/types/objects/cost-sample.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#last-day\} 
+Total cost in this currency for the most recent 24-hour period.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CostCurrencySummary.<b>dailyAverage</b></code>](#daily-average)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CostSample!</b></code>](/api/graphql/types/objects/cost-sample.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#daily-average\} 
+Average daily cost in this currency over the last 7 days.
+
+
+
+
+
+
+### Member Of
+
+[`CostSummary`](/api/graphql/types/objects/cost-summary.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

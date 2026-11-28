@@ -12254,7 +12254,30 @@ type CostSample {
 }
 
 """
-Aggregated cloud-provider cost metrics for a project or environment.
+Cloud-provider cost metrics in one currency.
+
+Amounts in different currencies are never converted or added together. Each sample's
+`currency` matches this entry's `currency`, or is null when that sample has no billing data.
+"""
+type CostCurrencySummary {
+  "ISO 4217 currency code for every sample in this entry (e.g., `USD`)."
+  currency: String!
+
+  "Total cost in this currency for the most recent complete billing cycle."
+  lastMonth: CostSample!
+
+  "Average monthly cost in this currency across all available billing cycles."
+  monthlyAverage: CostSample!
+
+  "Total cost in this currency for the most recent 24-hour period."
+  lastDay: CostSample!
+
+  "Average daily cost in this currency over the last 7 days."
+  dailyAverage: CostSample!
+}
+
+"""
+Aggregated cloud-provider cost metrics for a project, environment, or instance.
 
 Cost data is sourced from your cloud provider's billing APIs and refreshed periodically.
 Each metric is a `CostSample` containing an amount and currency. All four metrics are
@@ -12265,19 +12288,26 @@ not yet been ingested.
 - **monthly_average** -- Average monthly spend across all available billing cycles.
 - **last_day** -- Total spend for the most recent 24-hour period.
 - **daily_average** -- Average daily spend over the last 7 days.
+
+Spend in different currencies is never converted or added together. `byCurrency` lists the
+metrics for each currency. The four top-level metrics are the first `byCurrency` entry: the
+currency with the largest last month total.
 """
 type CostSummary {
-  "Total cost for the most recent complete billing cycle."
+  "Total cost for the most recent complete billing cycle, in the currency with the largest last month total."
   lastMonth: CostSample!
 
-  "Average monthly cost across all available billing cycles."
+  "Average monthly cost across all available billing cycles, in the currency with the largest last month total."
   monthlyAverage: CostSample!
 
-  "Total cost for the most recent 24-hour period."
+  "Total cost for the most recent 24-hour period, in the currency with the largest last month total."
   lastDay: CostSample!
 
-  "Average daily cost over the last 7 days."
+  "Average daily cost over the last 7 days, in the currency with the largest last month total."
   dailyAverage: CostSample!
+
+  "Cost metrics for each currency this spend is billed in. Sorted by the largest last month total first, then by currency code. A currency with no last month total sorts after those that have one. Empty when no billing data is available."
+  byCurrency: [CostCurrencySummary!]!
 }
 
 """
