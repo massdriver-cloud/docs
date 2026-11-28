@@ -1668,6 +1668,7 @@ type RootQueryType {
       entity
       version
       key
+      keySegments
       scope
       format
       schema
@@ -1688,8 +1689,15 @@ type RootQueryType {
   A widget is returned for each well-known key that is set with a value that matches its schema. When a scope
   has more than one version of a widget's key, the widget is returned from the highest version. Expired keys
   are not returned. A page reads up to `limit` keys, so it can have fewer widgets than `limit`, or none. Keep
-  reading pages until `cursor.next` is null. Subscribe to
-  `alphaStashEvents` and read the widgets again when an `md/` key changes.
+  reading pages until `cursor.next` is null. Subscribe to `alphaStashEvents` and read the widgets again when
+  an `md/` key changes.
+
+  An instance scope also returns the deployment results of the instance's latest deployment that has any
+  well-known key, such as `md/v1/step/src` and `md/v1/cost_estimate`. The `scope` of each of those widgets
+  is that deployment, and `rolledUpTo` is the instance. Any well-known key makes a deployment the latest one
+  with results, including `md/v1/source` and `md/v1/state_lock`, which a run often sets when it starts. A
+  newer deployment that has not set a well-known key yet does not hide the earlier results. A deployment
+  scope returns the results of that deployment.
 
   ```graphql
   query {
@@ -1700,6 +1708,8 @@ type RootQueryType {
       items {
         name
         scope { kind id }
+        rolledUpTo { kind id }
+        segments
         values
         expiresAt
       }
@@ -1718,6 +1728,37 @@ type RootQueryType {
     "Pagination cursor returned by a previous page."
     cursor: Cursor
   ): AlphaWidgetsPage
+
+  """
+  Alpha: this API can change or be removed at any time, without notice.
+
+  List the UI notices you can see in your organization, newest first. A notice is a `md/v1/ui-ephemeral-notice`
+  stash entry that Massdriver sets on a project when it is created, and on an environment when it is created.
+  Its `data` has the shape of the `project.notice` and `environment.notice` widgets in `alphaWidgetCatalog`.
+
+  You see the notices of the projects and environments where you have `stash:view`. Expired notices are not
+  returned. Read this when a page opens, then subscribe to `alphaUiNotices` for new ones.
+
+  ```graphql
+  query {
+    alphaUiNotices(organizationId: "my-org") {
+      items {
+        scope { kind id }
+        data
+        expiresAt
+      }
+      cursor { next }
+    }
+  }
+  ```
+  """
+  alphaUiNotices(
+    "Your organization's unique identifier."
+    organizationId: ID!
+
+    "Pagination cursor returned by a previous page."
+    cursor: Cursor
+  ): AlphaStashEntriesPage
 }
 
 type RootSubscriptionType {
@@ -1954,6 +1995,31 @@ type RootSubscriptionType {
     "An environment ID in the project, for example `ecomm-prod`. Adds events for the environment's instances and their deployments."
     environmentId: ID
   ): AlphaStashEvent
+
+  """
+  Alpha: this API can change or be removed at any time, without notice.
+
+  Subscribe to the UI notices you can see in your organization, as Massdriver sets them. One subscription
+  covers every project and environment where you have `stash:view`, including the ones created after you
+  subscribe. You do not get a notice about a project or environment where you do not have `stash:view`.
+
+  A notice is an `md/v1/ui-ephemeral-notice` stash entry. Drop it when its `expiresAt` passes: an expiry sends
+  no event.
+
+  ```graphql
+  subscription {
+    alphaUiNotices(organizationId: "my-org") {
+      scope { kind id }
+      data
+      expiresAt
+    }
+  }
+  ```
+  """
+  alphaUiNotices(
+    "Your organization's unique identifier."
+    organizationId: ID!
+  ): AlphaStashEntry
 }
 
 type RootMutationType {
@@ -3927,8 +3993,9 @@ type RootMutationType {
   its maximum number of keys (1000 unless your installation sets another).
 
   Keys that start with `md/` are well-known keys that drive the widgets in `alphaWidgetCatalog`, for example
-  `md/v1/health`. Each one can be set only on its kind of entity, with its format, and with a value that
-  matches its schema. An `md/` key that is not in the catalog is rejected. An `md/` entry cannot be sensitive.
+  `md/v1/health` or `md/v1/step/src`. Each one can be set only on its kind of entity, with its format, and
+  with a value that matches its schema. An `md/` key that is not in the catalog is rejected. An `md/` entry
+  cannot be sensitive.
 
   ```graphql
   mutation {
@@ -4125,8 +4192,14 @@ enum AlphaWidgetInputType {
   "A whole number."
   INTEGER
 
+  "True or false."
+  BOOLEAN
+
   "A list."
   ARRAY
+
+  "A JSON object."
+  OBJECT
 }
 
 """
@@ -4175,8 +4248,14 @@ type AlphaWidgetDefinition {
   "The version of the well-known key's shape, for example `1`."
   version: Int!
 
-  "The well-known stash key, for example `md\/v1\/usage`."
+  "The well-known stash key, for example `md\/v1\/usage`, or a key pattern with named segments in braces, for example `md\/v1\/step\/{step}`. A key such as `md\/v1\/step\/src` matches the pattern. A segment is 1 to 63 lowercase letters, digits, `_`, and `-`, and starts with a letter or digit."
   key: String!
+
+  "The names of the segments in `key`, for example `[\"step\"]` for `md\/v1\/step\/{step}`. Empty for a fixed key."
+  keySegments: [String!]!
+
+  "The only values that a segment can have, by segment name, for example `{\"egg\": [\"xmas\"]}` for `md\/v1\/eggs\/{egg}`. A segment that is not listed can be any value that follows the segment rule in `key`."
+  segmentValues: Map!
 
   "The kind of entity whose stash holds the key. A `link.traffic` widget reads the key on the instance that sends the traffic, and shows on the lines that leave that instance."
   scope: AlphaStashScopeKind!
@@ -4200,8 +4279,14 @@ type AlphaWidget {
   "The widget's name, for example `instance.usage_bar`."
   name: String!
 
-  "The entity whose stash has the key. For a `link.traffic` widget, this is the instance that sends the traffic, and the widget shows on the lines that leave it."
+  "The entity whose stash has the key. For a `link.traffic` widget, this is the instance that sends the traffic, and the widget shows on the lines that leave it. For a deployment result read through an instance, this is the deployment that the result came from."
   scope: AlphaStashScopeRef!
+
+  "The instance whose latest deployment results include this widget, when the widget is a deployment result returned for an instance scope. Null for every other widget, such as a result read only through its deployment scope."
+  rolledUpTo: AlphaStashScopeRef
+
+  "The values of the key's named segments, by name, for example `{\"step\": \"src\"}` for the key `md\/v1\/step\/src`. Empty for a fixed key."
+  segments: Map!
 
   "The widget's input values, by input name, for example `{\"value\": 42, \"max\": 100}`. An optional input that the key's value does not set is left out."
   values: Map!

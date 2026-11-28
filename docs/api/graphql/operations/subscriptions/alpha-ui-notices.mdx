@@ -1,0 +1,86 @@
+---
+pagination_next: null
+pagination_prev: null
+hide_table_of_contents: true
+id: alpha-ui-notices
+title: alphaUiNotices
+---
+
+
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+import { useState } from 'react';
+
+export const Details = ({ dataOpen, dataClose, children, startOpen = false }) => {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <details {...(open ? { open: true } : {})} className="details" style={{ border:'none', boxShadow:'none', background:'var(--ifm-background-color)' }}>
+      <summary
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((open) => !open);
+        }}
+        style={{ listStyle:'none' }}
+      >
+      {open ? dataOpen : dataClose}
+      </summary>
+      {open && children}
+    </details>
+  );
+};
+
+
+
+
+
+
+
+
+Alpha: this API can change or be removed at any time, without notice.
+
+Subscribe to the UI notices you can see in your organization, as Massdriver sets them. One subscription
+covers every project and environment where you have `stash:view`, including the ones created after you
+subscribe. You do not get a notice about a project or environment where you do not have `stash:view`.
+
+A notice is an `md/v1/ui-ephemeral-notice` stash entry. Drop it when its `expiresAt` passes: an expiry sends
+no event.
+
+```graphql
+subscription {
+  alphaUiNotices(organizationId: "my-org") {
+    scope { kind id }
+    data
+    expiresAt
+  }
+}
+```
+
+
+```graphql
+alphaUiNotices(
+  organizationId: ID!
+): AlphaStashEntry
+```
+
+
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>alphaUiNotices.<b>organizationId</b></code>](#organization-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/api/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#organization-id\} 
+Your organization's unique identifier.
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AlphaStashEntry</b></code>](/api/graphql/types/objects/alpha-stash-entry.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Alpha: this API can change or be removed at any time, without notice.
+
+A key and value stored on a project, environment, component, instance, or deployment. Massdriver stores the
+value and returns it as written. It does not read the value or act on it.

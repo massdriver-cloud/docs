@@ -57,8 +57,9 @@ The mutation fails when the key has an immutable entry that has not expired, or 
 its maximum number of keys (1000 unless your installation sets another).
 
 Keys that start with `md/` are well-known keys that drive the widgets in `alphaWidgetCatalog`, for example
-`md/v1/health`. Each one can be set only on its kind of entity, with its format, and with a value that
-matches its schema. An `md/` key that is not in the catalog is rejected. An `md/` entry cannot be sensitive.
+`md/v1/health` or `md/v1/step/src`. Each one can be set only on its kind of entity, with its format, and
+with a value that matches its schema. An `md/` key that is not in the catalog is rejected. An `md/` entry
+cannot be sensitive.
 
 ```graphql
 mutation {

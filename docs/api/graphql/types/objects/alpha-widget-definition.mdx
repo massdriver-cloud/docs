@@ -60,6 +60,8 @@ type AlphaWidgetDefinition {
   entity: AlphaWidgetEntityKind!
   version: Int!
   key: String!
+  keySegments: [String!]!
+  segmentValues: Map!
   scope: AlphaStashScopeKind!
   format: AlphaStashFormat!
   schema: Map!
@@ -89,7 +91,15 @@ The version of the well-known key's shape, for example `1`.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AlphaWidgetDefinition.<b>key</b></code>](#key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#key\} 
-The well-known stash key, for example `md/v1/usage`.
+The well-known stash key, for example `md/v1/usage`, or a key pattern with named segments in braces, for example `md/v1/step/{step}`. A key such as `md/v1/step/src` matches the pattern. A segment is 1 to 63 lowercase letters, digits, `_`, and `-`, and starts with a letter or digit.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaWidgetDefinition.<b>keySegments</b></code>](#key-segments)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/api/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#key-segments\} 
+The names of the segments in `key`, for example `["step"]` for `md/v1/step/{step}`. Empty for a fixed key.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AlphaWidgetDefinition.<b>segmentValues</b></code>](#segment-values)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Map!</b></code>](/api/graphql/types/scalars/map.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#segment-values\} 
+The only values that a segment can have, by segment name, for example `{"egg": ["xmas"]}` for `md/v1/eggs/{egg}`. A segment that is not listed can be any value that follows the segment rule in `key`.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AlphaWidgetDefinition.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AlphaStashScopeKind!</b></code>](/api/graphql/types/enums/alpha-stash-scope-kind.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#scope\} 

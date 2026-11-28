@@ -51,8 +51,15 @@ every scope.
 A widget is returned for each well-known key that is set with a value that matches its schema. When a scope
 has more than one version of a widget's key, the widget is returned from the highest version. Expired keys
 are not returned. A page reads up to `limit` keys, so it can have fewer widgets than `limit`, or none. Keep
-reading pages until `cursor.next` is null. Subscribe to
-`alphaStashEvents` and read the widgets again when an `md/` key changes.
+reading pages until `cursor.next` is null. Subscribe to `alphaStashEvents` and read the widgets again when
+an `md/` key changes.
+
+An instance scope also returns the deployment results of the instance's latest deployment that has any
+well-known key, such as `md/v1/step/src` and `md/v1/cost_estimate`. The `scope` of each of those widgets
+is that deployment, and `rolledUpTo` is the instance. Any well-known key makes a deployment the latest one
+with results, including `md/v1/source` and `md/v1/state_lock`, which a run often sets when it starts. A
+newer deployment that has not set a well-known key yet does not hide the earlier results. A deployment
+scope returns the results of that deployment.
 
 ```graphql
 query {
@@ -63,6 +70,8 @@ query {
     items {
       name
       scope { kind id }
+      rolledUpTo { kind id }
+      segments
       values
       expiresAt
     }
