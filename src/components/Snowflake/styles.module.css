@@ -1,0 +1,87 @@
+.root {
+  position: relative;
+  margin: 1.5rem 0;
+}
+
+.button {
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: 0.75rem;
+  line-height: 1;
+  color: var(--ifm-color-emphasis-400);
+  cursor: default;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: 2px;
+}
+
+.hidden {
+  margin-top: 1rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 6px;
+  background: var(--ifm-background-surface-color);
+  animation: reveal 600ms ease-out both;
+}
+
+.title {
+  margin-bottom: 0.5rem;
+}
+
+.code {
+  margin: 0.75rem 0;
+}
+
+.flurry {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.flake {
+  position: absolute;
+  top: -1rem;
+  color: #7dd3fc;
+  font-size: 0.9rem;
+  opacity: 0;
+  animation: fall 1.8s ease-in forwards;
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(16rem) rotate(180deg);
+    opacity: 0;
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flurry {
+    display: none;
+  }
+
+  .hidden {
+    animation: none;
+  }
+}

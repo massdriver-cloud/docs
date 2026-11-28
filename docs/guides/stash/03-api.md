@@ -137,7 +137,7 @@ query {
 }
 ```
 
-`keySegments` names the segments in a pattern key, such as `["step"]` for `md/v1/step/{step}`. `segmentValues` lists the only values that a segment can have, such as `{"egg": ["xmas"]}` for `md/v1/eggs/{egg}`.
+`keySegments` names the segments in a pattern key, such as `["step"]` for `md/v1/step/{step}`. `segmentValues` lists, by segment name, the only values that a segment can have. A segment that is not in `segmentValues` can be any value that follows the segment rule.
 
 ## alphaWidgetsForScopes
 

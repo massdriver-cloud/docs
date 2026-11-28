@@ -11,6 +11,7 @@ import {
   SeverityBarState,
   ProblemBadgeState,
 } from "@site/src/components/Annotations";
+import Snowflake from "@site/src/components/Snowflake";
 
 # Well-Known Keys
 
@@ -22,7 +23,7 @@ Keys that start with `md/` are reserved. There are two groups:
 
 - **Widget keys** on instances and environments. The UI shows each one as a [widget](/guides/annotations/widgets) to everyone with `stash:view` on the stash.
 - **[Deployment results](#deployment-results)** that a provisioner writes while a deployment runs.
-- **[UI keys](#ui-keys)** for notices and seasonal decorations on projects and environments.
+- **[UI keys](#ui-keys)** for notices on projects and environments.
 
 | Key | Set on | Format | Widget |
 |---|---|---|---|
@@ -36,7 +37,7 @@ The server rejects a write to an `md/` key when:
 
 - The key is not a key on this page. This includes a key without a version, such as `md/health`. The error names the key to use, such as `md/v1/health`.
 - The key is set on the wrong kind of entity.
-- A segment of the key is not one of its allowed values, such as an egg other than `xmas`.
+- A segment of the key is not one of its allowed values.
 - The format is not the one in the table.
 - The value does not match the key's schema.
 - The entry is sensitive.
@@ -788,31 +789,4 @@ Massdriver writes this key. When a project is created, Massdriver sets it on the
 
 The [`alphaUiNotices`](/guides/stash/api#alphauinotices) query and subscription return these notices.
 
-### `md/v1/eggs/<egg>`
-
-Turns a seasonal decoration on or off in a project. Set on a project. Format: TEXT. Widget name: `project.egg`. The only egg is `xmas`.
-
-```json
-{egg} | scope=project | entity=project | format=text
-DESC: Turns a seasonal easter egg on or off in a project. The `egg` segment names the easter egg.
-INPUT: state | string | true | `on` or `off`.
-{
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.massdriver.cloud/stash/md/v1/eggs.json",
-  "enum": ["on", "off"]
-}
-```
-
-| Value | Meaning |
-|---|---|
-| `on` | The decoration shows. |
-| `off` | The decoration does not show. |
-
-```bash
-mass alpha stash set billing.md/v1/eggs/xmas on
-```
-
-**In the UI.** When `md/v1/eggs/xmas` is `on`, the environment canvas shows colored lights along the top edge of each instance node, light snow over the canvas background, and a small wreath in the top-right corner. The decorations do not change the size or layout of the nodes. When your system asks for reduced motion, the lights do not twinkle and there is no snow. The **Widgets** button in the canvas toolbar hides the decorations.
-
-An egg key with a value other than `xmas` is rejected. The error lists the allowed values.
-
+<Snowflake />
