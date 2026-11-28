@@ -11,19 +11,7 @@ sidebar_label: Recipes
 This feature is alpha. Names, fields, and behavior can change or be removed at any time without notice.
 :::
 
-These recipes use the [`mass alpha stash` commands](/guides/stash/cli). In a provisioner, `MASSDRIVER_DEPLOYMENT_ID` holds the deployment's UUID.
-
-## Pass a value between deployment steps
-
-One step writes a value to the deployment's stash. A later step reads it.
-
-```bash
-# Step 1
-mass alpha stash set "$MASSDRIVER_DEPLOYMENT_ID.db/hostname" "$DB_HOST"
-
-# Step 2
-DB_HOST=$(mass alpha stash get "$MASSDRIVER_DEPLOYMENT_ID.db/hostname")
-```
+These recipes use the [`mass alpha stash` commands](/guides/stash/cli). In a provisioner, `MASSDRIVER_DEPLOYMENT_ID` holds the deployment's UUID. For short examples, such as passing a value between steps, keeping a value for a set time, and running a step once, see [Use cases](/guides/stash#use-cases).
 
 ## Record deployment stats
 
@@ -35,38 +23,15 @@ mass alpha stash set "$MASSDRIVER_DEPLOYMENT_ID.stats" \
   --format json --label "Deployment stats"
 ```
 
-## Keep a value for a set time
-
-Set a TTL in seconds. The entry is deleted when the time ends. Read it, and compute the value again when it is missing.
-
-```bash
-AMI=$(mass alpha stash get "billing-dev-app.ami-id" 2>/dev/null) || {
-  AMI=$(aws ec2 describe-images --owners self --query 'sort_by(Images,&CreationDate)[-1].ImageId' --output text)
-  mass alpha stash set "billing-dev-app.ami-id" "$AMI" --ttl 86400
-}
-```
-
-## Run a step once
-
-An immutable write fails when the key already has a value. Use it to run a step only one time for each deployment.
-
-```bash
-if mass alpha stash set "$MASSDRIVER_DEPLOYMENT_ID.migrations/ran" "true" --immutable; then
-  ./run-migrations.sh
-fi
-```
-
 ## Show traffic on the canvas
 
-Write `md/v1/traffic` on the instance that sends the traffic. The [traffic widget](/guides/annotations/widgets#traffic) shows on every line that leaves the instance. Set a TTL so that the widget goes away when your job stops writing.
+Write `md/v1/traffic` on the instance that sends the traffic, once a minute, from a scheduled job. The [traffic widget](/guides/annotations/widgets#traffic) shows on every line that leaves the instance. Set a TTL so that the widget goes away when your job stops writing.
 
 ```bash
 mass alpha stash set "billing-dev-app.md/v1/traffic" \
   '{"rps": 240, "errors_5m": 2, "p95_ms": 180}' \
   --format json --ttl 180
 ```
-
-Run the command on a schedule, for example once a minute.
 
 ## Sync metrics with stash-sync
 

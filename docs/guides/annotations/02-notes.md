@@ -11,16 +11,18 @@ sidebar_label: Notes
 This feature is alpha. Names, fields, and behavior can change or be removed at any time without notice.
 :::
 
-A note is text that you write in [Liquid](https://shopify.github.io/liquid/). Massdriver puts stash values into the text, then shows the result as markdown.
+A note is text that you write in [Liquid](https://shopify.github.io/liquid/). Massdriver puts [stash](/guides/stash) values into the text, then shows the result as markdown. Only you can see your notes. For a step-by-step example, see [Pin a note](/guides/annotations#pin-a-note).
 
 ## Where a note shows
 
-| Pinned to | Shows on |
-|---|---|
-| A project | The project header, next to the project name |
-| An environment | The canvas legend |
-| An instance | The instance's node on the canvas |
-| A line between two instances | The line on the canvas |
+| Pinned to | How to pin it | Shows on |
+|---|---|---|
+| A project | On the project page, click **+** next to the project name | The project header, as a pin |
+| An environment | Right-click an empty part of the canvas and choose **Pin note** | The canvas legend, as a card |
+| An instance | Right-click the instance node and choose **Pin note** | The instance node, as a pin |
+| A line between two instances | Right-click the line and choose **Pin note** | The line, as a pin |
+
+The note editor has a **Note** field, a **Preview** of the result, and a list of stash keys. Click **Pin** to save the note.
 
 ## Stash values
 

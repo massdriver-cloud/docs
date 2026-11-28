@@ -22,6 +22,8 @@ Alpha commands are under `mass alpha`. They can change or be removed at any time
 | `mass alpha stash delete <scope>.<key>` | Deletes the entry |
 | `mass alpha stash list <scope>` | Lists the entries in one stash |
 
+Outside a deployment, the CLI signs in with your `mass` profile or with `MASSDRIVER_API_KEY` and `MASSDRIVER_ORGANIZATION_ID`. For a CI job or a script, use a service account's access token. See [CLI configuration](/reference/cli/overview#configuration). In a deployment, see [Inside a deployment](#inside-a-deployment).
+
 ## Addresses
 
 An address is `<scope>.<key>`. The first `.` ends the scope, so a key can contain more dots. For example, in `billing-dev-app.schema.version`, the scope is `billing-dev-app` and the key is `schema.version`.

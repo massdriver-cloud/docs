@@ -19,11 +19,13 @@ import Snowflake from "@site/src/components/Snowflake";
 This feature is alpha. Names, fields, and behavior can change or be removed at any time without notice.
 :::
 
-Keys that start with `md/` are reserved. There are two groups:
+Keys that start with `md/` are reserved. Each key has a fixed place, format, and schema, so the UI can show it with no setup. There are three groups:
 
 - **Widget keys** on instances and environments. The UI shows each one as a [widget](/guides/annotations/widgets) to everyone with `stash:view` on the stash.
 - **[Deployment results](#deployment-results)** that a provisioner writes while a deployment runs.
 - **[UI keys](#ui-keys)** for notices on projects and environments.
+
+These are the widget keys:
 
 | Key | Set on | Format | Widget |
 |---|---|---|---|

@@ -23,6 +23,8 @@ A provisioner can write values to the stash while a deployment runs. The Massdri
 
 An entry without a label is stored, and you can read it. It does not show as a metadata row.
 
+For how people see these values in the UI, see [Annotations](/guides/annotations). For the reference of every well-known key, see [Well-known keys](/guides/stash/well-known-keys).
+
 ## Sign in from a provisioner
 
 In a deployment, `mass alpha stash` signs in with the deployment's token. You do not need an API key. Massdriver sets these variables in every provisioner step:

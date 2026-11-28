@@ -19,16 +19,16 @@ import {
 This feature is alpha. Names, fields, and behavior can change or be removed at any time without notice.
 :::
 
-A widget is a built-in picture that shows stash values. There are two ways to show one.
+A widget is a built-in picture that shows [stash](/guides/stash) values. There are two ways to show one.
 
-- **Automatic.** Write a well-known key that starts with `md/`. Everyone with `stash:view` on the stash sees the widget.
-- **Pinned.** Add a widget yourself and choose a stash entry for each input. Only you see it.
+- **Automatic.** Write a well-known `md/v1/` key. Everyone with `stash:view` on the stash sees the widget. You do not set anything up.
+- **Added by you.** Right-click the canvas, choose **Add widget**, and choose a stash entry for each input. Only you see it. For a step-by-step example, see [Add a widget from your own keys](/guides/annotations#add-a-widget-from-your-own-keys).
 
-When you pin a widget in the same spot as an automatic one, you see your widget instead. If your widget has no value, you see the automatic one.
+When you add a widget in the same place as an automatic one, you see your widget. If your widget has no value, you see the automatic one.
 
 Each widget has a tooltip. It shows the widget's label and value, for example `Connection pool: 37 of 100 (37%)`, and when the stash entry was last updated, for example `Updated 2m ago`. The label is the stash entry's label, which you set with `--label`. A usage bar without an entry label uses the `label` field of its value. Otherwise the widget uses a default label: `Health`, `Traffic`, or `Usage`.
 
-To hide automatic widgets, click the **Widgets** button in the canvas toolbar, after the inactive instances button. The setting is saved in your browser and applies only to you. Your pinned widgets still show.
+To hide automatic widgets, click the **Widgets** button in the canvas toolbar, after the inactive instances button. The setting is saved in your browser and applies only to you. Widgets that you add still show.
 
 ## Well-known keys
 
@@ -40,13 +40,7 @@ To hide automatic widgets, click the **Widgets** button in the canvas toolbar, a
 | `md/v1/banner` | Environment | JSON | [Banner](#banner) |
 | `md/v1/links` | Environment | JSON | [Header links](#header-links) |
 
-The `md/` prefix is reserved. The server rejects a write to an `md/` key when:
-
-- No widget reads the key.
-- The key is set on the wrong kind of entity.
-- The entry is sensitive.
-- The format is not the one in the table.
-- The value does not match the key's schema.
+The `md/` prefix is reserved. The server checks each write to an `md/` key. See [Well-known keys](/guides/stash/well-known-keys) for the rules and the full schema of each key.
 
 ## Status dot
 
@@ -56,16 +50,7 @@ A colored dot in the header of an instance node. The tooltip shows the label and
 
 Set on the instance. Format: TEXT.
 
-```json
-{
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.massdriver.cloud/stash/md/v1/health.json",
-  "type": "string",
-  "minLength": 1,
-  "maxLength": 64,
-  "examples": ["healthy", "degraded", "down"]
-}
-```
+The value must match the [`md/v1/health` schema](/guides/stash/well-known-keys#mdv1health).
 
 ```bash
 mass alpha stash set billing-dev-app.md/v1/health degraded
@@ -84,7 +69,7 @@ The match ignores case and spaces at each end.
 
 ### Use your own stash keys
 
-Right-click an instance and choose **Add widget** > **Status dot**.
+Right-click an instance node and choose **Add widget** > **Status dot**.
 
 | Input | Type | Required | Example key | Path |
 |---|---|---|---|---|
@@ -98,20 +83,7 @@ A thin bar at the bottom of an instance node. The label is on the left of the ba
 
 Set on the instance. Format: JSON.
 
-```json
-{
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.massdriver.cloud/stash/md/v1/usage.json",
-  "type": "object",
-  "required": ["value", "max"],
-  "additionalProperties": false,
-  "properties": {
-    "value": { "type": "number", "minimum": 0 },
-    "max": { "type": "number", "exclusiveMinimum": 0 },
-    "label": { "type": "string", "maxLength": 64 }
-  }
-}
-```
+The value must match the [`md/v1/usage` schema](/guides/stash/well-known-keys#mdv1usage).
 
 | Field | Meaning |
 |---|---|
@@ -135,7 +107,7 @@ A value above `max` fills the bar.
 
 ### Use your own stash keys
 
-Right-click an instance and choose **Add widget** > **Usage bar**. Each input can read a different key. For example, two TEXT entries:
+Right-click an instance node and choose **Add widget** > **Usage bar**. Each input can read a different key. For example, two TEXT entries:
 
 ```bash
 mass alpha stash set billing-dev-app.db/connections 37
@@ -148,7 +120,7 @@ mass alpha stash set billing-dev-app.db/max_connections 100
 | `max` | number | yes | `db/max_connections` on the instance | none |
 | `label` | string | no | none | none |
 
-A pinned bar with a `max` of 0 or less does not show.
+A usage bar that you add with a `max` of 0 or less does not show.
 
 ## Traffic
 
@@ -158,20 +130,7 @@ The traffic on a line between two instances, shown as the width, color, and move
 
 Set on the instance that sends the traffic. Format: JSON. Every line that leaves that instance shows the traffic.
 
-```json
-{
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.massdriver.cloud/stash/md/v1/traffic.json",
-  "type": "object",
-  "required": ["rps", "errors_5m"],
-  "additionalProperties": false,
-  "properties": {
-    "rps": { "type": "number", "minimum": 0 },
-    "errors_5m": { "type": "integer", "minimum": 0 },
-    "p95_ms": { "type": "number", "minimum": 0 }
-  }
-}
-```
+The value must match the [`md/v1/traffic` schema](/guides/stash/well-known-keys#mdv1traffic).
 
 | Field | Meaning | Input |
 |---|---|---|
@@ -225,19 +184,7 @@ A message across the top of the environment canvas. Banners stack.
 
 Set on the environment. Format: JSON.
 
-```json
-{
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.massdriver.cloud/stash/md/v1/banner.json",
-  "type": "object",
-  "required": ["message"],
-  "additionalProperties": false,
-  "properties": {
-    "message": { "type": "string", "minLength": 1, "maxLength": 280 },
-    "level": { "enum": ["info", "warning", "error"] }
-  }
-}
-```
+The value must match the [`md/v1/banner` schema](/guides/stash/well-known-keys#mdv1banner).
 
 | Field | Meaning |
 |---|---|
@@ -255,7 +202,7 @@ mass alpha stash set billing-dev.md/v1/banner '{"message": "Deploy freeze until 
 | Info | <BannerState levels={["info"]} label="Info banner: a blue strip" /> | `{"message": "Database upgrade tonight"}` | A blue banner. |
 | Warning | <BannerState levels={["warning"]} label="Warning banner: an amber strip" /> | `{"message": "Deploy freeze until Friday", "level": "warning"}` | An amber banner. |
 | Error | <BannerState levels={["error"]} label="Error banner: a red strip" /> | `{"message": "Payments API is down", "level": "error"}` | A red banner. |
-| Two banners | <BannerState levels={["warning", "info"]} label="Two banners stacked: an amber strip above a blue strip" /> | `md/v1/banner` and a pinned banner | Banners stack, one per widget. |
+| Two banners | <BannerState levels={["warning", "info"]} label="Two banners stacked: an amber strip above a blue strip" /> | `md/v1/banner` and a banner that you added | Banners stack, one per widget. |
 
 ### Use your own stash keys
 
@@ -270,7 +217,7 @@ mass alpha stash set billing-dev.status/maintenance "Database upgrade tonight" -
 | `message` | string | yes | `status/maintenance` on the environment | none |
 | `level` | string | no | none | none |
 
-A pinned banner with a `level` that is not `info`, `warning`, or `error` shows as `info`.
+A banner that you add with a `level` that is not `info`, `warning`, or `error` shows as `info`.
 
 ## Header links
 
@@ -280,31 +227,7 @@ Link buttons in the environment header, such as a dashboard or a runbook. A butt
 
 Set on the environment. Format: JSON. Each item in `links` is one button.
 
-```json
-{
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.massdriver.cloud/stash/md/v1/links.json",
-  "type": "object",
-  "required": ["links"],
-  "additionalProperties": false,
-  "properties": {
-    "links": {
-      "type": "array",
-      "minItems": 1,
-      "maxItems": 8,
-      "items": {
-        "type": "object",
-        "required": ["label", "url"],
-        "additionalProperties": false,
-        "properties": {
-          "label": { "type": "string", "minLength": 1, "maxLength": 40 },
-          "url": { "type": "string", "maxLength": 2048, "pattern": "^https?://[^\\s]+(?![\\s\\S])" }
-        }
-      }
-    }
-  }
-}
-```
+The value must match the [`md/v1/links` schema](/guides/stash/well-known-keys#mdv1links).
 
 | Field | Meaning |
 |---|---|
@@ -321,7 +244,7 @@ mass alpha stash set billing-dev.md/v1/links '{"links": [{"label": "Shop", "url"
 |---|---|---|---|
 | One link | <HeaderLinkState links={["Shop"]} label="One header link button labeled Shop" /> | `{"links": [{"label": "Shop", "url": "https://shop.example.com"}]}` | One button. |
 | Two links | <HeaderLinkState links={["Shop", "Grafana"]} label="Two header link buttons, Shop and Grafana" /> | two items in `links` | One button per item. |
-| Not an http URL | <HeaderLinkState links={["Shop"]} label="Only the Shop button shows, because the other link URL is not http or https" /> | `{"links": [{"label": "Shop", "url": "https://shop.example.com"}, {"label": "Files", "url": "ftp://files.example.com"}]}` | The server rejects this value for `md/v1/links`. In a pinned widget, the link with the `ftp` URL does not show and the other links do. |
+| Not an http URL | <HeaderLinkState links={["Shop"]} label="Only the Shop button shows, because the other link URL is not http or https" /> | `{"links": [{"label": "Shop", "url": "https://shop.example.com"}, {"label": "Files", "url": "ftp://files.example.com"}]}` | The server rejects this value for `md/v1/links`. In a header link widget that you add, the link with the `ftp` URL does not show and the other links do. |
 
 ### Use your own stash keys
 
@@ -337,11 +260,29 @@ mass alpha stash set billing-dev.links '{"links": [{"label": "Shop", "url": "htt
 
 Each item is one button. The first 8 links with an `http` or `https` `url` show. A link without a `label` shows the URL host.
 
-## Pinned widget inputs
+## Inputs of a widget that you add
 
-For each input of a pinned widget, you choose a stash, a key, and, for a JSON entry, a path to a field. The widget editor shows the current value or the reason an input is off.
+The widget editor has one row for each input. In each row:
 
-Open **Data this widget reads** in the widget editor to see the inputs, the `md/` key, its fields, and a `mass alpha stash set` command. Under **Or use your own stash keys**, the editor gives example entries and a `mass alpha stash set` command for each. **Then set the inputs** tells you which key and path to choose for each input.
+1. **Stash**: choose whose stash to read.
+2. **Key**: choose a key from the list, or type one. You can type a key that has no value yet.
+3. **Path**: for a JSON entry, choose a field, or **Whole value**. When the key has no value yet, type the fields, separated by commas.
+
+The last column shows the current value, such as `✓ degraded`, or why the input has no value:
+
+| Status | Meaning |
+|---|---|
+| **Choose a key** | The input is required and has no key. |
+| **Optional** | The input is optional and has no key. |
+| **No value yet** | The key has no value, has expired, or is sensitive. |
+| **Not a valid key** | The key has characters other than letters, digits, and `_ . / -`. |
+| **Not a number**, **Not a whole number**, **Not text**, **Not a list** | The value has the wrong type. |
+| **Not a JSON entry** | You chose a path, but the entry is TEXT. |
+| **Path not found** | The JSON value does not have that field. |
+
+You can save the widget when every required input has a valid key. The widget shows only when every required input has a value of the right type.
+
+Open **Data this widget reads** at the top of the editor to see the inputs, the automatic `md/v1/` key and its fields, and a `mass alpha stash set` command. Under **Or use your own stash keys**, the editor gives example entries. **Then set the inputs** tells you which key and path to choose for each input.
 
 | Input type | Accepted values |
 |---|---|
@@ -350,9 +291,7 @@ Open **Data this widget reads** in the widget editor to see the inputs, the `md/
 | string | Text |
 | array | A JSON list |
 
-An input is off when its key is missing, expired, sensitive, or has the wrong type, or when its path is not in the JSON entry. A pinned widget shows only when every required input has a value.
-
-| Pinned to | Stashes you can choose |
+| Added to | Stashes you can choose |
 |---|---|
 | An instance | `project`, `environment`, `component`, `instance` |
 | A line | `project`, `environment`, `source`, `destination` |

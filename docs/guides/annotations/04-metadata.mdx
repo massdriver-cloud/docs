@@ -19,7 +19,7 @@ import {
 This feature is alpha. Names, fields, and behavior can change or be removed at any time without notice.
 :::
 
-Stash entries that have a label show as metadata in the Massdriver UI. Everyone with `stash:view` on the entity sees its metadata. Metadata needs no setup. Add a label when you write the entry:
+Stash entries that have a label show as metadata in the Massdriver UI. Use metadata for values that everyone on the team needs to see, such as a schema version or the result of a deployment step. Everyone with `stash:view` on the entity sees its metadata. Metadata needs no setup. Add a label when you write the [stash](/guides/stash) entry:
 
 ```bash
 mass alpha stash set billing-dev-app.schema.version "42" --label "Schema version"
@@ -29,8 +29,8 @@ mass alpha stash set billing-dev-app.schema.version "42" --label "Schema version
 
 | Place | Entries |
 |---|---|
-| The **Metadata** tab of an instance | Labeled entries on the instance |
-| The **Deployment metadata** section of a deployment's details | Labeled entries on the deployment, written by the deployment's steps |
+| The **Metadata** tab of an instance | The instance's widgets, the results of its latest deployment, and its labeled entries. With no labeled entries, the tab says **No metadata**. |
+| A deployment's details | A **Results** section with the deployment's results, and a **Deployment metadata** section with the labeled entries that its steps wrote |
 | The **Metadata** card on the project overview | Labeled entries on the project |
 
 ## What it looks like
@@ -63,6 +63,10 @@ The label of a stat is the stash entry's label. A usage stat without an entry la
 Each stat has a tooltip, for example `Connection pool: 37 of 100 (37%)` and `Updated 2m ago`.
 
 The tab shows only the widgets that have a valid value. When the instance has none, the widgets do not show. When you hide automatic widgets with the **Widgets** button in the canvas toolbar, the widgets on the Metadata tab are hidden too.
+
+## Deployment results on the Metadata tab
+
+Below the widgets, a card shows the results of the instance's latest deployment that has results, and the instance's drift and release. The **Widgets** button hides this card too. See [Where results show](/guides/stash/well-known-keys#where-results-show).
 
 ## Live updates
 

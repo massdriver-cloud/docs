@@ -11,53 +11,104 @@ sidebar_label: Overview
 This feature is alpha. Names, fields, and behavior can change or be removed at any time without notice.
 :::
 
-Annotations show stash values on the canvas and in the project header. They update live when a stash value changes. You do not need to reload the page.
+Annotations show [stash](/guides/stash) values in the Massdriver UI: on the environment canvas, in the environment header, and in the project header. Use them to see the state of your infrastructure where you already work, such as the health of an instance, the traffic between two instances, or the owner of a service. They update when a stash value changes. You do not need to reload the page.
 
-The stash holds small key and value entries on a project, environment, component, instance, or deployment. Deployments and scripts write them with `mass alpha stash set`. See the [Stash guide](/guides/stash).
+## Choose a tool
 
-## Notes and widgets
+| You want | Use | Who sees it | Setup |
+|---|---|---|---|
+| A built-in picture for everyone, such as a status dot, a usage bar, traffic, a banner, or header links | An automatic widget: write a well-known [`md/v1/` key](/guides/stash/well-known-keys) | Everyone with `stash:view` on the stash | None. The widget shows when the key has a valid value. |
+| A built-in picture that reads your own keys | A [widget that you add](/guides/annotations/widgets#inputs-of-a-widget-that-you-add): choose a stash entry for each input | Only you | Right-click the canvas and choose **Add widget** |
+| Your own text with stash values in it | A [note](/guides/annotations/notes): Liquid text that renders as markdown | Only you | Right-click the canvas and choose **Pin note** |
+| A list of values on the Metadata panels | A labeled stash entry: write the entry with `--label` | Everyone with `stash:view` on the stash | None. See [Metadata](/guides/annotations/metadata). |
 
-There are two kinds of annotation.
+Notes and widgets that you add are yours. Other members of your organization do not see them, and you do not see theirs. Service accounts cannot add them. You need `project:view` on the project to add one. You can have up to 200 in each project.
 
-| Kind | What it shows | How you make it |
+## Add a widget from your own keys
+
+This example shows a status dot on an instance from a key named `status/health`.
+
+1. Write the key:
+
+   ```bash
+   mass alpha stash set billing-dev-app.status/health degraded
+   ```
+
+2. Open the environment canvas. Right-click the `billing-dev-app` instance node.
+3. Choose **Add widget** > **Status dot**.
+4. Optional: open **Data this widget reads** to see the inputs, the automatic `md/v1/` key, and example keys.
+5. In the `state` row, set **Stash** to `instance` and **Key** to `status/health`. Leave **Path** empty. The status column shows `✓ degraded`.
+6. Click **Add widget**.
+
+**What you see:** an amber dot in the header of the instance node. Hover over it to see `Health: degraded` and when the value was last updated. Click the dot to see **Edit** and **Delete**.
+
+## Pin a note
+
+This example shows the owner of an instance.
+
+1. Write the key:
+
+   ```bash
+   mass alpha stash set billing-dev-app.owner payments-team
+   ```
+
+2. Right-click the `billing-dev-app` instance node and choose **Pin note**.
+3. Under **Show on**, keep **Canvas node** selected.
+4. On the right, set **Stash** to **Instance**, then click `owner` to insert its tag. You can also type the note:
+
+   ```liquid
+   Owner: {{ instance.stash["owner"] | default: "not set" }}
+   ```
+
+5. Check the **Preview**. It shows `Owner: payments-team`.
+6. Click **Pin**.
+
+**What you see:** a pin icon on the instance node. Hover over the pin to read the note. Click the pin to keep the card open. The card has buttons to edit and delete the note.
+
+## Where you can add notes and widgets
+
+| Right-click on the environment canvas | Menu items | Note shows on |
 |---|---|---|
-| Note | Text that you write with [Liquid](/guides/annotations/notes). The text can include stash values. It renders as markdown. | You pin it and write the text. |
-| Widget | A built-in picture, such as traffic on a line, a status dot on an instance, or a banner on an environment. | It shows without any setup when the stash has a well-known `md/` key. You can also add a widget yourself and choose the stash entries that it reads. See [Widgets](/guides/annotations/widgets). |
+| An instance node | **Pin note**, **Add widget** > **Status dot**, **Usage bar** | **Canvas node**: a pin on the node |
+| A line between two instances | **Pin note**, **Add widget** > **Traffic** | **Canvas link**: a pin on the line |
+| An empty part of the canvas | **Pin note**, **Add widget** > **Header link**, **Banner** | **Canvas legend**: a card in the canvas legend |
 
-A note shows on the canvas node, line, legend, or project header that it is pinned to. A widget shows only when each of its required inputs has a valid value.
+On a project page, click the **+** button next to the project name to pin a note to the **Project header**.
 
-## Who can see an annotation
+## Edit or delete
 
-Only you can see the notes and widgets that you pin. Other members of your organization do not see them, and you do not see theirs. Service accounts cannot pin annotations. You need `project:view` on the project to pin one. You can pin up to 200 annotations in each project.
+| What | How |
+|---|---|
+| A note on a node, a line, or the project header | Click its pin. In the card, use the edit or delete button. |
+| A note in the canvas legend | Use the edit or delete button on its card. |
+| A status dot, a usage bar, or traffic that you added | Click it, then choose **Edit** or **Delete**. |
+| A header link that you added | Right-click it, then choose **Edit** or **Delete**. |
+| A banner that you added | Click its menu button, then choose **Edit** or **Delete**. |
 
-Automatic widgets are different. When a stash has a well-known `md/` key with a valid value, everyone with `stash:view` on the stash sees its widget.
+An automatic widget comes from a stash key. To change it, set the key again. To remove it, delete the key.
 
-When you pin a widget in the same spot as an automatic one, you see your widget instead. If your widget has no value, you see the automatic one.
+## Show or hide automatic widgets
 
-To hide automatic widgets, click the **Widgets** button in the canvas toolbar, after the inactive instances button. The setting is saved in your browser and applies only to you. Your pinned widgets still show.
+Click the **Widgets** button in the canvas toolbar, after the inactive instances button. When it is off, automatic widgets, the widgets and deployment results on the instance **Metadata** tab, and the canvas warning badge do not show. Your own widgets and notes still show. The setting is saved in your browser and applies only to you.
 
-## Pin an annotation
+When you add a widget in the same place as an automatic one, you see your widget. If your widget has no value, you see the automatic one.
 
-On an environment canvas, right-click a spot.
+## Troubleshooting
 
-| Right-click | Entity | Menu items |
+| Problem | Cause | What to do |
 |---|---|---|
-| An instance | The instance | **Pin note**, **Add widget** > **Status dot**, **Usage bar** |
-| A line between two instances | The link | **Pin note**, **Add widget** > **Traffic** |
-| An empty part of the canvas | The environment | **Pin note**, **Add widget** > **Header link**, **Banner** |
+| A widget that you added shows nothing | A required input's key has no value, has expired, or is sensitive. The widget editor shows **No value yet**. | Write the key, without `--sensitive`. If it has a TTL, write it again before it expires. The widget shows when the value arrives. |
+| A widget that you added shows nothing | The value has the wrong type, or the path is not in the JSON value. The widget editor shows the reason, such as **Not a number** or **Path not found**. | Fix the value, or choose another path. |
+| An automatic widget does not show | The **Widgets** button is off. | Click **Widgets** in the canvas toolbar. |
+| An automatic widget does not show | The `md/v1/` key has no value, or it expired. | Check the key with `mass alpha stash get`. |
+| A note is empty | The key is missing, expired, or sensitive. | Write the key. Use the `default` filter to show text when the value is missing. |
+| The key list in an editor is empty | The stash has no entries. The widget editor shows **This stash has no entries yet**. The note editor shows **No keys in this stash.** | Type the key in the widget editor's **Key** field, or write the key first. |
 
-On a project page, click the **+** button next to the project name to pin a note to the project header.
+Sensitive stash values are never available to notes or widgets. A sensitive key is empty in a note, and a widget input that points to it shows **No value yet**.
 
-A note shows as a pin. Click the pin (**Show note**) to read the note. The note card has buttons to edit and delete it. To change or delete a pinned widget, click it. For a header link, right-click it. For a banner, click its menu button.
+## More
 
-## Where the values come from
-
-Annotations read values from the stash of the project, the environment, the component, the instance, and the instances at each end of a line. A deployment, a script, or the `mass alpha stash set` command writes these values. For example:
-
-```bash
-mass alpha stash set billing-dev-app.owner "payments-team"
-```
-
-Sensitive stash values are never available to annotations. A sensitive key renders as empty in a note, and a widget input that points to a sensitive key is not found.
-
-Stash entries that have a label also show as [metadata](/guides/annotations/metadata) to everyone with `stash:view` on the stash.
+- [Notes](/guides/annotations/notes): Liquid, the stash values that a note can read, and examples.
+- [Widgets](/guides/annotations/widgets): each widget, its key, and what it looks like.
+- [Metadata](/guides/annotations/metadata): labeled entries and results on the Metadata panels.
+- [Stash](/guides/stash): how to write the values that annotations show.
