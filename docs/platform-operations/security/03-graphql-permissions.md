@@ -266,7 +266,7 @@ Each stash action is checked on the entity that holds the entries: the project, 
 
 | Operation | Type | Required permission(s) | Notes |
 |---|---|---|---|
-| `organizationEvents` | Subscription | *no explicit gate* | Open to every org member. |
+| `organizationEvents` | Subscription | *no explicit gate* | Open to every org member. A project event for a project the member does not have `project:view` on arrives as `null`. |
 | `projectEvents` | Subscription | `project:view` | |
 | `environmentEvents` | Subscription | `project:view` | Inherits the surrounding project's view permission. |
 | `instanceEvents` | Subscription | `project:view` | |
