@@ -127,6 +127,7 @@ query {
     entity
     key
     keySegments
+    segmentValues
     version
     scope
     format
@@ -135,6 +136,8 @@ query {
   }
 }
 ```
+
+`keySegments` names the segments in a pattern key, such as `["step"]` for `md/v1/step/{step}`. `segmentValues` lists the only values that a segment can have, such as `{"egg": ["xmas"]}` for `md/v1/eggs/{egg}`.
 
 ## alphaWidgetsForScopes
 
@@ -160,3 +163,35 @@ query {
 ```
 
 `values` has the widget's inputs by name, for example `{"value": 37, "max": 100}`. `segments` has the values of the key's named segments, for example `{"step": "src"}` for `md/v1/step/src`.
+
+## alphaUiNotices
+
+A query and a subscription for the [UI notices](/guides/stash/well-known-keys#mdv1ui-ephemeral-notice) that you can see in your organization. A notice is an `md/v1/ui-ephemeral-notice` entry that Massdriver sets when a project or environment is created. You see the notices of the projects and environments where you have `stash:view`.
+
+The query lists the notices, newest first. Expired notices are not returned. Read it when a page opens.
+
+```graphql
+query {
+  alphaUiNotices(organizationId: "my-org") {
+    items {
+      scope { kind id }
+      data
+      expiresAt
+    }
+    cursor { next }
+  }
+}
+```
+
+The subscription sends each new notice. One subscription covers every project and environment where you have `stash:view`, including the ones that are created after you subscribe. An expiry sends no event, so drop a notice when its `expiresAt` passes.
+
+```graphql
+subscription {
+  alphaUiNotices(organizationId: "my-org") {
+    scope { kind id }
+    data
+    expiresAt
+  }
+}
+```
+

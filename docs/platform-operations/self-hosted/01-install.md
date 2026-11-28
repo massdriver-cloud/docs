@@ -132,6 +132,25 @@ MD_AUDIT_LOG_RETENTION_DAYS=365
 
 Massdriver deletes a whole month of events at a time, after the last day of the month is older than this number of days. So it keeps at least this number of days, and up to one month more. The value cannot be less than `MD_EVENT_DESTINATIONS_FAILED_RETENTION_DAYS` (default `30`), because [event destinations](/platform-operations/event-destinations#self-hosted-settings) read failed events from the audit log when you send them again. A smaller value of `1` or more is raised to it, and Massdriver logs a warning.
 
+**Stash limits**
+
+The [stash](/guides/stash) limits the size of one value and the number of keys in one stash. Set these variables to change them.
+
+```bash
+MD_STASH_MAX_VALUE_BYTES=65536
+MD_STASH_MAX_KEYS_PER_SCOPE=1000
+```
+
+The defaults are `65536` bytes and `1000` keys.
+
+**UI notice lifetime**
+
+When a project or environment is created, Massdriver shows a [notice](/guides/stash/well-known-keys#mdv1ui-ephemeral-notice) in the notification bell. Set `MD_UI_NOTICE_TTL_SECONDS` to change how many seconds a notice stays. The default is `600`.
+
+```bash
+MD_UI_NOTICE_TTL_SECONDS=600
+```
+
 :::info Custom Release Name (Optional)
 
 If you plan to use a different release name than `massdriver`, search for `"release name"` in the values file and update the associated values accordingly.
