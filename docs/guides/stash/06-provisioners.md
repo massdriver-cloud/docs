@@ -27,7 +27,7 @@ For how people see these values in the UI, see [Annotations](/guides/annotations
 
 ## Sign in from a provisioner
 
-In a deployment, `mass alpha stash` signs in with the deployment's token. You do not need an API key. Massdriver sets these variables in every provisioner step:
+In a deployment, `mass alpha stash` and the [Terraform provider](/guides/stash/terraform) sign in with the deployment's token. You do not need an API key. Massdriver sets these variables in every provisioner step:
 
 | Variable | Use |
 |---|---|

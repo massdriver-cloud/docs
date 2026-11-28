@@ -19,8 +19,8 @@ Each project, environment, component, instance, and deployment has its own stash
 
 | Writer | How it signs in | Example |
 |---|---|---|
-| A provisioner during a deployment | The deployment's token. Massdriver sets it in every step. | A Terraform step records the database host for a later step. |
-| A CI job or a script | A service account's access token, with [`mass alpha stash`](/guides/stash/cli) or the [GraphQL API](/guides/stash/api) | A release job records the version that it deployed. |
+| A provisioner during a deployment | The deployment's token. Massdriver sets it in every step. Use [`mass alpha stash`](/guides/stash/cli) or the [Terraform provider](/guides/stash/terraform). | A Terraform step records the database host for a later step. |
+| A CI job or a script | A service account's access token, with [`mass alpha stash`](/guides/stash/cli), the [Terraform provider](/guides/stash/terraform), or the [GraphQL API](/guides/stash/api) | A release job records the version that it deployed. |
 | An automation | A service account's access token | The [`stash-sync` automation](/guides/stash/recipes#sync-metrics-with-stash-sync) copies CloudWatch and Prometheus metrics into widget keys. |
 | A person | Your own login, with the CLI or the API | You set a maintenance banner on an environment. |
 
@@ -45,6 +45,8 @@ One step writes a value to the deployment's stash. A later step reads it.
 mass alpha stash set "$MASSDRIVER_DEPLOYMENT_ID.db/hostname" "$DB_HOST"
 DB_HOST=$(mass alpha stash get "$MASSDRIVER_DEPLOYMENT_ID.db/hostname")
 ```
+
+In Terraform, the [`massdriver_stash_entry` resource](/guides/stash/terraform) writes an entry, and the `massdriver_stash_entry` data source reads one.
 
 ### Record what a deployment did
 
@@ -197,6 +199,7 @@ These places update when a stash value changes. You do not need to reload the pa
 - [Well-known keys](/guides/stash/well-known-keys)
 - [For provisioners](/guides/stash/provisioners)
 - [CLI](/guides/stash/cli)
+- [Terraform](/guides/stash/terraform)
 - [GraphQL API](/guides/stash/api)
 - [Recipes](/guides/stash/recipes)
 - [Annotations](/guides/annotations): notes and widgets that show stash values in the UI
