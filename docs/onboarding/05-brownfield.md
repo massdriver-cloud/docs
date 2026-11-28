@@ -259,7 +259,7 @@ mass component add orders postgres --id db --name "Orders DB"
 mass instance deploy orders-prod-db --params=postgres.yaml
 ```
 
-`postgres` puts the database in the VPC's `internal` subnets with its own client security group. It does not touch the VPC's route tables, gateways or the monolith's security groups. Neither do `mariadb` or `valkey`. A VM bundle you write takes its subnet from the network resource in the same way.
+`postgres` puts the database in the VPC's `internal` subnets, or its `private` subnets when there are no `internal` ones, with its own client security group. It does not touch the VPC's route tables, gateways or the monolith's security groups. Neither do `mariadb` or `valkey`. A VM bundle you write takes its subnet from the network resource in the same way.
 
 To run containers and automations on the imported network without importing a cluster, add `dns-zone` and `ecs-cluster`:
 
@@ -269,7 +269,7 @@ mass component add orders ecs-cluster --id cluster --name "Cluster"
 mass component link orders-dns.zone orders-cluster.dns
 ```
 
-Set the `dns` instance's **Hosted zone** to `existing` with the ID of a Route 53 zone the monolith already has; it adds a certificate for the domain and every name directly under it. The cluster's load balancer serves HTTPS only with a zone connected, and automations need a public `https://` host. `ecs-cluster` needs public subnets in at least two availability zones and at least one private subnet. Then continue at [Run Automations](./04-automations.md#deploy-pr-sync-on-ecs) with these three resources in place of the `platform-dev` ones.
+Set the `dns` instance's **Hosted zone** to `existing` with the ID of a Route 53 zone the monolith already has; it adds a certificate for the domain and every name directly under it, with its validation records, and leaves the rest of the zone alone. **DNSSEC** applies only to a zone it creates. The cluster's load balancer serves HTTPS only with a zone connected, and automations need a public `https://` host. `ecs-cluster` needs public subnets in at least two availability zones and at least one private subnet. Then continue at [Run Automations](./04-automations.md#deploy-pr-sync-on-ecs) with these three resources in place of the `platform-dev` ones.
 
 To use the network for one instance only, set a [remote reference](/guides/sharing-infrastructure) instead of a default:
 
@@ -382,7 +382,7 @@ resource "massdriver_resource_grant" "team_orders_namespace" {
 
 Repeat the namespace, ServiceAccount, RoleBinding, Secret and import for each team, or `for_each` over a map of teams. Nothing in the token reaches outside its namespace.
 
-`massdriver-kubernetes-cluster` connects by link, not as an environment default, so each instance sets it as a remote reference. [Brownfield Kubernetes](./06-brownfield-kubernetes.md) covers what to ask the cluster's owners for, the same import without Terraform, and deploying pr-sync into the namespace.
+Set it as an environment default of the team's environments, so every Helm bundle there deploys into the namespace, or as a remote reference on one instance. [Brownfield Kubernetes](./06-brownfield-kubernetes.md) covers what to ask the cluster's owners for, the same import without Terraform, and deploying pr-sync into the namespace.
 
 ## Landing zone
 
@@ -441,6 +441,13 @@ resource "massdriver_imported_resource" "cluster" {
 }
 ```
 
+The bundles that run on the cluster expect what the catalog's `ecs-cluster` builds, so the monolith's cluster needs it too:
+
+- Fargate capacity providers on the cluster
+- An HTTPS listener with a certificate for `*.<domain>`
+- A load balancer security group that allows outbound traffic to the tasks' container ports
+- Private subnets with a route out through NAT, so tasks can pull images and reach the Massdriver API
+
 Developers then add `ecs-service` (or an app built on it) with `postgres`, `s3-bucket`, `sqs-queue` or `valkey`. A service with **Subdomain** `orders` answers at `https://orders.<domain>` behind the existing load balancer. The [automation `-ecs` bundles](./04-automations.md) run on the same imported cluster.
 
 </TabItem>
@@ -479,10 +486,19 @@ Each stage the monolith builds (dev, staging, prod) imports its own landing zone
 When a piece of the monolith needs a change anyway, move it into a bundle. State in Massdriver is per instance, so the resources are imported into one instance's state, not written into the bundle's code. A bundle with [`import` blocks](https://opentofu.org/docs/language/import/) would carry one environment's resource IDs into every instance made from it.
 
 1. Write or pick a bundle whose OpenTofu matches the monolith's code for that piece, and that produces the same resource type, such as `aws-vpc`. Publish it with `mass bundle publish --development` and add it as a component. Do not deploy the instance.
-2. From the bundle's step directory, point `tofu` at the instance's state with an `http` backend, and import each resource. Refer to [State management](/platform-operations/state-management#4-importing-resources-into-state). `tofu import` runs locally, so it needs AWS credentials for the account and a value for every variable without a default (`mass bundle build` writes them to `_massdriver_variables.tf`). Keep the backend file, the credentials and the variable values out of the bundle: none of it may be published.
+2. From the bundle's step directory, point `tofu` at the instance's state with an `http` backend, and import each resource. Refer to [State management](/platform-operations/state-management#4-importing-resources-into-state). `tofu import` runs locally, so it needs:
+
+   - AWS credentials for the account. The bundle's `aws` provider assumes the role with the deployment's identity token (`assume_role_with_web_identity`), which does not exist on your machine. Replace that provider block for the import with one that uses your own credentials, such as a profile.
+   - A value for every variable without a default. `mass bundle build` writes them to `_massdriver_variables.tf`; put the instance's params and the credential object in a throwaway `import.auto.tfvars.json`.
+
+   Keep the backend file, the replaced provider block and the variable values out of the bundle: none of it may be published.
 
    ```bash
-   echo 'terraform { backend "http" {} }' > backend_import.tf
+   cat > backend_import.tf <<'HCL'
+   terraform {
+     backend "http" {}
+   }
+   HCL
 
    export TF_HTTP_USERNAME=<organization-id>
    export TF_HTTP_PASSWORD=<api-key>
@@ -493,8 +509,10 @@ When a piece of the monolith needs a change anyway, move it into a bundle. State
    tofu import aws_vpc.main vpc-0abc1234def567890
    tofu import 'aws_subnet.private["use1-az1"]' subnet-0123456789abcdef0
    tofu state list
-   rm backend_import.tf
+   rm backend_import.tf import.auto.tfvars.json
    ```
+
+   Then put the bundle's own `aws` provider block back before anything is published.
 
    The `/massdriver:import` agent does this step for you, including the backend, the variables and the cleanup. Refer to [Claude Code and opencode](#claude-code-and-opencode).
 
@@ -521,7 +539,7 @@ The [Massdriver plugin for Claude Code](https://github.com/massdriver-cloud/clau
 }
 ```
 
-Both run the [Massdriver MCP server](https://github.com/massdriver-cloud/mcp-server) in Docker and read `MASSDRIVER_API_KEY` and `MASSDRIVER_ORGANIZATION_ID`, or your `mass` profile, from the environment the editor starts in.
+Both run the [Massdriver MCP server](https://github.com/massdriver-cloud/mcp-server) in Docker and read `MASSDRIVER_API_KEY` and `MASSDRIVER_ORGANIZATION_ID`, or your `mass` profile, from the environment the editor starts in. `/massdriver:import` needs plugin 4.4.0 or later.
 
 | Step on this page | Command | What the agent does |
 |---|---|---|

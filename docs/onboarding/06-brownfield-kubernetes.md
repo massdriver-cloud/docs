@@ -87,14 +87,15 @@ mass project create automations --name "Automations"
 mass environment create automations-main --name "Main"
 mass component add automations massdriver-pr-sync --id prsync --name "pr-sync"
 
-mass instance remote-reference set automations-main-prsync kubernetes_cluster <cluster-resource-id>
+mass environment default automations-main <cluster-resource-id>
 mass instance remote-reference set automations-main-prsync service_account <service-account-resource-id>
 ```
 
+As the environment default, the namespace is where every Kubernetes automation in `automations-main` deploys. Set it as a remote reference instead to give one instance a different namespace.
+
 Set the `GITHUB_TOKEN` secret on the instance in the UI, then deploy:
 
-```bash
-mass instance deploy automations-main-prsync --params=- <<'EOF'
+```yaml title="pr-sync.yaml"
 image:
   repository: ghcr.io/massdriver-cloud/massdriver-automations
   tag: latest
@@ -107,7 +108,10 @@ config:
   projects:
     - project: billing
       repos: [acme/billing, acme/billing-infra]
-EOF
+```
+
+```bash
+mass instance deploy automations-main-prsync --params=pr-sync.yaml
 ```
 
 Leave `class_name` empty for the cluster's default class. Set `tls_secret_name` in place of `cluster_issuer` when the owners hand you a certificate, or leave both empty when TLS ends in front of the ingress controller.
@@ -121,14 +125,14 @@ In the namespace, the bundle creates:
 | ConfigMap | The settings, as the automation's config file |
 | Service and Ingress | The host, every path to the automation, and the certificate annotation |
 
-Nothing is created outside the namespace. In Massdriver, it creates the event destination.
+Nothing is created outside the namespace. A resource with no `namespace` deploys into `default`. In Massdriver, it creates the event destination.
 
 ```bash
 kubectl -n team-platform get deploy,ingress -l app.kubernetes.io/name=pr-sync
 kubectl -n team-platform logs -l app.kubernetes.io/name=pr-sync --since 10m
 ```
 
-`pr sync started` with the interval means the settings loaded. `github query failed` names a repository the token cannot read; `stash entry write failed` carries the API error, most often a missing `project:update` on that project. Then [pin the note](./04-automations.md#pin-the-note) on each project in its settings.
+`pr sync started` with the interval means the settings loaded. `github query failed` names a repository the token cannot read; `stash entry write failed` carries the API error, most often a missing `stash:write` on that project. Then [pin the note](./04-automations.md#pin-the-note) on each project in its settings.
 
 ## Build more on the namespace
 

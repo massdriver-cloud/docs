@@ -37,7 +37,7 @@ Each type's page in the UI shows its import instructions next to the form. The f
 Automations and onboarding bundles call the Massdriver API. A deployment cannot create event destinations, projects or groups with its own identity, so these bundles take a `massdriver-service-account` resource and use its token.
 
 1. Create a service account under **Settings → Service Accounts**, such as `automations`, and copy its `md_` token. Massdriver shows it once.
-2. Add it to a group whose policies cover what the automations do. pr-sync needs `organization:manageEventDestinations` and `project:update` on the projects it writes to. Each automation's page lists its permissions; refer to [Service accounts](/platform-operations/security/service-accounts) and [Access control](/platform-operations/security/access-control).
+2. Add it to a group whose policies cover what the automations do. pr-sync needs `organization:manageEventDestinations` and `stash:write` on the projects it writes to. Each automation's page lists its permissions; refer to [Service accounts](/platform-operations/security/service-accounts) and [Access control](/platform-operations/security/access-control).
 3. Import it:
 
 ```bash
@@ -52,7 +52,7 @@ EOF
 mass resource create -n "Automations service account" -t massdriver-service-account -f automations-sa.json
 ```
 
-The command prints the resource ID. `massdriver-service-account` has no environment default, so each bundle that uses it gets it as a remote reference on its `service_account` slot:
+The command prints the resource ID. Grant it to the environments that use it, then connect it to each bundle's `service_account` slot as a remote reference. It could be an environment default instead, but a remote reference lets each automation run as a service account with only the permissions it needs:
 
 ```bash
 mass resource grant create <resource-id> --condition md-project=automations

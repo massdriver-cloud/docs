@@ -96,17 +96,15 @@ validation_timeout_minutes: 30
 ```
 
 ```bash
-mass instance deploy platform-dev-network --params=- <<'EOF'
-region: us-east-1
-cidr: 10.0.0.0/16
-zone_count: 2
-egress: nat_instance
-private_endpoints: []
-flow_log_retention_days: 1
-EOF
-
 mass instance deploy platform-dev-dns --params=dev-dns.yaml
+
+mass instance deploy platform-dev-network --params=- <<'JSON'
+{"region": "us-east-1", "cidr": "10.0.0.0/16", "zone_count": 2, "egress": "nat_instance",
+ "private_endpoints": [], "flow_log_retention_days": 1}
+JSON
 ```
+
+`--params` reads JSON, YAML, TOML or tfvars from a file, and only JSON from stdin.
 
 | Instance | Development preset | Production preset |
 |---|---|---|
@@ -120,18 +118,36 @@ To use a hosted zone that already exists in the account, set `hosted_zone.source
 
 ## Delegate the DNS zone
 
-A new zone answers nothing until its parent domain points at it, and its certificate is not issued until then. Deploying `dns` waits up to `validation_timeout_minutes` for the certificate. The `dns` instance's operator guide prints the zone's name servers and the exact `route53 change-resource-record-sets` command for a parent zone in Route 53. If the domain is registered elsewhere, set the name servers at the registrar.
+A new zone answers nothing until its parent domain points at it, and its certificate is not issued until then. Deploying `dns` creates the zone first, then waits up to `validation_timeout_minutes` for the certificate. Delegate while it waits; the certificate is issued seconds after the delegation resolves.
+
+The `dns` instance's operator guide shows the name servers only after the deploy finishes, so look them up while it runs:
+
+```bash
+ZONE_ID=$(aws route53 list-hosted-zones-by-name --dns-name dev.example.com \
+  --query "HostedZones[?Name=='dev.example.com.'] | [0].Id" --output text)
+aws route53 get-hosted-zone --id "$ZONE_ID" --query 'DelegationSet.NameServers' --output text
+```
+
+Add them as an `NS` record named `dev.example.com` in the parent zone. If the parent is in Route 53:
+
+```bash
+aws route53 change-resource-record-sets --hosted-zone-id <parent-zone-id> --change-batch '{
+  "Changes": [{"Action": "UPSERT", "ResourceRecordSet": {
+    "Name": "dev.example.com", "Type": "NS", "TTL": 300,
+    "ResourceRecords": [{"Value": "<ns-1>"}, {"Value": "<ns-2>"}, {"Value": "<ns-3>"}, {"Value": "<ns-4>"}]
+  }}]
+}'
+```
+
+If the domain is registered elsewhere, set the name servers at the registrar.
 
 Once the certificate is issued, deploy the cluster:
 
 ```bash
-mass instance deploy platform-dev-cluster --params=- <<'EOF'
-container_insights: disabled
-access_logs: false
-access_log_retention_days: 7
-deletion_protection: false
-waf: false
-EOF
+mass instance deploy platform-dev-cluster --params=- <<'JSON'
+{"container_insights": "disabled", "access_logs": false, "access_log_retention_days": 7,
+ "deletion_protection": false, "waf": false}
+JSON
 ```
 
 Or deploy the whole environment in dependency order after each instance has params:

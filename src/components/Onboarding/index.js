@@ -132,7 +132,7 @@ function infraSteps({ cloud, start, runtime, jump, origCloud }) {
     steps.push({
       title: "Developers deploy Helm charts into their namespace",
       to: "/onboarding/brownfield-kubernetes",
-      body: "Each instance sets the namespace resource as a remote reference. Nothing reaches outside the namespace.",
+      body: "Set the namespace resource as the environment default, or as a remote reference on one instance. Nothing reaches outside the namespace.",
     });
   } else if (jump === "landing") {
     steps.push({

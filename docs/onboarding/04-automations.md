@@ -31,7 +31,7 @@ The rest of this page is the ECS route. For Kubernetes, continue at [Brownfield 
 Follow [Import a service account](./02-resource-types.md#import-a-service-account). pr-sync's service account needs:
 
 - `organization:manageEventDestinations`, so the bundle can create its event destination
-- `project:update` on every project in its settings, so it can write their stash
+- `stash:write` on every project in its settings, so it can write their stash
 
 ## Publish the bundle
 
@@ -68,14 +68,13 @@ mass resource grant create <service-account-resource-id> --condition md-project=
 mass instance remote-reference set automations-main-prsync service_account <service-account-resource-id>
 ```
 
-A remote reference can be set only while the instance is not deployed.
+The service account could be an environment default of `automations-main` too. A remote reference keeps it to the one instance, so each automation can run as its own service account with only its own permissions.
 
 Set the `GITHUB_TOKEN` secret on the instance in the UI. A fine-grained token needs read access to **Pull requests**, **Commit statuses** and **Contents** on the repositories; a classic token needs `repo` for private repositories.
 
 Then deploy with the projects and repositories to watch:
 
-```bash
-mass instance deploy automations-main-prsync --params=- <<'EOF'
+```yaml title="pr-sync.yaml"
 image:
   repository: ghcr.io/massdriver-cloud/massdriver-automations
   tag: latest
@@ -90,10 +89,13 @@ config:
   projects:
     - project: billing
       repos: [acme/billing, acme/billing-infra]
-EOF
 ```
 
-pr-sync is in images built after `v0.2.0`. Until the next release, set **Image > Tag** to `latest`, then pin the release tag when it is out.
+```bash
+mass instance deploy automations-main-prsync --params=pr-sync.yaml
+```
+
+pr-sync is not in the `v0.2.0` image, so tag `0.2` stops at start with `unknown automation "pr-sync"`. Use `latest` until a release includes it, then pin that release.
 
 The bundle serves pr-sync at `pr-sync.<cluster zone>`, such as `pr-sync.dev.example.com`, creates the CNAME to the load balancer, and creates an event destination with the signing secret. pr-sync reads GitHub on its interval and acts on no event, so its destination sends nothing.
 
