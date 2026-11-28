@@ -80,6 +80,8 @@ In `metro`, a station shows as `◉` in its environment's health color. It blink
 
 `--palette` sets the colors and the backdrop, and `p` switches palettes while the dashboard runs. Red, orange, and yellow mean alarms, warnings, and the blast radius in every palette.
 
+`--render blocks` fills the map's dots in as solid blocks, so links and rings draw as solid lines rather than dotted ones. It looks best in a terminal that draws block characters itself, such as Ghostty.
+
 | Palette | Backdrop |
 |---|---|
 | `night` | A starfield |

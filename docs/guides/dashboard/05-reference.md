@@ -19,6 +19,7 @@ This feature is alpha. Names, fields, and behavior can change or be removed at a
 | `--depth` | `1` | How many hops from the focus to read |
 | `--theme` | `constellation` | How the map is drawn: `constellation`, `metro`, or `radar` |
 | `--palette` | `night` | Colors and backdrop: `night`, `rain`, or `blueprint` |
+| `--render` | `braille` | How the map's dots are drawn: `braille` dots, or solid `blocks` |
 | `--refresh` | `30s` | How often to read the environments in view. `0` reads them once. |
 | `--events` | `5s` | How often to read new audit log events. `0` turns the ticker off. |
 | `--stash` | `3s` | How often to read the stash when it cannot be streamed: with a service account, or while a stream reconnects. `0` reads it with each refresh. |
