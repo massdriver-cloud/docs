@@ -8,6 +8,10 @@ image: /img/og/getting-started.png
 
 Welcome to Massdriver! This guide walks you through setting up your platform and building your first bundles.
 
+:::tip Setting up an organization?
+[Onboarding](/onboarding) covers choosing a catalog, installing the official resource types, greenfield and brownfield platforms, and running automations.
+:::
+
 ## DevEx-First: Start with the Catalog
 
 **[Massdriver Catalog](https://github.com/massdriver-cloud/massdriver-catalog)** is the foundation for your infrastructure platform. Design your developer experience before writing infrastructure code.

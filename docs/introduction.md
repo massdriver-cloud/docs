@@ -42,6 +42,10 @@ AI agents can generate IaC. Massdriver makes it trustworthy.
 
 ## Getting Started
 
+### Onboarding
+
+**[Onboarding](/onboarding)** — Choose a catalog (AWS or pets), install the official resource types, stand up a platform from an empty account or import the one your Terraform already runs, and run automations on ECS or in a Kubernetes namespace.
+
 ### Start with the Catalog
 
 **[Massdriver Catalog](https://github.com/massdriver-cloud/massdriver-catalog)** — A complete, git-ready catalog of resource types and infrastructure bundles. Clone it, customize it, and use it as the foundation for your platform. The catalog helps you model your platform architecture and developer experience before writing infrastructure code.

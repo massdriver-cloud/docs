@@ -6,6 +6,7 @@ import VersionedConnections from "@site/src/components/Diagrams/VersionedConnect
 import SlotResolution from "@site/src/components/Diagrams/SlotResolution";
 import SeparationOfDuty from "@site/src/components/Diagrams/SeparationOfDuty";
 import * as Diagrams from "@site/src/components/Diagrams/all";
+import OnboardingPath from "@site/src/components/Onboarding";
 import { Topology, TopologyLegend, OrganizationTopology, Canvas } from "@site/src/components/Topology";
 
 export default {
@@ -21,4 +22,5 @@ export default {
   TopologyLegend,
   OrganizationTopology,
   Canvas,
+  OnboardingPath,
 };
